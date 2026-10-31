@@ -1,0 +1,896 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#20242B">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<script src="pwa-shim.js"></script>
+</head>
+<body>
+<nav class="pwa-nav"><a href="./">← Все практикумы</a></nav>
+
+<title>Реестр рисков — Корзина</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: the launch programme's control desk. A dark band carries weeks 15–36 of the Food Delivery launch,
+   with week 18 (four specialists move to the launch team) and week 35 (launch) in signal orange;
+   below, a working sheet beside a logbook rail. Signal orange is reserved for critical risks and the launch date. */
+:root {
+  --paper: #E6E8E3;
+  --sheet: #FBFBF9;
+  --sheet-2: #F0F1ED;
+  --ink: #1D2026;
+  --ink-2: #5A6068;
+  --rule: #D3D6CF;
+  --rule-2: #B4B9B0;
+  --band: #20242B;
+  --band-ink: #E9EBE6;
+  --band-ink-2: #9AA1AB;
+  --signal: #F2551D;
+  --signal-tint: #FDE3D8;
+  --cobalt: #2D4FE3;
+  --cobalt-tint: #E2E7FC;
+  --amber: #D9960B;
+  --violet: #7650C4;
+  --green: #2D8A57;
+  --ok: #23804A; --ok-tint: #DDF0E3;
+  --warn: #9A6400; --warn-tint: #F8ECCB;
+  --bad: #C42B2B; --bad-tint: #F8DEDC;
+  --on-fill: #FFFFFF;
+  --m1: #DDF0E3; --m2: #F8ECCB; --m3: #FBD9B5; --m4: #FDE3D8; --m5: #F2551D;
+  --font-display: "Dela Gothic One", "Golos Text", system-ui, sans-serif;
+  --font-body: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #14161A; --sheet: #1D2026; --sheet-2: #252930; --ink: #ECEDE9; --ink-2: #A2A8B0; --rule: #333840; --rule-2: #4A5059;
+    --band: #0C0E11; --band-ink: #ECEDE9; --band-ink-2: #8E959F;
+    --signal: #FF7341; --signal-tint: #44231A; --cobalt: #8EA4FF; --cobalt-tint: #232C52; --amber: #F2B84B; --violet: #B79BF0; --green: #6CCB93;
+    --ok: #6CCB93; --ok-tint: #173323; --warn: #F2C14E; --warn-tint: #3A2D0E; --bad: #FF8A80; --bad-tint: #401A18;
+    --on-fill: #14161A; --m1: #173323; --m2: #3A2D0E; --m3: #4A2E12; --m4: #44231A; --m5: #FF7341; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #14161A; --sheet: #1D2026; --sheet-2: #252930; --ink: #ECEDE9; --ink-2: #A2A8B0; --rule: #333840; --rule-2: #4A5059;
+  --band: #0C0E11; --band-ink: #ECEDE9; --band-ink-2: #8E959F;
+  --signal: #FF7341; --signal-tint: #44231A; --cobalt: #8EA4FF; --cobalt-tint: #232C52; --amber: #F2B84B; --violet: #B79BF0; --green: #6CCB93;
+  --ok: #6CCB93; --ok-tint: #173323; --warn: #F2C14E; --warn-tint: #3A2D0E; --bad: #FF8A80; --bad-tint: #401A18;
+  --on-fill: #14161A; --m1: #173323; --m2: #3A2D0E; --m3: #4A2E12; --m4: #44231A; --m5: #FF7341; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55; padding-inline: 16px; padding-block: 0 56px; font-variant-numeric: tabular-nums; }
+.wrap { max-width: 1320px; margin-inline: auto; }
+h1, h2, h3, h4, p { margin: 0; }
+h1, h2, h3 { text-wrap: balance; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2.5px solid var(--cobalt); outline-offset: 2px; }
+.mono { font-variant-numeric: tabular-nums; }
+
+/* ---------- Control band ---------- */
+.band { background: var(--band); color: var(--band-ink); margin-inline: -16px; padding-inline: 16px; padding-block: 26px 0; }
+.band-top { display: flex; flex-wrap: wrap; gap: 14px 40px; align-items: end; justify-content: space-between; }
+.brand { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.brand h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(26px, 4vw, 40px); line-height: 1; letter-spacing: -0.01em; }
+.brand p { color: var(--band-ink-2); max-width: 62ch; font-size: 14.5px; }
+.casetag { font-size: 13px; color: var(--band-ink-2); border: 1px solid #454b55; border-radius: 999px; padding: 4px 12px; white-space: nowrap; }
+
+.ruler { margin-top: 26px; display: grid; grid-template-columns: repeat(22, minmax(0, 1fr)); gap: 3px; align-items: end; height: 54px; }
+.ruler span { height: 12px; border-radius: 3px; background: #343a44; position: relative; }
+.ruler span.wk::before { content: attr(data-wk); position: absolute; bottom: 30px; left: 0; font-size: 11.5px; color: var(--band-ink-2); white-space: nowrap; }
+.ruler span.hot { height: 26px; background: var(--signal); }
+.ruler span.hot::after { content: attr(data-lab); position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 600; color: var(--signal); white-space: nowrap; }
+.ruler span.now { outline: 2px solid var(--band-ink); outline-offset: 2px; }
+@media (max-width: 640px) { .ruler span.hot::after { content: attr(data-short); } .ruler span.wk::before { content: attr(data-short); } }
+
+.steps { position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); padding-block: 22px 24px; border-top: 1px solid #3a4049; margin-top: 16px; }
+.steps::before { content: ""; position: absolute; left: 14px; right: 14px; top: 36px; height: 3px; background: #3e444e; border-radius: 3px; }
+.step { appearance: none; position: relative; text-align: left; cursor: pointer; border: 0; background: transparent; color: var(--band-ink); padding: 0 10px 0 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.step .dot { width: 31px; height: 31px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 14px; background: var(--band); border: 3px solid #5b626d; color: var(--band-ink-2); position: relative; z-index: 1; }
+.step .t { font-weight: 600; font-size: 14px; line-height: 1.25; }
+.step .s { font-size: 12.5px; color: var(--band-ink-2); line-height: 1.3; }
+.step:hover .dot { border-color: var(--band-ink); }
+.step.done .dot { background: var(--green); border-color: var(--green); color: var(--band); }
+.step[aria-current="step"] .dot { background: var(--signal); border-color: var(--signal); color: var(--band); box-shadow: 0 0 0 5px rgba(242, 85, 29, .25); }
+.step.locked { cursor: not-allowed; }
+.step.locked .dot { border-style: dashed; }
+.step.locked .t, .step.locked .s { color: #6d7480; }
+@media (max-width: 860px) { .step .s { display: none; } .step .t { font-size: 12px; } }
+@media (max-width: 520px) { .step .t { display: none; } }
+
+/* ---------- Working area ---------- */
+.workspace { display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr); align-items: start; padding-top: 24px; }
+@media (min-width: 1100px) { .workspace { grid-template-columns: minmax(0, 1fr) 320px; } }
+.panel { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.card { background: var(--sheet); border-radius: 16px; padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.card > h3, .sec-h { font-family: var(--font-display); font-weight: 400; font-size: 19px; line-height: 1.2; letter-spacing: -0.005em; }
+.lead { color: var(--ink-2); max-width: 72ch; }
+.lbl { font-size: 13px; color: var(--ink-2); font-weight: 600; }
+.grid2 { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .grid2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+@media (max-width: 600px) { .card { padding: 18px 16px; border-radius: 12px; } }
+
+.btn { appearance: none; cursor: pointer; border: 1.5px solid var(--ink); background: transparent; border-radius: 999px; padding: 8px 18px; font-weight: 600; line-height: 1.2; }
+.btn:hover { background: var(--sheet-2); }
+.btn[disabled] { opacity: .4; cursor: not-allowed; }
+.btn-primary { background: var(--ink); color: var(--sheet); }
+.btn-primary:hover { background: var(--ink); filter: brightness(1.25); }
+.btn-small { padding: 5px 13px; font-size: 13px; border-width: 1px; border-color: var(--rule-2); font-weight: 500; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.status { min-height: 20px; font-size: 13.5px; color: var(--ink-2); }
+.status.err { color: var(--bad); }
+
+textarea, input[type="text"], input[type="number"], select { width: 100%; border: 1.5px solid var(--rule); background: var(--sheet); border-radius: 10px; padding: 9px 12px; }
+textarea:hover, input:hover, select:hover { border-color: var(--rule-2); }
+textarea { resize: vertical; line-height: 1.55; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field-top { display: flex; justify-content: space-between; gap: 8px 14px; align-items: baseline; flex-wrap: wrap; }
+.field .help, .help { font-size: 13px; color: var(--ink-2); }
+.note { font-size: 13px; color: var(--ink-2); border-left: 3px solid var(--rule-2); padding-left: 10px; }
+
+/* Tables */
+table.data { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.data th, table.data td { text-align: left; padding: 10px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+table.data th { font-size: 12.5px; color: var(--ink-2); font-weight: 600; border-bottom: 2px solid var(--ink); }
+table.data tbody tr:last-child td { border-bottom: 0; }
+.tscroll { overflow-x: auto; }
+table.reg td { vertical-align: middle; }
+table.reg input { width: 3.6em; padding: 6px 4px; text-align: center; border-radius: 8px; font-weight: 600; font-size: 15px; }
+table.reg td.rid { font-weight: 700; white-space: nowrap; }
+table.reg td.rtext { min-width: 260px; max-width: 420px; }
+table.reg select { width: auto; min-width: 9em; padding: 6px 8px; }
+.rowhint { font-size: 12.5px; color: var(--ink-2); margin-top: 4px; max-width: 34ch; }
+.cat { display: inline-block; font-size: 12px; padding: 1px 9px; border-radius: 999px; background: var(--sheet-2); color: var(--ink-2); white-space: nowrap; }
+.opp { color: var(--green); font-weight: 600; font-size: 12px; }
+
+/* Case */
+.facts { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .facts { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.fact { position: relative; padding: 14px 16px 12px; background: var(--sheet-2); border-radius: 4px 14px 14px 14px; display: flex; flex-direction: column; gap: 4px; }
+.fact b { font-family: var(--font-display); font-weight: 400; font-size: 15px; }
+.fact.hot { background: var(--signal-tint); } .fact.hot b { color: var(--signal); }
+.task-list { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; }
+.task-list li::marker { font-weight: 700; color: var(--ink-2); }
+.pick { display: flex; flex-wrap: wrap; gap: 8px; }
+.pick label { display: inline-flex; gap: 7px; align-items: center; border: 1.5px solid var(--rule); border-radius: 999px; padding: 5px 13px 5px 10px; font-size: 13.5px; cursor: pointer; background: var(--sheet); }
+.pick label:has(input:checked) { border-color: var(--ink); background: var(--ink); color: var(--sheet); }
+.pick input { margin: 0; accent-color: var(--signal); }
+.radio-list { display: flex; flex-direction: column; gap: 8px; }
+.radio-list label { display: flex; gap: 10px; align-items: baseline; padding: 9px 12px; border: 1.5px solid var(--rule); border-radius: 10px; cursor: pointer; background: var(--sheet); }
+.radio-list label:has(input:checked) { border-color: var(--ink); }
+.radio-list input { accent-color: var(--signal); }
+
+/* Pre-mortem */
+.clock { font-family: var(--font-display); font-size: 28px; line-height: 1; padding: 8px 14px; border-radius: 10px; background: var(--amber); color: var(--band); }
+.clock.over { background: var(--bad); color: var(--on-fill); }
+.timerbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.causes { display: flex; flex-direction: column; gap: 8px; }
+.cause { display: grid; gap: 8px 14px; grid-template-columns: minmax(0, 1fr) 190px; align-items: center; padding: 10px 12px; background: var(--sheet-2); border-radius: 10px; }
+.cause .c-text { overflow-wrap: anywhere; }
+.cause select { width: 100%; padding: 6px 8px; }
+@media (max-width: 600px) { .cause { grid-template-columns: minmax(0, 1fr); } }
+.cover { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.cov { padding: 10px 12px; border-radius: 10px; border: 1.5px dashed var(--rule-2); display: flex; flex-direction: column; gap: 3px; font-size: 13.5px; }
+.cov b { font-weight: 600; }
+.cov .n { font-size: 12px; color: var(--ink-2); }
+.cov.on { border-style: solid; border-color: var(--ok); background: var(--ok-tint); }
+.cov.miss { border-color: var(--bad); background: var(--bad-tint); }
+
+/* Matrix */
+.matrix-wrap { display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 900px) { .matrix-wrap { grid-template-columns: 300px minmax(0, 1fr); } }
+.matrix { display: grid; grid-template-columns: 26px repeat(5, minmax(0, 1fr)); gap: 3px; font-size: 12px; }
+.matrix .ax { display: grid; place-items: center; color: var(--ink-2); font-weight: 600; }
+.matrix .cell { aspect-ratio: 1; border-radius: 6px; display: flex; flex-wrap: wrap; gap: 2px; align-content: start; padding: 4px; font-weight: 700; color: var(--ink); }
+.matrix .cell.l1 { background: var(--m1); } .matrix .cell.l2 { background: var(--m2); } .matrix .cell.l3 { background: var(--m3); } .matrix .cell.l4 { background: var(--m4); } .matrix .cell.l5 { background: var(--m5); color: var(--on-fill); }
+.matrix .tag { font-size: 10.5px; padding: 0 5px; border-radius: 999px; background: var(--sheet); color: var(--ink); line-height: 1.5; }
+.matrix .tag.o { background: var(--green); color: var(--on-fill); }
+.axlab { font-size: 12.5px; color: var(--ink-2); }
+
+/* Pills, verification */
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; padding: 2px 10px 2px 8px; border-radius: 999px; white-space: nowrap; }
+.pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.pill.ok { color: var(--ok); background: var(--ok-tint); }
+.pill.warn { color: var(--warn); background: var(--warn-tint); }
+.pill.bad { color: var(--bad); background: var(--bad-tint); }
+.pill.bad::before { border-radius: 1px; transform: rotate(45deg); }
+.pill.info { color: var(--ink-2); background: var(--sheet-2); }
+.hintrow { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.hintrow b { font-weight: 600; }
+.bigline { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: baseline; }
+.bignum { font-family: var(--font-display); font-size: 30px; line-height: 1.1; }
+.bignum.bad { color: var(--signal); } .bignum.ok { color: var(--ok); }
+.strat { display: grid; gap: 10px 14px; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr); align-items: start; padding: 12px 14px; background: var(--sheet-2); border-radius: 12px; }
+@media (max-width: 760px) { .strat { grid-template-columns: minmax(0, 1fr); } }
+.strat .why { grid-column: 1 / -1; font-size: 13.5px; }
+.reflect { white-space: pre-wrap; overflow-wrap: anywhere; padding: 14px 16px; background: var(--cobalt-tint); border-radius: 4px 14px 14px 14px; min-height: 40px; }
+.emv { display: grid; gap: 10px; }
+.emv-row { display: grid; gap: 10px; grid-template-columns: minmax(0, 1.6fr) 90px 110px 110px; align-items: center; }
+.emv-row input { text-align: center; font-weight: 600; }
+@media (max-width: 640px) { .emv-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .emv-row .rtext { grid-column: 1 / -1; } }
+.checklist { display: flex; flex-direction: column; gap: 6px; }
+.checklist label { display: flex; gap: 10px; align-items: baseline; cursor: pointer; }
+.checklist input { accent-color: var(--green); }
+.preview { margin: 0; padding: 14px; background: var(--sheet-2); border-radius: 10px; max-height: 340px; overflow: auto; font-family: ui-monospace, Menlo, monospace; font-size: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
+details > summary { cursor: pointer; color: var(--ink-2); font-size: 13.5px; }
+
+/* ---------- Logbook rail ---------- */
+.rail { background: var(--sheet); border-radius: 16px; display: flex; flex-direction: column; min-width: 0; border-top: 6px solid var(--band); }
+@media (min-width: 1100px) { .rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 14px); max-height: calc(100vh - 28px); overflow: auto; } }
+.rail-sec { padding: 16px 18px; border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; gap: 10px; }
+.rail-sec:last-child { border-bottom: 0; }
+.rail h3 { font-family: var(--font-display); font-weight: 400; font-size: 16px; }
+.rail h4 { font-size: 13px; color: var(--ink-2); font-weight: 600; }
+.goal { display: flex; gap: 10px; align-items: baseline; font-size: 14px; }
+.goal .dot { flex: none; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--rule-2); transform: translateY(1px); }
+.goal.on .dot { background: var(--green); border-color: var(--green); }
+.kv { display: flex; justify-content: space-between; gap: 10px; font-size: 13.5px; }
+.kv span:last-child { text-align: right; font-weight: 600; }
+.kv.hot span:last-child { color: var(--signal); }
+.tip { font-size: 14px; background: var(--cobalt-tint); }
+.tip .q { color: var(--ink-2); font-style: italic; }
+.empty { padding: 26px 18px; text-align: center; color: var(--ink-2); border: 2px dashed var(--rule-2); border-radius: 14px; }
+.legend { font-size: 12.5px; color: var(--ink-2); }
+@media (prefers-reduced-motion: no-preference) { .btn, .step .dot, .pick label { transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease; } }
+</style>
+
+<header class="band">
+  <div class="wrap">
+    <div class="band-top">
+      <div class="brand">
+        <h1>Реестр рисков</h1>
+        <p>Практикум 5: риски программы запуска по PMBOK 8. Сначала пре-мортем по методу Гэри Клейна, затем реестр рисков, стратегии реагирования и резерв. ИИ подключится как «коллега с черновиком», и вы проверите его.</p>
+      </div>
+      <span class="casetag">Кейс «Витрина», вымышленные данные</span>
+    </div>
+    <div class="ruler" id="ruler" aria-hidden="true"></div>
+    <nav class="steps" aria-label="Шаги практикума" id="steps"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="workspace">
+    <main class="panel" id="main"></main>
+    <aside class="rail" id="rail" aria-label="Прогресс и коуч"></aside>
+  </div>
+</div>
+
+<script>
+/* ================= Data: case «Витрина», launch of Food Delivery ================= */
+const WEEK_NOW = 15, WEEK_PEOPLE = 18, WEEK_LAUNCH = 35, WEEK_END = 36;
+const FACTORS = [
+  { k: 'integrator', n: 'Интегратор по договору «время и материалы»', d: '50 ресторанов-партнёров подключаются через одного интегратора; оплата за фактические часы, без фиксированной цены.' },
+  { k: 'supplier', n: 'Единственный поставщик термоконтейнеров', d: 'Вся партия термоконтейнеров для курьеров заказана у одного поставщика.' },
+  { k: 'permits', n: 'Санитарные разрешения в 3 городах', d: 'Доставка еды запускается в трёх городах; в каждом нужно санитарное разрешение местной службы.' },
+  { k: 'couriers', n: 'Курьеры — внешняя служба', d: 'Доставку выполняет внешняя курьерская служба по договору; норматив — не дольше 45 минут, горячие блюда не ниже 60 °C.' },
+  { k: 'people', n: '4 специалиста переходят на запуск', d: 'С 18-й недели четыре специалиста отдела операций переходят в команду запуска; оставшиеся 8 обслуживают 12 действующих городов.' },
+  { k: 'payouts', n: 'Новый модуль выплат ресторанам', d: 'Расчёты с ресторанами идут через новый модуль выплат, который ещё не работал с реальными деньгами.' }
+];
+const GOALS = ['Срок запуска: 35-я неделя', 'Бюджет программы', 'Качество доставки: время и температура', 'Репутация маркетплейса'];
+
+const CATS = [
+  { k: 'supplier', n: 'Поставщик', ex: 'термоконтейнеры у одного поставщика, интегратор по T&M' },
+  { k: 'partner', n: 'Партнёр', ex: 'рестораны не готовы к подключению, курьерская служба срывает нормативы' },
+  { k: 'permits', n: 'Разрешения', ex: 'санитарное разрешение в одном из городов получено позже' },
+  { k: 'people', n: 'Люди', ex: 'переход четырёх специалистов, перегрузка оставшихся, нет опыта с едой' },
+  { k: 'tech', n: 'Технологии', ex: 'модуль выплат, интеграция меню и заказов, сбои витрины' },
+  { k: 'finance', n: 'Финансы', ex: 'перерасход бюджета на T&M, рост цен на партию, кассовые разрывы по выплатам' },
+  { k: 'other', n: 'Другое', ex: '' }
+];
+const CAT_NAME = Object.fromEntries(CATS.map((c) => [c.k, c.n]));
+
+/* Register: eight pre-written risks with reference probability (p) and impact (i), 1–5 */
+const RISKS = [
+  { id: 'R1', cat: 'supplier', f: 'integrator', t: 'Из-за того что 50 ресторанов подключаются через одного интегратора по договору «время и материалы», фактические часы могут превысить оценку, что приведёт к перерасходу бюджета и сдвигу запуска за 35-ю неделю.', p: 4, i: 4 },
+  { id: 'R2', cat: 'supplier', f: 'supplier', t: 'Из-за того что термоконтейнеры заказаны у единственного поставщика, партия может прийти позже или с браком, что приведёт к доставке без контроля температуры или к переносу запуска.', p: 3, i: 5 },
+  { id: 'R3', cat: 'permits', f: 'permits', t: 'Из-за разных требований санитарных служб в трёх городах разрешение в одном из городов может быть получено позже 33-й недели, что приведёт к запуску не во всех городах и репутационным потерям.', p: 4, i: 4 },
+  { id: 'R4', cat: 'partner', f: 'couriers', t: 'Из-за того что курьеры — внешняя служба без опыта доставки еды, доля заказов дольше 45 минут или с остывшей едой может превысить 10 %, что приведёт к возвратам, отрицательным отзывам и потере репутации.', p: 3, i: 4 },
+  { id: 'R5', cat: 'people', f: 'people', t: 'Из-за перехода четырёх специалистов на запуск с 18-й недели оставшиеся восемь могут не успевать реагировать на сбои витрины, что приведёт к компенсациям продавцам и отвлечению команды запуска.', p: 3, i: 3 },
+  { id: 'R6', cat: 'tech', f: 'payouts', t: 'Из-за того что модуль выплат ресторанам новый, в первых расчётных периодах могут возникнуть ошибки в суммах, что приведёт к задержке выплат, претензиям ресторанов и уходу части партнёров.', p: 2, i: 5 },
+  { id: 'R7', cat: 'partner', f: 'integrator', t: 'Из-за того что у части ресторанов нет оцифрованного меню и фотографий блюд, к 35-й неделе могут быть готовы не все 50 партнёров, что приведёт к узкому ассортименту на старте.', p: 4, i: 2 },
+  { id: 'R8', cat: 'partner', f: 'couriers', opp: true, t: 'Возможность: если на 30-й неделе провести пилот в одном городе с десятью ресторанами, курьеры и модуль выплат пройдут проверку на малом объёме, что позволит запуститься в срок с меньшим числом сбоев и получить первые заказы раньше.', p: 3, i: 4 }
+];
+const REF_SCORE = Object.fromEntries(RISKS.map((r) => [r.id, r.p * r.i]));
+const TOP4 = ['R1', 'R2', 'R3', 'R8']; /* three strongest threats and the opportunity */
+
+const STRATS_T = [['avoid', 'Избежать'], ['transfer', 'Передать'], ['mitigate', 'Снизить'], ['accept', 'Принять']];
+const STRATS_O = [['exploit', 'Использовать'], ['share', 'Разделить'], ['enhance', 'Усилить'], ['accept', 'Принять']];
+const STRAT_NAME = Object.fromEntries([...STRATS_T, ...STRATS_O]);
+const OWNERS = [
+  ['pm', 'Руководитель программы запуска'], ['ops', 'Руководитель отдела операций'], ['procure', 'Менеджер по закупкам'],
+  ['legal', 'Юрист'], ['partners', 'Руководитель направления партнёрств'], ['tech', 'Технический руководитель модуля выплат'],
+  ['cfo', 'Финансовый директор'], ['team', 'Команда']
+];
+const OWNER_NAME = Object.fromEntries(OWNERS);
+/* Reference for step 4: which strategies and owners are accepted, and why the rest are not */
+const STRAT_REF = {
+  R1: { ok: ['mitigate', 'avoid'], owners: ['pm', 'procure', 'legal'],
+    why: { transfer: 'При договоре «время и материалы» риск перерасхода остаётся у заказчика: интегратор получает оплату за каждый час и ничем не рискует. Передать риск ему можно только сменой типа договора на фиксированную цену за этап, а это уже стратегия «избежать» или «снизить» с изменением договора.', accept: 'Балл 16 — критичный риск: принять его без действий значит заранее согласиться с перерасходом и сдвигом срока.', avoid: 'перейти на фиксированную цену за этап подключения или ограничить объём часов приёмкой по этапам.', mitigate: 'лимит часов на ресторан, еженедельная приёмка подключений, резерв бюджета, второй исполнитель на простые подключения.' } },
+  R2: { ok: ['mitigate', 'transfer', 'avoid'], owners: ['procure', 'pm'],
+    why: { accept: 'Балл 15 при влиянии 5: без термоконтейнеров доставка горячей еды невозможна. Принять такой риск нельзя.', transfer: 'штраф поставщику за срыв поставки или страхование груза покрывает деньги, но не срок. Сочетайте с снижением.', mitigate: 'заказать партию раньше с промежуточной приёмкой образцов, найти второго поставщика на часть партии.', avoid: 'разделить партию между двумя поставщиками, чтобы ни один не был единственным.' } },
+  R3: { ok: ['mitigate', 'avoid'], owners: ['pm', 'legal'],
+    why: { accept: 'Балл 16: запуск не во всех городах подрывает маркетинг и репутацию. Принять нельзя.', transfer: 'Разрешение выдаёт государственная служба: передать этот риск исполнителю или страховщику невозможно, ответственность остаётся у маркетплейса.', mitigate: 'подать документы в трёх городах до 20-й недели, привлечь местного консультанта, назначить контрольную точку на 30-й неделе.', avoid: 'запустить сначала города с полученными разрешениями и объявить это заранее, не обещая три города сразу.' } },
+  R8: { ok: ['exploit', 'enhance', 'share'], owners: ['pm', 'partners', 'ops'],
+    why: { accept: 'Принять возможность значит ничего не делать и ждать, что пилот сложится сам. Пилот нужно запланировать.', exploit: 'включить пилот в план на 30-ю неделю, выделить город и десять ресторанов.', enhance: 'добавить к пилоту проверку модуля выплат на реальных суммах и обучение курьеров.', share: 'провести пилот вместе с курьерской службой и ресторанами, разделив расходы и данные о качестве.' } }
+};
+
+/* Step 5: register drafted by AI, four planted errors */
+const AI_ROWS = [
+  { id: 'A1', t: 'Интегратор работает по договору «время и материалы» и знает протокол подключения ресторанов.', p: '4', i: '4', s: 'Снизить', o: 'Руководитель программы запуска', err: 'fact' },
+  { id: 'A2', t: 'Термоконтейнеры могут прийти позже срока, доставка горячей еды будет невозможна.', p: '—', i: '5', s: 'Снизить', o: 'Менеджер по закупкам', err: 'noprob' },
+  { id: 'A3', t: 'Санитарное разрешение в одном из городов может быть получено позже 33-й недели, запуск пройдёт не во всех городах.', p: '4', i: '4', s: 'Принять', o: 'Руководитель программы запуска', err: 'accept' },
+  { id: 'A4', t: 'Внешние курьеры могут нарушать норматив 45 минут, еда остынет, появятся отрицательные отзывы.', p: '3', i: '4', s: 'Снизить', o: '—', err: 'noowner' },
+  { id: 'A5', t: 'Новый модуль выплат может ошибаться в суммах в первые периоды, рестораны получат деньги с задержкой.', p: '2', i: '5', s: 'Снизить', o: 'Технический руководитель модуля выплат', err: null },
+  { id: 'A6', t: 'После перехода четырёх специалистов оставшиеся восемь могут не успевать реагировать на сбои витрины, продавцам начислят компенсации.', p: '3', i: '3', s: 'Снизить', o: 'Руководитель отдела операций', err: null }
+];
+const ERR_KINDS = [['fact', 'Это факт, а не риск: нет неопределённого события и последствия'], ['noprob', 'Есть влияние, нет вероятности: балл посчитать нельзя'], ['accept', 'Стратегия «принять» для критичного риска'], ['noowner', 'Не назван владелец риска']];
+const ERR_NAME = Object.fromEntries(ERR_KINDS);
+const AI_HINT = {
+  fact: 'Договор T&M — это условие проекта, оно уже есть. Риск — то, что из него может произойти: часы превысят оценку, бюджет и срок пострадают.',
+  noprob: 'Влияние 5 без вероятности не даёт балла и не даёт сравнить риск с другими. Вероятность оценивают по признакам: сроки поставщика, его история, наличие образцов.',
+  accept: 'Балл 16 при цели «запуск в трёх городах» требует действий: подать документы раньше, назначить контрольную точку, подготовить запасной план.',
+  noowner: 'Риск без владельца никто не отслеживает. Для курьерской службы владелец — руководитель направления партнёрств или руководитель программы, а не «команда».'
+};
+
+/* Step 6: contingency reserve by expected monetary value, млн ₸ */
+const EMV = [
+  { id: 'R1', t: 'Перерасход часов интегратора', pct: 40, cost: 12 },
+  { id: 'R2', t: 'Срыв поставки термоконтейнеров: срочная закупка у другого поставщика', pct: 30, cost: 9 },
+  { id: 'R3', t: 'Задержка разрешения: перенос рекламной кампании и упущенная выручка в одном городе', pct: 60, cost: 5 }
+];
+const EMV_REF = EMV.map((e) => e.pct / 100 * e.cost);
+const EMV_TOTAL = EMV_REF.reduce((a, b) => a + b, 0);
+
+const HINTS = {
+  score: ['Балл риска — произведение двух оценок, а не сумма.', 'Балл = вероятность × влияние. Оценка 4 и 4 даёт 16, а не 8.', 'Проверьте каждую строку: умножьте свои же оценки заново.'],
+  rank: ['Ранг 1 — у риска с самым большим баллом из ваших оценок, а не у того, что «страшнее звучит».', 'Отсортируйте строки по баллу по убыванию и пронумеруйте. Одинаковые баллы могут идти в любом порядке.', 'Ранги должны быть числами от 1 до 8 без повторов: два риска не могут быть одновременно первыми.'],
+  scale: ['Вероятность 1–5 — насколько вероятно событие до 35-й недели; влияние 1–5 — насколько сильно оно бьёт по целям: срок, бюджет, качество, репутация.', 'Влияние 5 — цель недостижима (нет термоконтейнеров — нет доставки горячей еды). Влияние 2 — цель достигается с оговорками (меньше ресторанов на старте).', 'Эталон допускает отклонение на 1 балл по каждой шкале. Расхождение больше — повод перечитать формулировку риска.'],
+  emv: ['Ожидаемая денежная стоимость — вероятность, умноженная на денежное последствие.', 'Переведите процент в доли: 40 % = 0,4. EMV = 0,4 × стоимость последствия.', 'Резерв на непредвиденные обстоятельства — сумма EMV по включённым рискам.']
+};
+
+/* ================= Helpers ================= */
+const $ = (s, r = document) => r.querySelector(s);
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') el.className = v; else if (k === 'text') el.textContent = v;
+    else if (k === 'style') el.setAttribute('style', v);
+    else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else if (v === true) el.setAttribute(k, ''); else el.setAttribute(k, v);
+  }
+  for (const kid of kids.flat()) { if (kid == null || kid === false) continue; el.append(kid.nodeType ? kid : document.createTextNode(String(kid))); }
+  return el;
+}
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage may be blocked */ } }
+};
+const num = (v) => { if (v === '' || v == null) return null; const n = Number(String(v).replace(',', '.').replace('%', '').trim()); return Number.isFinite(n) ? n : null; };
+const fmt1 = (x) => (Math.round(x * 10) / 10).toString().replace('.', ',');
+const fmt2 = (x) => (Math.round(x * 100) / 100).toString().replace('.', ',');
+const lines = (t) => String(t || '').split('\n').map((x) => x.trim()).filter(Boolean);
+
+/* ================= State ================= */
+const KEY = 'kz.risks.state';
+const saved = store.get(KEY, {});
+const state = {
+  step: Number.isInteger(saved.step) ? saved.step : 0,
+  guess: Array.isArray(saved.guess) ? saved.guess : [],
+  pm: saved.pm || '', pmCats: saved.pmCats || {}, pmChecked: !!saved.pmChecked, pmTimer: saved.pmTimer == null ? 180 : saved.pmTimer,
+  reg: saved.reg || {}, checks3: saved.checks3 || 0, shown3: !!saved.shown3, hints: saved.hints || {},
+  strat: saved.strat || {}, checks4: saved.checks4 || 0,
+  marks: saved.marks || {}, kinds: saved.kinds || {}, markRevealed: !!saved.markRevealed,
+  emv: saved.emv || {}, emvTotal: saved.emvTotal || '', checks6: saved.checks6 || 0,
+  concl: saved.concl || '', conclShown: !!saved.conclShown, checklist: saved.checklist || {},
+  downloads: null
+};
+function persist() {
+  store.set(KEY, { step: state.step, guess: state.guess, pm: state.pm.slice(0, 6000), pmCats: state.pmCats, pmChecked: state.pmChecked, pmTimer: state.pmTimer,
+    reg: state.reg, checks3: state.checks3, shown3: state.shown3, hints: state.hints, strat: state.strat, checks4: state.checks4,
+    marks: state.marks, kinds: state.kinds, markRevealed: state.markRevealed, emv: state.emv, emvTotal: state.emvTotal, checks6: state.checks6,
+    concl: state.concl.slice(0, 4000), conclShown: state.conclShown, checklist: state.checklist });
+}
+const reg = (id) => (state.reg[id] = state.reg[id] || { p: '', i: '', s: '', r: '' });
+
+/* ================= Step 2 status: pre-mortem ================= */
+function pmStatus() {
+  const L = lines(state.pm);
+  const cats = new Set(L.map((_, i) => state.pmCats[i]).filter((c) => c && c !== 'other'));
+  const mapped = L.filter((_, i) => state.pmCats[i]).length;
+  const missed = CATS.filter((c) => c.k !== 'other' && !cats.has(c.k));
+  return { n: L.length, mapped, cats, missed, enough: L.length >= 6 && L.length <= 8 };
+}
+
+/* ================= Step 3 status: register ================= */
+function regStatus() {
+  const rows = {}; let ok = 0, total = 0, sumErr = 0, rankBad = false;
+  const scores = {};
+  RISKS.forEach((r) => {
+    const v = reg(r.id), p = num(v.p), i = num(v.i), s = num(v.s), rk = num(v.r);
+    const st = { p: 'empty', i: 'empty', s: 'empty', r: 'empty' };
+    if (p != null) { st.p = Math.abs(p - r.p) <= 1 && p >= 1 && p <= 5 ? 'ok' : 'bad'; }
+    if (i != null) { st.i = Math.abs(i - r.i) <= 1 && i >= 1 && i <= 5 ? 'ok' : 'bad'; }
+    if (s != null && p != null && i != null) { st.s = s === p * i ? 'ok' : 'bad'; if (st.s === 'bad' && s === p + i) sumErr++; }
+    if (p != null && i != null) scores[r.id] = p * i;
+    st.rk = rk;
+    rows[r.id] = st;
+    total += 3; ok += ['p', 'i', 's'].filter((k) => st[k] === 'ok').length;
+  });
+  /* rank must follow the learner's own scores */
+  const ranks = RISKS.map((r) => num(reg(r.id).r)).filter((x) => x != null);
+  const allRanked = ranks.length === RISKS.length;
+  const dup = new Set(ranks).size !== ranks.length;
+  const badRank = new Set();
+  if (allRanked && !dup) {
+    const sorted = RISKS.slice().sort((a, b) => num(reg(a.id).r) - num(reg(b.id).r));
+    for (let k = 1; k < sorted.length; k++) {
+      const a = scores[sorted[k - 1].id], b = scores[sorted[k].id];
+      if (a != null && b != null && b > a) { badRank.add(sorted[k].id); badRank.add(sorted[k - 1].id); }
+    }
+  }
+  rankBad = dup || badRank.size > 0 || (allRanked && ranks.some((x) => x < 1 || x > 8));
+  return { rows, ok, total, sumErr, allRanked, dup, badRank, rankBad, scores, rankOk: allRanked && !rankBad };
+}
+
+/* ================= Step 4 status: strategies ================= */
+function stratStatus() {
+  const out = {};
+  TOP4.forEach((id) => {
+    const v = state.strat[id] || {}, ref = STRAT_REF[id];
+    const sOk = ref.ok.includes(v.s), oOk = ref.owners.includes(v.o);
+    out[id] = { s: v.s ? (sOk ? 'ok' : 'bad') : 'empty', o: v.o ? (oOk ? 'ok' : v.o === 'team' ? 'bad' : 'warn') : 'empty',
+      why: v.s ? ref.why[v.s] || '' : '', owhy: v.o === 'team' ? '«Команда» — не владелец: риск, за который отвечают все, не отслеживает никто. Нужна конкретная роль.' : (v.o && !oOk ? `Роль возможна, но обычно этот риск ведёт: ${ref.owners.map((o) => OWNER_NAME[o]).join(' или ')}.` : '') };
+  });
+  const okCount = TOP4.filter((id) => out[id].s === 'ok' && out[id].o === 'ok').length;
+  const filled = TOP4.every((id) => (state.strat[id] || {}).s && (state.strat[id] || {}).o);
+  return { rows: out, okCount, filled };
+}
+
+/* ================= Step 6 status ================= */
+function emvStatus() {
+  const rows = EMV.map((e, k) => { const v = num(state.emv[e.id]); if (v == null) return 'empty'; return Math.abs(v - EMV_REF[k]) <= 0.05 ? 'ok' : 'bad'; });
+  const t = num(state.emvTotal), total = t == null ? 'empty' : Math.abs(t - EMV_TOTAL) <= 0.05 ? 'ok' : 'bad';
+  const pctErr = EMV.some((e, k) => { const v = num(state.emv[e.id]); return v != null && Math.abs(v - e.pct * e.cost) <= 0.5; });
+  return { rows, total, ok: rows.filter((x) => x === 'ok').length + (total === 'ok' ? 1 : 0), pctErr };
+}
+
+/* ================= Rendering ================= */
+const STEPS = [
+  { t: 'Кейс и задание', s: 'Факторы риска и ваш прогноз' },
+  { t: 'Пре-мортем', s: 'Запуск провалился. Почему?' },
+  { t: 'Реестр рисков', s: 'Вероятность, влияние, балл, ранг' },
+  { t: 'Стратегии', s: 'Топ-4: стратегия и владелец' },
+  { t: 'Найдите ошибки ИИ', s: 'Реестр от ИИ' },
+  { t: 'Выводы и резерв', s: 'EMV, выводы, отчёт' }
+];
+function goals() {
+  const pm = pmStatus(), rs = regStatus(), ss = stratStatus(), es = emvStatus();
+  return [
+    { k: 'Сделали прогноз до анализа', on: state.guess.length === 2 },
+    { k: 'Провели пре-мортем и увидели пропуски', on: state.pmChecked && pm.enough && pm.mapped === pm.n },
+    { k: 'Оценили и ранжировали риски сами', on: state.checks3 > 0 && rs.ok === rs.total && rs.rankOk },
+    { k: 'Выбрали стратегии и владельцев', on: state.checks4 > 0 && ss.okCount === TOP4.length },
+    { k: 'Нашли ошибки в реестре ИИ', on: state.markRevealed },
+    { k: 'Посчитали резерв и сделали выводы', on: state.checks6 > 0 && es.ok === 4 && !!state.concl.trim() }
+  ];
+}
+const unlocked = (i) => i === 0 || (i === 1 && state.guess.length === 2) || (i === 2 && state.pmChecked) || (i === 3 && state.checks3 > 0) || (i === 4 && state.checks4 > 0) || (i === 5 && state.markRevealed);
+function renderSteps() {
+  const g = goals();
+  const done = g.map((x) => x.on);
+  $('#steps').replaceChildren(...STEPS.map((st, i) => h('button', { class: 'step' + (done[i] ? ' done' : '') + (unlocked(i) ? '' : ' locked'), type: 'button', 'aria-current': i === state.step ? 'step' : null, onclick: () => { if (unlocked(i)) go(i); } },
+    h('span', { class: 'dot', text: done[i] && i !== state.step ? '✓' : String(i + 1) }), h('span', { class: 't', text: st.t }), h('span', { class: 's', text: unlocked(i) ? st.s : 'Откроется позже' }))));
+}
+function go(i) { stopTimer(); state.step = i; persist(); render(); window.scrollTo({ top: 0 }); }
+function render() { renderSteps(); renderMain(); renderRail(); }
+function renderMain() {
+  const views = [viewCase, viewPremortem, viewRegister, viewStrategies, viewAI, viewConclusion];
+  $('#main').replaceChildren(...(unlocked(state.step) ? views[state.step]() : viewLocked()));
+}
+function viewLocked() {
+  const why = ['', 'Отметьте два главных риска в прогнозе на шаге 1.', 'Напишите причины провала и сопоставьте их с категориями на шаге 2, затем нажмите «Проверить покрытие».',
+    'Оцените риски на шаге 3 и хотя бы раз нажмите «Проверить».', 'Выберите стратегии на шаге 4 и нажмите «Проверить».', 'Сверьте свою проверку реестра ИИ на шаге 5.'][state.step];
+  const to = [0, 0, 1, 2, 3, 4][state.step];
+  return [h('section', { class: 'card' }, h('h3', { text: 'Шаг пока закрыт' }), h('div', { class: 'empty', text: why }),
+    h('div', { class: 'actions' }, h('button', { class: 'btn btn-primary', type: 'button', text: 'Перейти', onclick: () => go(to) })))];
+}
+function pill(x, labels) {
+  const L = labels || { ok: 'верно', bad: 'неверно', warn: 'спорно' };
+  return x && x !== 'empty' ? h('span', { class: 'pill ' + x, text: L[x] }) : h('span', { class: 'pill info', text: 'пусто' });
+}
+function hintCard(keys) {
+  return h('section', { class: 'card' }, h('h3', { text: 'Подсказки' }),
+    h('p', { class: 'lead', text: 'Подсказки открываются по одной и не содержат ответа. Каждая следующая конкретнее.' }),
+    ...keys.map(([k, t]) => {
+      const lvl = state.hints[k] || 0;
+      return h('div', { class: 'hintrow' }, h('div', { class: 'field-top' }, h('b', { text: t }),
+        h('button', { class: 'btn btn-small', type: 'button', text: lvl >= HINTS[k].length ? 'Подсказок больше нет' : `Подсказка ${lvl + 1} из ${HINTS[k].length}`, disabled: lvl >= HINTS[k].length, onclick: () => { state.hints[k] = lvl + 1; persist(); render(); } })),
+        lvl ? h('ol', { class: 'task-list' }, HINTS[k].slice(0, lvl).map((t2) => h('li', { text: t2 }))) : null);
+    }));
+}
+function textInput(id, value, onInput, label, attrs = {}) {
+  const i = h('input', { type: 'text', inputmode: 'decimal', id, 'aria-label': label, autocomplete: 'off', ...attrs });
+  i.value = value ?? '';
+  i.addEventListener('input', () => onInput(i.value));
+  return i;
+}
+function selectInput(id, value, opts, onChange, label, placeholder) {
+  const s = h('select', { id, 'aria-label': label }, h('option', { value: '', text: placeholder || '—' }), ...opts.map(([v, t]) => h('option', { value: v, text: t })));
+  s.value = value || '';
+  s.addEventListener('change', () => onChange(s.value));
+  return s;
+}
+const riskText = (r) => h('td', { class: 'rtext' }, r.opp ? h('div', { class: 'opp', text: 'возможность' }) : null, h('div', { text: r.t }), h('span', { class: 'cat', text: CAT_NAME[r.cat] }));
+
+/* ---- Step 1: case and prediction ---- */
+function viewCase() {
+  const picks = h('div', { class: 'pick' }, FACTORS.map((f) => {
+    const i = h('input', { type: 'checkbox', value: f.k, id: 'g-' + f.k }); i.checked = state.guess.includes(f.k);
+    i.addEventListener('change', () => {
+      if (i.checked) { if (state.guess.length >= 2) { i.checked = false; setStatus('Выберите ровно два фактора: снимите один, чтобы отметить другой.'); return; } state.guess.push(f.k); }
+      else state.guess = state.guess.filter((x) => x !== f.k);
+      persist(); renderSteps(); renderRail(); const b = $('#go1'); if (b) b.disabled = state.guess.length !== 2; setStatus(state.guess.length === 2 ? 'Прогноз записан. На шаге 3 вы сравните его с реестром.' : '');
+    });
+    return h('label', { for: 'g-' + f.k }, i, f.n);
+  }));
+  return [
+    h('section', { class: 'card' }, h('h3', { text: 'Ситуация' }),
+      h('p', { class: 'lead', text: `Маркетплейс «Корзина» запускает направление «Доставка еды» в трёх городах. Запуск назначен на ${WEEK_LAUNCH}-ю неделю, сейчас ${WEEK_NOW}-я. Руководитель программы запуска Айгерим Сапарова собрала команду на пре-мортем: «Прежде чем обещать дату руководству маркетплейса, я хочу знать, из-за чего мы её сорвём».` }),
+      h('div', { class: 'facts' }, FACTORS.map((f) => h('div', { class: 'fact' + (['integrator', 'supplier', 'permits'].includes(f.k) ? ' hot' : '') }, h('b', { text: f.n }), h('span', { class: 'help', text: f.d }))))),
+    h('section', { class: 'card' }, h('h3', { text: 'Цели программы запуска' }),
+      h('ol', { class: 'task-list' }, GOALS.map((g) => h('li', { text: g }))),
+      h('p', { class: 'note', text: 'По PMBOK 8 риск — неопределённое событие или условие, которое в случае наступления влияет хотя бы на одну цель. Домен Risk описывает реестр рисков, стратегии реагирования на угрозы и возможности и резервы на непредвиденные обстоятельства.' })),
+    h('section', { class: 'card' }, h('h3', { text: 'Задание практикума 5' }),
+      h('ol', { class: 'task-list' },
+        h('li', { text: 'Проведите пре-мортем: представьте, что запуск провалился, и назовите 6–8 причин. Сопоставьте их с категориями и найдите слепые зоны.' }),
+        h('li', { text: 'Заполните реестр из восьми рисков: вероятность и влияние по шкале 1–5, балл, ранг.' }),
+        h('li', { text: 'Для трёх самых опасных угроз и одной возможности выберите стратегию реагирования и владельца.' }),
+        h('li', { text: 'Проверьте реестр, который составил ИИ, и найдите четыре ошибки.' }),
+        h('li', { text: 'Рассчитайте резерв на непредвиденные обстоятельства через ожидаемую денежную стоимость трёх рисков и сформулируйте выводы.' }))),
+    h('section', { class: 'card' }, h('h3', { text: 'Прежде чем анализировать: ваш прогноз' }),
+      h('p', { class: 'lead', text: 'Какие два фактора, по первому впечатлению, несут главный риск для запуска? Прогноз не оценивается: на шаге 3 вы сравните его с реестром.' }),
+      picks,
+      h('div', { class: 'actions' }, h('button', { class: 'btn btn-primary', id: 'go1', type: 'button', text: 'Перейти к пре-мортему', disabled: state.guess.length !== 2, onclick: () => go(1) })),
+      h('p', { class: 'status', id: 'status' }))
+  ];
+}
+
+/* ---- Step 2: pre-mortem ---- */
+let timer = null;
+function fmtClock(s) { const a = Math.abs(s); return (s < 0 ? '−' : '') + String(Math.floor(a / 60)).padStart(2, '0') + ':' + String(a % 60).padStart(2, '0'); }
+function stopTimer() { if (timer) { clearInterval(timer); timer = null; } }
+function toggleTimer() {
+  if (timer) stopTimer();
+  else timer = setInterval(() => { state.pmTimer--; persist(); const c = $('#clock'); if (c) { c.textContent = fmtClock(state.pmTimer); c.classList.toggle('over', state.pmTimer <= 0); } }, 1000);
+  const b = $('#tstart'); if (b) b.textContent = timer ? 'Пауза' : 'Запустить таймер';
+}
+function viewPremortem() {
+  const st = pmStatus(), L = lines(state.pm);
+  const ta = h('textarea', { id: 'pm', rows: 9, placeholder: 'Каждая причина — с новой строки. Например: «Интегратор не успел подключить половину ресторанов»' });
+  ta.value = state.pm;
+  ta.addEventListener('input', () => { state.pm = ta.value; const n = lines(ta.value).length; const c = $('#pm-count'); if (c) c.textContent = `Причин: ${n}${n < 6 ? ' (нужно 6–8)' : n > 8 ? ' (оставьте не больше 8)' : ''}`; persist(); const m = $('#mapping'); if (m) m.replaceChildren(mappingBlock()); redrawCover(); redrawPmActions(); renderSteps(); renderRail(); });
+  const mapping = h('div', { id: 'mapping' }, mappingBlock());
+  return [
+    h('section', { class: 'card' }, h('h3', { text: `Сегодня ${WEEK_END}-я неделя. Запуск провалился.` }),
+      h('p', { class: 'lead', text: 'Доставка еды не работает в двух городах из трёх, рестораны жалуются на выплаты, в отзывах — остывшая еда. Руководство маркетплейса требует объяснений. Метод Гэри Клейна (Harvard Business Review, 2007): группа представляет провал как уже случившийся и за три минуты называет его причины. Так люди находят больше рисков, чем при вопросе «что может пойти не так».' }),
+      h('div', { class: 'timerbar' }, h('span', { class: 'clock' + (state.pmTimer <= 0 ? ' over' : ''), id: 'clock', text: fmtClock(state.pmTimer) }),
+        h('button', { class: 'btn', id: 'tstart', type: 'button', text: timer ? 'Пауза' : 'Запустить таймер', onclick: toggleTimer }),
+        h('button', { class: 'btn btn-small', type: 'button', text: 'Сбросить', onclick: () => { stopTimer(); state.pmTimer = 180; persist(); render(); } })),
+      h('p', { class: 'help', text: 'Не оценивайте и не спорьте: сейчас важна широта. Оценивать будете на шаге 3.' }),
+      ta, h('p', { class: 'help', id: 'pm-count', text: `Причин: ${L.length}${L.length < 6 ? ' (нужно 6–8)' : L.length > 8 ? ' (оставьте не больше 8)' : ''}` })),
+    h('section', { class: 'card' }, h('h3', { text: 'Сопоставьте причины с категориями' }),
+      h('p', { class: 'lead', text: 'Для каждой причины выберите категорию. Пре-мортем даёт широту, но группа почти всегда забывает одну-две области. Проверка покажет, какие категории остались пустыми.' }),
+      mapping,
+      h('div', { id: 'cover' }, coverBlock(st)),
+      h('div', { id: 'pm-actions' }, pmActions()))
+  ];
+}
+function mappingBlock() {
+  const L = lines(state.pm);
+  return L.length ? h('div', { class: 'causes' }, L.map((l, idx) => h('div', { class: 'cause' }, h('div', { class: 'c-text' }, h('b', { text: `${idx + 1}. ` }), l),
+    selectInput('cat-' + idx, state.pmCats[idx], CATS.map((c) => [c.k, c.n]), (v) => { state.pmCats[idx] = v; persist(); renderSteps(); renderRail(); redrawCover(); redrawPmActions(); }, `Категория причины ${idx + 1}`, 'Категория…'))))
+    : h('div', { class: 'empty', text: 'Список причин появится здесь, когда вы напишете их выше.' });
+}
+function pmActions() {
+  const st = pmStatus(), L = lines(state.pm);
+  return [h('div', { class: 'actions' },
+    h('button', { class: 'btn btn-primary', type: 'button', text: 'Проверить покрытие', disabled: L.length < 6 || st.mapped < L.length, onclick: () => { state.pmChecked = true; persist(); render(); } }),
+    state.pmChecked ? h('button', { class: 'btn', type: 'button', text: 'Дальше: реестр рисков', onclick: () => go(2) }) : null),
+  h('p', { class: 'status', text: L.length < 6 ? 'Напишите не меньше шести причин и выберите категорию для каждой.' : st.mapped < L.length ? `Категория не выбрана у ${L.length - st.mapped} причин.` : state.pmChecked ? '' : 'Нажмите «Проверить покрытие».' })];
+}
+function redrawPmActions() { const a = $('#pm-actions'); if (a) a.replaceChildren(...pmActions()); }
+function coverBlock(st) {
+  if (!state.pmChecked) return [];
+  const out = [h('div', { class: 'cover' }, CATS.filter((c) => c.k !== 'other').map((c) => {
+    const n = lines(state.pm).filter((_, i) => state.pmCats[i] === c.k).length;
+    return h('div', { class: 'cov ' + (n ? 'on' : 'miss') }, h('b', { text: c.n }), h('span', { class: 'n', text: n ? `причин: ${n}` : 'пропущено' }));
+  }))];
+  if (st.missed.length) out.push(h('div', { class: 'note' }, h('b', { text: 'Слепые зоны. ' }), `Вы не назвали ни одной причины из категорий: ${st.missed.map((c) => c.n.toLowerCase()).join(', ')}. В этом кейсе там есть что искать: `, st.missed.map((c) => c.ex).join('; '), '. На шаге 3 эти риски будут в реестре: обратите на них внимание.'));
+  else out.push(h('p', { class: 'note', text: 'Все шесть категорий закрыты: это редкость для первого пре-мортема. Теперь проверьте, что каждая причина сформулирована как риск, а не как факт.' }));
+  out.push(h('p', { class: 'note', text: 'В пре-мортеме причины называют как свершившийся факт: «интегратор не успел». В реестре на шаге 3 каждая такая причина становится риском: «из-за … может произойти …, что приведёт к …». Условия проекта (договор T&M, единственный поставщик) — не риски, а их источники.' }));
+  if (!st.enough) out.push(h('p', { class: 'note', text: `Причин: ${st.n}. Для сопоставления нужно 6–8: меньше — мало широты, больше — повторы.` }));
+  return out;
+}
+function redrawCover() { const c = $('#cover'); if (c) c.replaceChildren(...coverBlock(pmStatus())); }
+
+/* ---- Step 3: register ---- */
+function matrixBlock(st) {
+  const cells = [];
+  cells.push(h('div', { class: 'ax', text: '' }));
+  for (let i = 1; i <= 5; i++) cells.push(h('div', { class: 'ax', text: String(i) }));
+  for (let p = 5; p >= 1; p--) {
+    cells.push(h('div', { class: 'ax', text: String(p) }));
+    for (let i = 1; i <= 5; i++) {
+      const s = p * i, lvl = s >= 15 ? 5 : s >= 10 ? 4 : s >= 6 ? 3 : s >= 3 ? 2 : 1;
+      const here = RISKS.filter((r) => { const v = reg(r.id); return num(v.p) === p && num(v.i) === i; });
+      cells.push(h('div', { class: 'cell l' + lvl, title: `вероятность ${p} × влияние ${i} = ${s}` }, here.map((r) => h('span', { class: 'tag' + (r.opp ? ' o' : ''), text: r.id }))));
+    }
+  }
+  return h('div', {}, h('div', { class: 'axlab', text: 'Вероятность (вверх) × влияние (вправо). Оранжевое поле — балл 15 и выше: критичные риски.' }), h('div', { class: 'matrix', style: 'margin-top:8px' }, cells));
+}
+function regCell(r, st, k) {
+  if (!st) return [];
+  const x = st.rows[r.id][k], out = [pill(x)];
+  if (k === 's' && x === 'bad' && num(reg(r.id).s) === num(reg(r.id).p) + num(reg(r.id).i)) out.push(h('div', { class: 'rowhint', text: 'Вы сложили оценки. Балл — произведение.' }));
+  if (state.shown3 && (k === 'p' || k === 'i') && x !== 'ok') out.push(h('div', { class: 'rowhint mono', text: `эталон: ${k === 'p' ? r.p : r.i} (±1)` }));
+  if (state.shown3 && k === 's' && x !== 'ok') { const p = num(reg(r.id).p), i = num(reg(r.id).i); out.push(h('div', { class: 'rowhint mono', text: p != null && i != null ? `${p} × ${i} = ${p * i}` : `эталон: ${r.p} × ${r.i} = ${r.p * r.i}` })); }
+  return out;
+}
+function rankCell(r, st) {
+  if (!st) return [];
+  const rk = num(reg(r.id).r);
+  if (rk == null) return [pill('empty')];
+  if (!st.allRanked) return [h('span', { class: 'pill info', text: 'ждёт остальных' })];
+  if (st.dup) return [h('span', { class: 'pill bad', text: 'ранги повторяются' })];
+  if (rk < 1 || rk > 8) return [h('span', { class: 'pill bad', text: 'от 1 до 8' })];
+  return [st.badRank.has(r.id) ? h('span', { class: 'pill bad', text: 'не по баллу' }) : pill('ok')];
+}
+function redrawReg() {
+  if (state.checks3) {
+    const st = regStatus();
+    RISKS.forEach((r) => { ['p', 'i', 's'].forEach((k) => { const c = $(`#st-${r.id}-${k}`); if (c) c.replaceChildren(...regCell(r, st, k)); }); const rc = $(`#st-${r.id}-r`); if (rc) rc.replaceChildren(...rankCell(r, st)); });
+    const s3 = $('#reg-status'); if (s3) s3.textContent = regLine(st);
+  }
+  const m = $('#matrix'); if (m) m.replaceChildren(matrixBlock());
+  renderRail(); renderSteps();
+}
+const regLine = (st) => !state.checks3 ? 'Проверка покажет, где ошибка, но не назовёт число.'
+  : `Проверок: ${state.checks3}. Оценки и баллы: верно ${st.ok} из ${st.total}. Ранжирование: ${st.rankOk ? 'согласовано с баллами' : st.allRanked ? 'есть расхождения' : 'не завершено'}.${st.sumErr ? ` В ${st.sumErr} строках балл равен сумме оценок, а нужно произведение.` : ''}${state.checks3 < 2 && !state.shown3 ? ' Эталон можно открыть после второй проверки.' : ''}`;
+function viewRegister() {
+  const st = state.checks3 ? regStatus() : null;
+  const guessed = state.guess.map((k) => FACTORS.find((f) => f.k === k).n.toLowerCase());
+  const table = h('div', { class: 'tscroll' }, h('table', { class: 'data reg' },
+    h('thead', {}, h('tr', {}, ['ID', 'Риск', 'Вероятность 1–5', 'Влияние 1–5', 'Балл', 'Ранг'].map((t) => h('th', { text: t })))),
+    h('tbody', {}, RISKS.map((r) => { const v = reg(r.id); return h('tr', {}, h('td', { class: 'rid mono', text: r.id }), riskText(r),
+      h('td', {}, textInput(`p-${r.id}`, v.p, (x) => { v.p = x; persist(); redrawReg(); }, `${r.id}: вероятность`), h('div', { id: `st-${r.id}-p` }, regCell(r, st, 'p'))),
+      h('td', {}, textInput(`i-${r.id}`, v.i, (x) => { v.i = x; persist(); redrawReg(); }, `${r.id}: влияние`), h('div', { id: `st-${r.id}-i` }, regCell(r, st, 'i'))),
+      h('td', {}, textInput(`s-${r.id}`, v.s, (x) => { v.s = x; persist(); redrawReg(); }, `${r.id}: балл`), h('div', { id: `st-${r.id}-s` }, regCell(r, st, 's'))),
+      h('td', {}, textInput(`r-${r.id}`, v.r, (x) => { v.r = x; persist(); redrawReg(); }, `${r.id}: ранг`), h('div', { id: `st-${r.id}-r` }, rankCell(r, st)))); }))));
+  return [
+    h('section', { class: 'card' }, h('h3', { text: 'Реестр рисков программы запуска' }),
+      h('p', { class: 'lead', text: 'Восемь рисков уже сформулированы по схеме «причина — событие — последствие для цели». Оцените вероятность и влияние по шкале 1–5, посчитайте балл и расставьте ранги от 1 (самый опасный) до 8. Возможность R8 оценивается так же: вероятность и положительное влияние.' }),
+      h('p', { class: 'note', text: `Ваш прогноз на шаге 1: ${guessed.join(' и ')}. Проверьте его баллами, а не ощущением.` }),
+      table),
+    h('section', { class: 'card' }, h('h3', { text: 'Матрица вероятность × влияние' }),
+      h('div', { class: 'matrix-wrap' }, h('div', { id: 'matrix' }, matrixBlock()),
+        h('div', {}, h('p', { class: 'lead', text: 'Матрица строится по вашим оценкам и обновляется на ходу. Шкала влияния: 1 — цель почти не страдает; 3 — цель достигается с заметными потерями; 5 — цель недостижима (например, доставка горячей еды без термоконтейнеров). Шкала вероятности: 1 — маловероятно до запуска; 5 — почти наверняка.' }),
+          h('p', { class: 'help', style: 'margin-top:10px', text: 'Эталон допускает отклонение на 1 по каждой шкале: оценка — экспертное суждение, а не измерение. Балл проверяется строго: он должен равняться произведению ваших оценок. Ранг проверяется по вашим же баллам.' })))),
+    h('section', { class: 'card' },
+      h('div', { class: 'actions' },
+        h('button', { class: 'btn btn-primary', type: 'button', text: 'Проверить', onclick: () => { state.checks3++; persist(); render(); } }),
+        h('button', { class: 'btn', type: 'button', text: state.shown3 ? 'Эталон показан' : 'Показать эталон', disabled: state.shown3 || state.checks3 < 2, onclick: () => { state.shown3 = true; persist(); render(); } }),
+        state.checks3 > 0 ? h('button', { class: 'btn', type: 'button', text: 'Дальше: стратегии', onclick: () => go(3) }) : null),
+      h('p', { class: 'status', id: 'reg-status', text: regLine(st) }),
+      state.shown3 ? h('div', { class: 'note' }, h('b', { text: 'Эталонный диапазон. ' }), `Критичные (балл 15 и выше): R1 — 16, R3 — 16, R2 — 15. Затем R4 и R8 — 12, R6 — 10, R5 — 9, R7 — 8. Обратите внимание на R6: вероятность низкая, но влияние 5. Такие риски часто недооценивают, потому что «вряд ли случится».`) : null),
+    hintCard([['scale', 'Шкалы 1–5'], ['score', 'Балл риска'], ['rank', 'Ранг']])
+  ];
+}
+
+/* ---- Step 4: strategies ---- */
+function viewStrategies() {
+  const st = state.checks4 ? stratStatus() : null;
+  const rows = TOP4.map((id) => {
+    const r = RISKS.find((x) => x.id === id), v = (state.strat[id] = state.strat[id] || { s: '', o: '' }), rs = st ? st.rows[id] : null;
+    return h('div', { class: 'strat' },
+      h('div', {}, r.opp ? h('div', { class: 'opp', text: 'возможность' }) : h('div', { class: 'lbl', text: `Угроза · эталонный балл ${r.p * r.i}` }), h('div', {}, h('b', { text: id + '. ' }), r.t)),
+      h('div', { class: 'field' }, h('label', { class: 'lbl', for: 'st-' + id, text: 'Стратегия' }),
+        selectInput('st-' + id, v.s, r.opp ? STRATS_O : STRATS_T, (x) => { v.s = x; persist(); renderSteps(); renderRail(); redrawStratActions(); }, `${id}: стратегия`, 'Выберите…'), rs ? pill(rs.s) : null),
+      h('div', { class: 'field' }, h('label', { class: 'lbl', for: 'ow-' + id, text: 'Владелец' }),
+        selectInput('ow-' + id, v.o, OWNERS, (x) => { v.o = x; persist(); renderSteps(); renderRail(); redrawStratActions(); }, `${id}: владелец`, 'Выберите…'), rs ? pill(rs.o, { ok: 'подходит', bad: 'не владелец', warn: 'возможно' }) : null),
+      rs && (rs.why || rs.owhy) ? h('div', { class: 'why' }, rs.why ? h('p', {}, h('b', { text: STRAT_NAME[v.s] + '. ' }), rs.why) : null, rs.owhy ? h('p', { class: 'help', text: rs.owhy }) : null) : null);
+  });
+  return [
+    h('section', { class: 'card' }, h('h3', { text: 'Стратегии реагирования для топ-4' }),
+      h('p', { class: 'lead', text: 'Три самые опасные угрозы по эталону (R1, R3, R2) и возможность R8. Для угроз PMBOK 8 называет стратегии: избежать, передать, снизить, принять (и эскалировать, если риск вне полномочий программы). Для возможностей: использовать, разделить, усилить, принять. Владелец — конкретная роль, которая отслеживает триггер и запускает реагирование.' }),
+      ...rows),
+    h('section', { class: 'card' },
+      h('div', { id: 'strat-actions' }, ...stratActions()),
+      st ? h('div', { class: 'note' }, h('b', { text: 'Почему «передать интегратору» не работает при T&M. ' }), 'Передача риска означает, что финансовые последствия несёт другая сторона. При договоре «время и материалы» интегратор получает оплату за каждый отработанный час, поэтому перерасход — его доход, а не его риск. Чтобы риск действительно перешёл к интегратору, нужен договор с фиксированной ценой за этап или лимитом часов с приёмкой: это изменение договора, то есть стратегия «избежать» или «снизить», и владелец здесь — руководитель программы вместе с юристом и закупками.') : null)
+  ];
+}
+
+function stratActions() {
+  const st = state.checks4 ? stratStatus() : null, filled = stratStatus().filled;
+  return [h('div', { class: 'actions' },
+    h('button', { class: 'btn btn-primary', type: 'button', text: 'Проверить', disabled: !filled, onclick: () => { state.checks4++; persist(); render(); } }),
+    state.checks4 > 0 ? h('button', { class: 'btn', type: 'button', text: 'Дальше: реестр от ИИ', onclick: () => go(4) }) : null),
+  h('p', { class: 'status', text: !filled ? 'Выберите стратегию и владельца для всех четырёх рисков.' : st ? `Проверок: ${state.checks4}. Стратегия и владелец подходят в ${st.okCount} из ${TOP4.length} строк. Для каждой стратегии показано объяснение.` : 'Нажмите «Проверить»: объяснение появится для каждого выбора.' })];
+}
+function redrawStratActions() { const a = $('#strat-actions'); if (a) a.replaceChildren(...stratActions()); }
+
+/* ---- Step 5: AI register with errors ---- */
+function viewAI() {
+  const rev = state.markRevealed;
+  const allMarked = AI_ROWS.every((r) => state.marks[r.id] && (state.marks[r.id] === 'ok' || state.kinds[r.id]));
+  const found = AI_ROWS.filter((r) => r.err && state.marks[r.id] === 'err' && state.kinds[r.id] === r.err).length;
+  const foundAny = AI_ROWS.filter((r) => r.err && state.marks[r.id] === 'err').length;
+  const totalErr = AI_ROWS.filter((r) => r.err).length;
+  const falseAlarm = AI_ROWS.filter((r) => !r.err && state.marks[r.id] === 'err').length;
+  const mark = (r) => {
+    const mk = (v, t) => { const i = h('input', { type: 'radio', name: 'mk-' + r.id, value: v, disabled: rev }); i.checked = state.marks[r.id] === v;
+      i.addEventListener('change', () => { state.marks[r.id] = v; if (v === 'ok') delete state.kinds[r.id]; persist(); render(); }); return h('label', {}, i, t); };
+    const out = [h('div', { class: 'pick' }, mk('ok', 'верно'), mk('err', 'ошибка'))];
+    if (state.marks[r.id] === 'err') { const sel = selectInput('kind-' + r.id, state.kinds[r.id], ERR_KINDS, (x) => { state.kinds[r.id] = x; persist(); render(); }, `${r.id}: в чём ошибка`, 'В чём ошибка…'); sel.disabled = rev; sel.style.marginTop = '6px'; out.push(sel); }
+    return out;
+  };
+  const verdict = (r) => {
+    const m = state.marks[r.id], k = state.kinds[r.id];
+    if (r.err) return m === 'err' ? (k === r.err ? h('span', { class: 'pill ok', text: 'нашли' }) : h('span', { class: 'pill warn', text: 'ошибка есть, но другая' })) : h('span', { class: 'pill bad', text: 'пропустили' });
+    return m === 'err' ? h('span', { class: 'pill warn', text: 'ложная тревога' }) : h('span', { class: 'pill ok', text: 'верно' });
+  };
+  return [
+    h('section', { class: 'card' }, h('div', { class: 'field-top' }, h('h3', { text: 'Реестр рисков, который составил ИИ' }), h('span', { class: 'pill info', text: 'Источник: учебный' })),
+      h('p', { class: 'lead', text: 'Айгерим попросила ИИ «составить реестр рисков запуска доставки еды» и получила таблицу ниже. Выглядит убедительно. Сравните каждую строку со своим реестром и правилами PMBOK 8: формулировка риска, обе оценки, стратегия по баллу, владелец. В реестре четыре ошибки. Отметьте строки и укажите, в чём ошибка.' }),
+      h('div', { class: 'tscroll' }, h('table', { class: 'data' },
+        h('thead', {}, h('tr', {}, h('th', { text: 'ID' }), h('th', { text: 'Риск' }), h('th', { text: 'В' }), h('th', { text: 'И' }), h('th', { text: 'Стратегия' }), h('th', { text: 'Владелец' }), h('th', { text: 'Ваша оценка' }), rev ? h('th', { text: 'Итог' }) : null)),
+        h('tbody', {}, AI_ROWS.map((r) => h('tr', {}, h('td', { class: 'mono', text: r.id }), h('td', { style: 'min-width:240px' }, r.t), h('td', { class: 'mono', text: r.p }), h('td', { class: 'mono', text: r.i }), h('td', { text: r.s }), h('td', { text: r.o }),
+          h('td', { style: 'min-width:200px' }, ...mark(r)), rev ? h('td', {}, verdict(r), r.err ? h('div', { class: 'rowhint', text: AI_HINT[r.err] }) : null) : null))))),
+      rev ? h('div', { class: 'bigline' }, h('span', { class: 'bignum ' + (found === totalErr && !falseAlarm ? 'ok' : 'bad'), text: `Найдено ${found} из ${totalErr}` }),
+        h('span', { class: 'lead', text: `${foundAny > found ? `Ещё ${foundAny - found} строк отмечены как ошибка, но тип ошибки назван неверно. ` : ''}${falseAlarm ? `Ложных тревог: ${falseAlarm}. Верную строку тоже нужно уметь подтвердить.` : 'Ложных тревог нет.'}` })) : null,
+      h('div', { class: 'actions' },
+        rev ? h('button', { class: 'btn', type: 'button', text: 'Проверить заново', onclick: () => { state.marks = {}; state.kinds = {}; state.markRevealed = false; persist(); render(); } })
+          : h('button', { class: 'btn btn-primary', type: 'button', text: 'Сверить мою проверку', disabled: !allMarked, onclick: () => { state.markRevealed = true; persist(); render(); } }),
+        rev ? h('button', { class: 'btn', type: 'button', text: 'К выводам и резерву', onclick: () => go(5) }) : null),
+      h('p', { class: 'status', text: allMarked || rev ? '' : 'Отметьте каждую строку; для строк с ошибкой выберите её тип.' })),
+    rev ? h('section', { class: 'card' }, h('h3', { text: 'Что просить у ИИ в следующий раз' }),
+      h('p', { class: 'lead', text: 'Каждая найденная ошибка превращается в требование к запросу: «формулируй риск как причина — событие — последствие для цели», «для каждого риска укажи вероятность и влияние по шкале 1–5 и балл», «для рисков с баллом 15 и выше не предлагай стратегию „принять“», «назови владельца — конкретную роль». Черновик делает ИИ, ответственность за реестр остаётся у руководителя программы.' })) : null
+  ];
+}
+
+/* ---- Step 6: conclusion and reserve ---- */
+function viewConclusion() {
+  const es = state.checks6 ? emvStatus() : null, g = goals(), score = g.filter((x) => x.on).length;
+  const rows = EMV.map((e, k) => h('div', { class: 'emv-row' }, h('div', { class: 'rtext' }, h('b', { text: e.id + '. ' }), e.t), h('div', { class: 'mono', text: `${e.pct} %` }), h('div', { class: 'mono', text: `${e.cost} млн ₸` }),
+    h('div', {}, textInput('emv-' + e.id, state.emv[e.id], (x) => { state.emv[e.id] = x; persist(); redrawEmv(); }, `${e.id}: EMV`, { placeholder: 'EMV' }), h('div', { id: 'st-emv-' + e.id }, emvCell(k, es)))));
+  const ta = h('textarea', { id: 'concl', rows: 5, placeholder: 'Два-три предложения: что показал пре-мортем, какие риски требуют действий сейчас, какой резерв вы просите у руководства и почему' });
+  ta.value = state.concl; ta.addEventListener('input', () => { state.concl = ta.value; persist(); const b = $('#concl-btn'); if (b) b.disabled = state.conclShown || state.concl.trim().length < 40; renderSteps(); renderRail(); });
+  const CHECK = ['Названы 2–3 критичных риска с баллом, а не «все риски важны»', 'Для каждого названа стратегия и владелец', 'Резерв обоснован расчётом EMV, а не «процентом от бюджета»', 'Отмечено, что реестр пересматривается: следующая контрольная точка названа', 'Указано, что осталось неизвестным (слепые зоны пре-мортема)'];
+  return [
+    h('section', { class: 'card' }, h('h3', { text: 'Резерв на непредвиденные обстоятельства' }),
+      h('p', { class: 'lead', text: 'Финансовый директор спрашивает: «Сколько резерва заложить в бюджет запуска?» Ответьте расчётом. Ожидаемая денежная стоимость (EMV) риска = вероятность × денежное последствие. Резерв — сумма EMV по рискам, которые вы включаете в расчёт. Суммы — в млн ₸, ответ с одним знаком после запятой.' }),
+      h('div', { class: 'emv' }, h('div', { class: 'emv-row legend' }, h('div', { class: 'rtext', text: 'Риск' }), h('div', { text: 'Вероятность' }), h('div', { text: 'Последствие' }), h('div', { text: 'EMV, млн ₸' })), ...rows,
+        h('div', { class: 'emv-row' }, h('div', { class: 'rtext' }, h('b', { text: 'Резерв на непредвиденные обстоятельства' })), h('div'), h('div'), h('div', {}, textInput('emv-total', state.emvTotal, (x) => { state.emvTotal = x; persist(); redrawEmv(); }, 'Резерв', { placeholder: 'сумма' }), h('div', { id: 'st-emv-total' }, emvTotalCell(es))))),
+      h('div', { class: 'actions' }, h('button', { class: 'btn btn-primary', type: 'button', text: 'Проверить', onclick: () => { state.checks6++; persist(); render(); } })),
+      h('p', { class: 'status', id: 'emv-status', text: emvLine(es) }),
+      es && es.ok === 4 ? h('p', { class: 'note', text: `Резерв ${fmt1(EMV_TOTAL)} млн ₸ — это ожидаемые потери по трём рискам, а не максимальные (${EMV.reduce((a, e) => a + e.cost, 0)} млн ₸, если случится всё). Резерв на непредвиденные обстоятельства покрывает известные риски и находится в распоряжении руководителя программы; на «неизвестные неизвестные» существует отдельный управленческий резерв руководства.` }) : null),
+    hintCard([['emv', 'Ожидаемая денежная стоимость']]),
+    h('section', { class: 'card' }, h('h3', { text: 'Ваши выводы' }),
+      h('p', { class: 'lead', text: 'Напишите 2–3 предложения для Айгерим: что доложить руководству маркетплейса о рисках запуска. Затем откройте эталон и сверьте по чек-листу.' }),
+      ta,
+      h('div', { class: 'actions' }, h('button', { class: 'btn', id: 'concl-btn', type: 'button', text: state.conclShown ? 'Эталон показан' : 'Показать эталон', disabled: state.conclShown || state.concl.trim().length < 40, onclick: () => { state.conclShown = true; persist(); render(); } })),
+      state.conclShown ? h('div', { class: 'reflect', text: `Эталон. Пре-мортем выявил три критичных риска с баллом 15–16: перерасход часов интегратора по T&M (R1), задержка санитарного разрешения в одном из городов (R3) и срыв поставки термоконтейнеров единственным поставщиком (R2). По ним выбраны стратегии снижения: лимит часов с приёмкой по этапам, подача документов до 20-й недели с контрольной точкой на 30-й, второй поставщик на часть партии; владельцы — руководитель программы, юрист, менеджер по закупкам. Резерв на непредвиденные обстоятельства — ${fmt1(EMV_TOTAL)} млн ₸ по EMV трёх рисков; возможность R8 (пилот на 30-й неделе) включается в план как проверка курьеров и модуля выплат. Реестр пересматривается на 20-й и 30-й неделе; слепой зоной группы остались риски категорий, которые пре-мортем не назвал.` }) : null,
+      state.conclShown ? h('div', { class: 'checklist' }, h('span', { class: 'lbl', text: 'Что должно быть в выводе: отметьте, что есть у вас' }), ...CHECK.map((c, k) => { const i = h('input', { type: 'checkbox' }); i.checked = !!state.checklist[k]; i.addEventListener('change', () => { state.checklist[k] = i.checked; persist(); }); return h('label', {}, i, c); })) : null),
+    h('section', { class: 'card' }, h('h3', { text: 'Итог практикума' }),
+      h('div', { class: 'bigline' }, h('span', { class: 'bignum ' + (score >= 5 ? 'ok' : ''), text: `${score} из ${g.length}` }), h('span', { class: 'lead', text: 'целей практикума достигнуто' })),
+      h('div', {}, g.map((x) => h('div', { class: 'goal' + (x.on ? ' on' : '') }, h('span', { class: 'dot' }), h('span', { text: x.k })))),
+      h('div', { class: 'actions' },
+        state.downloads ? h('button', { class: 'btn btn-primary', type: 'button', text: 'Скачать отчёт', onclick: saveReport }) : null,
+        h('button', { class: 'btn', type: 'button', text: 'Показать отчёт', onclick: () => { const p = $('#report'); if (p) { p.hidden = !p.hidden; if (!p.hidden) p.textContent = report(); } } }),
+        h('button', { class: 'btn', type: 'button', text: 'Начать заново', onclick: resetAll })),
+      h('pre', { class: 'preview', id: 'report', hidden: true }),
+      h('p', { class: 'status', id: 'dl-status' }))
+  ];
+}
+function emvCell(k, es) {
+  if (!es) return [];
+  const x = es.rows[k], out = [pill(x)];
+  const v = num(state.emv[EMV[k].id]);
+  if (x === 'bad' && v != null && Math.abs(v - EMV[k].pct * EMV[k].cost) <= 0.5) out.push(h('div', { class: 'rowhint', text: 'Вы умножили на процент, а не на долю: 40 % = 0,4.' }));
+  if (x === 'bad' && state.checks6 >= 2) out.push(h('div', { class: 'rowhint mono', text: `${EMV[k].pct / 100} × ${EMV[k].cost} = ${fmt1(EMV_REF[k])}` }));
+  return out;
+}
+function emvTotalCell(es) {
+  if (!es) return [];
+  const out = [pill(es.total)];
+  if (es.total === 'bad' && state.checks6 >= 2) out.push(h('div', { class: 'rowhint mono', text: `${EMV_REF.map(fmt1).join(' + ')} = ${fmt1(EMV_TOTAL)}` }));
+  return out;
+}
+const emvLine = (es) => !es ? 'Проверка покажет, где ошибка; после второй проверки откроет вычисление.' : `Проверок: ${state.checks6}. Верно ${es.ok} из 4.${es.pctErr ? ' Где-то процент не переведён в долю.' : ''}`;
+function redrawEmv() {
+  if (state.checks6) { const es = emvStatus(); EMV.forEach((e, k) => { const c = $('#st-emv-' + e.id); if (c) c.replaceChildren(...emvCell(k, es)); }); const t = $('#st-emv-total'); if (t) t.replaceChildren(...emvTotalCell(es)); const s = $('#emv-status'); if (s) s.textContent = emvLine(es); }
+  renderRail(); renderSteps();
+}
+function setStatus(t, cls) { const el = $('#status'); if (el) { el.textContent = t; el.className = 'status' + (cls ? ' ' + cls : ''); } }
+function resetAll() {
+  stopTimer();
+  Object.assign(state, { step: 0, guess: [], pm: '', pmCats: {}, pmChecked: false, pmTimer: 180, reg: {}, checks3: 0, shown3: false, hints: {}, strat: {}, checks4: 0, marks: {}, kinds: {}, markRevealed: false, emv: {}, emvTotal: '', checks6: 0, concl: '', conclShown: false, checklist: {} });
+  persist(); render(); window.scrollTo({ top: 0 });
+}
+
+/* ---- Report ---- */
+function report() {
+  const L = [], rs = regStatus(), ss = stratStatus(), es = emvStatus(), g = goals();
+  L.push('# Практикум 5: риски программы запуска «Доставки еды» по PMBOK 8 (кейс «Витрина»)', '');
+  L.push(`Прогноз до анализа: ${state.guess.map((k) => FACTORS.find((f) => f.k === k).n).join('; ') || '—'}.`, '');
+  L.push('## Пре-мортем', '', ...lines(state.pm).map((l, i) => `- ${l} (${CAT_NAME[state.pmCats[i]] || 'категория не выбрана'})`));
+  const pm = pmStatus(); L.push('', `Пропущенные категории: ${pm.missed.length ? pm.missed.map((c) => c.n).join(', ') : 'нет'}.`, '');
+  L.push('## Реестр рисков', '', '| ID | Риск | В | И | Балл | Ранг | Эталон В×И |', '|---|---|---|---|---|---|---|');
+  RISKS.forEach((r) => { const v = reg(r.id); L.push(`| ${r.id} | ${r.t.replace(/\|/g, '/')} | ${v.p || '—'} | ${v.i || '—'} | ${v.s || '—'} | ${v.r || '—'} | ${r.p}×${r.i}=${r.p * r.i} |`); });
+  L.push('', `Проверок: ${state.checks3}. Оценки и баллы верно: ${rs.ok} из ${rs.total}. Ранжирование: ${rs.rankOk ? 'согласовано' : 'не согласовано'}.`, '');
+  L.push('## Стратегии реагирования', '', '| ID | Стратегия | Владелец | Проверка |', '|---|---|---|---|');
+  TOP4.forEach((id) => { const v = state.strat[id] || {}, r = ss.rows[id]; L.push(`| ${id} | ${STRAT_NAME[v.s] || '—'} | ${OWNER_NAME[v.o] || '—'} | ${state.checks4 ? (r.s === 'ok' && r.o === 'ok' ? 'подходит' : 'есть замечания') : 'не проверено'} |`); });
+  L.push('', '## Проверка реестра ИИ', '', ...AI_ROWS.map((r) => `- ${r.id}: моя оценка — ${state.marks[r.id] === 'err' ? 'ошибка (' + (ERR_NAME[state.kinds[r.id]] || 'тип не указан') + ')' : state.marks[r.id] === 'ok' ? 'верно' : 'не отмечено'}; на самом деле — ${r.err ? 'ошибка: ' + ERR_NAME[r.err] : 'верно'}`), '');
+  L.push('## Резерв на непредвиденные обстоятельства (EMV)', '', ...EMV.map((e, k) => `- ${e.id} ${e.t}: ${e.pct} % × ${e.cost} млн ₸ = ${state.emv[e.id] || '—'} (эталон ${fmt1(EMV_REF[k])})`), `- Резерв: ${state.emvTotal || '—'} млн ₸ (эталон ${fmt1(EMV_TOTAL)})`, '');
+  L.push('## Выводы', '', state.concl || '—', '', `Целей практикума достигнуто: ${g.filter((x) => x.on).length} из ${g.length}.`);
+  return L.join('\n');
+}
+async function saveReport() {
+  try { await state.downloads.save({ filename: 'praktikum-5-riski-zapuska.md', data: report() }); }
+  catch (e) { if (e && e.code !== 'declined') { const s = $('#dl-status'); if (s) { s.textContent = 'Файл не сохранён. Откройте отчёт кнопкой рядом и скопируйте текст.'; s.className = 'status err'; } } }
+}
+
+/* ---- Rail ---- */
+function renderRail() {
+  const g = goals(), kids = [];
+  kids.push(h('div', { class: 'rail-sec' }, h('h3', { text: 'Чему учит практикум' }), ...g.map((x) => h('div', { class: 'goal' + (x.on ? ' on' : '') }, h('span', { class: 'dot' }), h('span', { text: x.k })))));
+  kids.push(h('div', { class: 'rail-sec' }, h('h4', { text: 'Кейс · запуск «Доставки еды»' }),
+    h('div', { class: 'kv' }, h('span', { text: 'Сейчас' }), h('span', { text: `${WEEK_NOW}-я неделя` })),
+    h('div', { class: 'kv' }, h('span', { text: 'Переход специалистов' }), h('span', { text: `${WEEK_PEOPLE}-я неделя` })),
+    h('div', { class: 'kv hot' }, h('span', { text: 'Запуск' }), h('span', { text: `${WEEK_LAUNCH}-я неделя` })),
+    h('div', { class: 'kv' }, h('span', { text: 'Рестораны' }), h('span', { text: '50, 3 города' })),
+    h('div', { class: 'kv' }, h('span', { text: 'Интегратор' }), h('span', { text: 'T&M' })),
+    h('div', { class: 'kv' }, h('span', { text: 'Термоконтейнеры' }), h('span', { text: '1 поставщик' })),
+    h('div', { class: 'kv' }, h('span', { text: 'Норматив доставки' }), h('span', { text: '45 мин, ≥ 60 °C' }))));
+  if (state.step === 2 || state.step === 3) {
+    const rs = regStatus(), ranked = RISKS.filter((r) => rs.scores[r.id] != null).sort((a, b) => rs.scores[b.id] - rs.scores[a.id]).slice(0, 4);
+    if (ranked.length) kids.push(h('div', { class: 'rail-sec' }, h('h4', { text: 'Ваши баллы: верх реестра' }), ...ranked.map((r) => h('div', { class: 'kv' + (rs.scores[r.id] >= 15 ? ' hot' : '') }, h('span', { text: r.id + (r.opp ? ' (возможность)' : '') }), h('span', { text: String(rs.scores[r.id]) })))));
+  }
+  const tip = railTip();
+  if (tip) kids.push(h('div', { class: 'rail-sec tip' }, h('h4', { text: 'Коуч' }), h('p', { text: tip.b }), tip.q ? h('p', { class: 'q', text: tip.q }) : null));
+  $('#rail').replaceChildren(...kids);
+}
+function railTip() {
+  if (state.step === 0) return { b: 'Три карточки выделены не случайно, но прогноз делайте сами: потом сравните его с баллами.', q: 'Что в этом запуске зависит от одной внешней организации?' };
+  if (state.step === 1) { const pm = pmStatus(); if (!state.pmChecked) return { b: 'Пишите так, как будто провал уже случился: «интегратор не успел», а не «интегратор может не успеть». Переформулируете позже.', q: 'Кто в программе незаменим? Что вы считаете само собой разумеющимся?' }; return pm.missed.length ? { b: 'Пропущенные категории — это и есть ценность пре-мортема: группа видит, куда не смотрела.', q: 'Почему именно эти категории выпали из поля зрения?' } : { b: 'Широта есть. Теперь глубина: на шаге 3 каждый риск получит число.' }; }
+  if (state.step === 2) { const rs = regStatus(); if (!state.checks3) return { b: 'Оценивайте по шкале, а не по тревоге. Влияние 5 — цель недостижима, а не «очень неприятно».', q: 'Какой риск с низкой вероятностью вы бы всё равно не стали игнорировать?' }; if (rs.sumErr) return { b: 'Балл — произведение. Сложение сглаживает разницу между 1×5 и 5×1 и прячет критичные риски.' }; if (!rs.rankOk && rs.allRanked) return { b: 'Ранг должен следовать за вашими же баллами. Если ощущение спорит с числом, перепроверьте оценку, а не ранг.' }; return { b: 'Сравните верх реестра со своим прогнозом на шаге 1.', q: 'Совпал ли прогноз? Если нет, что вас отвлекло?' }; }
+  if (state.step === 3) return state.checks4 ? { b: 'Стратегия без владельца — пожелание. Владелец без триггера — тоже. Триггер и дату вы назовёте в реальном проекте.' } : { b: 'Спросите у каждой стратегии: кто после неё несёт деньги и срок? Если по-прежнему маркетплейс — это не «передать».', q: 'Что получает интегратор по T&M, если работа затянется?' };
+  if (state.step === 4) return state.markRevealed ? { b: 'Каждую найденную ошибку превратите в требование к запросу: так ИИ даст лучший черновик, а проверять его всё равно будете вы.' } : { b: 'Проверяйте столбцы по очереди: формулировка, обе оценки, стратегия относительно балла, владелец.', q: 'Какая строка описывает условие проекта, а не событие?' };
+  return { b: 'Резерв — это аргумент перед финансовым директором, а не подушка «на всякий случай». Он считается и пересчитывается.', q: 'Что изменится в резерве, если к 20-й неделе второй поставщик термоконтейнеров найден?' };
+}
+
+/* ================= Boot ================= */
+function buildRuler() {
+  const r = $('#ruler'); if (!r) return;
+  for (let w = WEEK_NOW; w <= WEEK_END; w++) {
+    const hot = w === WEEK_PEOPLE || w === WEEK_LAUNCH;
+    const lab = w === WEEK_PEOPLE ? 'переход 4 специалистов' : w === WEEK_LAUNCH ? 'запуск' : null;
+    r.append(h('span', { class: [hot ? 'hot' : '', w % 5 === 0 && !hot ? 'wk' : '', w === WEEK_NOW ? 'now' : ''].join(' ').trim(), 'data-wk': w % 5 === 0 ? `неделя ${w}` : null, 'data-short': hot ? (w === WEEK_LAUNCH ? 'З' : 'П') : `н.${w}`, 'data-lab': lab, title: `Неделя ${w}${lab ? ': ' + lab : ''}${w === WEEK_NOW ? ', текущая' : ''}` }));
+  }
+}
+function boot() {
+  if (!unlocked(state.step)) state.step = 0;
+  buildRuler(); render();
+  (async () => { try { state.downloads = window.claude && window.claude.use ? await window.claude.use('downloads') : null; } catch (e) { state.downloads = null; } if (state.step === 5) renderMain(); })();
+}
+boot();
+</script>
+
+</body>
+</html>

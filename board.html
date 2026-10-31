@@ -1,0 +1,1036 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#20242B">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<script src="pwa-shim.js"></script>
+</head>
+<body>
+<nav class="pwa-nav"><a href="./">← Все практикумы</a></nav>
+
+<title>Канбан-доска — Корзина</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+/* Канбан-доска: the operations department's Kanban board under construction.
+   A dark band carries the 35 weeks of the programme, with week 18 (four specialists leave for the Food Delivery launch team) in signal orange. */
+:root {
+  --paper: #E6E8E3;      /* concrete */
+  --sheet: #FBFBF9;
+  --sheet-2: #F0F1ED;
+  --ink: #1D2026;
+  --ink-2: #5A6068;
+  --rule: #D3D6CF;
+  --rule-2: #B4B9B0;
+  --band: #20242B;       /* graphite control band, same in both themes */
+  --band-ink: #E9EBE6;
+  --band-ink-2: #9AA1AB;
+  --signal: #F2551D;     /* critical path, launch */
+  --signal-tint: #FDE3D8;
+  --cobalt: #2D4FE3;     /* teams, adaptive work */
+  --cobalt-tint: #E2E7FC;
+  --amber: #D9960B;      /* promo windows */
+  --violet: #7650C4;
+  --green: #2D8A57;
+  --cal: #3A414C;        /* calendar works */
+  --ok: #23804A; --ok-tint: #DDF0E3;
+  --warn: #9A6400; --warn-tint: #F8ECCB;
+  --bad: #C42B2B; --bad-tint: #F8DEDC;
+  --on-fill: #FFFFFF;
+  --c-work: #2D4FE3;     /* chart: work, finished */
+  --c-wait: #F2551D;     /* chart: waiting, started */
+  --font-display: "Dela Gothic One", "Golos Text", system-ui, sans-serif;
+  --font-body: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #14161A; --sheet: #1D2026; --sheet-2: #252930; --ink: #ECEDE9; --ink-2: #A2A8B0; --rule: #333840; --rule-2: #4A5059;
+    --band: #0C0E11; --band-ink: #ECEDE9; --band-ink-2: #8E959F;
+    --signal: #FF7341; --signal-tint: #44231A; --cobalt: #8EA4FF; --cobalt-tint: #232C52; --amber: #F2B84B; --violet: #B79BF0; --green: #6CCB93; --cal: #B9C0CA;
+    --ok: #6CCB93; --ok-tint: #173323; --warn: #F2C14E; --warn-tint: #3A2D0E; --bad: #FF8A80; --bad-tint: #401A18;
+    --on-fill: #14161A; --c-work: #6F8AF7; --c-wait: #E45A2A; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #14161A; --sheet: #1D2026; --sheet-2: #252930; --ink: #ECEDE9; --ink-2: #A2A8B0; --rule: #333840; --rule-2: #4A5059;
+  --band: #0C0E11; --band-ink: #ECEDE9; --band-ink-2: #8E959F;
+  --signal: #FF7341; --signal-tint: #44231A; --cobalt: #8EA4FF; --cobalt-tint: #232C52; --amber: #F2B84B; --violet: #B79BF0; --green: #6CCB93; --cal: #B9C0CA;
+  --ok: #6CCB93; --ok-tint: #173323; --warn: #F2C14E; --warn-tint: #3A2D0E; --bad: #FF8A80; --bad-tint: #401A18;
+  --on-fill: #14161A; --c-work: #6F8AF7; --c-wait: #E45A2A; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55; padding-inline: 16px; padding-block: 0 56px; font-variant-numeric: tabular-nums; }
+.wrap { max-width: 1320px; margin-inline: auto; }
+h1, h2, h3, h4, p { margin: 0; }
+h1, h2, h3 { text-wrap: balance; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2.5px solid var(--cobalt); outline-offset: 2px; }
+.mono { font-variant-numeric: tabular-nums; }
+
+/* ---------- Control band: 20 working days of weeks 6–9, committee Thursdays ---------- */
+.band { background: var(--band); color: var(--band-ink); margin-inline: -16px; padding-inline: 16px; padding-block: 26px 0; }
+.band-top { display: flex; flex-wrap: wrap; gap: 14px 40px; align-items: end; justify-content: space-between; }
+.brand { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.brand h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(26px, 4vw, 40px); line-height: 1; letter-spacing: -0.01em; }
+.brand p { color: var(--band-ink-2); max-width: 62ch; font-size: 14.5px; }
+.casetag { font-size: 13px; color: var(--band-ink-2); border: 1px solid #454b55; border-radius: 999px; padding: 4px 12px; white-space: nowrap; }
+
+.ruler { margin-top: 30px; display: grid; grid-template-columns: repeat(35, minmax(0, 1fr)); gap: 3px; align-items: end; height: 58px; }
+.ruler span { height: 12px; border-radius: 3px; background: #343a44; position: relative; }
+.ruler span.wk::before { content: attr(data-wk); position: absolute; bottom: 30px; left: 0; font-size: 11.5px; color: var(--band-ink-2); white-space: nowrap; }
+.ruler span.mk { height: 28px; }
+.ruler span.mk::after { content: attr(data-lab); position: absolute; bottom: 34px; font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+.ruler span.now { background: var(--band-ink); }
+.ruler span.now::after { left: 0; color: var(--band-ink); }
+.ruler span.leave { background: var(--signal); }
+.ruler span.leave::after { left: 50%; transform: translateX(-50%); color: var(--signal); }
+.ruler span.launch { background: var(--green); }
+.ruler span.launch::after { right: 0; color: var(--green); }
+.ruler span.after { background: #4a3a35; }
+@media (max-width: 640px) { .ruler span.mk::after { content: attr(data-short); } .ruler span.wk::before { content: none; } }
+
+.steps { position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); padding-block: 22px 24px; border-top: 1px solid #3a4049; margin-top: 16px; }
+.steps::before { content: ""; position: absolute; left: 14px; right: 14px; top: 36px; height: 3px; background: #3e444e; border-radius: 3px; }
+.step { appearance: none; position: relative; text-align: left; cursor: pointer; border: 0; background: transparent; color: var(--band-ink); padding: 0 10px 0 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.step .dot { width: 31px; height: 31px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 14px; background: var(--band); border: 3px solid #5b626d; color: var(--band-ink-2); position: relative; z-index: 1; }
+.step .t { font-weight: 600; font-size: 14px; line-height: 1.25; }
+.step .s { font-size: 12.5px; color: var(--band-ink-2); line-height: 1.3; }
+.step:hover .dot { border-color: var(--band-ink); }
+.step.done .dot { background: var(--green); border-color: var(--green); color: var(--band); }
+.step[aria-current="step"] .dot { background: var(--signal); border-color: var(--signal); color: var(--band); box-shadow: 0 0 0 5px rgba(242, 85, 29, .25); }
+.step.locked { cursor: not-allowed; }
+.step.locked .dot { border-style: dashed; }
+.step.locked .t, .step.locked .s { color: #6d7480; }
+@media (max-width: 860px) { .step .s { display: none; } .step .t { font-size: 12px; } }
+@media (max-width: 520px) { .step .t { display: none; } }
+
+/* ---------- Канбан-доска: work-type tags ---------- */
+.type { display: inline-flex; align-items: center; gap: 7px; }
+.type i { width: 10px; height: 10px; border-radius: 2px; flex: none; background: var(--ink-2); }
+.type.incident i { background: var(--bad); transform: rotate(45deg); }
+.type.client i { background: var(--cobalt); border-radius: 50%; }
+.type.site i { background: var(--cal); }
+.type.planned i { background: var(--green); }
+.type.improve i { background: var(--violet); border-radius: 50% 0; }
+.note { font-size: 13px; color: var(--ink-2); border-left: 3px solid var(--rule-2); padding-left: 10px; }
+.radio-list { display: flex; flex-direction: column; gap: 8px; }
+.radio-list label { display: flex; gap: 10px; align-items: baseline; padding: 9px 12px; border: 1.5px solid var(--rule); border-radius: 10px; cursor: pointer; background: var(--sheet); }
+.radio-list label:has(input:checked) { border-color: var(--ink); }
+.radio-list input { accent-color: var(--signal); }
+.compare { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+.stat { padding: 12px 14px; background: var(--sheet-2); border-radius: 10px; display: flex; flex-direction: column; gap: 2px; }
+.stat b { font-family: var(--font-display); font-weight: 400; font-size: 24px; line-height: 1.15; }
+.stat.hot b { color: var(--signal); }
+.stat .from { font-size: 13px; color: var(--ink-2); }
+
+/* Numeric question with an always-visible formula */
+.nq { display: grid; gap: 6px; padding: 12px 14px; border: 1px solid var(--rule); border-radius: 12px; background: var(--sheet); }
+.nq .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.nq input { width: 7em; text-align: center; font-weight: 600; }
+.formula { font-size: 13px; color: var(--ink-2); background: var(--sheet-2); border-radius: 8px; padding: 6px 10px; }
+.formula b { color: var(--ink); font-weight: 600; }
+.nq-list { display: grid; gap: 10px; }
+
+/* Column builder */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { appearance: none; border: 1.5px dashed var(--rule-2); background: var(--sheet); border-radius: 999px; padding: 6px 12px; cursor: pointer; font-size: 14px; }
+.chip:hover { border-color: var(--ink); }
+.chip[disabled] { opacity: .4; cursor: default; border-style: solid; }
+.colrows { display: flex; flex-direction: column; gap: 8px; }
+.colrow { display: grid; grid-template-columns: 28px minmax(150px, 220px) minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 10px; border: 1px solid var(--rule); border-radius: 10px; background: var(--sheet); }
+.colrow .ix { font-weight: 700; color: var(--ink-2); text-align: center; }
+.colrow .nm { font-weight: 600; }
+.colrow .tools { display: flex; gap: 4px; }
+.colrow .tools button { appearance: none; border: 1px solid var(--rule); background: var(--sheet-2); border-radius: 8px; width: 32px; height: 32px; cursor: pointer; }
+.colrow .tools button:hover:not([disabled]) { border-color: var(--ink); }
+.colrow .tools button[disabled] { opacity: .35; cursor: default; }
+@media (max-width: 700px) { .colrow { grid-template-columns: 24px minmax(0, 1fr) auto; } .colrow input { grid-column: 1 / -1; } }
+.checkline { display: flex; flex-wrap: wrap; gap: 8px 14px; }
+.checkline label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+.checkline input { accent-color: var(--signal); }
+.verdicts { display: flex; flex-direction: column; gap: 8px; }
+.verdict { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 10px; align-items: baseline; }
+.verdict .rowhint { grid-column: 2; }
+
+/* Board preview: the department's Kanban board as the learner designed it */
+.kb-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--rule); }
+.kb { display: grid; min-width: 640px; font-size: 13px; }
+.kb > div { padding: 8px 10px; border-bottom: 1px solid var(--rule); border-right: 1px solid var(--rule); min-width: 0; }
+.kb-h { background: var(--sheet); font-weight: 600; border-bottom: 2px solid var(--ink) !important; line-height: 1.25; }
+.kb-h.cab { color: var(--signal); }
+.kb-h.bad { color: var(--bad); text-decoration: line-through; }
+.kb-lane { background: var(--sheet); display: flex; flex-direction: column; gap: 2px; border-left: 5px solid var(--rule-2); }
+.kb-lane b { font-weight: 600; }
+.kb-lane small { color: var(--ink-2); font-size: 11.5px; line-height: 1.3; }
+.kb-lane.exp { border-left-color: var(--bad); }
+.kb-lane.fix { border-left-color: var(--cal); }
+.kb-lane.std { border-left-color: var(--cobalt); }
+.kb-lane.int { border-left-color: var(--violet); }
+.kb-cell { background: var(--sheet-2); min-height: 52px; display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+.kb-cell.cab { background: repeating-linear-gradient(135deg, var(--signal-tint) 0 6px, var(--sheet-2) 6px 12px); }
+.kb-cell.skip { background: var(--sheet); color: var(--ink-2); font-style: italic; }
+.kb-lim { display: inline-block; border: 1.5px solid var(--ink); border-radius: 999px; padding: 0 8px; font-weight: 600; font-size: 12px; background: var(--sheet); }
+.kb-lim.over { border-color: var(--bad); color: var(--bad); }
+.kb-in { font-size: 12px; color: var(--ink-2); }
+.capbar { display: flex; flex-direction: column; gap: 6px; }
+.capbar .track { position: relative; height: 14px; border-radius: 999px; background: var(--sheet-2); border: 1px solid var(--rule); overflow: hidden; }
+.capbar .fill { position: absolute; inset: 0 auto 0 0; background: var(--cobalt); border-radius: 999px; }
+.capbar .fill.over { background: var(--bad); }
+.capbar .lab { font-size: 13px; color: var(--ink-2); }
+.tri { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+table.rules select { width: auto; min-width: 11em; padding: 6px 8px; }
+table.rules input[type="text"] { min-width: 12em; }
+table.lims input { width: 4.6em; text-align: center; font-weight: 600; padding: 6px 4px; }
+/* ---------- Working area ---------- */
+.workspace { display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr); align-items: start; padding-top: 24px; }
+@media (min-width: 1100px) { .workspace { grid-template-columns: minmax(0, 1fr) 320px; } }
+.panel { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.card { background: var(--sheet); border-radius: 16px; padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.card > h3, .sec-h { font-family: var(--font-display); font-weight: 400; font-size: 19px; line-height: 1.2; letter-spacing: -0.005em; }
+.lead { color: var(--ink-2); max-width: 72ch; }
+.lbl { font-size: 13px; color: var(--ink-2); font-weight: 600; }
+.grid2 { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .grid2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+@media (max-width: 600px) { .card { padding: 18px 16px; border-radius: 12px; } }
+
+.btn { appearance: none; cursor: pointer; border: 1.5px solid var(--ink); background: transparent; border-radius: 999px; padding: 8px 18px; font-weight: 600; line-height: 1.2; }
+.btn:hover { background: var(--sheet-2); }
+.btn[disabled] { opacity: .4; cursor: not-allowed; }
+.btn-primary { background: var(--ink); color: var(--sheet); }
+.btn-primary:hover { background: var(--ink); filter: brightness(1.25); }
+.btn-small { padding: 5px 13px; font-size: 13px; border-width: 1px; border-color: var(--rule-2); font-weight: 500; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.status { min-height: 20px; font-size: 13.5px; color: var(--ink-2); }
+.status.err { color: var(--bad); }
+
+textarea, input[type="text"], input[type="number"], select { width: 100%; border: 1.5px solid var(--rule); background: var(--sheet); border-radius: 10px; padding: 9px 12px; }
+textarea:hover, input:hover, select:hover { border-color: var(--rule-2); }
+textarea { resize: vertical; line-height: 1.55; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field-top { display: flex; justify-content: space-between; gap: 8px 14px; align-items: baseline; flex-wrap: wrap; }
+.field .help, .help { font-size: 13px; color: var(--ink-2); }
+
+/* Tables */
+table.data { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.data th, table.data td { text-align: left; padding: 10px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+table.data th { font-size: 12.5px; color: var(--ink-2); font-weight: 600; border-bottom: 2px solid var(--ink); }
+table.data tbody tr:last-child td { border-bottom: 0; }
+.tscroll { overflow-x: auto; }
+table.mine td { vertical-align: middle; }
+table.mine input { width: 4.2em; padding: 6px 4px; text-align: center; border-radius: 8px; font-weight: 600; font-size: 15px; }
+table.mine select { width: auto; }
+table.mine tr.given td { color: var(--ink-2); }
+.rowhint { font-size: 12.5px; color: var(--ink-2); margin-top: 4px; max-width: 34ch; }
+
+/* Case */
+.news { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .news { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.newsitem { position: relative; padding: 16px 16px 14px; background: var(--signal-tint); border-radius: 4px 14px 14px 14px; display: flex; flex-direction: column; gap: 6px; }
+.newsitem b { font-family: var(--font-display); font-weight: 400; font-size: 16px; color: var(--signal); }
+.task-list { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; }
+.task-list li::marker { font-weight: 700; color: var(--ink-2); }
+
+/* Prompt builder: one form, five rows */
+.rctfo { display: flex; flex-direction: column; background: var(--sheet); border-radius: 16px; overflow: hidden; }
+.part { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 6px 22px; padding: 18px 24px 18px 20px; border-bottom: 1px solid var(--rule); border-left: 5px solid var(--rule); }
+.part:last-child { border-bottom: 0; }
+.part > .field-top { grid-column: 1; grid-row: 1 / span 3; flex-direction: column; align-items: start; justify-content: start; gap: 4px; }
+.part > textarea, .part > .actions, .part > .checks { grid-column: 2; }
+.part.ok { border-left-color: var(--ok); }
+.part.warn { border-left-color: var(--amber); }
+.part.bad { border-left-color: var(--bad); }
+.part-name { font-family: var(--font-display); font-weight: 400; font-size: 17px; }
+@media (max-width: 700px) { .part { grid-template-columns: minmax(0, 1fr); padding: 16px; } .part > .field-top, .part > textarea, .part > .actions, .part > .checks { grid-column: 1; grid-row: auto; } }
+.checks { display: flex; flex-wrap: wrap; gap: 6px; }
+.chk { font-size: 12.5px; padding: 2px 10px 2px 8px; border-radius: 999px; color: var(--ink-2); background: var(--sheet-2); display: inline-flex; align-items: center; gap: 6px; }
+.chk::before { content: ""; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid currentColor; flex: none; }
+.chk.on { color: var(--ok); background: var(--ok-tint); }
+.chk.on::before { background: currentColor; }
+.chk.alert { color: var(--bad); background: var(--bad-tint); }
+.chk.alert::before { border-radius: 1px; background: currentColor; transform: rotate(45deg); }
+.preview { margin: 0; padding: 14px; background: var(--sheet-2); border-radius: 10px; max-height: 340px; overflow: auto; font-family: ui-monospace, Menlo, monospace; font-size: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.svc { color: var(--ink-2); }
+details > summary { cursor: pointer; color: var(--ink-2); font-size: 13.5px; }
+
+/* ---------- Roadmap board ---------- */
+.gantt-wrap { overflow-x: auto; border-radius: 12px; background: var(--sheet-2); }
+.gantt { min-width: 820px; display: grid; grid-template-columns: 200px minmax(0, 1fr); font-size: 13px; }
+.g-lab { padding: 6px 12px; border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; justify-content: center; min-width: 0; background: var(--sheet); }
+.g-lab .ln { font-size: 11.5px; color: var(--ink-2); }
+.g-lab .nm { overflow-wrap: anywhere; line-height: 1.3; font-weight: 500; }
+.g-track { position: relative; border-bottom: 1px solid var(--rule); min-height: 44px; display: grid; grid-template-columns: repeat(35, minmax(0, 1fr)); align-items: center;
+  background-image: repeating-linear-gradient(90deg, transparent 0, transparent calc(100% / 7 - 1px), var(--rule) calc(100% / 7 - 1px), var(--rule) calc(100% / 7)),
+    repeating-linear-gradient(90deg, transparent 0, transparent calc(100% / 35 - 1px), color-mix(in srgb, var(--rule) 45%, transparent) calc(100% / 35 - 1px), color-mix(in srgb, var(--rule) 45%, transparent) calc(100% / 35)); }
+.g-head { font-size: 11.5px; color: var(--ink-2); min-height: 30px; background: var(--sheet); border-bottom: 2px solid var(--ink); }
+.g-lab.g-head { font-weight: 600; justify-content: end; }
+.g-head span { text-align: left; padding-left: 3px; font-weight: 600; }
+.bar { grid-row: 1; height: 22px; border-radius: 999px; position: relative; z-index: 2; display: flex; align-items: center; padding: 0 9px; color: var(--on-fill); font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; }
+.bar.ms { height: 15px; width: 15px; justify-self: center; transform: rotate(45deg); border-radius: 3px; padding: 0; }
+.bar.crit { background: var(--signal) !important; box-shadow: 0 0 0 3px var(--signal-tint); }
+.ghost { grid-row: 1; height: 32px; border: 2px dashed var(--ink-2); border-radius: 999px; z-index: 1; }
+.ghost.ms { width: 24px; justify-self: center; border-radius: 4px; }
+.mark { grid-row: 1; justify-self: end; width: 0; height: 100%; z-index: 0; border-left: 1.5px dashed var(--amber); }
+.mark.lane-gate { border-left: 2px solid var(--signal); }
+.mark.lane-win, .mark.lane-gate { background: none !important; }
+.lane-cal { background: var(--cal); } .lane-agile { background: var(--cobalt); } .lane-gate { background: var(--signal); }
+.lane-win { background: var(--amber); } .lane-legal { background: var(--violet); } .lane-mkt { background: var(--green); } .lane-teal { background: var(--ink-2); }
+.g-row { display: contents; }
+.g-row.bad .g-lab { box-shadow: inset 5px 0 0 var(--bad); }
+.g-row.warn .g-lab { box-shadow: inset 5px 0 0 var(--amber); }
+.g-row.ok .g-lab { box-shadow: inset 5px 0 0 var(--ok); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--ink-2); align-items: center; }
+.legend i { display: inline-block; width: 18px; height: 9px; border-radius: 999px; margin-right: 6px; vertical-align: 0; }
+.legend .gh { border: 1.5px dashed var(--ink-2); background: transparent; }
+
+/* Verification */
+.claims { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .claims { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.claim { padding: 12px 14px; background: var(--sheet-2); border-radius: 10px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.claim p { overflow-wrap: anywhere; }
+.vtable td:first-child { font-weight: 600; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; padding: 2px 10px 2px 8px; border-radius: 999px; white-space: nowrap; }
+.pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.pill.ok { color: var(--ok); background: var(--ok-tint); }
+.pill.warn { color: var(--warn); background: var(--warn-tint); }
+.pill.bad { color: var(--bad); background: var(--bad-tint); }
+.pill.bad::before { border-radius: 1px; transform: rotate(45deg); }
+.pill.info { color: var(--ink-2); background: var(--sheet-2); }
+.pick { display: flex; flex-wrap: wrap; gap: 8px; }
+.pick label { display: inline-flex; gap: 7px; align-items: center; border: 1.5px solid var(--rule); border-radius: 999px; padding: 5px 13px 5px 10px; font-size: 13.5px; cursor: pointer; background: var(--sheet); }
+.pick label:has(input:checked) { border-color: var(--ink); background: var(--ink); color: var(--sheet); }
+.pick input { margin: 0; accent-color: var(--signal); }
+.selfrow { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); align-items: end; }
+@media (min-width: 820px) { .selfrow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.scn { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; }
+.scn label { display: inline-flex; gap: 8px; align-items: center; cursor: pointer; }
+.scn input { accent-color: var(--signal); }
+.scn select { width: auto; }
+.bigline { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: baseline; }
+.bignum { font-family: var(--font-display); font-size: 30px; line-height: 1.1; }
+.bignum.bad { color: var(--signal); } .bignum.ok { color: var(--ok); }
+
+/* Decision */
+.opts { display: flex; flex-direction: column; gap: 10px; }
+.optrow { display: grid; gap: 10px; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+@media (max-width: 600px) { .optrow { grid-template-columns: minmax(0, 1fr); } }
+.reflect { white-space: pre-wrap; overflow-wrap: anywhere; padding: 14px 16px; background: var(--cobalt-tint); border-radius: 4px 14px 14px 14px; min-height: 40px; }
+.hintrow { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.hintrow b { font-weight: 600; }
+
+/* ---------- Logbook rail ---------- */
+.rail { background: var(--sheet); border-radius: 16px; display: flex; flex-direction: column; min-width: 0; border-top: 6px solid var(--band); }
+@media (min-width: 1100px) { .rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 14px); max-height: calc(100vh - 28px); overflow: auto; } }
+.rail-sec { padding: 16px 18px; border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; gap: 10px; }
+.rail-sec:last-child { border-bottom: 0; }
+.rail h3 { font-family: var(--font-display); font-weight: 400; font-size: 16px; }
+.rail h4 { font-size: 13px; color: var(--ink-2); font-weight: 600; }
+.goal { display: flex; gap: 10px; align-items: baseline; font-size: 14px; }
+.goal .dot { flex: none; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--rule-2); transform: translateY(1px); }
+.goal.on .dot { background: var(--green); border-color: var(--green); }
+.meter { display: flex; gap: 4px; }
+.meter i { flex: 1; height: 10px; border-radius: 999px; background: var(--rule); }
+.meter i.ok { background: var(--ok); } .meter i.warn { background: var(--amber); } .meter i.bad { background: var(--bad); }
+.attempts { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.attempt { display: flex; gap: 8px; justify-content: space-between; padding: 6px 10px; background: var(--sheet-2); border-radius: 8px; }
+.tip { font-size: 14px; background: var(--cobalt-tint); }
+.tip .q { color: var(--ink-2); font-style: italic; }
+.empty { padding: 26px 18px; text-align: center; color: var(--ink-2); border: 2px dashed var(--rule-2); border-radius: 14px; }
+@media (prefers-reduced-motion: no-preference) { .btn, .step .dot, .pick label { transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease; } }
+
+.nq .row input[type="text"] { width: 7em; }
+table.lims input[type="text"] { width: 4.6em; }
+table.lims input[id^="why-"] { width: 100%; min-width: 14em; text-align: left; font-weight: 400; }
+</style>
+
+<header class="band">
+  <div class="wrap">
+    <div class="band-top">
+      <div class="brand">
+        <h1>Канбан-доска</h1>
+        <p>Практическое занятие 2: Канбан-доска отдела операций маркетплейса. Вы проектируете доску, классы обслуживания и лимиты, а формулы и подсказки — прямо под каждым вопросом.</p>
+      </div>
+      <span class="casetag">Кейс «Витрина», вымышленные данные</span>
+    </div>
+    <div class="ruler" id="ruler" aria-hidden="true"></div>
+    <nav class="steps" aria-label="Шаги практикума" id="steps"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="workspace">
+    <main class="panel" id="main"></main>
+    <aside class="rail" id="rail" aria-label="Прогресс и коуч"></aside>
+  </div>
+</div>
+
+<script>
+/* ================= Data: case «Витрина», Part A, Appendix 4 ================= */
+const TYPES = [
+  { k: 'incident', n: 'Сбои и инциденты на витрине', min: 4, max: 6, f: 'Оплата не проходит, витрина недоступна, заказы не принимаются. Реагирование — не позже 30 минут; за простой витрины продавцам начисляются компенсации по договору' },
+  { k: 'planned', n: 'Акции и обновления каталога', min: 3, max: 3, f: 'Распродажи, сезонные коллекции, обновление витрины; дата согласуется с продавцами за 2 недели' },
+  { k: 'client', n: 'Запросы продавцов', min: 8, max: 10, f: 'Подключение нового продавца, заведение карточек товаров, настройка доставки; срок по договору — 5 рабочих дней' },
+  { k: 'site', n: 'Работы по запуску «Доставки еды»', min: 2, max: 4, f: 'Согласование требований, участие в приёмке интеграций с ресторанами; растёт' },
+  { k: 'improve', n: 'Улучшения', min: 1, max: 2, f: 'Автоматизация проверки карточек товаров, устранение причин повторяющихся сбоев; постоянно откладываются' }
+];
+const mid = (t) => (t.min + t.max) / 2;
+const ENG = 12, LEAVE = 4, ENG18 = ENG - LEAVE, DAYS = 5;
+const ARR = TYPES.reduce((a, t) => a + mid(t), 0);            // 21,5
+const CAP = ENG * DAYS, CAP18 = ENG18 * DAYS;                // 60 → 40
+const SITE = mid(TYPES[3]);                                   // 3
+
+const CLASSES = [
+  { k: 'exp', n: 'Срочный', d: 'Работа не может ждать: стоимость задержки сразу высокая' },
+  { k: 'fix', n: 'Фиксированная дата', d: 'Ценность привязана к дате: раньше не нужно, позже — дорого' },
+  { k: 'std', n: 'Стандартный', d: 'Обычный поток с обещанным сроком выполнения' },
+  { k: 'int', n: 'Нематериальный', d: 'Срочной даты нет, но без этой работы со временем всё дорожает' }
+];
+const CLASS_REF = { incident: ['exp'], planned: ['fix'], client: ['std'], site: ['fix', 'std'], improve: ['int'] };
+const CLASS_WHY = {
+  incident: 'Реагирование 30 минут и компенсации продавцам за простой витрины: сбой не может ждать ни очереди, ни четверга.',
+  planned: 'Дату согласуют с продавцами за 2 недели: ценность привязана к дате, а не к скорости.',
+  client: 'Срок 5 рабочих дней одинаков для всех запросов продавцов — это обещанный уровень обслуживания, а не дата в календаре. Если все запросы сделать срочными, срочного класса не останется.',
+  site: 'Работы привязаны к графику партнёров-ресторанов и приёмке интеграций — это фиксированная дата. Если сроки гибкие, допустим и стандартный класс.',
+  improve: 'Срочной даты нет, но без улучшений растут повторяющиеся сбои и ночные вызовы дежурных: стоимость задержки растёт незаметно.'
+};
+const RULE_OPTS = {
+  cab: [['no', 'Без релизного комитета'], ['yes', 'Через релизный комитет (четверг)'], ['pre', 'Одобрено заранее как типовое изменение']],
+  stop: [['yes', 'Да, прерывает текущую работу'], ['no', 'Нет, ждёт свободного места']],
+  pr: [['r30', 'Реакция до 30 минут'], ['date', 'К согласованной дате'], ['d5', '5 рабочих дней с заявки'], ['cap', 'Без срока, но с гарантированной долей ёмкости'], ['asap', 'Как можно скорее']]
+};
+const RULE_REF = {
+  exp: { cab: ['no'], stop: ['yes'], pr: ['r30'] },
+  fix: { cab: ['yes', 'pre'], stop: ['no'], pr: ['date'] },
+  std: { cab: ['pre'], stop: ['no'], pr: ['d5'] },
+  int: { cab: ['yes', 'pre'], stop: ['no'], pr: ['cap'] }
+};
+const RULE_WHY = {
+  exp: 'Сбой: без релизного комитета (так сказано в кейсе), прерывает текущую работу, реакция до 30 минут.',
+  fix: 'Дата известна за 2 недели, поэтому успевает пройти релизный комитет. Текущую работу не прерывает. Обещание — к согласованной дате.',
+  std: 'Посмотрите на расчёт с пятницей ниже: если запрос ждёт четверга, на работу не остаётся дней. Типовые запросы продавцов одобряют заранее. Обещание — 5 рабочих дней.',
+  int: 'Срока нет, но обещание — гарантированная доля ёмкости (шаг 5). Текущую работу не прерывает.'
+};
+
+const COLS = [
+  { k: 'in', n: 'Входящие' }, { k: 'triage', n: 'Разбор и оценка' }, { k: 'cab', n: 'Ждёт комитета (чт)' },
+  { k: 'ready', n: 'Согласовано — готово к работе' }, { k: 'work', n: 'В работе' }, { k: 'ext', n: 'Ждёт продавца или партнёра' },
+  { k: 'check', n: 'Проверка и приёмка с продавцом' }, { k: 'done', n: 'Готово' },
+  { k: 'urgent', n: 'Срочно', bad: 'Срочность — это класс обслуживания, а не этап работы. Её показывают дорожкой, а не столбцом.' },
+  { k: 'boss', n: 'У руководителя отдела', bad: 'Столбец — это этап работы, а не человек. Если работа ждёт решения руководителя, это правило, а не этап.' },
+  { k: 'later', n: 'Отложено', bad: 'В «Отложено» улучшения пролежат ещё год. Отложенную работу оставляют во «Входящих» с правилом, когда её берут.' }
+];
+const colName = (k) => (COLS.find((c) => c.k === k) || {}).n || k;
+const EXIT_EX = {
+  in: 'заявка заполнена: магазин продавца, товары, желаемая дата', triage: 'понятны объём, класс и нужен ли комитет', cab: 'решение комитета получено',
+  ready: 'свободный специалист взял задачу', work: 'работа выполнена, журнал заполнен', ext: 'продавец или партнёр ответил',
+  check: 'продавец подтвердил результат', done: ''
+};
+const LANES = [
+  ['class', 'По классам обслуживания: четыре дорожки, срочная — сверху'],
+  ['type', 'По типам работ: пять дорожек'],
+  ['none', 'Без дорожек: все работы в одной очереди'],
+  ['people', 'По специалистам: у каждого своя дорожка']
+];
+
+/* ================= Numeric questions: formula always visible ================= */
+const near = (v, r, t = 0.051) => v != null && Math.abs(v - r) <= t;
+const NQ = {
+  arr: { s: 3, label: 'Сколько работ в среднем приходит в отдел за неделю?', f: 'Для каждого типа возьмите <b>середину диапазона = (мин + макс) ÷ 2</b>, затем сложите пять чисел. У акций и обновлений каталога диапазона нет — берите 3.',
+    ok: (v) => v >= 21 && v <= 22, ans: '5 + 3 + 9 + 3 + 1,5 = 21,5',
+    diag: (v) => (v === 18 ? 'Это сумма нижних границ. Возьмите середины диапазонов.' : v === 25 ? 'Это сумма верхних границ. Возьмите середины диапазонов.' : 'Сбои 4–6 → 5; акции и каталог → 3; запросы продавцов 8–10 → 9; запуск «Доставки еды» 2–4 → 3; улучшения 1–2 → 1,5. Сложите.') },
+  cap: { s: 3, label: 'Сколько человеко-дней в неделю у отдела?', f: '<b>Человеко-дни = число специалистов × 5 рабочих дней.</b> Руководителя не считаем: он не берёт задачи с доски.',
+    ok: (v) => v === CAP, ans: '12 × 5 = 60', diag: (v) => (v === 65 ? 'Руководителя не включаем: 12 специалистов, а не 13.' : 'Специалистов 12, рабочих дней в неделе 5. Перемножьте.') },
+  perday: { s: 3, label: 'Сколько запросов продавцов приходит в среднем за один рабочий день?', f: '<b>В день = в неделю ÷ 5.</b> Запросов в неделю — середина диапазона 8–10, то есть 9.',
+    ok: (v) => near(v, 1.8), ans: '9 ÷ 5 = 1,8', diag: (v) => (v === 9 ? 'Это в неделю. Разделите на 5 рабочих дней.' : '9 запросов в неделю разделите на 5 рабочих дней.') },
+  sys5: { s: 3, label: 'Сколько запросов может одновременно быть в работе, чтобы в среднем укладываться в 5 дней?', f: '<b>Закон Литтла: в работе = поступление в день × время выполнения в днях.</b> Поступление в день — из вопроса выше.',
+    ok: (v) => near(v, 9), ans: '1,8 × 5 = 9', diag: () => 'Умножьте поступление в день (1,8) на 5 дней.' },
+  sys4: { s: 3, label: 'А если оставить день запаса и целиться в 4 дня?', f: 'Та же формула: <b>1,8 × 4</b>. Лимит — целое число задач, поэтому округляйте вниз.',
+    ok: (v) => v >= 7 && v <= 7.2, ans: '1,8 × 4 = 7,2 → лимит 7', diag: (v) => (v === 8 ? 'Округлять нужно вниз: при лимите 8 запас пропадёт.' : 'Умножьте 1,8 на 4 и округлите вниз.') },
+  fri_day: { s: 2, label: 'Запрос продавца пришёл в пятницу — это 1-й день срока. На какой день срока придётся ближайший релизный комитет (четверг)?', f: 'Считайте рабочие дни: <b>пятница — 1, понедельник — 2, вторник — 3, среда — 4, четверг — …</b>',
+    ok: (v) => v === 5, ans: 'четверг — 5-й день срока', diag: () => 'Продолжите счёт рабочих дней до четверга.' },
+  fri_left: { s: 2, label: 'Сколько рабочих дней срока останется на саму работу после решения комитета?', f: '<b>Остаток = 5 дней по договору − день, на который пришёлся комитет.</b>',
+    ok: (v) => v === 0, ans: '5 − 5 = 0: срок истекает в день комитета', diag: () => 'Из 5 дней по договору вычтите день комитета из вопроса выше.' },
+  e18: { s: 5, label: 'Сколько специалистов останется обслуживать 12 действующих городов с 18-й недели?', f: '<b>12 − 4.</b>', ok: (v) => v === ENG18, ans: '12 − 4 = 8', diag: () => 'Было 12 специалистов, в команду запуска «Доставки еды» уходят 4.' },
+  cap18: { s: 5, label: 'Какой станет ёмкость отдела, человеко-дней в неделю?', f: '<b>Специалисты × 5 рабочих дней</b> — как на шаге 3, но с новым числом специалистов.', ok: (v) => v === CAP18, ans: '8 × 5 = 40', diag: () => 'Умножьте оставшихся специалистов на 5 дней.' },
+  drop: { s: 5, label: 'На сколько процентов снизится ёмкость?', f: '<b>(было − стало) ÷ было × 100.</b> Делим на прежнюю ёмкость (60), а не на новую.',
+    ok: (v) => v >= 33 && v <= 34, ans: '(60 − 40) ÷ 60 × 100 ≈ 33%', diag: (v) => (v === 50 ? 'Разделили на новую ёмкость. Делите 20 на 60, а не на 40.' : 'Разница 60 − 40 = 20. Разделите на 60 и умножьте на 100.') },
+  loadB: { s: 5, label: 'Сколько работ в неделю приходится на одного специалиста сейчас?', f: '<b>Поступление в неделю ÷ число специалистов.</b> Поступление — 21,5 (шаг 3). Один знак после запятой.',
+    ok: (v) => near(v, ARR / ENG, 0.06), ans: '21,5 ÷ 12 ≈ 1,8', diag: () => 'Разделите 21,5 на 12.' },
+  loadA: { s: 5, label: 'А с 18-й недели, если работы по запуску «Доставки еды» уходят вместе с четырьмя специалистами?', f: '<b>(поступление − работы по запуску «Доставки еды») ÷ 8.</b> Работ по запуску — середина 2–4, то есть 3.',
+    ok: (v) => near(v, (ARR - SITE) / ENG18, 0.06), ans: '(21,5 − 3) ÷ 8 ≈ 2,3',
+    diag: (v) => (near(v, ARR / ENG18, 0.06) ? 'Работы по запуску «Доставки еды» уходят с четырьмя специалистами — вычтите 3 из поступления.' : 'Из 21,5 вычтите 3 и разделите на 8.') },
+  factor: { s: 5, label: 'Во сколько раз вырастет время выполнения, если лимиты не менять, а пропускная способность упадёт пропорционально числу специалистов?', f: '<b>Закон Литтла: время = в работе ÷ пропускная способность.</b> Пропускная способность станет 8/12 прежней, значит время умножается на 12 ÷ 8.',
+    ok: (v) => near(v, 1.5), ans: '12 ÷ 8 = 1,5', diag: (v) => (near(v, 0.67, 0.02) ? 'Перевернули дробь: время растёт, поэтому 12 ÷ 8, а не 8 ÷ 12.' : 'Разделите 12 на 8.') },
+  t75: { s: 5, label: 'Сколько дней тогда будет идти запрос продавца, который сейчас укладывается в 5?', f: '<b>5 × коэффициент</b> из вопроса выше.', ok: (v) => near(v, 7.5), ans: '5 × 1,5 = 7,5 дня — срок по договору будет нарушен', diag: () => 'Умножьте 5 на 1,5.' }
+};
+
+/* Step 3: WIP limits per class lane (column «В работе») */
+const LIM = {
+  exp: { lo: 1, hi: 2, why: 'Сбоев 4–6 в неделю, реакция 30 минут: достаточно 1–2 дежурных. Если сбоев больше, срочный класс забирает специалиста из другой дорожки.' },
+  fix: { lo: 2, hi: 4, why: 'Акций и обновлений каталога 3 в неделю, работ по запуску «Доставки еды» 2–4: одновременно в работе 2–4.' },
+  std: { lo: 3, hi: 7, why: 'Не больше, чем дал закон Литтла с запасом (7), и не меньше 3, иначе 9 запросов в неделю не пройдут.' },
+  int: { lo: 1, hi: 2, why: 'Хотя бы одно улучшение всегда в работе — иначе правило шага 5 не выполнить. Больше двух отнимет ёмкость у продавцов.' }
+};
+const OVER = [
+  ['over', 'Срочный класс может превысить лимит: берём специалиста из другой дорожки, его задача ждёт'],
+  ['queue', 'Сбой ждёт в очереди, пока не освободится место'],
+  ['cab', 'Вопрос выносим на ближайший релизный комитет']
+];
+
+/* Step 4: improvements */
+const SHARES = [5, 10, 15, 20];
+const MECH = [
+  ['slot', 'Гарантированная ёмкость: дорожка улучшений с минимальным лимитом, который нельзя занять другим', true],
+  ['age', 'Триггер по возрасту: улучшение старше N дней берут в работу вне очереди', true],
+  ['both', 'Оба механизма вместе', true],
+  ['free', 'Делать улучшения, когда появится свободное время', false],
+  ['retro', 'Обсуждать улучшения на ретроспективе', false],
+  ['after', 'Отложить улучшения до запуска «Доставки еды»', false]
+];
+const OWNER = [['head', 'Руководитель отдела', true], ['duty', 'Специалист, назначенный ответственным за улучшения', true], ['cab', 'Релизный комитет', false], ['nobody', 'Отдельный владелец не нужен: это общая ответственность', false]];
+const METRIC = [['night', 'Число ночных вызовов в неделю', true], ['repeat', 'Число повторяющихся сбоев', true], ['share', 'Фактическая доля ёмкости на улучшения', true], ['feel', 'Ощущение команды, что стало легче', false]];
+const DISPL = [['return', 'Слот возвращаем на следующей неделе: долг по улучшениям виден на доске', true], ['skip', 'Улучшение переносим без срока', false], ['cancel', 'Улучшение снимаем с доски', false]];
+
+/* Step 5: week 18 decisions */
+const DEC18 = [
+  ['limits', 'Пересчитать лимиты под 8 специалистов', true, ''],
+  ['site', 'Работы по запуску «Доставки еды» вести на отдельной дорожке четырёх специалистов команды запуска', true, ''],
+  ['keepimp', 'Сохранить слот улучшений: устранение причин повторяющихся сбоев снимает ночные вызовы дежурных', true, ''],
+  ['precab', 'Типовые запросы продавцов одобрять заранее, без релизного комитета', true, ''],
+  ['intake', 'Договориться с руководством маркетплейса, какие запросы отдел берёт в первую очередь', true, ''],
+  ['handover', 'До 18-й недели передать знания: дежурства, инструкции, кто заменяет уходящих', true, ''],
+  ['overtime', 'Ввести сверхурочные для оставшихся специалистов', false, 'Сверхурочные не меняют систему: очередь вернётся, а люди уже «работают на пределе».'],
+  ['stopimp', 'Остановить улучшения до запуска «Доставки еды»', false, 'Улучшения — это способ снять ночные вызовы. Если их остановить, восьми специалистам станет ещё тяжелее.'],
+  ['allurgent', 'Перевести все запросы продавцов в срочный класс', false, 'Если срочное всё, срочного нет: сбои встанут в одну очередь с запросами.'],
+  ['nolimits', 'Снять лимиты, чтобы успевать больше', false, 'Без лимитов задач в работе станет больше, а время выполнения вырастет (закон Литтла).']
+];
+
+/* ================= Helpers ================= */
+const $ = (s, r = document) => r.querySelector(s);
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') el.className = v; else if (k === 'text') el.textContent = v; else if (k === 'html') el.innerHTML = v;
+    else if (k === 'style') el.setAttribute('style', v);
+    else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else if (v === true) el.setAttribute(k, ''); else el.setAttribute(k, v);
+  }
+  for (const kid of kids.flat()) { if (kid == null || kid === false) continue; el.append(kid.nodeType ? kid : document.createTextNode(String(kid))); }
+  return el;
+}
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage may be blocked */ } }
+};
+const num = (v) => { if (v === '' || v == null) return null; const n = Number(String(v).replace(',', '.').replace('%', '').trim()); return Number.isFinite(n) ? n : null; };
+const fmt1 = (x) => (Math.round(x * 10) / 10).toString().replace('.', ',');
+const words = (t) => String(t || '').trim().split(/\s+/).filter(Boolean).length;
+const typeTag = (t) => h('span', { class: 'type ' + t.k }, h('i', {}), t.n);
+
+/* ================= State ================= */
+const saved = store.get('bl.state', {});
+const blank4 = () => ({ exp: '', fix: '', std: '', int: '' });
+const state = {
+  step: Number.isInteger(saved.step) ? saved.step : 0,
+  guess: { arr: '', cause: '', ...(saved.guess || {}) },
+  cols: saved.cols || [], exits: saved.exits || {}, lanes: saved.lanes || '', inc: saved.inc || [],
+  cls: { incident: '', planned: '', client: '', site: '', improve: '', ...(saved.cls || {}) },
+  rules: saved.rules || Object.fromEntries(CLASSES.map((c) => [c.k, { cab: '', stop: '', pr: '', who: '' }])),
+  n: saved.n || {}, lim: { ...blank4(), ...(saved.lim || {}) }, why: { ...blank4(), ...(saved.why || {}) }, over: saved.over || '',
+  imp: { share: '', days: '', mech: '', n: '', owner: '', metric: '', displ: '', text: '', ...(saved.imp || {}) },
+  lim18: { ...blank4(), ...(saved.lim18 || {}) }, dec18: saved.dec18 || [], final: saved.final || { p1: '', p2: '', p3: '' },
+  chk: saved.chk || {}, shown: saved.shown || {}, hints: saved.hints || {}, downloads: null
+};
+function persist() {
+  const { downloads, ...rest } = state;
+  store.set('bl.state', rest);
+}
+
+/* ================= Status per step ================= */
+const nqRes = (k) => { const v = num(state.n[k]); return v == null ? { st: 'empty' } : NQ[k].ok(v) ? { st: 'ok' } : { st: 'bad', hint: NQ[k].diag(v) }; };
+function boardStatus() {
+  const c = state.cols, r = {}, idx = (k) => c.indexOf(k);
+  const em = !c.length;
+  r.in = em ? { st: 'empty' } : ['in', 'triage'].includes(c[0]) ? { st: 'ok' } : { st: 'bad', hint: 'Первым поставьте очередь, куда попадает новая работа: «Входящие» или «Разбор и оценка». Иначе не видно, что ещё не взято.' };
+  r.cab = em ? { st: 'empty' } : idx('cab') >= 0 && idx('work') > idx('cab') ? { st: 'ok' } : { st: 'bad', hint: 'Все работы, кроме сбоев, ждут четверга. Если это ожидание спрятать в «В работе», доска покажет, что специалисты заняты, хотя задачи стоят. Поставьте «Ждёт комитета» до «В работе».' };
+  r.end = em ? { st: 'empty' } : idx('work') >= 0 && c[c.length - 1] === 'done' ? { st: 'ok' } : { st: 'bad', hint: 'На доске должен быть столбец «В работе», а последним — «Готово».' };
+  const noise = c.map((k) => COLS.find((x) => x.k === k)).filter((x) => x && x.bad);
+  r.noise = em ? { st: 'empty' } : noise.length ? { st: 'bad', hint: noise.map((x) => `«${x.n}»: ${x.bad}`).join(' ') } : { st: 'ok' };
+  const noExit = c.filter((k) => k !== 'done' && words(state.exits[k]) < 2);
+  r.exit = em ? { st: 'empty' } : noExit.length ? { st: 'bad', hint: `Нет правила выхода (хотя бы два слова): ${noExit.map(colName).join(', ')}. Пример для «${colName(noExit[0])}»: «${EXIT_EX[noExit[0]] || 'что должно быть сделано, чтобы задача ушла дальше'}».` } : { st: 'ok' };
+  r.lanes = !state.lanes ? { st: 'empty' } : ['class', 'type'].includes(state.lanes) ? { st: 'ok' }
+    : { st: 'bad', hint: state.lanes === 'none' ? 'В одной очереди сбой встанет за запросом продавца, а реагировать нужно за 30 минут. Разведите работу с разными правилами по дорожкам.' : 'Дорожки по людям показывают загрузку, но не правила. Сбой возьмёт тот, у кого он оказался, а не тот, кто свободен.' };
+  r.inc = !state.inc.length ? { st: 'empty' } : state.inc.includes('cab') ? { st: 'bad', hint: 'В кейсе: «Все работы, кроме устранения сбоев, согласуются на релизном комитете». Сбой идёт мимо столбца «Ждёт комитета».' }
+    : !state.inc.includes('work') ? { st: 'bad', hint: 'Сбой всё равно проходит через «В работе»: специалист его устраняет.' } : { st: 'ok' };
+  return r;
+}
+function classStatus() {
+  const r = {};
+  TYPES.forEach((t) => { const v = state.cls[t.k]; r['c_' + t.k] = !v ? { st: 'empty' } : CLASS_REF[t.k].includes(v) ? { st: 'ok' } : { st: 'bad', hint: CLASS_WHY[t.k] }; });
+  CLASSES.forEach((c) => {
+    const ru = state.rules[c.k];
+    if (!ru.cab || !ru.stop || !ru.pr) { r['r_' + c.k] = { st: 'empty' }; return; }
+    const ok = ['cab', 'stop', 'pr'].every((f) => RULE_REF[c.k][f].includes(ru[f]));
+    r['r_' + c.k] = ok ? { st: 'ok' } : { st: 'bad', hint: RULE_WHY[c.k] };
+  });
+  r.fri_day = nqRes('fri_day'); r.fri_left = nqRes('fri_left');
+  return r;
+}
+function wipStatus() {
+  const r = {};
+  ['arr', 'cap', 'perday', 'sys5', 'sys4'].forEach((k) => { r[k] = nqRes(k); });
+  CLASSES.forEach((c) => {
+    const v = num(state.lim[c.k]), L = LIM[c.k];
+    r['l_' + c.k] = v == null ? { st: 'empty' } : v >= L.lo && v <= L.hi && Number.isInteger(v) ? { st: 'ok' } : { st: 'bad', hint: L.why };
+  });
+  const vals = CLASSES.map((c) => num(state.lim[c.k]));
+  const sum = vals.reduce((a, v) => a + (v || 0), 0);
+  r.sum = vals.some((v) => v == null) ? { st: 'empty' } : sum <= ENG ? { st: 'ok' } : { st: 'bad', hint: `Сумма лимитов ${sum} больше, чем 12 специалистов: такой лимит ничего не ограничивает.` };
+  r.over = !state.over ? { st: 'empty' } : state.over === 'over' ? { st: 'ok' } : { st: 'bad', hint: 'Сбой не может ждать ни места, ни четверга: реакция — 30 минут. Срочный класс — единственный, кому можно превысить лимит.' };
+  return r;
+}
+function impStatus() {
+  const i = state.imp, r = {};
+  const sh = num(i.share), d = num(i.days);
+  r.days = sh == null || d == null ? { st: 'empty' } : near(d, CAP * sh / 100, 0.051) ? { st: 'ok' } : { st: 'bad', hint: `Формула: ёмкость 60 × ${sh} ÷ 100.` };
+  const pick = (list, v, hint) => (!v ? { st: 'empty' } : list.find((x) => x[0] === v)[2] ? { st: 'ok' } : { st: 'bad', hint });
+  r.mech = pick(MECH, i.mech, 'Этот способ уже год не работает: «когда будет время» не наступает. Нужен механизм, который защищает ёмкость или срабатывает сам.');
+  r.n = num(i.n) == null ? { st: 'empty' } : num(i.n) >= 1 && Number.isInteger(num(i.n)) ? { st: 'ok' } : { st: 'bad', hint: 'Хотя бы одно улучшение всегда в работе — целое число не меньше 1.' };
+  r.owner = pick(OWNER, i.owner, 'Правило без конкретного владельца никто не защищает, а комитет собирается раз в неделю и не ведёт доску.');
+  r.metric = pick(METRIC, i.metric, 'Ощущение не измерить. Нужна метрика, по которой через месяц видно, работает ли правило.');
+  r.displ = pick(DISPL, i.displ, 'Если улучшение просто переносить, через месяц всё вернётся к «постоянно откладываются». Вытесненный слот нужно вернуть.');
+  r.text = !i.text.trim() ? { st: 'empty' } : /\d/.test(i.text) && words(i.text) >= 6 ? { st: 'ok' } : { st: 'bad', hint: 'В правиле нет числа. Пример формы: «Каждую неделю не менее … человеко-дней (…%) идёт на улучшения; ответственный — …; если слот занят сбоем, он возвращается на следующей неделе».' };
+  return r;
+}
+function w18Status() {
+  const r = {};
+  ['e18', 'cap18', 'drop', 'loadB', 'loadA', 'factor', 't75'].forEach((k) => { r[k] = nqRes(k); });
+  const v = CLASSES.map((c) => num(state.lim18[c.k]));
+  const sum = v.reduce((a, x) => a + (x || 0), 0);
+  r.lim18 = v.some((x) => x == null) ? { st: 'empty' } : sum > ENG18 ? { st: 'bad', hint: `Сумма лимитов ${sum} больше 8 специалистов.` }
+    : v[0] < 1 ? { st: 'bad', hint: 'Без срочной дорожки сбои некому брать.' } : v[3] < 1 ? { st: 'bad', hint: 'Улучшения обнулены — значит, они снова будут откладываться, а ночных вызовов станет больше.' } : { st: 'ok' };
+  const bad = DEC18.filter((d) => !d[2] && state.dec18.includes(d[0]));
+  const good = DEC18.filter((d) => d[2] && state.dec18.includes(d[0]));
+  r.dec = !state.dec18.length ? { st: 'empty' } : bad.length ? { st: 'bad', hint: bad.map((d) => d[3]).join(' ') } : good.length < 3 ? { st: 'bad', hint: 'Выберите хотя бы три изменения: одного пересчёта лимитов мало.' } : { st: 'ok' };
+  return r;
+}
+const STATUS = { 1: boardStatus, 2: classStatus, 3: wipStatus, 4: impStatus, 5: w18Status };
+const ANS = {
+  in: '«Входящие» первым столбцом', cab: '«Ждёт комитета (чт)» перед «В работе»', end: '«В работе» есть, «Готово» последним', noise: 'без столбцов «Срочно», «У руководителя», «Отложено»',
+  exit: 'у каждого столбца, кроме «Готово», есть правило выхода', lanes: 'по классам обслуживания (или по типам работ)', inc: 'сбой идёт без «Ждёт комитета», через «В работе»',
+  c_incident: 'срочный', c_planned: 'фиксированная дата', c_client: 'стандартный', c_site: 'фиксированная дата (допустим стандартный)', c_improve: 'нематериальный',
+  r_exp: 'без комитета · прерывает · реакция до 30 минут', r_fix: 'через комитет или заранее · не прерывает · к согласованной дате', r_std: 'одобрено заранее · не прерывает · 5 рабочих дней', r_int: 'через комитет или заранее · не прерывает · гарантированная доля ёмкости',
+  l_exp: '1–2', l_fix: '2–4', l_std: '3–7', l_int: '1–2', sum: 'не больше 12', over: 'срочный класс может превысить лимит',
+  days: 'ёмкость 60 × доля ÷ 100', mech: 'гарантированная ёмкость, триггер по возрасту или оба', n: '1 или больше', owner: 'руководитель отдела или назначенный специалист', metric: 'ночные вызовы, повторяющиеся сбои или фактическая доля ёмкости', displ: 'слот возвращается на следующей неделе', text: 'правило с числом, владельцем и тем, что делать при вытеснении',
+  lim18: 'например 1 · 2 · 4 · 1 = 8', dec: 'пересчёт лимитов, отдельная дорожка команды запуска, слот улучшений, заранее одобренные типовые запросы продавцов'
+};
+Object.keys(NQ).forEach((k) => { ANS[k] = NQ[k].ans; });
+
+/* ================= Rendering ================= */
+const STEPS = [
+  { t: 'Данные и задание', s: 'Приложение 4 и ваш прогноз' },
+  { t: 'Доска', s: 'Столбцы и дорожки' },
+  { t: 'Классы обслуживания', s: 'Правила для каждого класса' },
+  { t: 'Лимиты WIP', s: 'Обоснование числами' },
+  { t: 'Улучшения', s: 'Правило против откладывания' },
+  { t: 'Неделя 18', s: 'Минус четыре специалиста и итог' }
+];
+function stepScore(s) { const r = STATUS[s](); const v = Object.values(r); return { ok: v.filter((x) => x.st === 'ok').length, total: v.length, r }; }
+function stepDone(s) { if (s === 0) return !!(state.guess.arr && state.guess.cause); const c = stepScore(s); return !!state.chk[s] && c.ok === c.total; }
+function renderSteps() {
+  $('#steps').replaceChildren(...STEPS.map((st, i) => h('button', { class: 'step' + (stepDone(i) ? ' done' : ''), type: 'button', 'aria-current': i === state.step ? 'step' : null, onclick: () => go(i) },
+    h('span', { class: 'dot', text: stepDone(i) && i !== state.step ? '✓' : String(i + 1) }), h('span', { class: 't', text: st.t }), h('span', { class: 's', text: st.s }))));
+}
+function go(i) { state.step = i; persist(); render(); window.scrollTo({ top: 0 }); }
+function render() { renderSteps(); renderMain(); renderRail(); }
+function renderMain() { $('#main').replaceChildren(...[viewData, viewBoard, viewClasses, viewWip, viewImp, viewW18][state.step]()); }
+
+function pill(x) { return x && x !== 'empty' ? h('span', { class: 'pill ' + (x === 'ok' ? 'ok' : 'bad'), text: x === 'ok' ? 'верно' : 'неверно' }) : h('span', { class: 'pill info', text: 'пусто' }); }
+function cell(s, key) {
+  if (!state.chk[s]) return [];
+  const res = STATUS[s]()[key] || { st: 'empty' }, out = [pill(res.st)];
+  if (res.st === 'bad' && res.hint) out.push(h('div', { class: 'rowhint', text: res.hint }));
+  if (state.shown[s] && res.st !== 'ok' && ANS[key]) out.push(h('div', { class: 'rowhint mono', text: 'ответ: ' + ANS[key] }));
+  return out;
+}
+const slot = (s, key) => h('div', { id: `st-${key}`, class: 'verdict-slot' }, cell(s, key));
+function refresh() {
+  const s = state.step;
+  if (STATUS[s] && state.chk[s]) Object.keys(STATUS[s]()).forEach((k) => { const el = $('#st-' + k); if (el) el.replaceChildren(...cell(s, k)); });
+  const line = $('#check-line'); if (line) line.textContent = checkLine(s);
+  const bp = $('#board-preview'); if (bp) bp.replaceChildren(boardPreview(bp.dataset.mode));
+  const cb = $('#capbar'); if (cb) cb.replaceWith(capBar(cb.dataset.mode));
+  renderSteps(); renderRail();
+}
+function input(id, value, onInput, label, attrs = {}) {
+  const i = h('input', { type: 'text', inputmode: 'decimal', id, 'aria-label': label, autocomplete: 'off', ...attrs });
+  i.value = value ?? ''; i.addEventListener('input', () => onInput(i.value)); return i;
+}
+function select(id, value, opts, ph, onChange, label) {
+  const el = h('select', { id, 'aria-label': label || ph }, h('option', { value: '', text: ph }), opts.map(([v, t]) => h('option', { value: v, text: t })));
+  el.value = value || ''; el.addEventListener('change', () => onChange(el.value)); return el;
+}
+function radios(name, list, value, onChange) {
+  return h('div', { class: 'radio-list' }, list.map(([v, t]) => {
+    const i = h('input', { type: 'radio', name, value: v, id: `${name}-${v}` }); i.checked = value === v;
+    i.addEventListener('change', () => onChange(v));
+    return h('label', { for: `${name}-${v}` }, i, h('span', { text: t }));
+  }));
+}
+function nq(k) {
+  const q = NQ[k];
+  return h('div', { class: 'nq' }, h('label', { class: 'lbl', for: 'n-' + k, text: q.label }),
+    h('div', { class: 'formula', html: 'Как считать: ' + q.f }),
+    h('div', { class: 'row' }, input('n-' + k, state.n[k], (v) => { state.n[k] = v; persist(); refresh(); }, q.label), slot(q.s, k)));
+}
+const checkLine = (s) => { if (!STATUS[s]) return ''; const c = stepScore(s); return !state.chk[s] ? 'Проверка показывает, где ошибка, и подсказывает, как исправить. Ответ можно открыть после второй проверки.'
+  : `Проверок: ${state.chk[s]}. Верно ${c.ok} из ${c.total}.${state.chk[s] < 2 && !state.shown[s] ? ' Ответ можно открыть после второй проверки.' : ''}`; };
+function checkBar(s, next) {
+  return h('section', { class: 'card' },
+    h('div', { class: 'actions' },
+      h('button', { class: 'btn btn-primary', type: 'button', text: 'Проверить', onclick: () => { state.chk[s] = (state.chk[s] || 0) + 1; persist(); render(); } }),
+      h('button', { class: 'btn', type: 'button', text: state.shown[s] ? 'Ответ показан' : 'Показать ответ', disabled: state.shown[s] || (state.chk[s] || 0) < 2, onclick: () => { state.shown[s] = true; persist(); render(); } }),
+      next ? h('button', { class: 'btn', type: 'button', text: next[1], onclick: () => go(next[0]) }) : null),
+    h('p', { class: 'status', id: 'check-line', text: checkLine(s) }));
+}
+const HINTS = {
+  board: ['Столбцы — это этапы, через которые проходит работа: от появления до «Готово». Срочность и люди — не этапы.', 'В кейсе все работы, кроме сбоев, ждут релизного комитета по четвергам. Это ожидание должно быть видно на доске отдельным столбцом.', 'Пример: Входящие → Разбор и оценка → Ждёт комитета (чт) → Согласовано — готово к работе → В работе → Готово. Дорожки — по классам обслуживания, срочная сверху.'],
+  classes: ['Класс обслуживания отвечает на вопрос «как быстро и в каком порядке берём эту работу». Смотрите на столбец «Особенности» в Приложении 4.', 'Срочный — когда ждать нельзя; фиксированная дата — когда важна дата; стандартный — обещанный срок; нематериальный — срока нет, но откладывать дорого.', 'Для правил стандартного класса сначала посчитайте вопрос про пятницу: сколько дней срока остаётся после четверга?'],
+  wip: ['Лимит WIP — сколько задач одновременно может быть в «В работе» на дорожке. Лимит меньше — задачи проходят быстрее.', 'Закон Литтла: в работе = поступление × время. Если знать поступление и нужный срок, получится максимальный лимит.', 'Сумма лимитов не должна быть больше числа специалистов (12). Срочный класс — исключение: ему можно превысить лимит.'],
+  imp: ['Улучшения откладываются, потому что у них нет срока и они всегда проигрывают срочному. Правило должно защищать их ёмкость.', 'Ёмкость отдела — 60 человеко-дней в неделю. 10% — это 6 человеко-дней, то есть один специалист почти на всю неделю.', 'Хорошее правило измеримо (число), у него есть владелец, метрика и ответ на вопрос «что делаем, если слот занят сбоем».'],
+  w18: ['Начните с ёмкости: сколько человеко-дней останется и на сколько процентов меньше.', 'Если лимиты не пересчитать, задач в работе останется столько же, а пропускная способность упадёт — время выполнения вырастет (закон Литтла).', 'Работы по запуску «Доставки еды» логично увести вместе с четырьмя специалистами: тогда оставшимся 8 нужно делить уже не 21,5, а 18,5 работы в неделю.']
+};
+function hintCard(key, title) {
+  const lvl = state.hints[key] || 0, list = HINTS[key];
+  return h('section', { class: 'card' }, h('h3', { text: 'Подсказки' }),
+    h('div', { class: 'hintrow' }, h('div', { class: 'field-top' }, h('b', { text: title }),
+      h('button', { class: 'btn btn-small', type: 'button', text: lvl >= list.length ? 'Подсказок больше нет' : `Подсказка ${lvl + 1} из ${list.length}`, disabled: lvl >= list.length, onclick: () => { state.hints[key] = lvl + 1; persist(); render(); } })),
+      lvl ? h('ol', { class: 'task-list' }, list.slice(0, lvl).map((t) => h('li', { text: t }))) : null));
+}
+
+/* ---- Step 1: data ---- */
+const GCAUSE = [
+  ['rules', 'Нет правил: «срочно у нас всё», непонятно, за что браться'],
+  ['people', 'Специалистов не хватает'],
+  ['tool', 'Неудобная доска или система учёта'],
+  ['cab', 'Работы долго ждут релизного комитета']
+];
+function appendix4() {
+  return h('div', { class: 'tscroll' }, h('table', { class: 'data' },
+    h('thead', {}, h('tr', {}, ['Тип работы', 'Количество в неделю', 'Особенности'].map((t) => h('th', { text: t })))),
+    h('tbody', {}, TYPES.map((t) => h('tr', {}, h('td', {}, typeTag(t)), h('td', { class: 'mono', text: t.min === t.max ? String(t.min) : `${t.min}–${t.max}${t.k === 'site' ? ', растёт' : ''}` }), h('td', { text: t.f }))))));
+}
+function viewData() {
+  const g = state.guess;
+  return [
+    h('section', { class: 'card' }, h('h3', { text: 'Ситуация' }),
+      h('p', { class: 'lead', text: 'Отдел операций маркетплейса «Корзина» — руководитель и 12 специалистов — обслуживает 12 городов, где маркетплейс принимает и выдаёт заказы. Полгода назад отдел завёл Канбан-доску, но, по словам сотрудников, «доска есть, а порядка нет».' }),
+      h('p', { class: 'note', text: 'Марат Жумабаев, руководитель отдела: «Срочно у нас всё. Сбои, акции, запросы продавцов, а теперь ещё и задачи по запуску „Доставки еды“. Доску мы перестроили, но запросы продавцов снова выполняются дольше, чем положено по договору. Люди работают на пределе, а очередь не уменьшается. До улучшений руки не доходят уже год. А с 18-й недели я должен отдать четырёх лучших специалистов в команду запуска „Доставки еды“».' })),
+    h('section', { class: 'card' }, h('h3', { text: 'Приложение 4. Типичная неделя отдела операций маркетплейса' }), appendix4(),
+      h('p', { class: 'note', text: 'Все работы, кроме устранения сбоев, согласуются на релизном комитете. Комитет собирается раз в неделю, по четвергам.' }),
+      h('p', { class: 'help', text: 'Приложение 2: переход 4 специалистов отдела операций в команду запуска «Доставки еды» — с 18-й недели. Неделя 1 начинается 5 октября.' })),
+    h('section', { class: 'card' }, h('h3', { text: 'Практическое занятие 2. Канбан-доска отдела операций маркетплейса' }),
+      h('ol', { class: 'task-list' },
+        h('li', { text: 'Спроектируйте доску отдела: этапы работы (столбцы) и, при необходимости, горизонтальные дорожки.' }),
+        h('li', { text: 'Определите класс обслуживания для каждого типа работы (Приложение 4) и правила для каждого класса.' }),
+        h('li', { text: 'Установите лимиты незавершённой работы и обоснуйте их.' }),
+        h('li', { text: 'Сформулируйте правило, при котором улучшения перестанут откладываться.' }),
+        h('li', { text: 'Как должна измениться система с 18-й недели, когда четыре специалиста перейдут в команду запуска «Доставки еды»?' })),
+      h('p', { class: 'help', text: 'Шаги 2–6 тренажёра соответствуют пунктам 1–5. Их можно делать в любом порядке и распределить между участниками группы.' })),
+    h('section', { class: 'card' }, h('h3', { text: 'Прежде чем проектировать: ваш прогноз' }),
+      h('p', { class: 'lead', text: 'Ответьте по первому впечатлению. Прогноз не оценивается: на шаге 4 вы сравните его с расчётом.' }),
+      h('div', { class: 'field', style: 'max-width:360px' }, h('label', { class: 'lbl', for: 'g-arr', text: 'Сколько работ, по-вашему, приходит в отдел за неделю?' }),
+        input('g-arr', g.arr, (v) => { g.arr = v; persist(); renderSteps(); }, 'Прогноз поступления')),
+      h('span', { class: 'lbl', text: 'Почему «доска есть, а порядка нет»?' }),
+      radios('g-cause', GCAUSE, g.cause, (v) => { g.cause = v; persist(); renderSteps(); renderRail(); }),
+      h('div', { class: 'actions' }, h('button', { class: 'btn btn-primary', type: 'button', text: 'К проектированию доски', onclick: () => go(1) })))
+  ];
+}
+
+/* ---- Board preview (used on several steps) ---- */
+function lanesFor() {
+  const ln = state.lanes;
+  if (ln === 'class') return CLASSES.map((c) => ({ k: c.k, name: c.n, types: TYPES.filter((t) => state.cls[t.k] === c.k) }));
+  if (ln === 'type') return TYPES.map((t) => ({ k: state.cls[t.k] || '', name: t.n, types: [t] }));
+  if (ln === 'people') return [1, 2, 3].map((i) => ({ k: '', name: i === 3 ? '… ещё 10 специалистов' : `Специалист ${i}`, types: [] }));
+  return [{ k: '', name: 'Все работы', types: TYPES }];
+}
+function boardPreview(mode) {
+  const cols = state.cols;
+  if (!cols.length) return h('div', { class: 'empty', text: 'Добавьте столбцы выше — здесь появится ваша доска.' });
+  const lanes = lanesFor(), lims = mode === 'w18' ? state.lim18 : state.lim;
+  const g = h('div', { class: 'kb', style: `grid-template-columns: 170px repeat(${cols.length}, minmax(110px, 1fr))` });
+  g.append(h('div', { class: 'kb-h', text: state.lanes === 'class' || state.lanes === 'type' ? 'Дорожка' : '' }));
+  cols.forEach((k) => g.append(h('div', { class: 'kb-h' + (k === 'cab' ? ' cab' : '') + (COLS.find((c) => c.k === k).bad ? ' bad' : ''), text: colName(k), title: state.exits[k] ? 'Выход: ' + state.exits[k] : '' })));
+  lanes.forEach((ln, li) => {
+    const perWeek = ln.types.reduce((a, t) => a + mid(t), 0);
+    g.append(h('div', { class: 'kb-lane ' + ln.k }, h('b', { text: ln.name }), ln.types.length && state.lanes === 'class' ? h('small', { text: ln.types.map((t) => t.n).join(', ') }) : null));
+    cols.forEach((k, ci) => {
+      const skip = k === 'cab' && ((ln.k === 'exp') || (state.lanes !== 'class' && ln.types.length === 1 && ln.types[0].k === 'incident'));
+      const c = h('div', { class: 'kb-cell' + (k === 'cab' && !skip ? ' cab' : '') + (skip ? ' skip' : '') });
+      if (skip) c.append('сбои — мимо комитета');
+      if (ci === 0 && perWeek) c.append(h('span', { class: 'kb-in', text: `≈ ${fmt1(perWeek)} в неделю` }));
+      if (k === 'work' && ln.k && (state.lanes === 'class' || state.lanes === 'type') && num(lims[ln.k]) != null && (state.lanes === 'class' || li === TYPES.findIndex((t) => state.cls[t.k] === ln.k))) c.append(h('span', { class: 'kb-lim', text: `лимит ${lims[ln.k]}` }));
+      g.append(c);
+    });
+  });
+  return h('div', { class: 'kb-wrap' }, g);
+}
+function capBar(mode) {
+  const lims = mode === 'w18' ? state.lim18 : state.lim, cap = mode === 'w18' ? ENG18 : ENG;
+  const sum = CLASSES.reduce((a, c) => a + (num(lims[c.k]) || 0), 0);
+  return h('div', { class: 'capbar', id: 'capbar', 'data-mode': mode },
+    h('div', { class: 'track' }, h('div', { class: 'fill' + (sum > cap ? ' over' : ''), style: `width:${Math.min(100, 100 * sum / cap)}%` })),
+    h('span', { class: 'lab', text: `Сумма лимитов «В работе»: ${sum} из ${cap} специалистов${sum > cap ? ' — больше, чем людей' : ''}` }));
+}
+
+/* ---- Step 2: board ---- */
+function viewBoard() {
+  const cols = state.cols;
+  const chips = h('div', { class: 'chips' }, COLS.map((c) => h('button', { class: 'chip', type: 'button', disabled: cols.includes(c.k), text: '+ ' + c.n, onclick: () => { cols.push(c.k); persist(); render(); } })));
+  const move = (i, d) => { const j = i + d; [cols[i], cols[j]] = [cols[j], cols[i]]; state.inc = state.inc.filter((k) => cols.includes(k)); persist(); render(); };
+  const rows = h('div', { class: 'colrows' }, cols.length ? cols.map((k, i) => {
+    const ex = k === 'done' ? h('span', { class: 'help', text: 'Конечный столбец: правило выхода не нужно' })
+      : input('ex-' + k, state.exits[k], (v) => { state.exits[k] = v; persist(); refresh(); }, `Правило выхода: ${colName(k)}`, { inputmode: 'text', placeholder: 'Задача уходит дальше, когда… например: ' + (EXIT_EX[k] || '') });
+    return h('div', { class: 'colrow' }, h('span', { class: 'ix', text: i + 1 }), h('span', { class: 'nm', text: colName(k) }), ex,
+      h('span', { class: 'tools' },
+        h('button', { type: 'button', text: '↑', title: 'Выше', 'aria-label': 'Переместить левее', disabled: i === 0, onclick: () => move(i, -1) }),
+        h('button', { type: 'button', text: '↓', title: 'Ниже', 'aria-label': 'Переместить правее', disabled: i === cols.length - 1, onclick: () => move(i, 1) }),
+        h('button', { type: 'button', text: '✕', title: 'Убрать', 'aria-label': 'Убрать столбец', onclick: () => { cols.splice(i, 1); state.inc = state.inc.filter((x) => x !== k); persist(); render(); } })));
+  }) : [h('div', { class: 'empty', text: 'Столбцов пока нет. Нажимайте на заготовки выше в том порядке, в каком через них проходит работа.' })]);
+  const inc = h('div', { class: 'checkline' }, cols.map((k) => {
+    const i = h('input', { type: 'checkbox', id: 'inc-' + k }); i.checked = state.inc.includes(k);
+    i.addEventListener('change', () => { state.inc = i.checked ? [...state.inc, k] : state.inc.filter((x) => x !== k); persist(); refresh(); });
+    return h('label', { for: 'inc-' + k }, i, colName(k));
+  }));
+  return [
+    h('section', { class: 'card' }, h('h3', { text: '1. Столбцы: этапы работы' }),
+      h('p', { class: 'lead', text: 'Соберите доску из заготовок слева направо — в том порядке, в каком работа проходит этапы. Не все заготовки подходят. Для каждого столбца напишите правило выхода: что должно быть сделано, чтобы задача ушла дальше.' }),
+      chips, rows, slot(1, 'in'), slot(1, 'cab'), slot(1, 'end'), slot(1, 'noise'), slot(1, 'exit')),
+    h('section', { class: 'card' }, h('h3', { text: '2. Дорожки' }),
+      h('p', { class: 'lead', text: 'Горизонтальные дорожки разделяют работу, к которой применяются разные правила.' }),
+      radios('lanes', LANES, state.lanes, (v) => { state.lanes = v; persist(); refresh(); }), slot(1, 'lanes')),
+    h('section', { class: 'card' }, h('h3', { text: '3. Путь сбоя' }),
+      h('p', { class: 'lead', text: 'Отметьте столбцы, через которые проходит сбой на витрине.' }),
+      cols.length ? inc : h('div', { class: 'empty', text: 'Сначала добавьте столбцы.' }), slot(1, 'inc')),
+    h('section', { class: 'card' }, h('h3', { text: 'Ваша доска' }),
+      h('p', { class: 'help', text: 'Штриховка — ожидание комитета. Классы по дорожкам подставятся с шага 3, лимиты — с шага 4.' }),
+      h('div', { id: 'board-preview', 'data-mode': 'now' }, boardPreview('now'))),
+    checkBar(1, [2, 'Дальше: классы обслуживания']),
+    hintCard('board', 'Как устроить доску')
+  ];
+}
+
+/* ---- Step 3: classes of service ---- */
+function viewClasses() {
+  const tbl = h('div', { class: 'tscroll' }, h('table', { class: 'data rules' },
+    h('thead', {}, h('tr', {}, ['Тип работы', 'Особенности', 'Класс обслуживания', 'Проверка'].map((t) => h('th', { text: t })))),
+    h('tbody', {}, TYPES.map((t) => h('tr', {}, h('td', {}, typeTag(t)), h('td', { class: 'kind', text: t.f }),
+      h('td', {}, select('cl-' + t.k, state.cls[t.k], CLASSES.map((c) => [c.k, c.n]), 'выберите', (v) => { state.cls[t.k] = v; persist(); refresh(); }, `Класс: ${t.n}`)),
+      h('td', { id: 'st-c_' + t.k }, cell(2, 'c_' + t.k)))))));
+  const rules = h('div', { class: 'tscroll' }, h('table', { class: 'data rules' },
+    h('thead', {}, h('tr', {}, ['Класс', 'Комитет', 'Прерывает текущую работу?', 'Что обещаем', 'Кто ставит работу в класс', 'Проверка'].map((t) => h('th', { text: t })))),
+    h('tbody', {}, CLASSES.map((c) => { const ru = state.rules[c.k]; const set = (f) => (v) => { ru[f] = v; persist(); refresh(); };
+      return h('tr', {}, h('td', {}, h('b', { text: c.n }), h('div', { class: 'kind', text: c.d })),
+        h('td', {}, select(`ru-${c.k}-cab`, ru.cab, RULE_OPTS.cab, 'выберите', set('cab'), `${c.n}: комитет`)),
+        h('td', {}, select(`ru-${c.k}-stop`, ru.stop, RULE_OPTS.stop, 'выберите', set('stop'), `${c.n}: прерывает`)),
+        h('td', {}, select(`ru-${c.k}-pr`, ru.pr, RULE_OPTS.pr, 'выберите', set('pr'), `${c.n}: обещание`)),
+        h('td', {}, input(`ru-${c.k}-who`, ru.who, set('who'), `${c.n}: кто ставит`, { inputmode: 'text', placeholder: 'например: дежурный специалист' })),
+        h('td', { id: 'st-r_' + c.k }, cell(2, 'r_' + c.k))); }))));
+  return [
+    h('section', { class: 'card' }, h('h3', { text: '1. Класс обслуживания для каждого типа работы' }),
+      h('p', { class: 'lead', text: 'Класс определяет, как быстро и в каком порядке берут работу. Ориентируйтесь на столбец «Особенности» из Приложения 4.' }), tbl),
+    h('section', { class: 'card' }, h('h3', { text: '2. Сначала посчитайте: успевает ли запрос продавца пройти релизный комитет' }),
+      h('div', { class: 'nq-list' }, nq('fri_day'), nq('fri_left')),
+      state.chk[2] && classStatus().fri_left.st === 'ok' ? h('p', { class: 'note', text: 'Вывод: запрос, пришедший в пятницу, получает решение комитета в последний день срока, и на работу не остаётся ни дня. Поэтому типовые запросы продавцов (подключение продавца, заведение карточек товаров, настройка доставки) одобряют заранее как стандартные изменения, а на релизный комитет идут только нетиповые.' }) : null),
+    h('section', { class: 'card' }, h('h3', { text: '3. Правила для каждого класса' }),
+      h('p', { class: 'lead', text: 'Для каждого класса выберите, проходит ли работа комитет, может ли она прервать текущую работу и что вы обещаете заказчику. В последнем столбце напишите, кто может поставить работу в этот класс.' }), rules),
+    h('section', { class: 'card' }, h('h3', { text: 'Ваша доска с классами' }),
+      h('div', { id: 'board-preview', 'data-mode': 'now' }, boardPreview('now'))),
+    checkBar(2, [3, 'Дальше: лимиты WIP']),
+    hintCard('classes', 'Классы обслуживания')
+  ];
+}
+
+/* ---- Step 4: WIP limits ---- */
+function viewWip() {
+  const lims = h('div', { class: 'tscroll' }, h('table', { class: 'data lims' },
+    h('thead', {}, h('tr', {}, ['Дорожка', 'Подсказка для расчёта', 'Лимит «В работе»', 'Обоснование', 'Проверка'].map((t) => h('th', { text: t })))),
+    h('tbody', {}, CLASSES.map((c) => h('tr', {}, h('td', {}, h('b', { text: c.n })),
+      h('td', { class: 'kind', text: { exp: 'Сбоев 4–6 в неделю, реакция 30 минут', fix: 'Акций и каталога 3 + запуск «Доставки еды» 2–4 в неделю', std: 'Закон Литтла с запасом — вопрос выше', int: 'Улучшений 1–2 в неделю' }[c.k] }),
+      h('td', {}, input('lim-' + c.k, state.lim[c.k], (v) => { state.lim[c.k] = v; persist(); refresh(); }, `Лимит: ${c.n}`)),
+      h('td', {}, input('why-' + c.k, state.why[c.k], (v) => { state.why[c.k] = v; persist(); }, `Обоснование: ${c.n}`, { inputmode: 'text', placeholder: 'почему именно столько' })),
+      h('td', { id: 'st-l_' + c.k }, cell(3, 'l_' + c.k)))))));
+  const g = num(state.guess.arr);
+  return [
+    h('section', { class: 'card' }, h('h3', { text: '1. Сколько работы приходит и сколько людей' }),
+      h('div', { class: 'nq-list' }, nq('arr'), nq('cap')),
+      state.chk[3] && wipStatus().arr.st === 'ok' && g != null ? h('p', { class: 'note', text: `Ваш прогноз на шаге 1: ${state.guess.arr}. По данным — 21,5 работы в неделю на 12 специалистов.` }) : null),
+    h('section', { class: 'card' }, h('h3', { text: '2. Лимит для запросов продавцов по закону Литтла' }),
+      h('p', { class: 'lead', text: 'Закон Литтла связывает три величины: сколько задач в работе, сколько приходит в день и сколько дней задача проходит доску. Если задача должна пройти за 5 дней, в работе не может быть больше, чем поступление × 5.' }),
+      h('div', { class: 'nq-list' }, nq('perday'), nq('sys5'), nq('sys4'))),
+    h('section', { class: 'card' }, h('h3', { text: '3. Лимиты по дорожкам' }),
+      h('p', { class: 'lead', text: 'Лимит — сколько задач этой дорожки может одновременно быть в столбце «В работе». Впишите целые числа и коротко обоснуйте.' }),
+      lims, capBar('now'), slot(3, 'sum'),
+      h('span', { class: 'lbl', text: 'Пришёл третий сбой, а лимит срочной дорожки уже занят. Что делаем?' }),
+      radios('over', OVER, state.over, (v) => { state.over = v; persist(); refresh(); }), slot(3, 'over')),
+    h('section', { class: 'card' }, h('h3', { text: 'Ваша доска с лимитами' }),
+      state.lanes === 'class' ? null : h('p', { class: 'help', text: 'Лимиты видны на доске, если на шаге 2 выбраны дорожки по классам или по типам.' }),
+      h('div', { id: 'board-preview', 'data-mode': 'now' }, boardPreview('now'))),
+    checkBar(3, [4, 'Дальше: улучшения']),
+    hintCard('wip', 'Лимиты WIP')
+  ];
+}
+
+/* ---- Step 5: improvements ---- */
+function viewImp() {
+  const i = state.imp, set = (f) => (v) => { i[f] = v; persist(); refresh(); };
+  const sh = num(i.share);
+  return [
+    h('section', { class: 'card' }, h('h3', { text: '1. Сколько ёмкости отдать улучшениям' }),
+      h('p', { class: 'lead', text: 'Улучшения — автоматизация проверки карточек товаров и устранение причин повторяющихся сбоев — по словам руководителя, избавили бы отдел от половины ночных вызовов дежурных. Решите, какую долю недели им гарантировать.' }),
+      h('div', { class: 'nq' },
+        h('label', { class: 'lbl', for: 'imp-share', text: 'Доля ёмкости на улучшения' }),
+        select('imp-share', i.share, SHARES.map((p) => [String(p), p + '%']), 'выберите долю', (v) => { i.share = v; persist(); render(); }),
+        h('label', { class: 'lbl', for: 'imp-days', text: 'Сколько это человеко-дней в неделю?' }),
+        h('div', { class: 'formula', html: `Как считать: <b>ёмкость отдела × доля ÷ 100</b>. Ёмкость — 12 специалистов × 5 дней = 60 человеко-дней${sh != null ? `. Для ${sh}%: 60 × ${sh} ÷ 100` : ''}.` }),
+        h('div', { class: 'row' }, input('imp-days', i.days, set('days'), 'Человеко-дней на улучшения'), slot(4, 'days')))),
+    h('section', { class: 'card' }, h('h3', { text: '2. Механизм' }),
+      radios('mech', MECH.map((m) => [m[0], m[1]]), i.mech, set('mech')), slot(4, 'mech'),
+      h('div', { class: 'tri' },
+        h('div', { class: 'field' }, h('label', { class: 'lbl', for: 'imp-n', text: 'Сколько улучшений всегда в работе (минимум)?' }), input('imp-n', i.n, set('n'), 'Минимум улучшений'), slot(4, 'n')),
+        h('div', { class: 'field' }, h('label', { class: 'lbl', for: 'imp-owner', text: 'Кто отвечает за правило?' }), select('imp-owner', i.owner, OWNER.map((x) => [x[0], x[1]]), 'выберите', set('owner')), slot(4, 'owner')),
+        h('div', { class: 'field' }, h('label', { class: 'lbl', for: 'imp-metric', text: 'Как поймём, что правило работает?' }), select('imp-metric', i.metric, METRIC.map((x) => [x[0], x[1]]), 'выберите', set('metric')), slot(4, 'metric'))),
+      h('span', { class: 'lbl', text: 'Сбой занял специалиста, который в эту неделю делал улучшение. Что дальше?' }),
+      radios('displ', DISPL.map((x) => [x[0], x[1]]), i.displ, set('displ')), slot(4, 'displ')),
+    h('section', { class: 'card' }, h('h3', { text: '3. Правило одной фразой' }),
+      h('p', { class: 'lead', text: 'Соберите выбранное выше в правило, которое можно повесить над доской. В нём должно быть число, владелец и что делать при вытеснении.' }),
+      (() => { const ta = h('textarea', { id: 'imp-text', rows: 3, placeholder: 'Каждую неделю не менее … человеко-дней (…%) идёт на улучшения; ответственный — …; если слот занят сбоем, …' }); ta.value = i.text; ta.addEventListener('input', () => { i.text = ta.value; persist(); refresh(); }); return ta; })(),
+      slot(4, 'text')),
+    checkBar(4, [5, 'Дальше: неделя 18']),
+    hintCard('imp', 'Правило для улучшений')
+  ];
+}
+
+/* ---- Step 6: week 18 and summary ---- */
+function viewW18() {
+  const lims = h('div', { class: 'tscroll' }, h('table', { class: 'data lims' },
+    h('thead', {}, h('tr', {}, ['Дорожка', 'Было (шаг 4)', 'С 18-й недели'].map((t) => h('th', { text: t })))),
+    h('tbody', {}, CLASSES.map((c) => h('tr', {}, h('td', {}, h('b', { text: c.n })), h('td', { class: 'mono', text: state.lim[c.k] || '—' }),
+      h('td', {}, input('l18-' + c.k, state.lim18[c.k], (v) => { state.lim18[c.k] = v; persist(); refresh(); }, `Лимит с 18-й недели: ${c.n}`)))))));
+  const dec = h('div', { class: 'radio-list' }, DEC18.map(([k, t]) => {
+    const i = h('input', { type: 'checkbox', id: 'd18-' + k }); i.checked = state.dec18.includes(k);
+    i.addEventListener('change', () => { state.dec18 = i.checked ? [...state.dec18, k] : state.dec18.filter((x) => x !== k); persist(); refresh(); });
+    return h('label', { for: 'd18-' + k }, i, h('span', { text: t }));
+  }));
+  const f = state.final;
+  const fld = (k, label, ph) => { const ta = h('textarea', { id: 'f-' + k, rows: 2, placeholder: ph }); ta.value = f[k]; ta.addEventListener('input', () => { f[k] = ta.value; persist(); }); return h('div', { class: 'field' }, h('label', { class: 'lbl', for: 'f-' + k, text: label }), ta); };
+  return [
+    h('section', { class: 'card' }, h('h3', { text: '1. Что теряет отдел' }),
+      h('div', { class: 'nq-list' }, nq('e18'), nq('cap18'), nq('drop'))),
+    h('section', { class: 'card' }, h('h3', { text: '2. Нагрузка на специалиста и время выполнения' }),
+      h('div', { class: 'nq-list' }, nq('loadB'), nq('loadA'), nq('factor'), nq('t75')),
+      state.chk[5] ? h('div', { class: 'compare' },
+        h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Специалистов' }), h('b', { text: '12 → 8' })),
+        h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Ёмкость, человеко-дней' }), h('b', { text: '60 → 40' })),
+        h('div', { class: 'stat hot' }, h('span', { class: 'lbl', text: 'Работ на специалиста в неделю' }), h('b', { text: '1,8 → 2,3' })),
+        h('div', { class: 'stat hot' }, h('span', { class: 'lbl', text: 'Запрос продавца при старых лимитах' }), h('b', { text: '5 → 7,5 дн.' }))) : null),
+    h('section', { class: 'card' }, h('h3', { text: '3. Новые лимиты под 8 специалистов' }),
+      h('p', { class: 'lead', text: 'Пересчитайте лимиты «В работе». Работы по запуску «Доставки еды» можно увести на отдельную дорожку четырёх специалистов команды запуска — тогда в фиксированной дате остаются только акции и обновления каталога.' }),
+      lims, capBar('w18'), slot(5, 'lim18')),
+    h('section', { class: 'card' }, h('h3', { text: '4. Что ещё меняем в системе' }),
+      h('p', { class: 'lead', text: 'Отметьте всё, что вы бы сделали. Не все варианты помогают.' }), dec, slot(5, 'dec')),
+    h('section', { class: 'card' }, h('h3', { text: 'Доска с 18-й недели' }),
+      h('div', { id: 'board-preview', 'data-mode': 'w18' }, boardPreview('w18'))),
+    checkBar(5, null),
+    hintCard('w18', 'Неделя 18'),
+    h('section', { class: 'card' }, h('h3', { text: 'Итог для защиты' }),
+      h('p', { class: 'lead', text: 'Три фразы для выступления Айгерим. Опирайтесь на свои расчёты.' }),
+      fld('p1', '1. Как устроена доска и почему', 'Например: ожидание комитета вынесено в отдельный столбец, потому что…'),
+      fld('p2', '2. Правила и лимиты — с числами', 'Например: лимит запросов продавцов — 7, потому что 1,8 в день × 4 дня…'),
+      fld('p3', '3. Что нужно от руководства к 18-й неделе', 'Например: решение о… ёмкость падает на 33%…'),
+      h('div', { class: 'actions' },
+        h('button', { class: 'btn btn-primary', type: 'button', text: 'Скопировать отчёт', onclick: (e) => copyText(report(), e.currentTarget) }),
+        state.downloads ? h('button', { class: 'btn', type: 'button', text: 'Скачать отчёт', onclick: saveReport }) : null),
+      h('p', { class: 'help', id: 'rep-status', text: 'Отчёт собирает всё, что вы ввели на шагах 1–6, в формате для документа или чата группы.' }))
+  ];
+}
+
+/* ---- Report ---- */
+function report() {
+  const L = [], st = (s) => { const c = stepScore(s); return state.chk[s] ? `(проверка: верно ${c.ok} из ${c.total})` : '(не проверено)'; };
+  L.push('# Практическое занятие 2. Канбан-доска отдела операций маркетплейса (кейс «Витрина»)', '');
+  L.push(`## 1. Доска ${st(1)}`, '', 'Столбцы:', ...state.cols.map((k, i) => `${i + 1}. ${colName(k)}${k !== 'done' ? ` — выход: ${state.exits[k] || '—'}` : ''}`));
+  L.push('', `Дорожки: ${(LANES.find((x) => x[0] === state.lanes) || ['', '—'])[1]}`, `Путь сбоя: ${state.inc.map(colName).join(' → ') || '—'}`, '');
+  L.push(`## 2. Классы обслуживания ${st(2)}`, '', '| Тип работы | Класс |', '|---|---|', ...TYPES.map((t) => `| ${t.n} | ${(CLASSES.find((c) => c.k === state.cls[t.k]) || { n: '—' }).n} |`), '');
+  L.push('| Класс | Комитет | Прерывает | Обещание | Кто ставит |', '|---|---|---|---|---|', ...CLASSES.map((c) => { const r = state.rules[c.k], o = (f) => (RULE_OPTS[f].find((x) => x[0] === r[f]) || ['', '—'])[1]; return `| ${c.n} | ${o('cab')} | ${o('stop')} | ${o('pr')} | ${r.who || '—'} |`; }), '');
+  L.push(`Запрос в пятницу: комитет на ${state.n.fri_day || '—'}-й день срока, на работу остаётся ${state.n.fri_left || '—'} дн.`, '');
+  L.push(`## 3. Лимиты WIP ${st(3)}`, '', `Поступление в неделю: ${state.n.arr || '—'}. Ёмкость: ${state.n.cap || '—'} человеко-дней. Запросов в день: ${state.n.perday || '—'}; по закону Литтла на 5 дней — ${state.n.sys5 || '—'}, на 4 дня — ${state.n.sys4 || '—'}.`, '');
+  L.push('| Дорожка | Лимит | Обоснование |', '|---|---|---|', ...CLASSES.map((c) => `| ${c.n} | ${state.lim[c.k] || '—'} | ${state.why[c.k] || '—'} |`), '', `Если сбой сверх лимита: ${(OVER.find((x) => x[0] === state.over) || ['', '—'])[1]}`, '');
+  const i = state.imp, pk = (list, v) => (list.find((x) => x[0] === v) || ['', '—'])[1];
+  L.push(`## 4. Улучшения ${st(4)}`, '', `Доля ёмкости: ${i.share ? i.share + '%' : '—'} = ${i.days || '—'} человеко-дней в неделю. Механизм: ${pk(MECH, i.mech)}. Минимум в работе: ${i.n || '—'}. Владелец: ${pk(OWNER, i.owner)}. Метрика: ${pk(METRIC, i.metric)}. При вытеснении: ${pk(DISPL, i.displ)}.`, '', `Правило: ${i.text || '—'}`, '');
+  L.push(`## 5. С 18-й недели ${st(5)}`, '', `Специалистов: ${state.n.e18 || '—'}. Ёмкость: ${state.n.cap18 || '—'} человеко-дней, снижение ${state.n.drop || '—'}%. На специалиста: ${state.n.loadB || '—'} → ${state.n.loadA || '—'} работ в неделю. Время выполнения ×${state.n.factor || '—'}: запрос продавца ${state.n.t75 || '—'} дн.`, '');
+  L.push('| Дорожка | Было | С 18-й недели |', '|---|---|---|', ...CLASSES.map((c) => `| ${c.n} | ${state.lim[c.k] || '—'} | ${state.lim18[c.k] || '—'} |`), '', 'Изменения:', ...DEC18.filter((d) => state.dec18.includes(d[0])).map((d) => `- ${d[1]}`), '');
+  L.push('## Итог для защиты', '', `1. ${state.final.p1 || '—'}`, `2. ${state.final.p2 || '—'}`, `3. ${state.final.p3 || '—'}`);
+  return L.join('\n');
+}
+async function copyText(t, btn) {
+  try { await navigator.clipboard.writeText(t); if (btn) { const o = btn.textContent; btn.textContent = 'Скопировано'; setTimeout(() => (btn.textContent = o), 1600); } }
+  catch (e) { const s = $('#rep-status'); if (s) s.textContent = 'Браузер не дал скопировать. Попробуйте кнопку «Скачать отчёт».'; }
+}
+async function saveReport() {
+  try { await state.downloads.save({ filename: 'praktikum-2-kanban-doska.md', data: report() }); }
+  catch (e) { const s = $('#rep-status'); if (s && e && e.code !== 'declined') s.textContent = 'Файл не сохранён. Скопируйте отчёт кнопкой рядом.'; }
+}
+
+/* ---- Rail ---- */
+const GOALS = ['Спроектировали доску', 'Назначили классы и правила', 'Обосновали лимиты числами', 'Защитили улучшения правилом', 'Перестроили систему к 18-й неделе'];
+function renderRail() {
+  const kids = [h('div', { class: 'rail-sec' }, h('h3', { text: 'Пункты задания' }), ...GOALS.map((t, i) => h('div', { class: 'goal' + (stepDone(i + 1) ? ' on' : '') }, h('span', { class: 'dot' }), h('span', { text: t }))))];
+  const tip = railTip();
+  if (tip) kids.push(h('div', { class: 'rail-sec tip' }, h('h4', { text: 'Коуч' }), h('p', { text: tip.b }), tip.q ? h('p', { class: 'q', text: tip.q }) : null));
+  kids.push(h('div', { class: 'rail-sec' }, h('h4', { text: 'Опорные числа кейса' }),
+    h('p', { class: 'legend', text: '12 специалистов · 5 рабочих дней · 60 человеко-дней · релизный комитет по четвергам · запрос продавца — 5 рабочих дней · сбой — реакция 30 минут · с 18-й недели — 8 специалистов' })));
+  $('#rail').replaceChildren(...kids);
+}
+function railTip() {
+  const s = state.step;
+  if (s === 0) return { b: 'Прочитайте Приложение 4 и запишите прогноз. Потом будет с чем сравнить.', q: 'Какая особенность в таблице сильнее всего влияет на устройство доски?' };
+  const c = stepScore(s);
+  if (!state.chk[s]) return { b: 'Решите сами, затем нажмите «Проверить». Формулы и подсказки — прямо под вопросами.' };
+  if (c.ok < c.total) return { b: 'Проверка показала, где ошибка. Под каждой красной отметкой — подсказка, как исправить.', q: state.chk[s] >= 2 ? 'Ответ можно открыть кнопкой «Показать ответ», но сначала попробуйте ещё раз.' : null };
+  return [null,
+    { b: 'Доска готова. На следующем шаге дорожки получат классы.', q: 'Что будет с запросом продавца, если ожидание четверга не видно на доске?' },
+    { b: 'Классы назначены. Заметили, что запрос продавца не успевает пройти релизный комитет?', q: 'Какие запросы продавцов можно считать типовыми?' },
+    { b: 'Лимиты обоснованы. Сравните сумму лимитов с числом специалистов.', q: 'Что произойдёт с лимитами, когда специалистов станет 8?' },
+    { b: 'Правило измеримо. Его владелец может проверять его каждую неделю.', q: 'Как правило поможет восьми специалистам после 18-й недели?' },
+    { b: 'Система перестроена. Соберите три фразы итога и скопируйте отчёт для защиты.' }][s];
+}
+
+/* ================= Boot ================= */
+function buildRuler() {
+  const r = $('#ruler'); if (!r) return;
+  for (let w = 1; w <= 35; w++) {
+    const cls = [w === 1 ? 'mk now' : '', w === 18 ? 'mk leave' : '', w === 35 ? 'mk launch' : '', w > 18 && w < 35 ? 'after' : '', (w - 1) % 5 === 0 && ![1, 16, 31].includes(w) ? 'wk' : ''].join(' ').trim();
+    const lab = w === 1 ? 'сейчас: неделя 1' : w === 18 ? 'неделя 18: −4 специалиста' : w === 35 ? 'запуск «Доставки еды», неделя 35' : null;
+    const short = w === 1 ? 'н.1' : w === 18 ? 'н.18' : w === 35 ? 'н.35' : null;
+    r.append(h('span', { class: cls, 'data-lab': lab, 'data-short': short, 'data-wk': (w - 1) % 5 === 0 ? `н.${w}` : null, title: `Неделя ${w}${lab ? ': ' + lab : ''}` }));
+  }
+}
+function boot() {
+  buildRuler(); render();
+  (async () => { try { if (window.claude && window.claude.use) { state.downloads = await window.claude.use('downloads'); render(); } } catch (e) { /* downloads not available */ } })();
+}
+boot();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1336 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#20242B">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<script src="pwa-shim.js"></script>
+</head>
+<body>
+<nav class="pwa-nav"><a href="./">← Все практикумы</a></nav>
+
+<title>Нарезка эпика — Корзина</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Unbounded:wght@500;700&display=swap">
+<style>
+/* Layout: a drafting table. Intake band on top, results beside a coach rail below.
+   Stories are blue (value), WBS is teal (deliverables); status colors stay separate. */
+:root {
+  --bg: #EDF0F5;
+  --surface: #FFFFFF;
+  --surface-2: #F5F7FA;
+  --ink: #111C2B;
+  --ink-2: #4B596C;
+  --line: #D3DBE6;
+  --line-strong: #AAB6C6;
+  --story: #3147D9;
+  --story-tint: #E7EAFB;
+  --wbs: #0A6770;
+  --wbs-tint: #DDF1F2;
+  --ok: #27702B;
+  --ok-tint: #E3F3E4;
+  --warn: #8F5F00;
+  --warn-tint: #FBEFCF;
+  --bad: #B3261E;
+  --bad-tint: #FBE3E1;
+  --focus: #3147D9;
+  --font-display: "Unbounded", "IBM Plex Sans", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0D131D;
+    --surface: #151D2B;
+    --surface-2: #1B2536;
+    --ink: #E7EDF6;
+    --ink-2: #9DABC0;
+    --line: #2A3850;
+    --line-strong: #46587A;
+    --story: #93A2FF;
+    --story-tint: #222B52;
+    --wbs: #55CBD4;
+    --wbs-tint: #153A40;
+    --ok: #79D07F;
+    --ok-tint: #17331A;
+    --warn: #F2C14E;
+    --warn-tint: #3A2D0E;
+    --bad: #FF8A85;
+    --bad-tint: #3E1816;
+    --focus: #93A2FF;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0D131D;
+  --surface: #151D2B;
+  --surface-2: #1B2536;
+  --ink: #E7EDF6;
+  --ink-2: #9DABC0;
+  --line: #2A3850;
+  --line-strong: #46587A;
+  --story: #93A2FF;
+  --story-tint: #222B52;
+  --wbs: #55CBD4;
+  --wbs-tint: #153A40;
+  --ok: #79D07F;
+  --ok-tint: #17331A;
+  --warn: #F2C14E;
+  --warn-tint: #3A2D0E;
+  --bad: #FF8A85;
+  --bad-tint: #3E1816;
+  --focus: #93A2FF;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  padding-inline: 16px;
+  padding-block: 0 48px;
+}
+.wrap { max-width: 1280px; margin-inline: auto; }
+h1, h2, h3, h4, p { margin: 0; }
+h1, h2, h3 { text-wrap: balance; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.num, .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+/* Header with a ruler along its lower edge */
+.top {
+  display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: end; justify-content: space-between;
+  padding-block: 20px 14px;
+  border-bottom: 1px solid var(--line-strong);
+  position: relative;
+}
+.top::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -9px; height: 8px;
+  background:
+    repeating-linear-gradient(90deg, var(--line-strong) 0 1px, transparent 1px 48px),
+    repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 12px);
+  background-size: 100% 8px, 100% 4px;
+  background-repeat: no-repeat;
+  background-position: 0 0, 0 0;
+  pointer-events: none;
+}
+.brand { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.brand h1 { font-family: var(--font-display); font-weight: 700; font-size: 22px; letter-spacing: -0.01em; }
+.brand p { color: var(--ink-2); max-width: 60ch; }
+.top-tools { display: flex; gap: 8px; align-items: center; }
+
+/* Buttons and controls */
+.btn {
+  appearance: none; cursor: pointer; border: 1px solid var(--line-strong); background: var(--surface);
+  border-radius: 4px; padding: 7px 12px; font-weight: 500; line-height: 1.2;
+}
+.btn:hover { background: var(--surface-2); }
+.btn[disabled] { opacity: .55; cursor: not-allowed; }
+.btn-primary { background: var(--story); border-color: var(--story); color: #fff; }
+.btn-primary:hover { background: var(--story); filter: brightness(1.08); }
+:root[data-theme="dark"] .btn-primary { color: #0D131D; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn-primary { color: #0D131D; } }
+.btn-small { padding: 4px 9px; font-size: 12.5px; }
+.btn-ghost { background: transparent; border-color: transparent; color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; }
+.seg { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 4px; overflow: hidden; background: var(--surface); }
+.seg button {
+  appearance: none; border: 0; background: transparent; cursor: pointer; padding: 7px 14px; font-weight: 500;
+  border-right: 1px solid var(--line);
+}
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.seg button[data-m="stories"][aria-pressed="true"] { background: var(--story); color: #fff; }
+.seg button[data-m="wbs"][aria-pressed="true"] { background: var(--wbs); color: #fff; }
+:root[data-theme="dark"] .seg button[aria-pressed="true"] { color: #0D131D; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .seg button[aria-pressed="true"] { color: #0D131D; } }
+.field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.field > label, .lbl { font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); font-weight: 600; }
+textarea, input[type="text"], input[type="number"], select {
+  width: 100%; border: 1px solid var(--line-strong); background: var(--surface); border-radius: 4px; padding: 8px 10px;
+}
+textarea { resize: vertical; min-height: 112px; line-height: 1.5; }
+
+/* Intake */
+.intake { display: grid; gap: 16px; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); padding-block: 26px 18px; align-items: start; }
+.intake-side { display: flex; flex-direction: column; gap: 12px; }
+.samples { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.samples .lbl { margin-right: 4px; }
+.chipbtn {
+  appearance: none; cursor: pointer; border: 1px solid var(--line-strong); background: var(--surface);
+  border-radius: 999px; padding: 3px 11px; font-size: 12.5px;
+}
+.chipbtn:hover { background: var(--surface-2); }
+.chipbtn[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: var(--bg); }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.hint { color: var(--ink-2); font-size: 12.5px; }
+.status-line { min-height: 20px; font-size: 13px; }
+.status-line.err { color: var(--bad); }
+.status-line.busy { color: var(--ink-2); }
+.under-hood { margin-top: 2px; }
+.under-hood summary { cursor: pointer; color: var(--ink-2); font-size: 12.5px; }
+.under-hood pre {
+  margin: 8px 0 0; padding: 10px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px;
+  max-height: 240px; overflow: auto; font-family: var(--font-mono); font-size: 11.5px; white-space: pre-wrap; overflow-wrap: anywhere;
+}
+
+/* Workspace */
+.workspace { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 1100px) { .workspace { grid-template-columns: minmax(0, 1fr) 380px; } }
+.results { container-type: inline-size; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; justify-content: space-between; }
+.toolbar-r { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.summary {
+  display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: baseline; padding: 10px 12px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 4px;
+}
+.summary h2 { font-family: var(--font-display); font-weight: 500; font-size: 15px; flex: 1 1 280px; min-width: 0; overflow-wrap: anywhere; }
+.summary .m { color: var(--ink-2); font-size: 12.5px; }
+.summary .m b { color: var(--ink); font-family: var(--font-mono); font-weight: 500; }
+.badge {
+  display: inline-block; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; font-weight: 600;
+  padding: 2px 7px; border: 1px solid var(--line-strong); border-radius: 3px; color: var(--ink-2);
+}
+.badge.live { color: var(--story); border-color: var(--story); }
+.badge.stale { color: var(--warn); border-color: var(--warn); background: var(--warn-tint); }
+
+.panes { display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@container (min-width: 780px) { .panes.two { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); } }
+.pane { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.pane-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; padding-bottom: 6px; border-bottom: 2px solid var(--story); }
+.pane.wbs .pane-head { border-bottom-color: var(--wbs); }
+.pane-head h3 { font-family: var(--font-display); font-weight: 500; font-size: 14px; }
+.pane-head span { color: var(--ink-2); font-size: 12.5px; }
+
+/* Story cards */
+.story { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 12px; display: flex; flex-direction: column; gap: 9px; min-width: 0; }
+.story.hl, .node.hl > summary, .node.hl > .leaf { box-shadow: 0 0 0 2px var(--story); }
+.story.dim { opacity: .55; }
+.story-top { display: flex; gap: 10px; align-items: baseline; }
+.sid { font-family: var(--font-mono); font-weight: 500; color: var(--story); flex: none; }
+.story-title { flex: 1; min-width: 0; margin: 0; font-weight: 500; font-size: 14.5px; line-height: 1.4; overflow-wrap: anywhere; }
+.story-btn { display: block; width: 100%; appearance: none; background: none; border: 0; padding: 0; margin: 0; text-align: left; font: inherit; color: inherit; cursor: pointer; overflow-wrap: anywhere; }
+.story-btn:hover { text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+.pts { flex: none; font-family: var(--font-mono); font-size: 12.5px; border: 1px solid var(--line-strong); border-radius: 3px; padding: 1px 6px; }
+.pts.big { border-color: var(--bad); color: var(--bad); background: var(--bad-tint); }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
+.chip { font-size: 12px; padding: 1px 8px; border-radius: 3px; background: var(--surface-2); border: 1px solid var(--line); color: var(--ink-2); }
+.chip.st-ok { background: var(--ok-tint); color: var(--ok); border-color: var(--ok); }
+.chip.st-warn { background: var(--warn-tint); color: var(--warn); border-color: var(--warn); }
+.chip.st-bad { background: var(--bad-tint); color: var(--bad); border-color: var(--bad); }
+.invest { display: inline-flex; gap: 3px; }
+.iv {
+  width: 22px; height: 22px; display: grid; place-items: center; font-family: var(--font-mono); font-size: 11.5px; font-weight: 500;
+  border-radius: 3px; border: 1px solid var(--line-strong); color: var(--ink-2); position: relative;
+}
+.iv.ok { background: var(--ok-tint); color: var(--ok); border-color: var(--ok); }
+.iv.warn { background: var(--warn-tint); color: var(--warn); border-color: var(--warn); }
+.iv.warn::after, .iv.bad::after { content: ""; position: absolute; right: -2px; top: -2px; width: 6px; height: 6px; background: currentColor; }
+.iv.warn::after { border-radius: 50%; }
+.iv.bad { background: var(--bad-tint); color: var(--bad); border-color: var(--bad); }
+.why { font-size: 12.5px; color: var(--ink-2); }
+.crit summary { cursor: pointer; font-size: 12.5px; color: var(--ink-2); }
+.crit ul { margin: 6px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 5px; }
+.crit li { font-size: 13px; }
+.kw { font-weight: 600; color: var(--story); }
+.story-foot { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; justify-content: space-between; }
+.codes { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+.code { font-family: var(--font-mono); font-size: 11.5px; padding: 0 6px; border-radius: 3px; background: var(--wbs-tint); color: var(--wbs); border: 1px solid var(--wbs); }
+.stack { display: flex; flex-direction: column; gap: 10px; }
+
+/* WBS tree */
+.tree { display: flex; flex-direction: column; gap: 8px; }
+.node { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; }
+.node > summary, .leaf { list-style: none; display: flex; gap: 10px; align-items: baseline; padding: 8px 10px; cursor: pointer; min-width: 0; }
+.leaf { cursor: default; }
+.node > summary::-webkit-details-marker { display: none; }
+.node > summary::before { content: "+"; font-family: var(--font-mono); color: var(--wbs); width: 10px; flex: none; }
+.node[open] > summary::before { content: "−"; }
+.ncode { font-family: var(--font-mono); font-weight: 500; color: var(--wbs); flex: none; min-width: 28px; }
+.nname { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.node.l1 > summary .nname { font-weight: 600; }
+.nkids { padding: 0 10px 10px 22px; display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--line); padding-top: 8px; }
+.nkids .node, .nkids .leafbox { background: var(--surface-2); }
+.leafbox { border: 1px solid var(--line); border-radius: 4px; }
+.sid-chip { font-family: var(--font-mono); font-size: 11.5px; padding: 0 6px; border-radius: 3px; background: var(--story-tint); color: var(--story); border: 1px solid var(--story); }
+.orphan { font-size: 11.5px; color: var(--warn); border: 1px dashed var(--warn); background: var(--warn-tint); border-radius: 3px; padding: 0 6px; }
+.leaf-links { display: flex; flex-wrap: wrap; gap: 5px; flex: none; }
+
+/* Coach */
+.coach { background: var(--surface); border: 1px solid var(--line-strong); border-radius: 4px; display: flex; flex-direction: column; min-width: 0; }
+@media (min-width: 1100px) { .coach { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow: auto; } }
+.coach-head { padding: 12px 14px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; }
+.coach-head h3 { font-family: var(--font-display); font-weight: 500; font-size: 15px; }
+.ready-bar { display: flex; height: 8px; border-radius: 2px; overflow: hidden; background: var(--line); }
+.ready-bar i { display: block; height: 100%; }
+.ready-bar .r-ok { background: var(--ok); }
+.ready-bar .r-warn { background: var(--warn); }
+.ready-bar .r-bad { background: var(--bad); }
+.ready-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; color: var(--ink-2); }
+.coach-sec { padding: 12px 14px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; }
+.coach-sec:last-child { border-bottom: 0; }
+.coach-sec > h4 { font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); font-weight: 600; }
+.obs { display: flex; flex-direction: column; gap: 3px; }
+.obs-head { display: flex; gap: 8px; align-items: baseline; }
+.obs-tag { flex: none; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; padding: 0 6px; border-radius: 3px; border: 1px solid; }
+.obs-tag.bad { color: var(--bad); background: var(--bad-tint); }
+.obs-tag.warn { color: var(--warn); background: var(--warn-tint); }
+.obs-tag.good { color: var(--ok); background: var(--ok-tint); }
+.obs-tag.info { color: var(--ink-2); background: var(--surface-2); }
+.obs-title { font-weight: 600; }
+.obs p { color: var(--ink); }
+.obs .q { color: var(--ink-2); font-style: italic; }
+.note { display: flex; flex-direction: column; gap: 3px; padding: 9px 10px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px; }
+.note h5 { margin: 0; font-size: 13px; font-weight: 600; }
+.note .src { font-size: 12px; color: var(--ink-2); }
+.note p { font-size: 13px; }
+.note .why-found { font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); }
+.note.mine { border-color: var(--story); }
+.reflect { white-space: pre-wrap; overflow-wrap: anywhere; padding: 10px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px; min-height: 40px; }
+.addnote { display: flex; flex-direction: column; gap: 8px; }
+.addnote summary { cursor: pointer; font-weight: 500; }
+.addnote .field { margin-top: 8px; }
+.empty { padding: 28px 16px; text-align: center; color: var(--ink-2); border: 1px dashed var(--line-strong); border-radius: 4px; }
+.err-line { color: var(--bad); font-size: 12.5px; min-height: 18px; margin: 0; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+@media (max-width: 760px) {
+  .intake { grid-template-columns: minmax(0, 1fr); }
+  .brand h1 { font-size: 19px; }
+  .story-top { flex-wrap: wrap; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .story, .node, .btn, .chipbtn { transition: box-shadow .12s ease, opacity .12s ease, background-color .12s ease; }
+}
+</style>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1>Нарезка эпика</h1>
+      <p data-ru="Один эпик, две проекции: пользовательские истории по ценности и WBS по результатам. Коуч сверяет итог с вашей библиотекой." data-en="One epic, two projections: user stories by value and a WBS by deliverable. The coach checks the outcome against your library."></p>
+    </div>
+    <div class="top-tools">
+      <div class="seg" role="group" aria-label="Language">
+        <button type="button" data-lang="ru" aria-pressed="true">RU</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="intake" aria-labelledby="intake-h">
+    <div class="field">
+      <label id="intake-h" for="epic" data-ru="Эпик или цель проекта" data-en="Epic or project goal"></label>
+      <textarea id="epic" rows="5"></textarea>
+      <div class="samples" id="samples"></div>
+    </div>
+    <div class="intake-side">
+      <div class="field">
+        <label for="ctx" data-ru="Контекст" data-en="Context"></label>
+        <input type="text" id="ctx" data-ph-ru="Продукт, команда, длина спринта, ограничения" data-ph-en="Product, team, sprint length, constraints">
+      </div>
+      <div class="field">
+        <label for="lens" data-ru="Метод нарезки историй" data-en="Story splitting method"></label>
+        <select id="lens"></select>
+      </div>
+      <div class="field">
+        <label for="bigat" data-ru="Порог «слишком крупная», баллов" data-en="“Too big” threshold, points"></label>
+        <input type="number" id="bigat" min="2" max="100" step="1" value="13">
+        <span class="hint" data-ru="По шкале Кона истории для ближайших итераций оценивают в 1–8, а 13 и больше — эпики. Баллы относительны: настройте порог по скорости команды." data-en="On Cohn's scale near-term stories are 1–8 and 13 or more are epics. Points are relative: adjust the threshold to your team's velocity."></span>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn btn-primary" id="run"></button>
+        <button type="button" class="btn" id="cancel" hidden data-ru="Остановить" data-en="Stop"></button>
+      </div>
+      <div class="status-line" id="status" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="workspace">
+    <div class="results" id="results">
+      <div class="toolbar">
+        <div class="seg" role="group" id="modes" aria-label="View"></div>
+        <div class="toolbar-r">
+          <button type="button" class="btn btn-small" id="copy-wbs"></button>
+          <button type="button" class="btn btn-small" id="dl-csv"></button>
+        </div>
+      </div>
+      <div class="summary" id="summary"></div>
+      <div class="panes" id="panes"></div>
+      <details class="under-hood">
+        <summary data-ru="Что под капотом: промпт, который строит разбор" data-en="Under the hood: the prompt that builds the breakdown"></summary>
+        <pre id="prompt-view"></pre>
+      </details>
+    </div>
+
+    <aside class="coach" id="coach" aria-label="Coach"></aside>
+  </section>
+</div>
+<script>
+/* ---------- Sample epics (text only for 2 and 3, full breakdown for the first) ---------- */
+const SAMPLES = [
+  {
+    id: 'tariff',
+    name: { ru: 'Возврат одежды в приложении', en: 'Clothing return in the app' },
+    ru: { epic: 'Как покупатель, я хочу оформить возврат одежды в приложении, чтобы не звонить в поддержку и не ехать в пункт выдачи.', ctx: 'Маркетплейс, мобильное приложение, команда 6 человек, спринт 2 недели' },
+    en: { epic: 'As a buyer, I want to arrange a clothing return in the app, so that I do not have to call support or go to a pickup point.', ctx: 'Marketplace, mobile app, team of 6, 2-week sprints' }
+  },
+  {
+    id: 'onboarding',
+    name: { ru: 'Онбординг продавца', en: 'Seller onboarding' },
+    ru: { epic: 'Как новый продавец, я хочу пройти подключение к маркетплейсу в одном месте, чтобы начать продажи в первую неделю.', ctx: 'Кабинет продавца, команда 5 человек, спринт 2 недели' },
+    en: { epic: 'As a new seller, I want to complete marketplace onboarding in one place, so that I start selling in my first week.', ctx: 'Seller portal, team of 5, 2-week sprints' }
+  },
+  {
+    id: 'dispute',
+    name: { ru: 'Спор по заказу', en: 'Order dispute' },
+    ru: { epic: 'Как покупатель, я хочу оспорить списание за недоставленный заказ онлайн, чтобы получить ответ без звонка в поддержку.', ctx: 'Платежи и личный кабинет, команда 7 человек, спринт 2 недели' },
+    en: { epic: 'As a buyer, I want to dispute a charge for an undelivered order online, so that I get an answer without calling support.', ctx: 'Payments and customer account, team of 7, 2-week sprints' }
+  }
+];
+
+/* INVEST string order: I N V E S T. o = ok, w = warn, b = bad */
+const PREBAKED = {
+  ru: {
+    epic: { title: 'Возврат одежды в приложении', statement: SAMPLES[0].ru.epic },
+    stories: [
+      { id: 'S1', title: 'Как покупатель, я вижу свой заказ и срок возврата, чтобы понять, успеваю ли оформить возврат.', pattern: 'Шаг рабочего процесса', size: 3, invest: 'oooooo', why: '',
+        criteria: ['Дано: я вошёл в приложение. Когда: открываю свой заказ. Тогда: вижу заказ, товары в нём и дату окончания срока возврата.', 'Дано: данные заказов недоступны. Когда: открываю свой заказ. Тогда: вижу сообщение о временной недоступности и могу повторить запрос.'], wbs: ['1.1'] },
+      { id: 'S2', title: 'Как покупатель, я выбираю способ возврата из подходящих (пункт выдачи, курьер, постамат), чтобы выбрать удобный.', pattern: 'Правила бизнеса', size: 5, invest: 'ooowoo', why: 'Правила подбора «подходящих» способов возврата не определены: команде нужно уточнить их с владельцем продукта.',
+        criteria: ['Дано: у меня есть заказ. Когда: открываю выбор способа возврата. Тогда: вижу не более трёх способов с условиями и сроками.', 'Дано: подходящих способов нет. Когда: открываю выбор способа возврата. Тогда: вижу пояснение, почему вариантов нет.'], wbs: ['1.2', '2.1'] },
+      { id: 'S3', title: 'Как покупатель, оплативший картой, я оформляю возврат и получаю деньги на карту, чтобы закрыть вопрос сразу.', pattern: 'Простой путь сначала', size: 5, invest: 'wooooo', why: 'Зависит от списка способов возврата из S2: объедините истории или оставьте в S3 один способ для первого шага.',
+        criteria: ['Дано: товар в сроке возврата. Когда: подтверждаю возврат. Тогда: заявка создана, возврат денег на карту запущен.', 'Дано: срок возврата истёк. Когда: подтверждаю возврат. Тогда: вижу сообщение об истёкшем сроке и ссылку на поддержку.', 'Дано: заявка создана. Когда: открываю свой заказ. Тогда: вижу статус заявки на возврат.'], wbs: ['2.1', '2.2', '3.1'] },
+      { id: 'S4', title: 'Как покупатель, оплативший в рассрочку, я возвращаю товар с пересчётом графика платежей, чтобы не платить за возвращённое.', pattern: 'Правила бизнеса', size: 13, invest: 'ooowbo', why: 'Пересчёт графика рассрочки делает историю слишком большой для одного спринта. Отрежьте частный случай или вынесите исследование.',
+        criteria: ['Дано: заказ оплачен в рассрочку. Когда: оформляю возврат. Тогда: вижу новый график платежей и сумму к возврату.', 'Дано: по рассрочке остался один платёж. Когда: подтверждаю возврат. Тогда: сумма возврата засчитывается в последний платёж.'], wbs: ['2.3', '3.1'] },
+      { id: 'S5', title: 'Как покупатель, я получаю push и SMS о статусе возврата, чтобы быть уверенным, что он принят.', pattern: 'Интерфейс и канал', size: 2, invest: 'oooooo', why: '',
+        criteria: ['Дано: заявка на возврат принята. Когда: проходит минута. Тогда: получаю push и SMS со статусом возврата и датой.', 'Дано: push отключены в настройках телефона. Когда: заявка принята. Тогда: получаю только SMS.'], wbs: ['3.2'] },
+      { id: 'S6', title: 'Как покупатель, я отменяю заявку на возврат до передачи товара, чтобы передумать.', pattern: 'Операции: создать и отменить', size: 3, invest: 'wooooo', why: 'Нужны S3 или S4: без заявки на возврат отменять нечего.',
+        criteria: ['Дано: заявка на возврат создана. Когда: отменяю заявку. Тогда: заявка отменена, заказ остаётся без изменений.', 'Дано: товар уже передан в пункт выдачи или курьеру. Когда: пытаюсь отменить заявку. Тогда: вижу сообщение, что отмена уже невозможна.'], wbs: ['2.4'] },
+      { id: 'S7', title: 'Как оператор поддержки, я вижу историю возвратов покупателя, чтобы быстро отвечать на обращения.', pattern: 'Другая роль', size: 3, invest: 'oowooo', why: 'Ценность для покупателя косвенная: задайте метрику, например время обработки обращения.',
+        criteria: ['Дано: я открыл карточку покупателя. Когда: запрашиваю историю возвратов. Тогда: вижу даты, товар, способ возврата и источник заявки.', 'Дано: покупатель оформил возврат через приложение. Когда: смотрю историю. Тогда: источник указан как «приложение».'], wbs: ['4.1'] },
+      { id: 'S8', title: 'Исследование: выяснить, допускает ли платёжный шлюз частичный возврат по заказу.', pattern: 'Спайк (исследование)', size: 2, invest: 'oowoow', why: 'Нет прямой ценности для пользователя; результатом должны быть закрытые вопросы, а не код. Ограничьте двумя днями.',
+        criteria: ['Результат: список подтверждённых ограничений платёжного шлюза и решение по S4 к концу второго дня.'], wbs: ['3.1'] }
+    ],
+    wbs: [
+      { code: '1', name: 'Просмотр заказа и срока возврата', children: [
+        { code: '1.1', name: 'Экран «Мои заказы»', stories: ['S1'] },
+        { code: '1.2', name: 'Экран выбора способа возврата', stories: ['S2'] } ] },
+      { code: '2', name: 'Оформление возврата', children: [
+        { code: '2.1', name: 'Справочник способов возврата', stories: ['S2', 'S3'] },
+        { code: '2.2', name: 'Возврат при оплате картой', stories: ['S3'] },
+        { code: '2.3', name: 'Возврат при рассрочке с пересчётом графика', stories: ['S4'] },
+        { code: '2.4', name: 'Отмена заявки на возврат', stories: ['S6'] } ] },
+      { code: '3', name: 'Интеграции', children: [
+        { code: '3.1', name: 'Интеграция с платёжным шлюзом', stories: ['S3', 'S4', 'S8'] },
+        { code: '3.2', name: 'Уведомления SMS и push', stories: ['S5'] } ] },
+      { code: '4', name: 'Поддержка покупателей', children: [
+        { code: '4.1', name: 'История возвратов в рабочем месте поддержки', stories: ['S7'] } ] },
+      { code: '5', name: 'Внедрение', children: [
+        { code: '5.1', name: 'Инструкция и обучение службы поддержки', stories: [] } ] }
+    ]
+  },
+  en: {
+    epic: { title: 'Clothing return in the app', statement: SAMPLES[0].en.epic },
+    stories: [
+      { id: 'S1', title: 'As a buyer, I see my order and its return deadline, so that I can tell whether I still have time to return it.', pattern: 'Workflow step', size: 3, invest: 'oooooo', why: '',
+        criteria: ['Given I am logged in. When I open my order. Then I see the order, its items and the return deadline.', 'Given order data is unavailable. When I open my order. Then I see a temporary-unavailable message and can retry.'], wbs: ['1.1'] },
+      { id: 'S2', title: 'As a buyer, I choose a return method from the suitable ones (pickup point, courier, parcel locker), so that I can pick a convenient one.', pattern: 'Business rules', size: 5, invest: 'ooowoo', why: 'The rules for what counts as a "suitable" return method are undefined; the team should clarify them with the product owner.',
+        criteria: ['Given I have an order. When I open the return method choice. Then I see at most three methods with their conditions and timing.', 'Given there are no suitable methods. When I open the return method choice. Then I see an explanation of why there are no options.'], wbs: ['1.2', '2.1'] },
+      { id: 'S3', title: 'As a buyer who paid by card, I arrange a return and get the money back to my card, so that the matter is closed right away.', pattern: 'Simple path first', size: 5, invest: 'wooooo', why: 'Depends on the list of return methods from S2: merge the stories or keep a single method in S3 for the first step.',
+        criteria: ['Given the item is within the return period. When I confirm the return. Then the request is created and the card refund is started.', 'Given the return period has expired. When I confirm the return. Then I see an expired-period message and a link to support.', 'Given the request is created. When I open my order. Then I see the return request status.'], wbs: ['2.1', '2.2', '3.1'] },
+      { id: 'S4', title: 'As a buyer who paid in instalments, I return an item with the payment schedule recalculated, so that I do not pay for what I returned.', pattern: 'Business rules', size: 13, invest: 'ooowbo', why: 'Recalculating the instalment schedule makes this too big for one sprint. Cut off a special case or move the research out.',
+        criteria: ['Given the order was paid in instalments. When I arrange a return. Then I see the new payment schedule and the refund amount.', 'Given one instalment is left. When I confirm the return. Then the refund is credited against the last instalment.'], wbs: ['2.3', '3.1'] },
+      { id: 'S5', title: 'As a buyer, I get a push and an SMS about the return status, so that I am sure it was accepted.', pattern: 'Interface and channel', size: 2, invest: 'oooooo', why: '',
+        criteria: ['Given the return request is accepted. When a minute passes. Then I get a push and an SMS with the return status and date.', 'Given push is disabled on my phone. When the request is accepted. Then I get only the SMS.'], wbs: ['3.2'] },
+      { id: 'S6', title: 'As a buyer, I cancel a return request before handing over the item, so that I can change my mind.', pattern: 'Operations: create and cancel', size: 3, invest: 'wooooo', why: 'Needs S3 or S4: there is nothing to cancel without a return request.',
+        criteria: ['Given a return request is created. When I cancel the request. Then the request is cancelled and the order stays unchanged.', 'Given the item has already been handed to a pickup point or courier. When I try to cancel the request. Then I am told cancelling is no longer possible.'], wbs: ['2.4'] },
+      { id: 'S7', title: 'As a support agent, I see a buyer\'s return history, so that I answer requests faster.', pattern: 'Different role', size: 3, invest: 'oowooo', why: 'Value to the buyer is indirect: set a metric, for example request handling time.',
+        criteria: ['Given I opened the buyer card. When I request the return history. Then I see dates, item, return method and the source of the request.', 'Given the buyer arranged the return in the app. When I view the history. Then the source reads "app".'], wbs: ['4.1'] },
+      { id: 'S8', title: 'Research: find out whether the payment gateway allows a partial refund on an order.', pattern: 'Spike (research)', size: 2, invest: 'oowoow', why: 'No direct user value; the outcome should be closed questions, not code. Timebox it to two days.',
+        criteria: ['Outcome: a list of confirmed payment gateway constraints and a decision on S4 by the end of day two.'], wbs: ['3.1'] }
+    ],
+    wbs: [
+      { code: '1', name: 'Order and return deadline view', children: [
+        { code: '1.1', name: '"My orders" screen', stories: ['S1'] },
+        { code: '1.2', name: 'Return method choice screen', stories: ['S2'] } ] },
+      { code: '2', name: 'Return processing', children: [
+        { code: '2.1', name: 'Return methods reference', stories: ['S2', 'S3'] },
+        { code: '2.2', name: 'Return for card payments', stories: ['S3'] },
+        { code: '2.3', name: 'Return for instalments with schedule recalculation', stories: ['S4'] },
+        { code: '2.4', name: 'Cancelling a return request', stories: ['S6'] } ] },
+      { code: '3', name: 'Integrations', children: [
+        { code: '3.1', name: 'Payment gateway integration', stories: ['S3', 'S4', 'S8'] },
+        { code: '3.2', name: 'SMS and push notifications', stories: ['S5'] } ] },
+      { code: '4', name: 'Buyer support', children: [
+        { code: '4.1', name: 'Return history in the support workspace', stories: ['S7'] } ] },
+      { code: '5', name: 'Rollout', children: [
+        { code: '5.1', name: 'Support team guide and training', stories: [] } ] }
+    ]
+  }
+};
+/* ---------- Coach library: short paraphrased notes, each tagged for retrieval ----------
+   The coach's own summaries, with the source named. Notes marked "checked" were compared with the text of
+   Mike Cohn, "User Stories Applied" (2004, abbreviated USA) and "Agile Estimating and Planning" (2005, AEP);
+   page numbers are those of the printed books. Other notes come from the sources named in them and were not
+   re-read. Add your own book notes in the panel; they are searched together with these and shown first. */
+const USA = 'Майк Кон, «User Stories Applied»';
+const USA_EN = 'Mike Cohn, User Stories Applied';
+const AEP = 'Майк Кон, «Agile Estimating and Planning»';
+const AEP_EN = 'Mike Cohn, Agile Estimating and Planning';
+const KB = [
+  { id: 'invest', tags: ['invest', 'ready', 'quality', 'negotiable', 'estimate', 'dependencies'],
+    src: { ru: `Билл Уэйк (INVEST); ${USA}, гл. 2, с. 17–28`, en: `Bill Wake (INVEST); ${USA_EN}, ch. 2, pp. 17–28` },
+    title: { ru: 'INVEST: шесть свойств хорошей истории', en: 'INVEST: six attributes of a good story' },
+    text: { ru: 'Независимая, обсуждаемая, ценная для покупателей или пользователей, оцениваемая, небольшая, проверяемая. Кон предлагает ориентироваться на эти шесть свойств при написании историй. Красная буква показывает, что обсудить с командой до планирования, а не что «исправить за автора».',
+            en: 'Independent, negotiable, valuable to purchasers or users, estimatable, small, testable. Cohn proposes six attributes to focus on when writing stories. A red letter shows what to discuss with the team before planning, not what to fix on the author\'s behalf.' } },
+  { id: 'purchaser', tags: ['value', 'novalue', 'invest', 'technical', 'purchaser', 'prioritize'],
+    src: { ru: `${USA}, гл. 2, с. 20–22; гл. 14, с. 161–162`, en: `${USA_EN}, ch. 2, pp. 20–22; ch. 14, pp. 161–162` },
+    title: { ru: 'Ценность для пользователя или покупателя, а не только для разработчиков', en: 'Value to a user or purchaser, not only to developers' },
+    text: { ru: 'Кон уточняет: не каждая история обязана быть ценной для пользователя, она может быть ценной для покупателя (например, единая конфигурация на 5000 компьютерах). Избегать надо историй, ценных только разработчикам («все обращения к базе идут через пул соединений»). Их переписывают через пользу: «до 50 пользователей работают с лицензией базы данных на 5 пользователей». Иначе заказчику трудно расставить приоритеты.',
+            en: 'Cohn refines the V: a story need not be valued by users, it may be valued by purchasers (for example one configuration across 5,000 computers). What to avoid is stories valued only by developers ("all database access goes through a connection pool"). Rewrite them through the benefit: "up to 50 users work with a five-user database license". Otherwise the customer cannot prioritize them.' } },
+  { id: 'vertical', tags: ['horizontal', 'vertical', 'value', 'layers', 'split', 'tasks'],
+    src: { ru: `${USA}, гл. 7, с. 75–76 («Slice the Cake», идея Билла Уэйка); ${AEP}, гл. 12, с. 125`, en: `${USA_EN}, ch. 7, pp. 75–76 ("Slice the Cake", Bill Wake\'s idea); ${AEP_EN}, ch. 12, p. 125` },
+    title: { ru: 'Режем торт сверху вниз, а не по слоям', en: 'Slice the cake top to bottom, not layer by layer' },
+    text: { ru: 'Пример Кона: «заполнить форму резюме» и «записать данные в базу» по отдельности бесполезны пользователю. Лучше две истории, каждая с кусочком каждого слоя: резюме с базовыми данными и резюме со всеми данными. Причины две: так рано проверяется каждый слой архитектуры, и такой срез хотя бы теоретически можно выпустить. В AEP та же мысль: не режьте историю на задачи («интерфейс», «средний слой»), а пускайте «трассирующую пулю» через все слои.',
+            en: 'Cohn\'s example: "fill out a resume form" and "write the data to the database" are each useless to the user alone. Better two stories that each carry a bit of every layer: a resume with basic data and a resume with all data. Two reasons: every architectural layer is exercised early, and such a slice could in principle be released. AEP says the same: do not split a story into tasks ("user interface", "middle tier"); fire a tracer bullet through all layers.' } },
+  { id: 'closed', tags: ['closed', 'value', 'testable', 'criteria', 'novalue'],
+    src: { ru: `${USA}, гл. 7, с. 76–77 («Write Closed Stories», идея Сорена Лауэсена)`, en: `${USA_EN}, ch. 7, pp. 76–77 ("Write Closed Stories", after Soren Lauesen)` },
+    title: { ru: 'Закрытые истории', en: 'Closed stories' },
+    text: { ru: 'Закрытая история заканчивается достижением осмысленной цели, после чего пользователь чувствует, что чего-то добился. «Рекрутёр управляет своими объявлениями» не закрыта, это постоянная деятельность. Её заменяют закрытыми историями: просмотреть резюме откликнувшихся, изменить срок объявления, удалить неподходящий отклик. Кон оговаривает, что это желание надо сопоставлять с размером: история должна быть оцениваемой и помещаться в итерацию, но не такой мелкой, чтобы детали фиксировались раньше необходимого.',
+            en: 'A closed story ends with a meaningful goal reached, leaving the user feeling they accomplished something. "A recruiter can manage her ads" is not closed; it is an ongoing activity. Replace it with closed stories: review resumes of applicants, change an ad\'s expiration date, delete a poor-match application. Cohn adds that this wish has to be balanced against size: a story must be estimatable and fit an iteration, but not so small that details are captured earlier than necessary.' } },
+  { id: 'ui', tags: ['ui', 'design', 'value'],
+    src: { ru: `${USA}, гл. 7, с. 79–80; гл. 14, с. 159–160 («Including User Interface Detail Too Soon»)`, en: `${USA_EN}, ch. 7, pp. 79–80; ch. 14, pp. 159–160 ("Including User Interface Detail Too Soon")` },
+    title: { ru: 'Интерфейс как можно дольше держим вне истории', en: 'Keep the interface out of the story as long as possible' },
+    text: { ru: 'Проблема в смешении требования и решения: сказав «страница описания вакансии», вы уже решили, что такая страница будет. Вместо «Соискатель смотрит данные о компании на странице вакансии» Кон предлагает «Просматривая вакансию, соискатель может увидеть данные о компании». Но он же признаёт: по мере готовности продукта детали интерфейса неизбежно появляются в историях (например, «выбор даты в виджете на экране поиска»). Поэтому для новой разработки это сигнал, а для доработки уже работающего экрана норма.',
+            en: 'The problem is mixing a requirement with a solution: saying "job description page" already decides such a page exists. Instead of "A Job Seeker can view information about the hiring company from the Job Description page" Cohn suggests "When viewing details about a job, a Job Seeker may view information about the hiring company". He also admits that as the product matures, interface details inevitably enter stories (for example "select dates from a date widget on the search screen"). So for new development it is a signal; for changing an existing screen it is normal.' } },
+  { id: 'role', tags: ['role', 'norole', 'value'],
+    src: { ru: `${USA}, гл. 7, с. 80–81 («Include User Roles», «Write for One User», «Write in Active Voice»); гл. 3`, en: `${USA_EN}, ch. 7, pp. 80–81 ("Include User Roles", "Write for One User", "Write in Active Voice"); ch. 3` },
+    title: { ru: 'Роль в истории, один пользователь, действительный залог', en: 'Name the role, write for one user, use active voice' },
+    text: { ru: 'Если роли выявлены, их используют: не «пользователь», а «соискатель». Это держит перед глазами разработчика реального человека. Пишите для одного пользователя: «Соискатели могут удалять резюме» можно понять так, что один соискатель удаляет чужие резюме, а «Соискатель может удалять свои резюме» таких вопросов не оставляет. Действительный залог читается легче. Шаблон Connextra «я как (роль) хочу (функция), чтобы (ценность)» Кон предлагает как вариант, который стоит попробовать, а не как обязательную форму.',
+            en: 'If roles have been identified, use them: not "a user" but "a Job Seeker". It keeps a real person in the developer\'s mind. Write for one user: "Job Seekers can remove resumes" can be read as one seeker removing others\' resumes, while "A Job Seeker can remove her own resumes" leaves no doubt. Active voice reads more easily. The Connextra template "I as a (role) want (function) so that (business value)" is offered by Cohn as something to experiment with, not a required form.' } },
+  { id: 'horizon', tags: ['horizon', 'big', 'split', 'scrum', 'ready'],
+    src: { ru: `${USA}, гл. 7, с. 78–79 («Size the Story to the Horizon»); ${AEP}, гл. 6, с. 53–54`, en: `${USA_EN}, ch. 7, pp. 78–79 ("Size the Story to the Horizon"); ${AEP_EN}, ch. 6, pp. 53–54` },
+    title: { ru: 'Размер истории зависит от горизонта планирования', en: 'Story size depends on the planning horizon' },
+    text: { ru: 'Истории для ближайших итераций пишут такого размера, чтобы их можно было запланировать, а далёкие могут быть крупными и неточными. Кон разворачивает только «Соискатель может разместить резюме», а остальные три крупные истории оставляет как есть. В AEP добавлено: для ближайших итераций оценки 1, 2, 3, 5, 8, а для далёкой работы допустимы эпики и темы с оценками 13, 20, 40, 100. Поэтому приложение, нарезающее весь эпик сразу, показывает уровень детализации, который по Кону для далёкой работы избыточен.',
+            en: 'Stories for the next iterations are written at a size that can be planned; distant ones may stay large and imprecise. Cohn expands only "A Job Seeker can post a resume" and leaves the other three big stories alone. AEP adds: near-term stories are estimated 1, 2, 3, 5, 8, while distant work may stay as epics and themes estimated 13, 20, 40, 100. So an app that splits a whole epic up front shows more detail than Cohn would want for distant work.' } },
+  { id: 'small', tags: ['small', 'batch', 'tiny', 'split', 'size', 'dependencies', 'deps'],
+    src: { ru: `${USA}, гл. 2, с. 23–27; гл. 14, с. 157; ${AEP}, гл. 12, с. 126`, en: `${USA_EN}, ch. 2, pp. 23–27; ch. 14, p. 157; ${AEP_EN}, ch. 12, p. 126` },
+    title: { ru: 'Слишком крупные и слишком мелкие истории', en: 'Stories too big and stories too small' },
+    text: { ru: 'У размера две стороны. Слишком мелкие истории (признак — частый пересмотр оценок, например «сохранить результаты в XML» и «в HTML») объединяют для планирования и режут, когда они попадают в итерацию. Кон говорит о половине дня и нескольких днях; в AEP для двухнедельных итераций ориентир 2–5 дней на историю. Окончательно размер определяют команда, её навыки и технологии.',
+            en: 'Size has two sides. Stories that are too small (a symptom is frequent revision of estimates, such as "save results to XML" and "to HTML") are combined for planning and split when they reach an iteration. Cohn speaks of half a day to several days; AEP gives 2-5 days per story for two-week iterations as a guide. The final call depends on the team, its skills and its technologies.' } },
+  { id: 'compound', tags: ['split', 'big', 'patterns', 'operations', 'data', 'rules', 'workflow', 'crud'],
+    src: { ru: `${USA}, гл. 2, с. 24–26; ${AEP}, гл. 12, с. 120–125`, en: `${USA_EN}, ch. 2, pp. 24-26; ${AEP_EN}, ch. 12, pp. 120-125` },
+    title: { ru: 'Составная и сложная история: чем резать', en: 'Compound and complex stories: how to cut' },
+    text: { ru: 'Составную историю (в ней несколько историй) режут по операциям (создать, изменить, удалить) или по границам данных. Сложную (она неопределённа по сути) делят на исследование с ограничением по времени и саму разработку. В AEP, гл. 12, перечень приёмов шире: данные, операции (CRUD), сквозные аспекты (безопасность, логирование, ошибки), производительность как отдельная история, истории разного приоритета. Правило AEP: историю не делят на задачи.',
+            en: 'A compound story (several stories in one) is cut by operations (create, edit, delete) or along data boundaries. A complex story (inherently uncertain) is split into a timeboxed investigation and the build itself. AEP ch. 12 has a wider list: data, operations (CRUD), cross-cutting concerns (security, logging, errors), performance as a separate story, stories of different priority. AEP\'s rule: do not split a story into tasks.' } },
+  { id: 'smells', tags: ['dependencies', 'deps', 'small', 'split', 'batch', 'prioritize', 'smells'],
+    src: { ru: `${USA}, гл. 14, с. 157–162 («A Catalog of Story Smells»)`, en: `${USA_EN}, ch. 14, pp. 157-162 ("A Catalog of Story Smells")` },
+    title: { ru: 'Запахи историй: зависимости, мелкость, частая нарезка', en: 'Story smells: dependencies, tiny stories, constant splitting' },
+    text: { ru: 'В каталоге девять запахов; по теме разбора важны три. Взаимозависимые истории (одну можно взять только вместе с другой) возникают, когда истории слишком мелкие или нарезаны неудачно: объедините их или нарежьте сквозными срезами. Слишком мелкие истории дают частый пересмотр оценок. Нарезка при планировании итерации сама по себе нормальна, но если она нужна постоянно, значит, истории стоит перепроверить заранее. Ещё запах: заказчику трудно расставить приоритеты, когда истории крупные или не выражают пользы.',
+            en: 'The catalog lists nine smells; three matter here. Interdependent stories (one can be taken only with another) arise when stories are too small or poorly sliced: combine them or cut vertical slices. Too-small stories cause frequent revision of estimates. Splitting at iteration planning is normal in itself, but if it is needed constantly, review the stories ahead of time. Also: the customer struggles to prioritize when stories are big or do not express benefit.' } },
+  { id: 'tests', tags: ['criteria', 'testable', 'confirmation', 'tests', 'gwt'],
+    src: { ru: `${USA}, гл. 6, с. 67–73; гл. 2, с. 27 («Testable»); формат «Дано, Когда, Тогда» — Дэн Норт (BDD), не Кон`, en: `${USA_EN}, ch. 6, pp. 67-73; ch. 2, p. 27 ("Testable"); Given/When/Then is Dan North (BDD), not Cohn` },
+    title: { ru: 'Приёмочные тесты: до кода, и определяет их заказчик', en: 'Acceptance tests: before the code, and the customer specifies them' },
+    text: { ru: 'Кон: тесты записывают на обороте карточки по мере появления, а до начала программирования превращают в полноценные. Определяет их заказчик, ему помогают разработчики и тестировщики. Писать тесты стоит, пока они проясняют замысел истории; покрытие ради покрытия не цель. Формулировка «пользователю никогда не приходится долго ждать» нетестируема, а «новые экраны открываются за 2 секунды в 95% случаев» тестируема. Запись «Дано, Когда, Тогда» пришла из BDD и необязательна. Требование «не меньше двух критериев» в приложении моё эвристическое правило, а не правило Кона.',
+            en: 'Cohn: tests are jotted on the back of the card as they come up, and turned into full tests before programming begins. The customer specifies them, helped by developers and testers. Keep writing tests while they clarify the intent of the story; coverage for its own sake is not the goal. "A user never waits long" is untestable, while "new screens appear within 2 seconds in 95% of cases" is testable. Given/When/Then comes from BDD and is optional. The app\'s "at least two criteria" check is my own heuristic, not Cohn\'s rule.' } },
+  { id: 'cards', tags: ['conversation', 'criteria', 'negotiable', 'details', 'confirmation'],
+    src: { ru: `Рон Джеффрис (карточка, разговор, подтверждение); ${USA}, гл. 1 и гл. 2, с. 18–20; гл. 14, с. 159 («Too Many Details»)`, en: `Ron Jeffries (card, conversation, confirmation); ${USA_EN}, ch. 1 and ch. 2, pp. 18-20; ch. 14, p. 159 ("Too Many Details")` },
+    title: { ru: 'Карточка, разговор, подтверждение', en: 'Card, conversation, confirmation' },
+    text: { ru: 'История состоит из короткой записи, разговора и подтверждения (тестов). Лишние подробности на карточке создают иллюзию точности и отменяют разговор. Уже согласованные детали переносят в тесты, а на лицевой стороне оставляют вопросы. Шутка Тома Поппендика, которую приводит Кон: «если места не хватило, возьмите карточку поменьше».',
+            en: 'A story is a short written note, a conversation, and a confirmation (tests). Extra detail on the card creates a false sense of precision and replaces the conversation. Details already agreed go into tests, and questions stay on the front. Cohn quotes Tom Poppendieck: "if you run out of room, use a smaller card".' } },
+  { id: 'estimable', tags: ['estimate', 'estimable', 'spike', 'uncertainty', 'timebox', 'research', 'invest'],
+    src: { ru: `${USA}, гл. 2, с. 22–23 и с. 25–26 («Estimatable»)`, en: `${USA_EN}, ch. 2, pp. 22-23 and 25-26 ("Estimatable")` },
+    title: { ru: 'Почему историю не получается оценить', en: 'Why a story cannot be estimated' },
+    text: { ru: 'Три причины: нет знаний о предметной области, нет технических знаний, история слишком большая. В первом случае идут к заказчику, во втором отправляют разработчика на спайк (короткий эксперимент с ограничением по времени), в третьем нарезают. Спайк оценить можно, потому что его длительность задана заранее. Кон советует по возможности ставить спайк в одну итерацию, а саму разработку в следующие.',
+            en: 'Three reasons: lack of domain knowledge, lack of technical knowledge, or the story is too big. In the first case go to the customer; in the second send a developer on a spike (a brief timeboxed experiment); in the third, split. A spike can be estimated because its length is set in advance. Cohn advises putting the spike in one iteration and the real work in later ones where possible.' } },
+  { id: 'spike', tags: ['spike', 'uncertainty', 'timebox', 'research'],
+    src: { ru: `Экстремальное программирование (спайк); ${USA}, гл. 2, с. 22, 25–26`, en: `Extreme Programming (the spike); ${USA_EN}, ch. 2, pp. 22, 25-26` },
+    title: { ru: 'Спайк: исследование с ограничением по времени', en: 'Spike: timeboxed research' },
+    text: { ru: 'Спайк отвечает на конкретный вопрос в заданное время. Кон требует всегда задавать ему лимит: даже если историю нельзя оценить, можно назначить максимум времени на обучение. Выгода от выделения спайка: заказчик расставляет приоритеты для исследования и для самой функции отдельно.',
+            en: 'A spike answers one concrete question in a set time. Cohn requires always setting a limit: even when a story cannot be estimated, a maximum time for learning can be set. The benefit of separating the spike: the customer prioritizes the research and the feature separately.' } },
+  { id: 'constraint', tags: ['constraint', 'nonfunctional', 'testable', 'criteria'],
+    src: { ru: `${USA}, гл. 7, с. 77–78 («Put Constraints on Cards»); гл. 2, с. 27`, en: `${USA_EN}, ch. 7, pp. 77-78 ("Put Constraints on Cards"); ch. 2, p. 27` },
+    title: { ru: 'Ограничения: карточка-напоминание и автоматический тест', en: 'Constraints: a reminder card and an automated test' },
+    text: { ru: 'Требование, которое нужно соблюдать, а не реализовать («до 50 одновременных пользователей»), Кон предлагает помечать на карточке как «Constraint». Его не оценивают и не планируют в итерацию, но вешают на стену как напоминание и, где возможно, пишут автоматический тест. Нефункциональное требование без измеримого порога («система должна быть удобной») нетестируемо.',
+            en: 'A requirement that must be obeyed rather than built ("up to 50 concurrent users") is marked on the card as a "Constraint". It is not estimated or scheduled into an iteration, but put on the wall as a reminder and, where possible, covered by an automated test. A nonfunctional requirement with no measurable threshold ("the system must be easy to use") is not testable.' } },
+  { id: 'estimate', tags: ['estimate', 'size', 'points', 'team', 'velocity', 'big', 'scale'],
+    src: { ru: `${USA}, гл. 8, с. 87–94; ${AEP}, гл. 6, с. 53–56`, en: `${USA_EN}, ch. 8, pp. 87-94; ${AEP_EN}, ch. 6, pp. 53-56` },
+    title: { ru: 'Баллы: относительная оценка команды', en: 'Points: a relative team estimate' },
+    text: { ru: 'Каждая команда определяет балл сама: идеальный день, сложность и т. п. Баллы одной команды не равны баллам другой. Оценку дают вместе те, кто будет делать работу, а заказчик отвечает на вопросы, но не оценивает. Допустимые значения заранее ограничивают шкалой: у Кона в «User Stories Applied» это ½, 1, 2, 3, 5, 8, 13, 20, 40, 80; в AEP 0, 1, 2, 3, 5, 8, 13, 20, 40, 100. Спор «7 или 8» создаёт ложную точность. Сумма оценок частей не обязана равняться оценке эпика. Оценки генератора в приложении стартовые.',
+            en: 'Each team defines a point itself: an ideal day, complexity, and so on. One team\'s points do not equal another\'s. The people who will do the work estimate together; the customer answers questions but does not estimate. Allowed values are fixed in advance as a scale: in User Stories Applied it is ½, 1, 2, 3, 5, 8, 13, 20, 40, 80; in AEP 0, 1, 2, 3, 5, 8, 13, 20, 40, 100. Arguing "7 or 8" implies false precision. The estimates of the parts need not sum to the estimate of the epic. The generator\'s estimates in the app are only a start.' } },
+  { id: 'spidr', tags: ['split', 'big', 'patterns', 'spike', 'rules', 'paths', 'interfaces', 'data'],
+    src: { ru: 'Майк Кон, статья «SPIDR: Five Simple but Powerful Ways to Split User Stories» (Mountain Goat Software); в книгах 2004–2005 годов её нет', en: 'Mike Cohn, the article "SPIDR: Five Simple but Powerful Ways to Split User Stories" (Mountain Goat Software); not in the 2004-2005 books' },
+    title: { ru: 'SPIDR: пять приёмов нарезки', en: 'SPIDR: five splitting techniques' },
+    text: { ru: 'Спайк, путь (Path), интерфейсы, данные, правила. Автор пишет, что распечатал более тысячи историй, собранных за 15 лет, и сгруппировал их по способу нарезки. Спайк он называет важным приёмом, но обычно не первым.',
+            en: 'Spike, Path, Interfaces, Data, Rules. The author writes that he printed over a thousand stories collected over 15 years and grouped them by how they were split. He calls the spike an essential technique, but normally not the first one to reach for.' } },
+  { id: 'hw', tags: ['split', 'big', 'patterns', 'workflow', 'operations', 'rules', 'data'],
+    src: { ru: 'Ричард Лоуренс и Питер Грин, Humanizing Work (не перечитывалось)', en: 'Richard Lawrence and Peter Green, Humanizing Work (not re-read)' },
+    title: { ru: 'Девять паттернов нарезки: пробуйте по порядку', en: 'Nine splitting patterns: try them in order' },
+    text: { ru: 'Шаги рабочего процесса, операции, варианты бизнес-правил, варианты данных, способы ввода данных, основной объём работы, простое и сложное, отложенная производительность, спайк. Сначала отрежьте самый тонкий сквозной путь.',
+            en: 'Workflow steps, operations, business rule variations, data variations, data entry methods, major effort, simple and complex, deferred performance, spike. Cut the thinnest end-to-end path first.' } },
+  { id: 'map', tags: ['map', 'backbone', 'releases', 'coverage', 'wbs', 'value'],
+    src: { ru: 'Джефф Паттон, «User Story Mapping» (не перечитывалось)', en: 'Jeff Patton, User Story Mapping (not re-read)' },
+    title: { ru: 'Карта историй: сначала путь пользователя', en: 'Story map: the user\'s journey first' },
+    text: { ru: 'Расположите шаги пути пользователя по горизонтали, а варианты и детали под ними. Горизонтальная полоса через всю карту и есть релиз, который уже работает целиком.',
+            en: 'Lay the user\'s steps out horizontally and put variations and details beneath. A horizontal band across the whole map is a release that already works end to end.' } },
+  { id: 'wbs100', tags: ['wbs', 'coverage', '100', 'scope', 'orphan', 'traceability'],
+    src: { ru: 'PMI, Practice Standard for Work Breakdown Structures (не перечитывалось)', en: 'PMI, Practice Standard for Work Breakdown Structures (not re-read)' },
+    title: { ru: 'Правило 100%', en: 'The 100% rule' },
+    text: { ru: 'WBS включает всю работу в рамках скоупа и не включает работу сверх него. Пакет работ без связанной истории либо скрытая история, либо обеспечивающая работа, либо расширение скоупа: назовите, что именно.',
+            en: 'The WBS contains all the work in scope and none beyond it. A work package with no linked story is a hidden story, enabling work, or scope creep: say which.' } },
+  { id: 'wbsdel', tags: ['wbs', 'deliverable', 'tasks', 'depth', 'packages'],
+    src: { ru: 'PMI, Practice Standard for Work Breakdown Structures (не перечитывалось)', en: 'PMI, Practice Standard for Work Breakdown Structures (not re-read)' },
+    title: { ru: 'WBS описывает результаты, а не действия', en: 'A WBS describes deliverables, not activities' },
+    text: { ru: 'Верхние уровни называют результатами (существительными), нижний уровень — пакеты работ. Задачи («сделать, настроить») возникают позже, при планировании, и в WBS не нужны.',
+            en: 'Upper levels name deliverables (nouns); the lowest level is the work package. Tasks ("do, configure") appear later in planning and do not belong in the WBS.' } },
+  { id: 'scrum', tags: ['ready', 'sprint', 'big', 'refinement', 'size', 'done'],
+    src: { ru: 'Руководство по Scrum, Швабер и Сазерленд (не перечитывалось)', en: 'The Scrum Guide, Schwaber and Sutherland (not re-read)' },
+    title: { ru: 'Элемент бэклога, который влезает в спринт', en: 'A backlog item that fits in a Sprint' },
+    text: { ru: 'К выбору на планировании готовы элементы, которые команда может завершить за один спринт. Такая прозрачность обычно возникает в ходе уточнения бэклога, а не на самом планировании.',
+            en: 'Items the team can finish within one Sprint are ready to be selected at Sprint Planning. That clarity usually comes from refinement, not from planning itself.' } },
+  { id: 'batch', tags: ['small', 'batch', 'feedback', 'big', 'flow'],
+    src: { ru: 'Дон Райнертсен, «The Principles of Product Development Flow» (не перечитывалось)', en: 'Don Reinertsen, The Principles of Product Development Flow (not re-read)' },
+    title: { ru: 'Малые партии работы', en: 'Small batches of work' },
+    text: { ru: 'Меньший размер партии сокращает ожидание обратной связи и уменьшает цену ошибки. Нарезка нужна ради скорости обучения, а не ради аккуратного бэклога.',
+            en: 'A smaller batch size shortens the wait for feedback and lowers the cost of an error. Splitting is for learning speed, not for a tidier backlog.' } }
+];
+/* ---------- Helpers ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const str = (v) => (v == null ? '' : String(v)).trim();
+const arr = (v) => (Array.isArray(v) ? v : []);
+const escRe = (x) => String(x).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') el.className = v;
+    else if (k === 'text') el.textContent = v;
+    else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else if (v === true) el.setAttribute(k, '');
+    else el.setAttribute(k, v);
+  }
+  for (const kid of kids.flat()) {
+    if (kid == null || kid === false) continue;
+    el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+  }
+  return el;
+}
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage may be blocked */ } }
+};
+const LETTERS = ['i', 'n', 'v', 'e', 's', 't'];
+const LEVEL = { o: 'ok', w: 'warn', b: 'bad' };
+const LEVELS = ['ok', 'warn', 'bad'];
+
+/* ---------- Normalizing a breakdown (from the prebaked sample or from Claude) ---------- */
+function normalizeInvest(v) {
+  const out = {};
+  if (typeof v === 'string' && v.length >= 6) {
+    LETTERS.forEach((l, i) => { out[l] = LEVEL[v[i].toLowerCase()] || 'ok'; });
+  } else if (Array.isArray(v)) {
+    LETTERS.forEach((l, i) => { const x = str(v[i]).toLowerCase(); out[l] = LEVELS.includes(x) ? x : (LEVEL[x] || 'ok'); });
+  } else {
+    const o = v && typeof v === 'object' ? v : {};
+    LETTERS.forEach((l) => { const x = str(o[l] || o[l.toUpperCase()]).toLowerCase(); out[l] = LEVELS.includes(x) ? x : 'ok'; });
+  }
+  return out;
+}
+/* opts.keepIds: keep the ids the stories already carry (used after splitting a story), otherwise number them S1, S2, … */
+function normalize(raw, opts) {
+  const keep = !!(opts && opts.keepIds);
+  const r = { epic: { title: str(raw?.epic?.title), statement: str(raw?.epic?.statement) }, stories: [], wbs: [] };
+  const idMap = {};
+  const used = new Set();
+  arr(raw?.stories).forEach((s, i) => {
+    let id = 'S' + (i + 1);
+    if (keep && str(s.id) && !used.has(str(s.id))) id = str(s.id);
+    used.add(id);
+    if (str(s.id)) idMap[str(s.id)] = id;
+    const size = Number(s.size);
+    r.stories.push({
+      id, title: str(s.title), pattern: str(s.pattern), size: Number.isFinite(size) && size > 0 ? size : 3,
+      invest: normalizeInvest(s.invest), why: str(s.why), criteria: arr(s.criteria).map(str).filter(Boolean),
+      wbs: arr(s.wbs).map(str)
+    });
+  });
+  /* free text may mention other stories by the id the model gave them; follow the renumbering in one pass */
+  const changed = Object.keys(idMap).filter((k) => idMap[k] !== k).sort((a, b) => b.length - a.length);
+  if (changed.length) {
+    const re = new RegExp('(^|[^\\p{L}\\p{N}-])(' + changed.map(escRe).join('|') + ')(?![\\p{L}\\p{N}-])', 'gu');
+    r.stories.forEach((s) => { s.why = s.why.replace(re, (m, pre, id) => pre + idMap[id]); });
+  }
+  const codeMap = {};
+  const walk = (nodes, prefix) => arr(nodes).map((n, i) => {
+    const code = prefix ? prefix + '.' + (i + 1) : String(i + 1);
+    if (n.code != null) codeMap[str(n.code)] = code;
+    const node = { code, name: str(n.name), stories: arr(n.stories).map(str), children: [] };
+    node.children = walk(n.children, code);
+    return node;
+  });
+  r.wbs = walk(raw?.wbs, '');
+  /* build links from both sides so a one-sided reference still counts */
+  const valid = new Set(flatten(r.wbs).map((n) => n.code));
+  r.stories.forEach((s) => {
+    const codes = new Set();
+    s.wbs.forEach((c) => { const m = codeMap[c] || c; if (valid.has(m)) codes.add(m); });
+    s._codes = codes;
+  });
+  flatten(r.wbs).forEach((n) => {
+    n.stories.forEach((sid) => {
+      const m = idMap[sid] || sid;
+      const st = r.stories.find((x) => x.id === m);
+      if (st) st._codes.add(n.code);
+    });
+  });
+  r.stories.forEach((s) => { s.wbs = Array.from(s._codes).sort(codeSort); delete s._codes; });
+  flatten(r.wbs).forEach((n) => { n.stories = r.stories.filter((s) => s.wbs.includes(n.code)).map((s) => s.id); });
+  return r;
+}
+function codeSort(a, b) {
+  const pa = a.split('.').map(Number), pb = b.split('.').map(Number);
+  for (let i = 0; i < Math.max(pa.length, pb.length); i++) { const d = (pa[i] || 0) - (pb[i] || 0); if (d) return d; }
+  return 0;
+}
+function flatten(nodes) { const out = []; const go = (ns) => ns.forEach((n) => { out.push(n); go(n.children || []); }); go(nodes || []); return out; }
+function depth(nodes) { return nodes.length ? 1 + Math.max(...nodes.map((n) => depth(n.children || []))) : 0; }
+
+/* ---------- Wording checks on a story title ---------- */
+const SPIKE_RE = /спайк|spike|исследован|research/i;
+const ROLE_RE = /^\s*(как|as an?|as the)\s/i;
+const VALUE_RE = /(чтобы|для того, чтобы|so that|in order to)/i;
+const UI_RE = /(^|[^\p{L}])(экран\p{L}*|кнопк\p{L}*|меню|страниц\p{L}*|окн[оа]\p{L}*|вкладк\p{L}*|нажима\p{L}*|кликаю|screen\p{L}*|button\p{L}*|menu|page|tab|dialog|click\p{L}*|tap)(?=[^\p{L}]|$)/iu;
+const TASK_RE = /^\s*(создать|сделать|настроить|реализовать|разработать|написать|добавить|мигрировать|create|build|implement|set up|configure|write|develop|migrate)\s/i;
+const isSpike = (s) => SPIKE_RE.test(s.pattern + ' ' + s.title);
+
+/* ---------- Metrics ----------
+   Cohn (Agile Estimating and Planning, ch. 6): stories for the next iterations are estimated 1, 2, 3, 5, 8;
+   13 and above are epics or themes. So 8 is the top of the near-term scale (an edge), and the "too big" line
+   sits at 13 by default; the user can move it to fit their velocity. */
+const NEAR_MAX = 8;
+const isEdge = (s) => s.size >= NEAR_MAX && s.size < state.bigAt;
+function storyState(s) {
+  const vals = LETTERS.map((l) => s.invest[l]);
+  if (vals.includes('bad') || s.size >= state.bigAt) return 'bad';
+  if (vals.includes('warn') || isEdge(s) || (s.criteria.length < 2 && !isSpike(s))) return 'warn';
+  return 'ok';
+}
+function computeMetrics(r) {
+  const flat = flatten(r.wbs);
+  const leaves = flat.filter((n) => !n.children.length);
+  const orphanLeaves = leaves.filter((n) => !n.stories.length);
+  const unmapped = r.stories.filter((s) => !s.wbs.length);
+  const states = r.stories.map(storyState);
+  return {
+    count: r.stories.length,
+    points: r.stories.reduce((a, s) => a + s.size, 0),
+    leaves: leaves.length, orphanLeaves, unmapped,
+    coverage: leaves.length ? Math.round(100 * (leaves.length - orphanLeaves.length) / leaves.length) : 0,
+    ok: states.filter((x) => x === 'ok').length, warn: states.filter((x) => x === 'warn').length, bad: states.filter((x) => x === 'bad').length,
+    depth: depth(r.wbs)
+  };
+}
+
+/* ---------- Coach: rules that read the breakdown and what the user did ---------- */
+function observations(r, m, touched, L) {
+  const out = [];
+  const ids = (list) => list.map((s) => s.id).join(', ');
+  const plain = r.stories.filter((s) => !isSpike(s));
+  const big = r.stories.filter((s) => s.size >= state.bigAt);
+  if (big.length) out.push({ sev: 'bad', tags: ['big', 'split', 'scrum', 'ready', 'batch', 'horizon', 'estimate', 'compound', 'small'],
+    title: L('Истории не влезают в спринт', 'Stories that will not fit a sprint'),
+    body: L(`Не меньше ${state.bigAt} баллов: ${ids(big)}. По шкале Кона для ближайших итераций оценки 1–8, а 13 и больше — эпики. Если история попадёт в ближайшие спринты, её нарезают. Если она далеко за горизонтом планирования, её можно оставить эпиком и нарезать позже.`, `${state.bigAt} points or more: ${ids(big)}. On Cohn's scale near-term stories are 1–8 and 13 or more are epics. If the story will land in the next sprints, split it. If it is far beyond the planning horizon, it can stay an epic and be split later.`),
+    q: L('Какой самый тонкий сквозной путь внутри этой истории можно показать пользователю первым?', 'What is the thinnest end-to-end path inside this story that you could show a user first?') });
+  const edge = r.stories.filter(isEdge);
+  if (edge.length) out.push({ sev: 'warn', tags: ['big', 'size', 'estimate', 'small', 'scale', 'split'],
+    title: L('Истории на верхнем краю шкалы', 'Stories at the top edge of the scale'),
+    body: L(`${NEAR_MAX} баллов и выше, но ниже порога ${state.bigAt}: ${ids(edge)}. Это верхняя граница шкалы для ближайших итераций. Кон для двухнедельной итерации советует истории на 2–5 дней, так что проверьте их по скорости команды.`, `${NEAR_MAX} points or more but below the ${state.bigAt} threshold: ${ids(edge)}. This is the top of the near-term scale. For a two-week iteration Cohn suggests stories of 2–5 days, so check them against your team's velocity.`),
+    q: L('Сколько дней уйдёт на эту историю у вашей команды и поместится ли она в итерацию с запасом?', 'How many days would this take your team, and does it fit an iteration with room to spare?') });
+  const tiny = r.stories.filter((s) => s.size <= 1 && !isSpike(s));
+  if (tiny.length >= 3 && tiny.length >= r.stories.length * 0.4) out.push({ sev: 'info', tags: ['small', 'tiny', 'batch', 'dependencies', 'estimate'],
+    title: L('Много очень мелких историй', 'Many very small stories'),
+    body: L(`Истории в 1 балл и меньше: ${ids(tiny)}. Кон советует объединять слишком мелкие истории для планирования и резать их, когда они попадают в итерацию.`, `Stories of 1 point or less: ${ids(tiny)}. Cohn advises combining stories that are too small for planning and splitting them when they reach an iteration.`),
+    q: L('Какие из них пересекаются по работе и меняют оценку друг друга?', 'Which of them overlap in work and change each other\'s estimate?') });
+  const noRole = plain.filter((s) => !ROLE_RE.test(s.title));
+  const tasks = noRole.filter((s) => TASK_RE.test(s.title));
+  if (tasks.length) out.push({ sev: 'warn', tags: ['horizontal', 'vertical', 'value', 'layers', 'tasks', 'split'],
+    title: L('Похоже на горизонтальный срез', 'Looks like a horizontal slice'),
+    body: L(`Формулировки задач без роли и ценности: ${ids(tasks)}. Кон советует резать сверху вниз через все слои, а не по слоям, и не делить историю на задачи.`, `Task-style wording with no role or value: ${ids(tasks)}. Cohn advises cutting top to bottom through all layers, not layer by layer, and not splitting a story into tasks.`),
+    q: L('Что пользователь сможет сделать после этой истории, чего не мог до неё?', 'What can a user do after this story that they could not before?') });
+  const rest = noRole.filter((s) => !tasks.includes(s));
+  if (rest.length) out.push({ sev: 'warn', tags: ['role', 'norole', 'value'],
+    title: L('Не указана роль пользователя', 'No user role stated'),
+    body: L(`Истории без роли: ${ids(rest)}. Кон советует называть в истории роль, если она выявлена, и писать для одного пользователя: так видно, чья это ценность.`, `Stories without a role: ${ids(rest)}. Cohn advises naming the role when one has been identified and writing for one user, which shows whose value it is.`),
+    q: L('Кто именно получит пользу от этой истории?', 'Who exactly benefits from this story?') });
+  const noValue = plain.filter((s) => ROLE_RE.test(s.title) && !VALUE_RE.test(s.title));
+  if (noValue.length) out.push({ sev: 'info', tags: ['value', 'novalue', 'closed', 'invest', 'purchaser'],
+    title: L('Не указана ценность', 'No stated value'),
+    body: L(`Нет «чтобы …»: ${ids(noValue)}. Кон не требует такой формулировки (шаблон Connextra он предлагает как вариант), но ценность для пользователя или покупателя, буква V в INVEST, должна быть понятна заказчику.`, `No "so that …": ${ids(noValue)}. Cohn does not require this wording (he offers the Connextra template as an option), but the value to a user or purchaser, the V in INVEST, must be clear to the customer.`),
+    q: L('Зачем пользователю или покупателю эта возможность?', 'Why does the user or purchaser want this capability?') });
+  const ui = plain.filter((s) => UI_RE.test(s.title));
+  if (ui.length) out.push({ sev: 'info', tags: ['ui', 'design', 'value'],
+    title: L('В истории упомянут интерфейс', 'The story names interface details'),
+    body: L(`Элементы интерфейса в формулировке: ${ids(ui)}. Кон советует как можно дольше не смешивать требование с решением; для доработки уже существующего экрана такие детали допустимы.`, `Interface elements in the wording: ${ids(ui)}. Cohn advises not mixing the requirement with the solution for as long as possible; for changing an existing screen such details are acceptable.`),
+    q: L('Можно ли сказать то же самое, не называя экран или кнопку?', 'Can you say the same thing without naming a screen or a button?') });
+  const weak = {};
+  r.stories.forEach((s) => LETTERS.forEach((l) => { if (s.invest[l] !== 'ok') weak[l] = (weak[l] || 0) + 1; }));
+  const weakList = Object.entries(weak).sort((a, b) => b[1] - a[1]);
+  const names = { i: L('независимость', 'independence'), n: L('обсуждаемость', 'negotiability'), v: L('ценность', 'value'), e: L('оцениваемость', 'estimability'), s: L('размер', 'size'), t: L('проверяемость', 'testability') };
+  if (weakList.length) {
+    const [l, c] = weakList[0];
+    out.push({ sev: 'warn', tags: ['invest', 'ready', l === 'i' ? 'dependencies' : 'quality', l === 'e' ? 'estimate' : 'value'],
+      title: L('Что чаще всего подводит INVEST', 'What fails INVEST most often'),
+      body: L(`Чаще всего слабое место — ${names[l]} (${c} из ${r.stories.length}). Это сигнал для разговора на уточнении, а не приговор историям.`, `The most frequent weak spot is ${names[l]} (${c} of ${r.stories.length}). Treat it as a refinement topic, not a verdict on the stories.`),
+      q: L('Кто в команде может снять эту неопределённость до планирования?', 'Who on the team can remove this uncertainty before planning?') });
+  }
+  const dep = r.stories.filter((s) => s.invest.i !== 'ok');
+  if (dep.length >= 2) out.push({ sev: 'warn', tags: ['dependencies', 'deps', 'invest', 'small'],
+    title: L('Зависимости между историями', 'Dependencies between stories'),
+    body: L(`Помечены как зависимые: ${ids(dep)}. Взаимозависимые истории мешают оценке и порядку работы. Кон предлагает объединить их в одну или найти другое измерение для нарезки; если не получается, написать на карточке две оценки: до и после другой истории.`, `Marked as dependent: ${ids(dep)}. Interdependent stories get in the way of estimating and ordering. Cohn suggests combining them into one or finding a different dimension to split along; failing that, put two estimates on the card: before and after the other story.`),
+    q: L('Какую из этих историй можно сделать так, чтобы она не ждала другую?', 'Which of these stories can be built without waiting for another?') });
+  const spikes = r.stories.filter(isSpike);
+  if (spikes.length) out.push({ sev: 'info', tags: ['spike', 'timebox', 'uncertainty', 'research'],
+    title: L('Есть исследования', 'Research items present'),
+    body: L(`Спайки: ${ids(spikes)}. Они снимают неопределённость для соседних историй. Кон требует всегда ограничивать спайк по времени и по возможности ставить его в более раннюю итерацию, чем сама разработка.`, `Spikes: ${ids(spikes)}. They remove uncertainty for neighboring stories. Cohn requires always timeboxing a spike and, where possible, putting it in an earlier iteration than the build itself.`),
+    q: L('Какой вопрос закрывает спайк и к какому сроку?', 'Which question does the spike close, and by when?') });
+  const thin = plain.filter((s) => s.criteria.length < 2);
+  if (thin.length) out.push({ sev: 'warn', tags: ['criteria', 'gwt', 'testable', 'tests', 'confirmation'],
+    title: L('Мало примеров поведения', 'Few examples of behavior'),
+    body: L(`Меньше двух критериев: ${ids(thin)}. Правило «не меньше двух» — рабочая эвристика приложения; Кон советует писать тесты, пока они проясняют замысел истории.`, `Fewer than two criteria: ${ids(thin)}. The "at least two" rule is this app's working heuristic; Cohn advises writing tests while they clarify the intent of the story.`),
+    q: L('Какой неудачный сценарий для этой истории вы пока не описали?', 'Which failure scenario for this story have you not described yet?') });
+  if (m.orphanLeaves.length || m.unmapped.length) out.push({ sev: 'warn', tags: ['wbs', 'coverage', '100', 'orphan', 'scope', 'traceability'],
+    title: L('Связь историй и WBS неполная', 'Stories and WBS are not fully linked'),
+    body: L(`Пакеты работ без истории: ${m.orphanLeaves.map((n) => n.code).join(', ') || 'нет'}. Истории вне WBS: ${m.unmapped.map((s) => s.id).join(', ') || 'нет'}. Покрытие листьев: ${m.coverage}%.`, `Work packages with no story: ${m.orphanLeaves.map((n) => n.code).join(', ') || 'none'}. Stories outside the WBS: ${m.unmapped.map((s) => s.id).join(', ') || 'none'}. Leaf coverage: ${m.coverage}%.`),
+    q: L('Это скрытая история, обеспечивающая работа или лишний скоуп?', 'Is this a hidden story, enabling work, or extra scope?') });
+  if (m.depth > 3) out.push({ sev: 'warn', tags: ['wbs', 'deliverable', 'tasks', 'depth', 'packages'],
+    title: L('WBS уходит в задачи', 'The WBS drifts into tasks'),
+    body: L(`Глубина дерева: ${m.depth} уровня. На нижних уровнях обычно появляются действия, а не результаты.`, `Tree depth is ${m.depth} levels. Lower levels usually turn into activities, not deliverables.`),
+    q: L('Какой результат стоит за каждым листом?', 'What deliverable stands behind each leaf?') });
+  out.push({ sev: 'info', tags: ['estimate', 'size', 'points', 'team', 'velocity'],
+    title: L('Оценки стартовые', 'Estimates are a starting point'),
+    body: L(`Всего ${m.count} историй и ${m.points} баллов. Оценки предложены генератором; баллы относительны, и команда оценивает сама, вместе. Сумма оценок частей не обязана совпадать с оценкой эпика (Кон, гл. 8).`, `${m.count} stories and ${m.points} points in total. The estimates come from the generator; points are relative and the team estimates them itself, together. The parts' estimates need not sum to the epic's estimate (Cohn, ch. 8).`),
+    q: L('Согласна ли команда с самой дорогой историей?', 'Does the team agree with the most expensive story?') });
+  if (touched.size === 1) {
+    const only = Array.from(touched)[0];
+    out.push({ sev: 'info', tags: only === 'stories' ? ['map', 'wbs', 'coverage'] : ['vertical', 'value', 'map'],
+      title: L('Вы смотрели только одну проекцию', 'You looked at one projection only'),
+      body: only === 'stories' ? L('Переключитесь на WBS или «Рядом»: так видно, какие результаты стоят за историями.', 'Switch to WBS or Side by side to see which deliverables stand behind the stories.') : L('Переключитесь на «Истории» или «Рядом»: так видно, какую ценность несут пакеты работ.', 'Switch to Stories or Side by side to see what value the work packages deliver.'),
+      q: L('Совпадает ли ваш порядок работ по WBS с порядком ценности по историям?', 'Does your WBS order of work match the order of value in the stories?') });
+  }
+  if (!out.some((o) => o.sev === 'bad' || o.sev === 'warn')) out.unshift({ sev: 'good', tags: ['ready', 'invest', 'scrum'],
+    title: L('Разбор готов к обсуждению', 'The breakdown is ready to discuss'),
+    body: L('Критичных замечаний нет: истории небольшие, проверяемые и связаны с WBS.', 'No critical issues: the stories are small, testable and linked to the WBS.'),
+    q: L('Что команда готова показать на ревью через один спринт?', 'What is the team ready to show at the review one sprint from now?') });
+  const rank = { bad: 0, warn: 1, good: 2, info: 3 };
+  return out.sort((a, b) => rank[a.sev] - rank[b.sev]);
+}
+
+/* ---------- Retrieval over the library ----------
+   Every library note carries tags. A note that has none is tagged from its own words, so a note typed in
+   without tags still finds its place. A note matches only when it shares at least one tag with what the
+   coach saw. The user's own notes always get a place among the matches. */
+const SYN = {
+  split: ['нарез', 'раздел', 'делит', 'делю', 'split', 'slice', 'slicing'],
+  big: ['крупн', 'больш', 'эпик', 'epic', 'large'],
+  invest: ['invest'],
+  ready: ['готов', 'ready'],
+  value: ['ценност', 'value'],
+  vertical: ['вертикал', 'срез', 'слой', 'слои', 'cake', 'vertical'],
+  horizontal: ['горизонтал', 'layer'],
+  criteria: ['критери', 'приёмк', 'приемк', 'acceptance'],
+  gwt: ['дано', 'given'],
+  testable: ['тест', 'проверяем', 'testable'],
+  spike: ['спайк', 'spike', 'исследован'],
+  estimate: ['оценк', 'estimat', 'баллы', 'points'],
+  size: ['размер', 'sized', 'size'],
+  velocity: ['скорост', 'velocity'],
+  dependencies: ['зависим', 'dependen'],
+  wbs: ['wbs', 'декомпоз', 'пакет'],
+  coverage: ['покрыт', 'coverage'],
+  scope: ['скоуп', 'scope'],
+  map: ['карта', 'map'],
+  horizon: ['горизонт планир', 'horizon'],
+  ui: ['интерфейс', 'экран', 'screen'],
+  role: ['рол', 'role', 'персон'],
+  conversation: ['разговор', 'обсужд', 'conversation']
+};
+const SYN_RE = Object.fromEntries(Object.entries(SYN).map(([tag, stems]) => [tag, new RegExp('(^|[^\\p{L}\\p{N}])(' + stems.map(escRe).join('|') + ')', 'iu')]));
+function autoTags(text) { return Object.keys(SYN_RE).filter((tag) => SYN_RE[tag].test(text)); }
+function retrieve(obs, notes, lang, limit = 5) {
+  const weight = { bad: 3, warn: 2, good: 1, info: 1 };
+  const want = {};
+  obs.forEach((o) => o.tags.forEach((t) => { want[t] = (want[t] || 0) + weight[o.sev]; }));
+  const rate = (tags) => {
+    const hit = tags.filter((t) => want[t]);
+    const top = hit.map((t) => want[t]).sort((a, b) => b - a).slice(0, 3);
+    return { hit, s: top.reduce((a, b) => a + b, 0) };
+  };
+  const kb = KB.map((k) => ({ k: { ...k, mine: false }, ...rate(k.tags) })).filter((x) => x.hit.length);
+  const mine = notes.map((n) => {
+    const tags = Array.from(new Set(arr(n.tags).concat(autoTags(n.title + ' ' + n.text))));
+    const k = { id: n.id, mine: true, tags, src: { ru: n.src, en: n.src }, title: { ru: n.title, en: n.title }, text: { ru: n.text, en: n.text } };
+    return { k, ...rate(tags) };
+  }).filter((x) => x.hit.length).sort((a, b) => b.s - a.s).slice(0, 2);
+  const rest = kb.sort((a, b) => b.s - a.s).slice(0, Math.max(0, limit - mine.length));
+  return mine.concat(rest).map((x) => ({ k: x.k, score: x.s, hit: x.hit })).sort((a, b) => b.score - a.score);
+}
+/* ---------- State and language ---------- */
+const state = {
+  lang: store.get('lens.lang', 'ru') === 'en' ? 'en' : 'ru',
+  mode: 'both', touched: new Set(['stories', 'wbs']),
+  sampleId: 'tariff', result: null, source: 'sample', resultFor: '',
+  focus: null, running: false, ctl: null,
+  bigAt: (() => { const v = Number(store.get('lens.bigAt', 13)); return Number.isFinite(v) && v >= 2 && v <= 100 ? Math.round(v) : 13; })(),
+  notes: arr(store.get('lens.notes', [])),
+  reflect: '', reflecting: false, rctl: null,
+  obs: [], hits: [],
+  sample: null, downloads: null
+};
+const L = (ru, en) => (state.lang === 'ru' ? ru : en);
+const LENSES = [
+  { id: 'auto', ru: 'Выбор за Claude', en: 'Claude decides' },
+  { id: 'spidr', ru: 'SPIDR (Майк Кон)', en: 'SPIDR (Mike Cohn)' },
+  { id: 'hw', ru: 'Паттерны Humanizing Work', en: 'Humanizing Work patterns' },
+  { id: 'hamburger', ru: 'Гамбургер (Гойко Аджич)', en: 'Hamburger (Gojko Adzic)' },
+  { id: 'map', ru: 'Карта историй (Джефф Паттон)', en: 'Story map (Jeff Patton)' }
+];
+const STATE_LABEL = { ok: ['Готова', 'Ready'], warn: ['Обсудить', 'Discuss'], bad: ['Доработать', 'Rework'] };
+const sLabel = (st) => L(STATE_LABEL[st][0], STATE_LABEL[st][1]);
+const INVEST_NAME = {
+  i: ['Независимая', 'Independent'], n: ['Обсуждаемая', 'Negotiable'], v: ['Ценная', 'Valuable'],
+  e: ['Оцениваемая', 'Estimable'], s: ['Небольшая', 'Small'], t: ['Проверяемая', 'Testable']
+};
+
+function applyLang() {
+  document.documentElement.lang = state.lang;
+  $$('[data-ru]').forEach((el) => { el.textContent = el.getAttribute('data-' + state.lang); });
+  $$('[data-ph-ru]').forEach((el) => { el.setAttribute('placeholder', el.getAttribute('data-ph-' + state.lang)); });
+  $$('[data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === state.lang)));
+  const sel = $('#lens'); const cur = sel.value || 'auto';
+  sel.replaceChildren(...LENSES.map((o) => h('option', { value: o.id, text: o[state.lang] })));
+  sel.value = cur;
+  $('#run').textContent = L('Разобрать эпик', 'Break down the epic');
+  $('#copy-wbs').textContent = L('Копировать WBS', 'Copy WBS');
+  $('#dl-csv').textContent = L('Скачать CSV историй', 'Download stories CSV');
+  const box = $('#samples');
+  box.replaceChildren(h('span', { class: 'lbl', text: L('Примеры', 'Examples') }),
+    ...SAMPLES.map((s) => h('button', { type: 'button', class: 'chipbtn', 'data-sample': s.id, 'aria-pressed': String(state.sampleId === s.id), text: s.name[state.lang], onclick: () => pickSample(s.id) })));
+}
+
+/* ---------- Render: toolbar, summary ---------- */
+function renderModes() {
+  const defs = [['stories', L('Истории', 'Stories')], ['wbs', 'WBS'], ['both', L('Рядом', 'Side by side')]];
+  $('#modes').replaceChildren(...defs.map(([m, label]) => h('button', {
+    type: 'button', 'data-m': m, 'aria-pressed': String(state.mode === m), text: label,
+    onclick: () => { state.mode = m; if (m === 'both') { state.touched.add('stories'); state.touched.add('wbs'); } else state.touched.add(m); render(); }
+  })));
+}
+function isStale() { return state.result && state.resultFor !== $('#epic').value.trim(); }
+function renderSummary() {
+  const r = state.result, m = computeMetrics(r);
+  const badges = [];
+  const badgeText = { claude: L('Разбор Claude', 'Claude breakdown'), mixed: L('Пример, изменён Claude', 'Sample, edited by Claude'), sample: L('Пример', 'Sample') }[state.source];
+  badges.push(h('span', { class: 'badge' + (state.source === 'sample' ? '' : ' live'), text: badgeText }));
+  if (isStale()) badges.push(h('span', { class: 'badge stale', text: L('Эпик изменён: разберите заново', 'Epic changed: run it again') }));
+  $('#summary').replaceChildren(
+    h('h2', { text: r.epic.title || r.epic.statement }),
+    h('span', { class: 'badges' }, badges),
+    h('span', { class: 'm' }, L('Истории ', 'Stories '), h('b', { text: m.count })),
+    h('span', { class: 'm' }, L('Баллы ', 'Points '), h('b', { text: m.points })),
+    h('span', { class: 'm' }, L('Пакеты работ ', 'Work packages '), h('b', { text: m.leaves })),
+    h('span', { class: 'm' }, L('Покрытие WBS ', 'WBS coverage '), h('b', { text: m.coverage + '%' })));
+  $('#summary .badges').style.display = 'inline-flex';
+  $('#summary .badges').style.gap = '6px';
+}
+
+/* ---------- Render: stories ---------- */
+function gwtFrag(text) {
+  const frag = document.createDocumentFragment();
+  text.split(/(Дано|Когда|Тогда|Результат|Given|When|Then|Outcome)(?=[:\s])/u).forEach((part, i) => {
+    if (!part) return;
+    frag.append(i % 2 ? h('span', { class: 'kw', text: part }) : document.createTextNode(part));
+  });
+  return frag;
+}
+function storyCard(s) {
+  const st = storyState(s);
+  const focusFn = () => toggleFocus('story', s.id);
+  const invest = h('span', { class: 'invest', role: 'img', 'aria-label': 'INVEST: ' + LETTERS.map((l) => l.toUpperCase() + ' ' + s.invest[l]).join(', ') },
+    LETTERS.map((l) => h('span', { class: 'iv ' + s.invest[l], title: INVEST_NAME[l][state.lang === 'ru' ? 0 : 1] + ': ' + s.invest[l], text: l.toUpperCase() })));
+  const crit = s.criteria.length ? h('details', { class: 'crit' },
+    h('summary', { text: L('Критерии приёмки', 'Acceptance criteria') + ' (' + s.criteria.length + ')' }),
+    h('ul', null, s.criteria.map((c) => h('li', null, gwtFrag(c))))) : null;
+  const codes = h('span', { class: 'codes' }, s.wbs.length
+    ? [h('span', { class: 'lbl', text: 'WBS' }), ...s.wbs.map((c) => h('button', { type: 'button', class: 'code', text: c, title: L('Показать связь', 'Show link'), onclick: () => toggleFocus('node', c) }))]
+    : h('span', { class: 'orphan', text: L('вне WBS', 'not in WBS') }));
+  const splitBtn = state.sample && s.size >= 5 ? h('button', { type: 'button', class: 'btn btn-small', 'data-split': s.id, text: L('Разделить ещё', 'Split further'), onclick: () => splitStory(s.id) }) : null;
+  return h('article', { class: 'story', 'data-id': s.id },
+    h('div', { class: 'story-top' },
+      h('span', { class: 'sid', text: s.id }),
+      h('h4', { class: 'story-title' }, h('button', { type: 'button', class: 'story-btn', text: s.title, title: L('Показать связанные пакеты WBS', 'Show linked WBS packages'), onclick: focusFn })),
+      h('span', { class: 'pts' + (s.size >= state.bigAt ? ' big' : ''), text: s.size + ' ' + L('б.', 'pts') })),
+    h('div', { class: 'meta' }, s.pattern ? h('span', { class: 'chip', text: s.pattern }) : null, h('span', { class: 'chip st-' + st, text: sLabel(st) }), invest),
+    s.why ? h('p', { class: 'why', text: s.why }) : null,
+    crit,
+    h('div', { class: 'story-foot' }, codes, splitBtn));
+}
+
+/* ---------- Render: WBS ---------- */
+function wbsNode(n, level) {
+  const leaf = !n.children.length;
+  const links = n.stories.map((id) => h('button', { type: 'button', class: 'sid-chip', text: id, title: L('Показать историю', 'Show story'), onclick: (e) => { e.stopPropagation(); toggleFocus('story', id); } }));
+  const tail = leaf && !n.stories.length ? h('span', { class: 'orphan', text: L('нет истории', 'no story') }) : h('span', { class: 'leaf-links' }, links);
+  if (leaf) {
+    return h('div', { class: 'node leafnode', 'data-code': n.code },
+      h('div', { class: 'leaf' }, h('span', { class: 'ncode', text: n.code }), h('span', { class: 'nname', text: n.name }), tail));
+  }
+  return h('details', { class: 'node l' + level, 'data-code': n.code, open: true },
+    h('summary', null, h('span', { class: 'ncode', text: n.code }), h('span', { class: 'nname', text: n.name })),
+    h('div', { class: 'nkids' }, n.children.map((c) => wbsNode(c, level + 1))));
+}
+
+function renderPanes() {
+  const r = state.result, p = $('#panes');
+  const showS = state.mode !== 'wbs', showW = state.mode !== 'stories';
+  p.className = 'panes' + (state.mode === 'both' ? ' two' : '');
+  const panes = [];
+  if (showS) panes.push(h('section', { class: 'pane stories' },
+    h('div', { class: 'pane-head' }, h('h3', { text: L('Истории', 'Stories') }), h('span', { text: L('нарезка по ценности для пользователя', 'sliced by value to the user') })),
+    h('div', { class: 'stack' }, r.stories.map(storyCard))));
+  if (showW) panes.push(h('section', { class: 'pane wbs' },
+    h('div', { class: 'pane-head' }, h('h3', { text: 'WBS' }), h('span', { text: L('дерево результатов и пакетов работ', 'tree of deliverables and work packages') })),
+    h('div', { class: 'tree' }, r.wbs.map((n) => wbsNode(n, 1)))));
+  p.replaceChildren(...panes);
+  applyFocus();
+}
+
+/* ---------- Focus: story <-> WBS link ---------- */
+function toggleFocus(type, id) {
+  const same = state.focus && state.focus.type === type && state.focus.id === id;
+  state.focus = same ? null : { type, id };
+  applyFocus();
+}
+function applyFocus() {
+  $$('.hl').forEach((e) => e.classList.remove('hl'));
+  $$('.dim').forEach((e) => e.classList.remove('dim'));
+  const f = state.focus, r = state.result;
+  if (!f || !r) return;
+  let sids = [], codes = [];
+  if (f.type === 'story') { const s = r.stories.find((x) => x.id === f.id); if (!s) return; sids = [s.id]; codes = s.wbs; }
+  else { const n = flatten(r.wbs).find((x) => x.code === f.id); if (!n) return; codes = [n.code]; sids = n.stories; }
+  $$('.story').forEach((e) => e.classList.add(sids.includes(e.dataset.id) ? 'hl' : 'dim'));
+  $$('.node').forEach((e) => { if (codes.includes(e.dataset.code)) e.classList.add('hl'); });
+}
+
+/* ---------- Render: coach ---------- */
+function renderCoach() {
+  const r = state.result, m = computeMetrics(r);
+  const obs = observations(r, m, state.touched, L);
+  const hits = retrieve(obs, state.notes, state.lang);
+  state.obs = obs; state.hits = hits;
+  const total = Math.max(1, m.count);
+  const bar = h('div', { class: 'ready-bar', role: 'img', 'aria-label': L('Готовность историй', 'Story readiness') },
+    h('i', { class: 'r-ok' }), h('i', { class: 'r-warn' }), h('i', { class: 'r-bad' }));
+  bar.children[0].style.width = (100 * m.ok / total) + '%';
+  bar.children[1].style.width = (100 * m.warn / total) + '%';
+  bar.children[2].style.width = (100 * m.bad / total) + '%';
+  const tagLabel = { bad: L('Стоп', 'Stop'), warn: L('Внимание', 'Attention'), good: L('Хорошо', 'Good'), info: L('Заметка', 'Note') };
+  const head = h('div', { class: 'coach-head' },
+    h('h3', { text: L('Коуч', 'Coach') }), bar,
+    h('div', { class: 'ready-legend' },
+      h('span', { text: L('Готово ', 'Ready ') + m.ok }), h('span', { text: L('Обсудить ', 'Discuss ') + m.warn }), h('span', { text: L('Доработать ', 'Rework ') + m.bad })));
+  const obsSec = h('div', { class: 'coach-sec' }, h('h4', { text: L('Что видит коуч', 'What the coach sees') }),
+    obs.map((o) => h('div', { class: 'obs' },
+      h('div', { class: 'obs-head' }, h('span', { class: 'obs-tag ' + o.sev, text: tagLabel[o.sev] }), h('span', { class: 'obs-title', text: o.title })),
+      h('p', { text: o.body }),
+      o.q ? h('p', { class: 'q', text: L('Вопрос команде: ', 'Question for the team: ') + o.q }) : null)));
+  const notesSec = h('div', { class: 'coach-sec' }, h('h4', { text: L('Из вашей библиотеки', 'From your library') }),
+    hits.length ? hits.map(({ k, hit }) => h('div', { class: 'note' + (k.mine ? ' mine' : '') },
+      h('h5', { text: k.title[state.lang] }),
+      h('span', { class: 'src', text: (k.mine ? L('Моя заметка · ', 'My note · ') : '') + k.src[state.lang] }),
+      h('p', { text: k.text[state.lang] }),
+      h('span', { class: 'why-found', text: L('найдено по: ', 'matched on: ') + hit.join(', ') }),
+      k.mine ? h('button', { type: 'button', class: 'btn btn-ghost btn-small', text: L('Удалить заметку', 'Delete note'), onclick: () => deleteNote(k.id) }) : null))
+      : h('p', { class: 'hint', text: L('Пока нечего подбирать.', 'Nothing to match yet.') }));
+  const reflectSec = h('div', { class: 'coach-sec' }, h('h4', { text: L('Разговор с коучем', 'Talk with the coach') }),
+    h('div', { class: 'actions' },
+      h('button', { type: 'button', class: 'btn', id: 'reflect-btn', text: L('Спросить коуча', 'Ask the coach'), disabled: !state.sample || state.reflecting, onclick: reflect }),
+      state.reflecting ? h('button', { type: 'button', class: 'btn btn-small', text: L('Остановить', 'Stop'), onclick: () => state.rctl && state.rctl.abort() }) : null),
+    state.sample ? null : h('p', { class: 'hint', text: L('Доступно, когда страница открыта в Claude.', 'Available when the page is opened in Claude.') }),
+    h('div', { class: 'reflect', id: 'reflect-out', hidden: !state.reflect && !state.reflecting, text: state.reflect }),
+    h('p', { class: 'hint', text: L('Коуч опирается на найденные выше заметки и текущий разбор.', 'The coach relies on the notes matched above and the current breakdown.') }));
+  const addSec = h('div', { class: 'coach-sec' }, h('details', { class: 'addnote' },
+    h('summary', { text: L('Добавить заметку из своей книги', 'Add a note from your own book') }),
+    h('div', { class: 'field' }, h('label', { for: 'n-title', text: L('Заголовок', 'Title') }), h('input', { type: 'text', id: 'n-title' })),
+    h('div', { class: 'field' }, h('label', { for: 'n-src', text: L('Источник: книга, глава', 'Source: book, chapter') }), h('input', { type: 'text', id: 'n-src' })),
+    h('div', { class: 'field' }, h('label', { for: 'n-text', text: L('Мысль своими словами', 'The idea in your own words') }), h('textarea', { id: 'n-text', rows: '3' })),
+    h('div', { class: 'field' }, h('label', { for: 'n-tags', text: L('Теги через запятую', 'Tags, comma separated') }), h('input', { type: 'text', id: 'n-tags', placeholder: L('нарезка, оценка, критерии, wbs (необязательно)', 'split, estimate, criteria, wbs (optional)') })),
+    h('p', { class: 'err-line', id: 'n-err', role: 'alert' }),
+    h('div', { class: 'actions' }, h('button', { type: 'button', class: 'btn btn-small', text: L('Сохранить в библиотеку', 'Save to library'), onclick: addNote })),
+    h('p', { class: 'hint', text: L('Заметки хранятся в этом браузере и участвуют в подборе вместе с готовыми.', 'Notes are kept in this browser and take part in matching alongside the built-in ones.') })));
+  $('#coach').replaceChildren(head, obsSec, notesSec, reflectSec, addSec);
+}
+function addNote() {
+  const t = str($('#n-title').value), s = str($('#n-src').value), x = str($('#n-text').value);
+  const tags = str($('#n-tags').value).toLowerCase().split(/[,;\s]+/).filter(Boolean);
+  const err = $('#n-err');
+  if (!t || !x) { err.textContent = L('Нужны заголовок и текст заметки.', 'A title and the note text are required.'); return; }
+  err.textContent = '';
+  state.notes.push({ id: 'n' + Date.now(), title: t, src: s || L('Моя книга', 'My book'), text: x, tags });
+  store.set('lens.notes', state.notes);
+  renderCoach();
+}
+function deleteNote(id) { state.notes = state.notes.filter((n) => n.id !== id); store.set('lens.notes', state.notes); renderCoach(); }
+
+function render() {
+  if (!state.result) return;
+  renderModes(); renderSummary(); renderPanes(); renderCoach(); updatePromptView();
+}
+
+/* ---------- Exports ---------- */
+function wbsText(r) {
+  const lines = [];
+  const go = (ns, lvl) => ns.forEach((n) => { lines.push('  '.repeat(lvl) + n.code + ' ' + n.name + (n.stories.length ? '  [' + n.stories.join(', ') + ']' : '')); go(n.children, lvl + 1); });
+  go(r.wbs, 0);
+  return lines.join('\n');
+}
+function csvText(r) {
+  const q = (v) => { let t = String(v); if (/^[=+\-@\t\r]/.test(t)) t = "'" + t; return '"' + t.replace(/"/g, '""') + '"'; };
+  const head = ['ID', 'Summary', 'Acceptance criteria', 'Story points', 'Pattern', 'WBS', 'Status'];
+  const rows = r.stories.map((s) => [s.id, s.title, s.criteria.join('\n'), s.size, s.pattern, s.wbs.join(' '), sLabel(storyState(s))]);
+  return '﻿' + [head, ...rows].map((row) => row.map(q).join(',')).join('\r\n');
+}
+function setStatus(msg, cls) { const s = $('#status'); s.className = 'status-line ' + (cls || ''); s.textContent = msg; }
+async function copyWbs() {
+  const text = wbsText(state.result);
+  try { await navigator.clipboard.writeText(text); setStatus(L('WBS скопирована.', 'WBS copied.')); }
+  catch (e) {
+    $$('.wbs-fallback').forEach((x) => x.remove());
+    const ta = h('textarea', { readonly: true, rows: '8', class: 'wbs-fallback', 'aria-label': 'WBS' }); ta.value = text;
+    $('#summary').after(ta); ta.focus(); ta.select();
+    setStatus(L('Выделите и скопируйте текст вручную.', 'Select and copy the text manually.'), 'err');
+  }
+}
+async function downloadCsv() {
+  if (!state.downloads) { setStatus(L('Скачивание недоступно в этом окне.', 'Download is not available in this view.'), 'err'); return; }
+  try { await state.downloads.save({ filename: 'epic-lens-stories.csv', data: csvText(state.result) }); setStatus(L('Файл сохранён.', 'File saved.')); }
+  catch (e) { if (e && e.code !== 'declined') setStatus(L('Не удалось сохранить файл.', 'Could not save the file.'), 'err'); }
+}
+/* ---------- Prompts (also shown to the user under "Under the hood") ---------- */
+function lensText() {
+  const id = $('#lens').value || 'auto';
+  const m = {
+    auto: L('на твой выбор, назови применённый приём', 'your choice; name the technique you applied'),
+    spidr: 'SPIDR (Spikes, Paths, Interfaces, Data, Rules)',
+    hw: L('девять паттернов Humanizing Work, начиная с шагов рабочего процесса', 'the nine Humanizing Work patterns, starting with workflow steps'),
+    hamburger: L('метод гамбургера Гойко Аджича: слои операции, по каждому варианты, берём самые тонкие', 'Gojko Adzic\'s hamburger method: layers of the operation, options for each, take the thinnest'),
+    map: L('карта историй Джеффа Паттона: основа из шагов пользователя, затем срезы', 'Jeff Patton\'s story map: a backbone of user steps, then slices')
+  };
+  return m[id];
+}
+const SCHEMA = '{"epic":{"title":"…"},"stories":[{"id":"S1","title":"…","pattern":"…","size":3,"invest":{"i":"ok","n":"ok","v":"ok","e":"warn","s":"ok","t":"ok"},"why":"","criteria":["… … …"],"wbs":["1.1"]}],"wbs":[{"code":"1","name":"…","children":[{"code":"1.1","name":"…","stories":["S1"]}]}]}';
+function genPrompt() {
+  const epic = $('#epic').value.trim() || '…';
+  const ctx = $('#ctx').value.trim() || L('не указан', 'not given');
+  if (state.lang === 'ru') return `Ты — опытный Agile-коуч. Разбери один эпик двумя способами на одном и том же скоупе.
+1. Пользовательские истории: вертикальные срезы, у каждого есть роль и ценность. Не режь по слоям («бэкенд», «фронтенд»).
+2. WBS: дерево результатов. Верхние уровни называй существительными-результатами, нижний уровень — пакеты работ, а не задачи. Не больше трёх уровней.
+
+Метод нарезки историй: ${lensText()}.
+Контекст: ${ctx}
+Эпик: ${epic}
+
+Требования:
+- 5–9 историй вида «Как <роль>, я <действие>, чтобы <ценность>». Исследование (спайк) допустимо, если оно снимает неопределённость; формулируй его вопросом и ограничивай по времени. История закрытая: она заканчивается достигнутой целью пользователя. Не называй в истории экраны, кнопки и меню.
+- 2–3 критерия приёмки на историю, каждый одной строкой: «Дано: … Когда: … Тогда: …».
+- size: одно из 1, 2, 3, 5, 8, 13 — стартовая оценка в баллах. Историю для ближайших итераций оценивай в 1–8; 13 ставь только тому, что по сути остаётся эпиком.
+- invest: честная оценка по буквам i, n, v, e, s, t значениями "ok", "warn" или "bad". Если что-то не "ok", в why одним предложением напиши, что обсудить с командой.
+- pattern: коротко, какой приём нарезки применён.
+- В WBS 3–6 результатов верхнего уровня и 1–5 пакетов работ в каждом.
+- Свяжи проекции: у истории в wbs коды пакетов работ, у пакета в stories id историй. Пакет без истории допустим, если это обеспечивающая работа.
+- Пиши на русском.
+
+Верни только JSON такого вида:
+${SCHEMA}`;
+  return `You are an experienced Agile coach. Break one epic down in two ways over the same scope.
+1. User stories: vertical slices, each with a role and a value. Do not slice by layer ("backend", "frontend").
+2. WBS: a tree of deliverables. Name the upper levels with nouns (deliverables); the lowest level is work packages, not tasks. At most three levels.
+
+Story splitting method: ${lensText()}.
+Context: ${ctx}
+Epic: ${epic}
+
+Requirements:
+- 5 to 9 stories shaped "As a <role>, I <action>, so that <value>". A spike is allowed if it removes uncertainty; phrase it as a question and timebox it. Each story is closed: it ends with a goal the user has reached. Do not name screens, buttons or menus in a story.
+- 2 to 3 acceptance criteria per story, each on one line: "Given … When … Then …".
+- size: one of 1, 2, 3, 5, 8, 13, a starting estimate in points. Estimate a story for the next iterations at 1–8; use 13 only for something that is still really an epic.
+- invest: an honest rating for letters i, n, v, e, s, t with values "ok", "warn" or "bad". If anything is not "ok", write one sentence in why about what to discuss with the team.
+- pattern: briefly, which splitting technique you applied.
+- In the WBS, 3 to 6 top-level deliverables and 1 to 5 work packages in each.
+- Link the projections: a story's wbs holds work package codes, a package's stories holds story ids. A package with no story is allowed if it is enabling work.
+- Write in English.
+
+Return only JSON of this shape:
+${SCHEMA}`;
+}
+function updatePromptView() { $('#prompt-view').textContent = genPrompt(); }
+
+function errorCopy(e) {
+  const c = e && e.code;
+  if (c === 'cancelled') return '';
+  if (c === 'not_granted' || c === 'sampling_disabled' || c === 'not_declared' || c === 'capability_disabled') return L('Claude недоступен для этой страницы. Показан пример.', 'Claude is not available for this page. The sample stays on screen.');
+  if (c === 'rate_limited') return L('Слишком много запросов. Подождите немного и нажмите ещё раз.', 'Too many requests. Wait a moment and try again.');
+  if (c === 'invalid_json' || c === 'empty_completion') return L('Ответ не удалось разобрать. Нажмите ещё раз или сократите эпик.', 'The answer could not be parsed. Try again or shorten the epic.');
+  if (c === 'prompt_too_large') return L('Эпик слишком длинный. Сократите описание.', 'The epic is too long. Shorten the description.');
+  return L('Что-то прервалось. Нажмите ещё раз.', 'Something was interrupted. Try again.');
+}
+function setBusy(on) {
+  state.running = on;
+  $('#run').disabled = on || !state.sample;
+  $('#cancel').hidden = !on;
+}
+
+/* ---------- Actions ---------- */
+function resetView() {
+  state.focus = null; state.reflect = '';
+  state.touched = new Set(state.mode === 'both' ? ['stories', 'wbs'] : [state.mode]);
+}
+function sampleById(id) { return SAMPLES.find((s) => s.id === id); }
+function pickSample(id) {
+  const s = sampleById(id); if (!s) return;
+  state.sampleId = id;
+  $('#epic').value = s[state.lang].epic; $('#ctx').value = s[state.lang].ctx;
+  $$('[data-sample]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.sample === id)));
+  if (id === 'tariff') {
+    state.result = normalize(PREBAKED[state.lang]); state.source = 'sample'; state.resultFor = s[state.lang].epic;
+    resetView(); render(); setStatus('');
+  } else {
+    renderSummary(); updatePromptView();
+    setStatus(state.sample ? L('Нажмите «Разобрать эпик», чтобы Claude построил истории и WBS.', 'Press "Break down the epic" and Claude will build the stories and the WBS.') : L('Для этого примера нужен Claude: откройте страницу в Claude.', 'This example needs Claude: open the page in Claude.'), 'busy');
+  }
+}
+
+async function run() {
+  const epic = $('#epic').value.trim();
+  if (!state.sample) { setStatus(errorCopy({ code: 'not_granted' }), 'err'); return; }
+  if (epic.length < 15) { setStatus(L('Опишите эпик хотя бы одним предложением.', 'Describe the epic in at least one sentence.'), 'err'); return; }
+  state.ctl = new AbortController(); setBusy(true);
+  setStatus(L('Claude разбирает эпик. Обычно это 20–60 секунд.', 'Claude is breaking the epic down. This usually takes 20 to 60 seconds.'), 'busy');
+  try {
+    const raw = await state.sample.json(genPrompt(), {
+      signal: state.ctl.signal,
+      onText: ({ text }) => setStatus(L('Claude пишет разбор… ', 'Claude is writing the breakdown… ') + text.length + L(' зн.', ' chars'), 'busy')
+    });
+    const r = normalize(raw);
+    if (!r.stories.length) throw { code: 'invalid_json' };
+    if (!r.epic.title) r.epic.title = epic.slice(0, 70);
+    r.epic.statement = epic;
+    state.result = r; state.source = 'claude'; state.resultFor = epic;
+    resetView(); render(); setStatus('');
+  } catch (e) { setStatus(errorCopy(e), 'err'); }
+  finally { setBusy(false); state.ctl = null; }
+}
+
+function stripLinks(nodes) { return nodes.map((n) => ({ code: n.code, name: n.name, stories: [], children: stripLinks(n.children) })); }
+async function splitStory(id) {
+  const r = state.result, s = r.stories.find((x) => x.id === id);
+  if (!s || !state.sample) return;
+  const codes = s.wbs.join(', ') || '—';
+  const prompt = state.lang === 'ru'
+    ? `Ты — Agile-коуч. Раздели одну историю на 2–4 более мелкие вертикальные истории, каждая не больше 5 баллов и с собственной ценностью для пользователя.\nЭпик: ${r.epic.statement || r.epic.title}\nИстория ${s.id}: ${s.title}\nКоды пакетов WBS, которые можно использовать: ${codes}\nФормат каждой истории: title («Как <роль>, я <действие>, чтобы <ценность>»), pattern, size (1, 2, 3, 5), invest (объект с ключами i, n, v, e, s, t и значениями "ok", "warn", "bad"), why, criteria (2 строки вида «Дано: … Когда: … Тогда: …»), wbs (подмножество кодов выше). Пиши на русском.\nВерни только JSON: {"stories":[…]}`
+    : `You are an Agile coach. Split one story into 2 to 4 smaller vertical stories, each at most 5 points and each with its own value to a user.\nEpic: ${r.epic.statement || r.epic.title}\nStory ${s.id}: ${s.title}\nWBS codes you may use: ${codes}\nEach story has: title ("As a <role>, I <action>, so that <value>"), pattern, size (1, 2, 3, 5), invest (an object with keys i, n, v, e, s, t and values "ok", "warn", "bad"), why, criteria (2 lines shaped "Given … When … Then …"), wbs (a subset of the codes above). Write in English.\nReturn only JSON: {"stories":[…]}`;
+  state.ctl = new AbortController(); setBusy(true);
+  setStatus(L('Claude делит ' + id + '…', 'Claude is splitting ' + id + '…'), 'busy');
+  try {
+    const out = await state.sample.json(prompt, { signal: state.ctl.signal });
+    const kids = arr(out && out.stories).slice(0, 4);
+    if (kids.length < 2) throw { code: 'invalid_json' };
+    /* ids stay stable: the new stories take the next free numbers and text that pointed at the old story points at the new ones */
+    const top = Math.max(...r.stories.map((x) => Number((x.id.match(/\d+/) || [0])[0])));
+    const kidIds = kids.map((k, i) => 'S' + (top + 1 + i));
+    const mention = new RegExp('(^|[^\\p{L}\\p{N}-])' + id + '(?![\\p{L}\\p{N}-])', 'gu');
+    const stories = r.stories.flatMap((x) => x.id !== id
+      ? [{ ...x, why: x.why.replace(mention, (m, pre) => pre + kidIds.join(' / ')) }]
+      : kids.map((k, i) => ({ ...k, id: kidIds[i], wbs: arr(k.wbs).length ? k.wbs : x.wbs })));
+    state.result = normalize({ epic: r.epic, stories, wbs: stripLinks(r.wbs) }, { keepIds: true });
+    state.result.epic = r.epic;
+    if (state.source === 'sample') state.source = 'mixed';
+    state.focus = null; state.reflect = ''; render(); setStatus(L('История разделена. Коуч пересчитал выводы.', 'Story split. The coach re-read the breakdown.'));
+  } catch (e) { setStatus(errorCopy(e), 'err'); }
+  finally { setBusy(false); state.ctl = null; }
+}
+
+async function reflect() {
+  if (!state.sample || state.reflecting) return;
+  const r = state.result, m = computeMetrics(r);
+  const list = r.stories.map((s) => `${s.id} (${s.size} ${L('б.', 'pts')}, ${sLabel(storyState(s))}): ${s.title}`).join('\n');
+  const obs = state.obs.map((o) => `- ${o.title}: ${o.body}`).join('\n');
+  const notes = state.hits.map(({ k }) => `- ${k.title[state.lang]} (${k.src[state.lang]}): ${k.text[state.lang]}`).join('\n');
+  const touched = Array.from(state.touched).join(', ');
+  const prompt = state.lang === 'ru'
+    ? `Ты — Agile-коуч, который работает вопросами. Перед тобой разбор эпика, который сделала команда.\nЭпик: ${r.epic.statement || r.epic.title}\nИстории:\n${list}\nПокрытие WBS: ${m.coverage}%. Проекции, которые смотрел пользователь: ${touched}.\nНаблюдения проверок:\n${obs}\nЗаметки из библиотеки пользователя:\n${notes}\n\nЗадача (до 150 слов, связным текстом, без таблиц): 1) чем разбор силён; 2) главный риск; 3) два вопроса команде, которые стоит обсудить; 4) один шаг на 15 минут. Опирайся на заметки выше и называй источник по имени. Не придумывай цитаты, номера страниц и книги, которых нет в списке.`
+    : `You are an Agile coach who works through questions. Below is an epic breakdown a team produced.\nEpic: ${r.epic.statement || r.epic.title}\nStories:\n${list}\nWBS coverage: ${m.coverage}%. Projections the user looked at: ${touched}.\nFindings from the checks:\n${obs}\nNotes from the user's library:\n${notes}\n\nTask (up to 150 words, flowing prose, no tables): 1) what the breakdown does well; 2) the main risk; 3) two questions for the team to discuss; 4) one 15-minute next step. Rely on the notes above and name the source. Do not invent quotes, page numbers or books that are not in the list.`;
+  state.rctl = new AbortController(); state.reflecting = true; state.reflect = '';
+  renderCoach(); $('#reflect-out').textContent = L('Коуч думает…', 'The coach is thinking…');
+  try {
+    await state.sample(prompt, { signal: state.rctl.signal, cache: false, onText: ({ text }) => { state.reflect = text; const o = $('#reflect-out'); if (o) { o.hidden = false; o.textContent = text; } } });
+  } catch (e) {
+    if (e && e.text) state.reflect = e.text;
+    const msg = errorCopy(e); if (msg) setStatus(msg, 'err');
+  } finally { state.reflecting = false; state.rctl = null; renderCoach(); }
+}
+
+/* ---------- Wiring ---------- */
+function setLang(lang) {
+  state.lang = lang; store.set('lens.lang', lang);
+  const s = state.sampleId && sampleById(state.sampleId);
+  if (s) { $('#epic').value = s[lang].epic; $('#ctx').value = s[lang].ctx; }
+  if (state.source === 'sample') {
+    state.result = normalize(PREBAKED[lang]); state.source = 'sample';
+    state.resultFor = sampleById('tariff')[lang].epic; state.focus = null;
+  }
+  applyLang(); render();
+}
+function boot() {
+  const s0 = sampleById('tariff');
+  $('#epic').value = s0[state.lang].epic; $('#ctx').value = s0[state.lang].ctx;
+  state.result = normalize(PREBAKED[state.lang]); state.resultFor = s0[state.lang].epic;
+  $('#run').disabled = true;
+  applyLang(); render();
+  setStatus(L('Подключаю Claude…', 'Connecting to Claude…'), 'busy');
+
+  $$('[data-lang]').forEach((b) => b.addEventListener('click', () => setLang(b.dataset.lang)));
+  $('#epic').addEventListener('input', () => { state.sampleId = null; $$('[data-sample]').forEach((b) => b.setAttribute('aria-pressed', 'false')); renderSummary(); updatePromptView(); });
+  $('#ctx').addEventListener('input', updatePromptView);
+  $('#lens').addEventListener('change', updatePromptView);
+  const bigEl = $('#bigat'); bigEl.value = state.bigAt;
+  bigEl.addEventListener('change', () => { const v = Math.round(Number(bigEl.value)); state.bigAt = Number.isFinite(v) && v >= 2 && v <= 100 ? v : 13; bigEl.value = state.bigAt; store.set('lens.bigAt', state.bigAt); render(); });
+  $('#run').addEventListener('click', run);
+  $('#cancel').addEventListener('click', () => state.ctl && state.ctl.abort());
+  $('#copy-wbs').addEventListener('click', copyWbs);
+  $('#dl-csv').addEventListener('click', downloadCsv);
+
+  const get = async (name) => { try { return window.claude && window.claude.use ? await window.claude.use(name) : null; } catch (e) { return null; } };
+  Promise.all([get('sample'), get('downloads')]).then(([smp, dl]) => {
+    state.sample = smp && typeof smp.json === 'function' ? smp : null;
+    state.downloads = dl;
+    $('#dl-csv').hidden = !state.downloads;
+    $('#run').disabled = !state.sample;
+    setStatus(state.sample ? '' : L('Показан пример. Чтобы разобрать свой эпик, откройте страницу в Claude.', 'A sample is shown. To break down your own epic, open the page in Claude.'), state.sample ? '' : 'busy');
+    renderPanes(); renderCoach();
+  });
+}
+boot();
+</script>
+
+</body>
+</html>

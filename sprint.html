@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#20242B">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<script src="pwa-shim.js"></script>
+</head>
+<body>
+<nav class="pwa-nav"><a href="./">← Все практикумы</a></nav>
+
+<title>Планирование спринта — Корзина</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+/* Планирование спринта: the Food Delivery team's planning desk. A dark band carries the 10 working days of the next sprint;
+   each bar is the number of developers available that day, the public holiday is marked in signal orange.
+   Signal orange is reserved for lost capacity and for the critical check: that is where a plan built on feelings breaks. */
+:root {
+  --paper: #E6E8E3;      /* concrete */
+  --sheet: #FBFBF9;
+  --sheet-2: #F0F1ED;
+  --ink: #1D2026;
+  --ink-2: #5A6068;
+  --rule: #D3D6CF;
+  --rule-2: #B4B9B0;
+  --band: #20242B;       /* graphite control band, same in both themes */
+  --band-ink: #E9EBE6;
+  --band-ink-2: #9AA1AB;
+  --signal: #F2551D;     /* lost capacity, critical */
+  --signal-tint: #FDE3D8;
+  --cobalt: #2D4FE3;     /* sprint goal items */
+  --cobalt-tint: #E2E7FC;
+  --amber: #D9960B;
+  --violet: #7650C4;
+  --green: #2D8A57;
+  --cal: #3A414C;
+  --ok: #23804A; --ok-tint: #DDF0E3;
+  --warn: #9A6400; --warn-tint: #F8ECCB;
+  --bad: #C42B2B; --bad-tint: #F8DEDC;
+  --on-fill: #FFFFFF;
+  --font-display: "Dela Gothic One", "Golos Text", system-ui, sans-serif;
+  --font-body: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #14161A; --sheet: #1D2026; --sheet-2: #252930; --ink: #ECEDE9; --ink-2: #A2A8B0; --rule: #333840; --rule-2: #4A5059;
+    --band: #0C0E11; --band-ink: #ECEDE9; --band-ink-2: #8E959F;
+    --signal: #FF7341; --signal-tint: #44231A; --cobalt: #8EA4FF; --cobalt-tint: #232C52; --amber: #F2B84B; --violet: #B79BF0; --green: #6CCB93; --cal: #B9C0CA;
+    --ok: #6CCB93; --ok-tint: #173323; --warn: #F2C14E; --warn-tint: #3A2D0E; --bad: #FF8A80; --bad-tint: #401A18;
+    --on-fill: #14161A; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #14161A; --sheet: #1D2026; --sheet-2: #252930; --ink: #ECEDE9; --ink-2: #A2A8B0; --rule: #333840; --rule-2: #4A5059;
+  --band: #0C0E11; --band-ink: #ECEDE9; --band-ink-2: #8E959F;
+  --signal: #FF7341; --signal-tint: #44231A; --cobalt: #8EA4FF; --cobalt-tint: #232C52; --amber: #F2B84B; --violet: #B79BF0; --green: #6CCB93; --cal: #B9C0CA;
+  --ok: #6CCB93; --ok-tint: #173323; --warn: #F2C14E; --warn-tint: #3A2D0E; --bad: #FF8A80; --bad-tint: #401A18;
+  --on-fill: #14161A; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55; padding-inline: 16px; padding-block: 0 56px; font-variant-numeric: tabular-nums; }
+.wrap { max-width: 1320px; margin-inline: auto; }
+h1, h2, h3, h4, p { margin: 0; }
+h1, h2, h3 { text-wrap: balance; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2.5px solid var(--cobalt); outline-offset: 2px; }
+.mono { font-variant-numeric: tabular-nums; }
+
+/* ---------- Control band: 10 working days, developers available each day ---------- */
+.band { background: var(--band); color: var(--band-ink); margin-inline: -16px; padding-inline: 16px; padding-block: 26px 0; }
+.band-top { display: flex; flex-wrap: wrap; gap: 14px 40px; align-items: end; justify-content: space-between; }
+.brand { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.brand h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(26px, 4vw, 40px); line-height: 1; letter-spacing: -0.01em; }
+.brand p { color: var(--band-ink-2); max-width: 62ch; font-size: 14.5px; }
+.casetag { font-size: 13px; color: var(--band-ink-2); border: 1px solid #454b55; border-radius: 999px; padding: 4px 12px; white-space: nowrap; }
+
+.ruler { margin-top: 26px; display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 4px; align-items: end; height: 70px; }
+.ruler span { border-radius: 3px; background: #343a44; position: relative; }
+.ruler span::before { content: attr(data-day); position: absolute; top: calc(100% + 4px); left: 50%; transform: translateX(-50%); font-size: 11px; color: var(--band-ink-2); white-space: nowrap; }
+.ruler span::after { content: attr(data-n); position: absolute; bottom: calc(100% + 3px); left: 50%; transform: translateX(-50%); font-size: 11.5px; font-weight: 600; color: var(--band-ink-2); white-space: nowrap; }
+.ruler span.short { background: #5b626d; }
+.ruler span.hol { background: var(--signal); }
+.ruler span.hol::after { color: var(--signal); }
+.ruler-cap { margin-top: 22px; font-size: 12px; color: var(--band-ink-2); display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.ruler-cap i { display: inline-block; width: 12px; height: 8px; border-radius: 2px; margin-right: 6px; vertical-align: 0; background: #343a44; }
+.ruler-cap i.short { background: #5b626d; } .ruler-cap i.hol { background: var(--signal); }
+@media (max-width: 640px) { .ruler span::before { content: attr(data-short); } .ruler span.hol::after { content: "П"; } }
+
+.steps { position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); padding-block: 22px 24px; border-top: 1px solid #3a4049; margin-top: 16px; }
+.steps::before { content: ""; position: absolute; left: 14px; right: 14px; top: 36px; height: 3px; background: #3e444e; border-radius: 3px; }
+.step { appearance: none; position: relative; text-align: left; cursor: pointer; border: 0; background: transparent; color: var(--band-ink); padding: 0 10px 0 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.step .dot { width: 31px; height: 31px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 14px; background: var(--band); border: 3px solid #5b626d; color: var(--band-ink-2); position: relative; z-index: 1; }
+.step .t { font-weight: 600; font-size: 14px; line-height: 1.25; }
+.step .s { font-size: 12.5px; color: var(--band-ink-2); line-height: 1.3; }
+.step:hover .dot { border-color: var(--band-ink); }
+.step.done .dot { background: var(--green); border-color: var(--green); color: var(--band); }
+.step[aria-current="step"] .dot { background: var(--signal); border-color: var(--signal); color: var(--band); box-shadow: 0 0 0 5px rgba(242, 85, 29, .25); }
+.step.locked { cursor: not-allowed; }
+.step.locked .dot { border-style: dashed; }
+.step.locked .t, .step.locked .s { color: #6d7480; }
+@media (max-width: 860px) { .step .s { display: none; } .step .t { font-size: 12px; } }
+@media (max-width: 520px) { .step .t { display: none; } }
+
+/* ---------- Working area ---------- */
+.workspace { display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr); align-items: start; padding-top: 24px; }
+@media (min-width: 1100px) { .workspace { grid-template-columns: minmax(0, 1fr) 320px; } }
+.panel { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.card { background: var(--sheet); border-radius: 16px; padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.card > h3, .sec-h { font-family: var(--font-display); font-weight: 400; font-size: 19px; line-height: 1.2; letter-spacing: -0.005em; }
+.lead { color: var(--ink-2); max-width: 72ch; }
+.lbl { font-size: 13px; color: var(--ink-2); font-weight: 600; }
+.grid2 { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .grid2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+@media (max-width: 600px) { .card { padding: 18px 16px; border-radius: 12px; } }
+
+.btn { appearance: none; cursor: pointer; border: 1.5px solid var(--ink); background: transparent; border-radius: 999px; padding: 8px 18px; font-weight: 600; line-height: 1.2; }
+.btn:hover { background: var(--sheet-2); }
+.btn[disabled] { opacity: .4; cursor: not-allowed; }
+.btn-primary { background: var(--ink); color: var(--sheet); }
+.btn-primary:hover { background: var(--ink); filter: brightness(1.25); }
+.btn-small { padding: 5px 13px; font-size: 13px; border-width: 1px; border-color: var(--rule-2); font-weight: 500; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.status { min-height: 20px; font-size: 13.5px; color: var(--ink-2); }
+.status.err { color: var(--bad); }
+
+textarea, input[type="text"], input[type="number"], select { width: 100%; border: 1.5px solid var(--rule); background: var(--sheet); border-radius: 10px; padding: 9px 12px; }
+textarea:hover, input:hover, select:hover { border-color: var(--rule-2); }
+textarea { resize: vertical; line-height: 1.55; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field-top { display: flex; justify-content: space-between; gap: 8px 14px; align-items: baseline; flex-wrap: wrap; }
+.field .help, .help { font-size: 13px; color: var(--ink-2); }
+
+/* Tables */
+table.data { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.data th, table.data td { text-align: left; padding: 10px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+table.data th { font-size: 12.5px; color: var(--ink-2); font-weight: 600; border-bottom: 2px solid var(--ink); }
+table.data tbody tr:last-child td { border-bottom: 0; }
+.tscroll { overflow-x: auto; }
+table.calc td { vertical-align: middle; }
+table.calc input { width: 5.4em; padding: 6px 4px; text-align: center; border-radius: 8px; font-weight: 600; font-size: 15px; }
+.formula { font-size: 12.5px; color: var(--ink-2); font-family: ui-monospace, Menlo, monospace; }
+.rowhint { font-size: 12.5px; color: var(--ink-2); margin-top: 4px; max-width: 38ch; }
+.kind { font-size: 12px; color: var(--ink-2); }
+
+/* Velocity bars */
+.vel { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; align-items: end; height: 120px; padding-top: 18px; }
+.vel div { position: relative; background: var(--cobalt); border-radius: 6px 6px 2px 2px; }
+.vel div::before { content: attr(data-v); position: absolute; bottom: calc(100% + 3px); left: 50%; transform: translateX(-50%); font-weight: 600; font-size: 13px; }
+.vel div::after { content: attr(data-s); position: absolute; top: calc(100% + 4px); left: 50%; transform: translateX(-50%); font-size: 11.5px; color: var(--ink-2); white-space: nowrap; }
+.vel-wrap { padding-bottom: 22px; }
+.vel-line { position: relative; height: 0; border-top: 1.5px dashed var(--ink-2); }
+
+/* Case */
+.news { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .news { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.newsitem { position: relative; padding: 16px 16px 14px; background: var(--signal-tint); border-radius: 4px 14px 14px 14px; display: flex; flex-direction: column; gap: 6px; }
+.newsitem b { font-family: var(--font-display); font-weight: 400; font-size: 16px; color: var(--signal); }
+.task-list { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; }
+.task-list li::marker { font-weight: 700; color: var(--ink-2); }
+.goalbox { padding: 14px 16px; background: var(--cobalt-tint); border-radius: 4px 14px 14px 14px; display: flex; flex-direction: column; gap: 4px; }
+.goalbox b { font-family: var(--font-display); font-weight: 400; font-size: 16px; }
+.note { font-size: 13px; color: var(--ink-2); border-left: 3px solid var(--rule-2); padding-left: 10px; }
+.src { font-size: 12.5px; color: var(--ink-2); font-style: italic; }
+
+/* Backlog selection */
+table.backlog td { vertical-align: middle; }
+table.backlog tr.on td { background: var(--cobalt-tint); }
+.goaltag { display: inline-block; margin-left: 8px; font-size: 11px; font-weight: 600; color: var(--cobalt); border: 1px solid var(--cobalt); border-radius: 999px; padding: 1px 7px; vertical-align: 1px; white-space: nowrap; }
+table.backlog input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--cobalt); margin: 0; }
+table.backlog .pts { font-family: var(--font-display); font-size: 17px; }
+.deps { font-size: 12px; color: var(--ink-2); }
+.counter { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: baseline; }
+.bignum { font-family: var(--font-display); font-size: 30px; line-height: 1.1; }
+.bignum.bad { color: var(--signal); } .bignum.ok { color: var(--ok); }
+.bar { height: 12px; border-radius: 999px; background: var(--sheet-2); position: relative; overflow: hidden; }
+.bar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--cobalt); border-radius: 999px; }
+.bar i.over { background: var(--signal); }
+.bar b { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); }
+.bar b.soft { background: var(--ink-2); }
+.checkrows { display: flex; flex-direction: column; gap: 8px; }
+.checkrow { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: baseline; padding: 9px 12px; background: var(--sheet-2); border-radius: 10px; font-size: 14px; }
+
+/* Poker */
+.hands { display: flex; flex-wrap: wrap; gap: 8px; }
+.hand { width: 52px; height: 70px; border-radius: 8px; border: 1.5px solid var(--rule-2); background: var(--sheet); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.hand b { font-family: var(--font-display); font-weight: 400; font-size: 22px; }
+.hand span { font-size: 10.5px; color: var(--ink-2); }
+.hand.far { border-color: var(--signal); }
+.hand.far b { color: var(--signal); }
+.radio-list { display: flex; flex-direction: column; gap: 8px; }
+.radio-list label { display: flex; gap: 10px; align-items: baseline; padding: 9px 12px; border: 1.5px solid var(--rule); border-radius: 10px; cursor: pointer; background: var(--sheet); }
+.radio-list label:has(input:checked) { border-color: var(--ink); }
+.radio-list input { accent-color: var(--signal); }
+.radio-list label.right { border-color: var(--ok); background: var(--ok-tint); }
+.radio-list label.wrong { border-color: var(--bad); background: var(--bad-tint); }
+
+/* Verification */
+.claims { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .claims { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.claim { padding: 12px 14px; background: var(--sheet-2); border-radius: 10px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.claim p { overflow-wrap: anywhere; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; padding: 2px 10px 2px 8px; border-radius: 999px; white-space: nowrap; }
+.pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.pill.ok { color: var(--ok); background: var(--ok-tint); }
+.pill.warn { color: var(--warn); background: var(--warn-tint); }
+.pill.bad { color: var(--bad); background: var(--bad-tint); }
+.pill.bad::before { border-radius: 1px; transform: rotate(45deg); }
+.pill.info { color: var(--ink-2); background: var(--sheet-2); }
+.pick { display: flex; flex-wrap: wrap; gap: 8px; }
+.pick label { display: inline-flex; gap: 7px; align-items: center; border: 1.5px solid var(--rule); border-radius: 999px; padding: 5px 13px 5px 10px; font-size: 13.5px; cursor: pointer; background: var(--sheet); }
+.pick label:has(input:checked) { border-color: var(--ink); background: var(--ink); color: var(--sheet); }
+.pick input { margin: 0; accent-color: var(--signal); }
+.ai { display: flex; flex-direction: column; background: var(--sheet); border-radius: 16px; overflow: hidden; }
+.ai-row { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 8px 22px; padding: 16px 24px; border-bottom: 1px solid var(--rule); border-left: 5px solid var(--rule); }
+.ai-row:last-child { border-bottom: 0; }
+.ai-row.found { border-left-color: var(--ok); } .ai-row.missed { border-left-color: var(--bad); } .ai-row.alarm { border-left-color: var(--amber); }
+.ai-row .txt { overflow-wrap: anywhere; }
+.ai-row .txt .n { font-family: var(--font-display); color: var(--ink-2); font-size: 13px; margin-right: 8px; }
+.ai-row .ctl { display: flex; flex-direction: column; gap: 8px; }
+.ai-row select { width: auto; max-width: 100%; padding: 6px 10px; font-size: 13.5px; }
+@media (max-width: 700px) { .ai-row { grid-template-columns: minmax(0, 1fr); padding: 14px 16px; } }
+.bigline { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: baseline; }
+
+/* Conclusions */
+.reflect { white-space: pre-wrap; overflow-wrap: anywhere; padding: 14px 16px; background: var(--cobalt-tint); border-radius: 4px 14px 14px 14px; min-height: 40px; }
+.checks { display: flex; flex-wrap: wrap; gap: 6px; }
+.chk { font-size: 12.5px; padding: 2px 10px 2px 8px; border-radius: 999px; color: var(--ink-2); background: var(--sheet-2); display: inline-flex; align-items: center; gap: 6px; }
+.chk::before { content: ""; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid currentColor; flex: none; }
+.chk.on { color: var(--ok); background: var(--ok-tint); }
+.chk.on::before { background: currentColor; }
+.hintrow { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.hintrow b { font-weight: 600; }
+.compare { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+.stat { padding: 12px 14px; background: var(--sheet-2); border-radius: 10px; display: flex; flex-direction: column; gap: 2px; }
+.stat b { font-family: var(--font-display); font-weight: 400; font-size: 24px; line-height: 1.15; }
+.stat.hot b { color: var(--signal); }
+.preview { margin: 0; padding: 14px; background: var(--sheet-2); border-radius: 10px; max-height: 340px; overflow: auto; font-family: ui-monospace, Menlo, monospace; font-size: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
+details > summary { cursor: pointer; color: var(--ink-2); font-size: 13.5px; }
+
+/* ---------- Rail ---------- */
+.rail { background: var(--sheet); border-radius: 16px; display: flex; flex-direction: column; min-width: 0; border-top: 6px solid var(--band); }
+@media (min-width: 1100px) { .rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 14px); max-height: calc(100vh - 28px); overflow: auto; } }
+.rail-sec { padding: 16px 18px; border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; gap: 10px; }
+.rail-sec:last-child { border-bottom: 0; }
+.rail h3 { font-family: var(--font-display); font-weight: 400; font-size: 16px; }
+.rail h4 { font-size: 13px; color: var(--ink-2); font-weight: 600; }
+.goal { display: flex; gap: 10px; align-items: baseline; font-size: 14px; }
+.goal .dot { flex: none; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--rule-2); transform: translateY(1px); }
+.goal.on .dot { background: var(--green); border-color: var(--green); }
+.tip { font-size: 14px; background: var(--cobalt-tint); }
+.tip .q { color: var(--ink-2); font-style: italic; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--ink-2); align-items: center; }
+.empty { padding: 26px 18px; text-align: center; color: var(--ink-2); border: 2px dashed var(--rule-2); border-radius: 14px; }
+@media (prefers-reduced-motion: no-preference) { .btn, .step .dot, .pick label, .bar i { transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease, width .2s ease; } }
+</style>
+
+<header class="band">
+  <div class="wrap">
+    <div class="band-top">
+      <div class="brand">
+        <h1>Планирование спринта</h1>
+        <p>Практикум 6: Планирование Спринта по данным, а не по ощущениям. Сначала вы считаете прогноз и собираете Спринт сами, затем проверяете готовый план от ИИ и пишете вывод для владельца продукта.</p>
+      </div>
+      <span class="casetag">Кейс «Витрина», вымышленные данные</span>
+    </div>
+    <div class="ruler" id="ruler" aria-hidden="true"></div>
+    <div class="ruler-cap" aria-hidden="true"><span><i></i>все 6 разработчиков</span><span><i class="short"></i>кто-то отсутствует</span><span><i class="hol"></i>праздничный день</span></div>
+    <nav class="steps" aria-label="Шаги практикума" id="steps"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="workspace">
+    <main class="panel" id="main"></main>
+    <aside class="rail" id="rail" aria-label="Прогресс и коуч"></aside>
+  </div>
+</div>
+
+<script>
+/* ================= Data: case «Витрина», team «Доставка еды» ================= */
+const TEAM = 6, DAYS = 10;
+const VELOCITY = [34, 41, 29, 38, 36];
+const SPRINTS = ['Спринт 7', 'Спринт 8', 'Спринт 9', 'Спринт 10', 'Спринт 11'];
+/* Absences in the next sprint: who, why, working days */
+const ABSENCES = [
+  { who: 'Айдар', why: 'отпуск', days: [1, 2, 3] },
+  { who: 'Лейла', why: 'отпуск', days: [1, 2, 3] },
+  { who: 'Тимур', why: 'обучение', days: [6, 7] }
+];
+const HOLIDAY = 5;
+/* Developers available on each working day */
+const DAILY = Array.from({ length: DAYS }, (_, i) => { const d = i + 1; if (d === HOLIDAY) return 0; return TEAM - ABSENCES.filter((a) => a.days.includes(d)).length; });
+
+const GOAL_TEXT = 'Покупатель может заказать еду из одного ресторана и оплатить.';
+/* id, name, story points, part of the Sprint Goal, dependencies, what the item is about */
+const ITEMS = [
+  { id: 'B1', n: 'Карточка ресторана с меню', p: 8, goal: true, deps: [], d: 'Экран ресторана: блюда, цены, время доставки' },
+  { id: 'B2', n: 'Корзина с несколькими ресторанами', p: 13, goal: true, deps: ['B1'], d: 'Добавить блюда в корзину, изменить количество; разделение по ресторанам' },
+  { id: 'B3', n: 'Оплата ресторану после доставки', p: 5, goal: true, deps: ['B2'], d: 'Оплата картой, перевод ресторану после подтверждения доставки' },
+  { id: 'B4', n: 'Push о статусе заказа', p: 3, goal: false, deps: [], d: 'Принят, готовится, передан курьеру, доставлен' },
+  { id: 'B5', n: 'Отслеживание курьера на карте', p: 8, goal: false, deps: [], d: 'Положение курьера в реальном времени' },
+  { id: 'B6', n: 'Отмена заказа до передачи курьеру', p: 5, goal: false, deps: ['B3'], d: 'Отмена и возврат оплаты, пока заказ не передан курьеру' },
+  { id: 'B7', n: 'Промокоды', p: 5, goal: false, deps: ['B2'], d: 'Скидка по коду в корзине' },
+  { id: 'B8', n: 'Рейтинг и отзывы', p: 3, goal: false, deps: [], d: 'Оценка ресторана и блюда после заказа' },
+  { id: 'B9', n: 'Повтор прошлого заказа', p: 2, goal: false, deps: ['B3'], d: 'Собрать корзину из прошлого заказа одной кнопкой' },
+  { id: 'B10', n: 'Чаевые курьеру', p: 3, goal: false, deps: ['B3'], d: 'Добавить чаевые при оплате' },
+  { id: 'B11', n: 'Поддержка аллергенов в меню', p: 8, goal: false, deps: [], d: 'Пометки аллергенов у блюд, фильтр' },
+  { id: 'B12', n: 'Экспорт отчёта для ресторана', p: 5, goal: false, deps: [], d: 'Выгрузка заказов за период в кабинете ресторана' }
+];
+const BY_ID = Object.fromEntries(ITEMS.map((x) => [x.id, x]));
+
+/* Reference values */
+const REF = (() => {
+  const sorted = [...VELOCITY].sort((a, b) => a - b);
+  const avg = VELOCITY.reduce((a, b) => a + b, 0) / VELOCITY.length;
+  const median = sorted[Math.floor(sorted.length / 2)];
+  const full = TEAM * DAYS;
+  const vac = ABSENCES.filter((a) => a.why === 'отпуск').reduce((a, x) => a + x.days.length, 0);
+  const train = ABSENCES.filter((a) => a.why === 'обучение').reduce((a, x) => a + x.days.length, 0);
+  const hol = TEAM;
+  const cap = full - vac - train - hol;
+  const ratio = cap / full;
+  const forecast = avg * ratio;
+  return { avg, median, min: sorted[0], max: sorted[sorted.length - 1], full, vac, train, hol, cap, ratio, forecast, lo: 26, hi: 28, limit: Math.floor(Math.round(forecast) * 1.1), goalPts: ITEMS.filter((x) => x.goal).reduce((a, x) => a + x.p, 0) };
+})();
+const fmt1 = (x) => (Math.round(x * 10) / 10).toString().replace('.', ',');
+const fmt2 = (x) => (Math.round(x * 100) / 100).toString().replace('.', ',');
+
+/* Planning poker: three disputed items, five developers' cards */
+const DEVS = ['Айдар', 'Лейла', 'Тимур', 'Дана', 'Марат'];
+const POKER = [
+  { id: 'B5', est: [3, 5, 5, 13, 5], far: 3, why: 'Дана показала 13: она делала карту в прошлом проекте и помнит, что обновление положения курьера в реальном времени требует отдельного канала с сервером и съедает батарею телефона курьера. Остальные оценивали «нарисовать точку на карте». После обсуждения команда договорилась на 8 и записала в элемент ограничение: обновление раз в 30 секунд.' },
+  { id: 'B2', est: [5, 8, 13, 13, 20], far: 4, why: 'Марат дал 20, Айдар — 5. Марат имел в виду корзину, где блюда из разных ресторанов едут разными курьерами с раздельной оплатой; Айдар — одну корзину с группировкой по ресторанам. Это разные элементы. Команда уточнила у владельца продукта: для цели Спринта нужен заказ из одного ресторана, остальное — следующий шаг. Оценка 13 осталась с оговоркой о разбиении.' },
+  { id: 'B11', est: [2, 3, 8, 3, 3], far: 2, why: 'Тимур дал 8: он знает, что у партнёров-ресторанов нет данных об аллергенах в меню, и их придётся собирать и проверять. Остальные оценили только пометку и фильтр. Без разговора команда взяла бы 3 и застряла на данных.' }
+];
+const POKER_OPTS = [
+  ['median', 'Принять медиану и идти дальше: большинство сходится'],
+  ['discuss', 'Обсудить расхождение: попросить тех, кто дал крайние оценки, объяснить, что они увидели'],
+  ['max', 'Взять максимальную оценку для надёжности'],
+  ['avg', 'Посчитать среднее арифметическое оценок']
+];
+const POKER_RIGHT = 'discuss';
+const POKER_WHY = {
+  median: 'Медиана скрывает причину расхождения. Тот, кто дал крайнюю оценку, часто знает о риске, которого не видят остальные.',
+  max: 'Максимум без обсуждения раздувает Спринт и тоже скрывает причину: вы не узнаете, что именно увидел автор оценки.',
+  avg: 'Среднее арифметическое — не значение из ряда Фибоначчи и не отражает ничьё понимание задачи. Покер планирования ценен разговором, а не арифметикой.',
+  discuss: 'Так и устроен покер планирования по Кону: карты открывают одновременно, авторы крайних оценок объясняют, команда переоценивает. Разговор выявляет скрытые допущения и риски.'
+};
+
+/* A deliberately flawed Sprint plan from an AI */
+const AI_KINDS = [
+  ['max', 'Взят максимум velocity вместо среднего'],
+  ['cap', 'Не учтены отпуска, обучение и праздник'],
+  ['dep', 'Нарушена зависимость между элементами'],
+  ['goal', 'Цель Спринта подменена списком задач'],
+  ['other', 'Другое']
+];
+const AI_PLAN_IDS = ['B1', 'B3', 'B4', 'B5', 'B6', 'B7', 'B9', 'B12'];
+const AI_ROWS = [
+  { id: 'r1', t: 'Velocity команды — 41 балл: именно столько команда сделала в лучшем спринте, значит, она способна на этот объём. Берём 41 как план.', err: true, kind: 'max',
+    fact: `Velocity колеблется от ${REF.min} до ${REF.max}. Для прогноза берут среднее (${fmt1(REF.avg)}) или медиану (${REF.median}), а не лучший результат.` },
+  { id: 'r2', t: `Среднее velocity за последние пять спринтов — ${fmt1(REF.avg)} балла, медиана — ${REF.median}.`, err: false, kind: '', fact: 'Верно: (34 + 41 + 29 + 38 + 36) : 5 = 35,6; медиана ряда 29, 34, 36, 38, 41 — 36.' },
+  { id: 'r3', t: 'Ёмкость Спринта: 6 разработчиков × 10 рабочих дней = 60 человеко-дней, команда работает в полном составе.', err: true, kind: 'cap',
+    fact: `Два отпуска по 3 дня (${REF.vac}), обучение 2 дня и праздник у всех шести (${REF.hol}): 60 − ${REF.vac} − ${REF.train} − ${REF.hol} = ${REF.cap} человеко-дней, коэффициент ${fmt2(REF.ratio)}.` },
+  { id: 'r4', t: 'Состав Спринта (41 балл): Карточка ресторана с меню (8), Оплата ресторану после доставки (5), Push о статусе заказа (3), Отслеживание курьера на карте (8), Отмена заказа до передачи курьеру (5), Промокоды (5), Повтор прошлого заказа (2), Экспорт отчёта для ресторана (5).', err: true, kind: 'dep',
+    fact: '«Оплата ресторану после доставки» зависит от «Корзины с несколькими ресторанами», а корзины в плане нет. «Промокоды» тоже зависят от корзины. Без корзины цель Спринта не достижима.' },
+  { id: 'r5', t: 'Цель Спринта: реализовать карточку ресторана, оплату, push-уведомления, отслеживание курьера, отмену заказа, промокоды, повтор заказа и экспорт отчёта.', err: true, kind: 'goal',
+    fact: 'Это список элементов, а не цель. По Scrum Guide Цель Спринта — единая задача, ради которой Спринт существует; она даёт гибкость в составе работы. Цель владельца продукта: «Покупатель может заказать еду из одного ресторана и оплатить».' },
+  { id: 'r6', t: 'Планирование Спринта для двухнедельного Спринта должно уложиться примерно в четыре часа: по Scrum Guide на Спринт длиной в месяц отводится не больше восьми часов.', err: false, kind: '', fact: 'Верно: Scrum Guide 2020 ограничивает Планирование Спринта восемью часами для месячного Спринта; для короткого Спринта оно обычно короче.' },
+  { id: 'r7', t: 'Элемент «Корзина с несколькими ресторанами» (13 баллов) слишком велик, поэтому его лучше отложить до следующего Спринта, а сейчас взять мелкие элементы.', err: true, kind: 'dep',
+    fact: 'Корзина — ядро цели Спринта, без неё ни оплатить, ни применить промокод нельзя. Большой элемент не откладывают, а разбивают так, чтобы часть, нужная для цели, вошла в Спринт.' },
+  { id: 'r8', t: 'Оценки в баллах относительны: элемент на 8 баллов — примерно вдвое больше работы и неопределённости, чем элемент на 5, поэтому сравнивать их между собой корректно.', err: false, kind: '', fact: 'Верно: по Кону баллы — относительная мера объёма работы, сложности и риска; абсолютного значения в часах у них нет.' }
+];
+const AI_ERRORS = AI_ROWS.filter((r) => r.err).length;
+
+/* Conclusion reference */
+const CONCLUSION_REF = `В Спринт берём ${REF.goalPts} баллов: «Карточка ресторана с меню» (8), «Корзина с несколькими ресторанами» (13) и «Оплата ресторану после доставки» (5). Это ровно те элементы, которые закрывают цель «Покупатель может заказать еду из одного ресторана и оплатить». Прогноз ёмкости — около 27 баллов: среднее velocity ${fmt1(REF.avg)}, но из 60 человеко-дней доступно ${REF.cap} (два отпуска по 3 дня, обучение 2 дня и праздник у всех), коэффициент ${fmt2(REF.ratio)}. Поэтому в этот Спринт не входят push-уведомления, отслеживание курьера, отмена заказа, промокоды, рейтинг, чаевые, аллергены и экспорт отчёта. Если «Повтор прошлого заказа» (2) понадобится, его можно добавить как дополнение после закрытия цели — итого 28, в пределах прогноза. План на 41 балл по лучшему спринту при неполной команде — это обещание, которое команда почти наверняка не выполнит.`;
+
+/* ================= Helpers ================= */
+const $ = (s, r = document) => r.querySelector(s);
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') el.className = v; else if (k === 'text') el.textContent = v;
+    else if (k === 'style') el.setAttribute('style', v);
+    else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else if (v === true) el.setAttribute(k, ''); else el.setAttribute(k, v);
+  }
+  for (const kid of kids.flat()) { if (kid == null || kid === false) continue; el.append(kid.nodeType ? kid : document.createTextNode(String(kid))); }
+  return el;
+}
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage may be blocked */ } },
+  del(k) { try { localStorage.removeItem(k); } catch (e) { /* ignore */ } }
+};
+const KEY = 'kz.sprint.state';
+const num = (v) => { if (v === '' || v == null) return null; const n = Number(String(v).replace(',', '.').replace('%', '').trim()); return Number.isFinite(n) ? n : null; };
+const ptsWord = (n) => { const a = Math.abs(n) % 100, b = a % 10; if (a > 10 && a < 20) return 'баллов'; if (b === 1) return 'балл'; if (b >= 2 && b <= 4) return 'балла'; return 'баллов'; };
+
+/* ================= State ================= */
+const saved = store.get(KEY, {});
+const state = {
+  step: Number.isInteger(saved.step) ? saved.step : 0,
+  guess: { pts: '', base: '', ...(saved.guess || {}) },
+  calc: { avg: '', median: '', min: '', max: '', full: '', lost: '', cap: '', ratio: '', forecast: '', ...(saved.calc || {}) },
+  checks2: saved.checks2 || 0, shown2: !!saved.shown2, hints: saved.hints || {},
+  pick: Array.isArray(saved.pick) ? saved.pick : [], checks3: saved.checks3 || 0, shown3: !!saved.shown3,
+  poker: { ...(saved.poker || {}) }, pokerChecked: !!saved.pokerChecked,
+  marks: saved.marks || {}, kinds: saved.kinds || {}, markRevealed: !!saved.markRevealed,
+  conclusion: saved.conclusion || '', shownRef: !!saved.shownRef,
+  downloads: null
+};
+function persist() {
+  store.set(KEY, { step: state.step, guess: state.guess, calc: state.calc, checks2: state.checks2, shown2: state.shown2, hints: state.hints,
+    pick: state.pick, checks3: state.checks3, shown3: state.shown3, poker: state.poker, pokerChecked: state.pokerChecked,
+    marks: state.marks, kinds: state.kinds, markRevealed: state.markRevealed, conclusion: state.conclusion, shownRef: state.shownRef });
+}
+
+/* ================= Step 2: the learner's own calculation ================= */
+const near = (a, b, eps) => a != null && Math.abs(a - b) <= eps;
+function calcStatus() {
+  const c = state.calc, r = {}, hint = {};
+  const avg = num(c.avg), median = num(c.median), min = num(c.min), max = num(c.max), full = num(c.full), lost = num(c.lost), cap = num(c.cap), ratio = num(c.ratio), fc = num(c.forecast);
+  r.avg = avg == null ? 'empty' : near(avg, REF.avg, 0.06) || avg === Math.round(REF.avg) ? 'ok' : 'bad';
+  if (r.avg === 'bad') hint.avg = avg === REF.max ? 'Это лучший спринт, а не среднее. Среднее — сумма пяти значений, делённая на 5.' : near(avg, REF.avg * 5, 0.5) ? 'Это сумма. Разделите её на число спринтов.' : 'Сложите пять значений velocity и разделите на 5.';
+  r.median = median == null ? 'empty' : median === REF.median ? 'ok' : 'bad';
+  if (r.median === 'bad') hint.median = median === VELOCITY[2] ? 'Вы взяли середину по порядку спринтов. Сначала упорядочьте значения по возрастанию.' : 'Медиана — середина упорядоченного ряда: 29, 34, 36, 38, 41.';
+  r.range = min == null || max == null ? 'empty' : min === REF.min && max === REF.max ? 'ok' : 'bad';
+  if (r.range === 'bad') hint.range = 'Диапазон — наименьшее и наибольшее значение из пяти.';
+  r.full = full == null ? 'empty' : full === REF.full ? 'ok' : 'bad';
+  if (r.full === 'bad') hint.full = 'Полная ёмкость — число разработчиков, умноженное на число рабочих дней Спринта.';
+  const lostRef = REF.vac + REF.train + REF.hol;
+  r.lost = lost == null ? 'empty' : lost === lostRef ? 'ok' : 'bad';
+  if (r.lost === 'bad') hint.lost = lost === REF.vac + REF.train ? 'Праздник не вычтен. Он у всех шести разработчиков: это 6 человеко-дней, а не 1.' : lost === REF.vac + REF.train + 1 ? 'Праздник вычтен один раз, а он у каждого из шести: 6 человеко-дней.' : lost === REF.vac ? 'Учтены только отпуска. Есть ещё обучение и праздник у всех.' : lost === 3 + 2 + 1 ? 'Отпуск — у двух разработчиков по 3 дня, обучение 2 дня, праздник у шести: считайте человеко-дни, а не дни.' : 'Сложите человеко-дни: отпуска (кто × дней), обучение, праздник у всей команды.';
+  r.cap = cap == null ? 'empty' : cap === REF.cap ? 'ok' : 'bad';
+  if (r.cap === 'bad') hint.cap = cap === REF.full - (REF.vac + REF.train) ? 'Разница 6: столько стоит праздник у всей команды.' : cap === REF.full - (REF.vac + REF.train + 1) ? 'Разница 5: праздник у шести человек, а вычтен у одного.' : full != null && lost != null && cap === full - lost ? 'Вычитание верное, ошибка в одном из слагаемых выше — сначала исправьте их.' : 'Доступная ёмкость = полная ёмкость − потери.';
+  r.ratio = ratio == null ? 'empty' : near(ratio, REF.ratio, 0.012) || near(ratio, REF.ratio * 100, 1.2) ? 'ok' : 'bad';
+  if (r.ratio === 'bad') hint.ratio = cap != null && full != null && (near(ratio, cap / full, 0.012) || near(ratio, 100 * cap / full, 1.2)) ? 'Деление верное, но ёмкость выше посчитана неверно.' : ratio != null && ratio > 1 && ratio < 2 ? 'Вы разделили полную ёмкость на доступную. Нужно наоборот: доступная ÷ полная.' : 'Коэффициент = доступная ёмкость ÷ полная ёмкость. Можно в долях (0,77) или в процентах (77).';
+  r.forecast = fc == null ? 'empty' : fc >= REF.lo && fc <= REF.hi ? 'ok' : 'bad';
+  if (r.forecast === 'bad') {
+    hint.forecast = fc === REF.max ? 'Это максимум velocity. Лучший спринт — не прогноз, тем более при неполной команде.'
+      : near(fc, REF.avg, 0.6) || fc === REF.median ? 'Это velocity при полной команде. В следующем Спринте доступно только 46 из 60 человеко-дней.'
+        : near(fc, REF.max * REF.ratio, 1) ? 'Вы скорректировали максимум velocity. Корректируют среднее или медиану.'
+          : near(fc, REF.min * REF.ratio, 1) ? 'Вы скорректировали минимум: прогноз получился слишком осторожным. Берите среднее или медиану.'
+            : near(fc, REF.avg * (REF.full - REF.vac - REF.train) / REF.full, 1) ? 'Прогноз посчитан без праздника у всей команды.'
+              : fc > REF.hi ? 'Слишком много для команды, у которой нет 14 из 60 человеко-дней.' : 'Прогноз = средняя velocity × коэффициент ёмкости. Принимаются значения от 26 до 28.';
+  }
+  const keys = ['avg', 'median', 'range', 'full', 'lost', 'cap', 'ratio', 'forecast'];
+  return { r, hint, ok: keys.filter((k) => r[k] === 'ok').length, total: keys.length, keys };
+}
+const ANSWERS = {
+  avg: `(34 + 41 + 29 + 38 + 36) : 5 = ${fmt1(REF.avg)}`, median: `29, 34, [36], 38, 41 → ${REF.median}`, range: `${REF.min}–${REF.max}`,
+  full: `${TEAM} × ${DAYS} = ${REF.full}`, lost: `2 × 3 + 1 × 2 + 6 × 1 = ${REF.vac + REF.train + REF.hol}`, cap: `${REF.full} − ${REF.vac + REF.train + REF.hol} = ${REF.cap}`,
+  ratio: `${REF.cap} : ${REF.full} ≈ ${fmt2(REF.ratio)}`, forecast: `${fmt1(REF.avg)} × ${fmt2(REF.ratio)} ≈ ${fmt1(REF.forecast)} → 27 (принимается 26–28)`
+};
+const HINTS = {
+  vel: ['Velocity — сколько баллов команда завершила за Спринт (Кон, «Agile Estimating and Planning»). Для прогноза смотрят на несколько последних спринтов, а не на один.',
+    'Среднее — сумма пяти значений, делённая на 5. Медиана — середина ряда, упорядоченного по возрастанию. Диапазон — от наименьшего до наибольшего.',
+    'Сумма 34 + 41 + 29 + 38 + 36 = 178. Упорядоченный ряд: 29, 34, 36, 38, 41.'],
+  cap: ['Ёмкость считают в человеко-днях: сколько разработчиков × сколько рабочих дней. Потом вычитают всё, чего в этом Спринте не будет.',
+    'Отпуск — у двух человек по 3 дня, обучение — у одного 2 дня, праздник — у всех шести по одному дню. Каждую потерю считайте как «людей × дней».',
+    'Потери: 6 + 2 + 6 = 14 человеко-дней. Коэффициент = доступная ёмкость ÷ полная ёмкость.'],
+  fc: ['Velocity показывает, что команда делает в обычном Спринте. Если людей меньше обычного, прогноз уменьшают пропорционально.',
+    'Прогноз = средняя velocity × коэффициент ёмкости. Медиана вместо среднего даст близкий результат.',
+    '35,6 × 0,77 ≈ 27. Разброс velocity (29–41) напоминает: это прогноз, а не обязательство на точное число.']
+};
+
+/* ================= Step 3: building the Sprint ================= */
+function buildStatus() {
+  const sel = state.pick.map((id) => BY_ID[id]).filter(Boolean);
+  const sum = sel.reduce((a, x) => a + x.p, 0);
+  const goalItems = ITEMS.filter((x) => x.goal);
+  const goalClosed = goalItems.every((x) => state.pick.includes(x.id));
+  const missingGoal = goalItems.filter((x) => !state.pick.includes(x.id));
+  const depViol = sel.filter((x) => x.deps.some((d) => !state.pick.includes(d))).map((x) => ({ x, need: x.deps.filter((d) => !state.pick.includes(d)).map((d) => BY_ID[d].n) }));
+  const offGoal = sel.filter((x) => !x.goal);
+  const rows = [
+    { k: 'size', t: `Объём не больше прогноза с допуском +10 % (не больше ${REF.limit} баллов)`, st: !sel.length ? 'empty' : sum <= REF.limit ? 'ok' : 'bad',
+      why: sum > REF.limit ? `Выбрано ${sum}: на ${sum - REF.limit} больше допустимого. Прогноз 27 — это при 46 человеко-днях из 60.` : sum < 24 && sel.length ? `Выбрано ${sum}: ёмкость допускает до ${REF.limit}. Недобор — тоже риск: команда без работы в конце Спринта.` : '' },
+    { k: 'goal', t: 'Элементы, закрывающие цель Спринта, взяты', st: !sel.length ? 'empty' : goalClosed ? 'ok' : 'bad',
+      why: goalClosed ? '' : `Для цели не хватает: ${missingGoal.map((x) => `«${x.n}» (${x.p})`).join(', ')}.` },
+    { k: 'deps', t: 'Зависимости не нарушены', st: !sel.length ? 'empty' : depViol.length ? 'bad' : 'ok',
+      why: depViol.map((v) => `«${v.x.n}» требует: ${v.need.map((n) => `«${n}»`).join(', ')}.`).join(' ') },
+    { k: 'focus', t: 'Пока цель не закрыта, лишнего не берём', st: !sel.length ? 'empty' : goalClosed || !offGoal.length ? 'ok' : 'bad',
+      why: goalClosed || !offGoal.length ? '' : `Взяты элементы вне цели (${offGoal.map((x) => `«${x.n}»`).join(', ')}), а цель ещё не закрыта. Сначала — то, ради чего Спринт.` }
+  ];
+  const under = sum < 24 && sel.length > 0;
+  return { sel, sum, rows, ok: rows.filter((r) => r.st === 'ok').length, total: rows.length, under, allOk: rows.every((r) => r.st === 'ok') };
+}
+
+/* ================= Step 5: checking the AI plan ================= */
+function markStatus() {
+  const found = AI_ROWS.filter((r) => r.err && state.marks[r.id] === 'err');
+  const kindOk = found.filter((r) => state.kinds[r.id] === r.kind).length;
+  const missed = AI_ROWS.filter((r) => r.err && state.marks[r.id] !== 'err').length;
+  const alarms = AI_ROWS.filter((r) => !r.err && state.marks[r.id] === 'err').length;
+  const allMarked = AI_ROWS.every((r) => state.marks[r.id] && (state.marks[r.id] !== 'err' || state.kinds[r.id]));
+  return { found: found.length, kindOk, missed, alarms, allMarked };
+}
+
+/* ================= Step 6: conclusion checks ================= */
+function conclusionChecks() {
+  const t = state.conclusion;
+  const nums = (t.match(/\d+/g) || []).map(Number);
+  return [
+    { k: 'Названо число баллов (26–28)', on: nums.some((n) => n >= REF.lo && n <= REF.hi) },
+    { k: 'Что входит: карточка, корзина, оплата', on: /карточк/i.test(t) && /корзин/i.test(t) && /оплат/i.test(t) },
+    { k: 'Что не входит и почему', on: /не вход|не бер|не войд|не попад|перенос|следующ\S* спринт|за рамк|не успе/i.test(t) },
+    { k: 'Причина: ёмкость, отпуска, праздник', on: /отпуск|праздн|обучен|ёмкост|емкост|46|0,77|77/i.test(t) },
+    { k: 'Связь с целью Спринта', on: /цел/i.test(t) },
+    { k: 'Объём: от двух предложений', on: (t.match(/[.!?](\s|$)/g) || []).length >= 2 && t.trim().length >= 120 }
+  ];
+}
+
+/* ================= Rendering ================= */
+const STEPS = [
+  { t: 'Данные и задание', s: 'Velocity, отсутствия, бэклог' },
+  { t: 'Мой расчёт', s: 'Velocity, ёмкость, прогноз' },
+  { t: 'Сборка Спринта', s: 'Выбор элементов под цель' },
+  { t: 'Покер планирования', s: 'Три спорных оценки' },
+  { t: 'Ответ ИИ с ошибками', s: 'Вы проверяете план' },
+  { t: 'Выводы и итог', s: 'Вывод для владельца продукта' }
+];
+function goals() {
+  const m = calcStatus(), b = buildStatus(), mk = markStatus();
+  const pokerAll = POKER.every((p) => state.poker[p.id]);
+  return [
+    { k: 'Посчитали прогноз по данным', on: state.checks2 > 0 && m.ok === m.total },
+    { k: 'Собрали Спринт под цель', on: state.checks3 > 0 && b.allOk },
+    { k: 'Разобрали расхождения в оценках', on: state.pokerChecked && pokerAll && POKER.every((p) => state.poker[p.id] === POKER_RIGHT) },
+    { k: 'Нашли ошибки в плане ИИ', on: state.markRevealed && mk.found === AI_ERRORS && !mk.alarms },
+    { k: 'Написали вывод для владельца продукта', on: conclusionChecks().filter((c) => c.on).length >= 5 }
+  ];
+}
+const unlocked = (i) => i <= 1 || (i === 2 && state.checks2 > 0) || (i === 3 && state.checks3 > 0) || (i === 4 && state.pokerChecked) || (i === 5 && state.markRevealed);
+function renderSteps() {
+  const g = goals();
+  const done = [!!(state.guess.pts && state.guess.base), g[0].on, g[1].on, g[2].on, g[3].on, g[4].on];
+  $('#steps').replaceChildren(...STEPS.map((st, i) => h('button', { class: 'step' + (done[i] ? ' done' : '') + (unlocked(i) ? '' : ' locked'), type: 'button', 'aria-current': i === state.step ? 'step' : null, onclick: () => go(i) },
+    h('span', { class: 'dot', text: done[i] && i !== state.step ? '✓' : String(i + 1) }), h('span', { class: 't', text: st.t }), h('span', { class: 's', text: unlocked(i) ? st.s : 'Откроется позже' }))));
+}
+function go(i) { state.step = i; persist(); render(); window.scrollTo({ top: 0 }); }
+function render() { renderSteps(); renderMain(); renderRail(); }
+function renderMain() {
+  const views = [viewData, viewCalc, viewBuild, viewPoker, viewAi, viewConclude];
+  $('#main').replaceChildren(...(unlocked(state.step) ? views[state.step]() : viewLocked()));
+}
+function viewLocked() {
+  const why = { 2: 'Этот шаг откроется, когда вы посчитаете прогноз сами и хотя бы раз нажмёте «Проверить».', 3: 'Этот шаг откроется, когда вы соберёте Спринт и хотя бы раз нажмёте «Проверить».', 4: 'Этот шаг откроется после покера планирования.', 5: 'Этот шаг откроется, когда вы сверите свою проверку плана ИИ.' }[state.step];
+  const to = { 2: 1, 3: 2, 4: 3, 5: 4 }[state.step];
+  return [h('section', { class: 'card' }, h('h3', { text: 'Шаг пока закрыт' }), h('div', { class: 'empty', text: why }),
+    h('div', { class: 'actions' }, h('button', { class: 'btn btn-primary', type: 'button', text: 'Перейти', onclick: () => go(to) })))];
+}
+function pill(x, labels) {
+  const L = labels || { ok: 'верно', bad: 'неверно' };
+  return x && x !== 'empty' ? h('span', { class: 'pill ' + (x === 'ok' ? 'ok' : 'bad'), text: L[x] }) : h('span', { class: 'pill info', text: 'пусто' });
+}
+function numInput(id, value, onInput, label, attrs = {}) {
+  const i = h('input', { type: 'text', inputmode: 'decimal', id, 'aria-label': label, autocomplete: 'off', ...attrs });
+  i.value = value ?? '';
+  i.addEventListener('input', () => onInput(i.value));
+  return i;
+}
+function hintCard(keys) {
+  return h('section', { class: 'card' }, h('h3', { text: 'Подсказки' }),
+    h('p', { class: 'lead', text: 'Подсказки открываются по одной и не содержат ответа. Каждая следующая конкретнее.' }),
+    ...keys.map(([k, t]) => {
+      const lvl = state.hints[k] || 0;
+      return h('div', { class: 'hintrow' }, h('div', { class: 'field-top' }, h('b', { text: t }),
+        h('button', { class: 'btn btn-small', type: 'button', text: lvl >= HINTS[k].length ? 'Подсказок больше нет' : `Подсказка ${lvl + 1} из ${HINTS[k].length}`, disabled: lvl >= HINTS[k].length, onclick: () => { state.hints[k] = lvl + 1; persist(); render(); } })),
+        lvl ? h('ol', { class: 'task-list' }, HINTS[k].slice(0, lvl).map((t2) => h('li', { text: t2 }))) : null);
+    }),
+    h('p', { class: 'src', text: 'Источники: Scrum Guide 2020 (Планирование Спринта, Цель Спринта); Майк Кон, «Agile Estimating and Planning» (velocity, покер планирования).' }));
+}
+
+/* ---- Shared pieces ---- */
+function velocityChart() {
+  const maxV = 45;
+  const bars = h('div', { class: 'vel' }, VELOCITY.map((v, i) => h('div', { style: `height:${Math.round(100 * v / maxV)}%`, 'data-v': String(v), 'data-s': SPRINTS[i], title: `${SPRINTS[i]}: ${v} ${ptsWord(v)}` })));
+  return h('div', { class: 'vel-wrap' }, bars);
+}
+function backlogTable(opts = {}) {
+  return h('div', { class: 'tscroll' }, h('table', { class: 'data backlog' },
+    h('thead', {}, h('tr', {}, opts.select ? h('th', { text: 'В Спринт' }) : null, ...['Элемент Бэклога Продукта', 'Что это', 'Баллы', 'Зависит от'].map((t) => h('th', { text: t })))),
+    h('tbody', {}, ITEMS.map((x) => {
+      const on = state.pick.includes(x.id);
+      let cb = null;
+      if (opts.select) {
+        cb = h('input', { type: 'checkbox', id: 'pk-' + x.id, 'aria-label': `Взять «${x.n}» в Спринт` }); cb.checked = on;
+        cb.addEventListener('change', () => { state.pick = cb.checked ? [...state.pick, x.id] : state.pick.filter((i) => i !== x.id); persist(); redrawBuild(); });
+      }
+      return h('tr', { class: (x.goal ? 'isgoal' : '') + (opts.select && on ? ' on' : ''), id: 'row-' + x.id }, opts.select ? h('td', {}, cb) : null,
+        h('td', {}, opts.select ? h('label', { for: 'pk-' + x.id, text: x.n }) : x.n, x.goal ? h('span', { class: 'goaltag', text: 'цель' }) : null), h('td', { class: 'kind', text: x.d }), h('td', { class: 'pts mono', text: x.p }),
+        h('td', { class: 'deps', text: x.deps.length ? x.deps.map((d) => BY_ID[d].n).join(', ') : '—' }));
+    }))));
+}
+
+/* ---- Step 1: data and prediction ---- */
+const BASES = [
+  ['last', 'На последний Спринт: 36 баллов'],
+  ['best', 'На лучший Спринт: команда уже делала 41'],
+  ['avgcap', 'На среднее velocity с поправкой на отсутствия'],
+  ['po', 'На то, сколько нужно владельцу продукта для цели']
+];
+function viewData() {
+  const g = state.guess;
+  const bases = h('div', { class: 'radio-list' }, BASES.map(([v, t]) => {
+    const i = h('input', { type: 'radio', name: 'guess-base', value: v, id: 'g-' + v }); i.checked = g.base === v;
+    i.addEventListener('change', () => { g.base = v; persist(); renderSteps(); renderRail(); });
+    return h('label', { for: 'g-' + v }, i, h('span', { text: t }));
+  }));
+  return [
+    h('section', { class: 'card' },
+      h('h3', { text: 'Ситуация' }),
+      h('p', { class: 'lead', text: 'Маркетплейс «Корзина» запускает направление «Доставка еды». Команда разработки — шесть разработчиков, Спринт две недели (10 рабочих дней). Впереди Планирование Спринта 12. Владелец продукта Айгерим Сейткали принесла упорядоченный Бэклог Продукта и цель, а Scrum-мастер — данные о velocity и календарь отсутствий. Прошлый раз команда взяла 44 балла «потому что надо» и закрыла 29.' }),
+      h('div', { class: 'goalbox' }, h('span', { class: 'lbl', text: 'Цель Спринта, которую предлагает владелец продукта' }), h('b', { text: GOAL_TEXT }))),
+    h('section', { class: 'card' },
+      h('h3', { text: 'Приложение 1. Velocity последних пяти Спринтов, баллы' }),
+      velocityChart(),
+      h('p', { class: 'help', text: 'Velocity — сумма баллов элементов, полностью завершённых за Спринт. Незавершённые элементы в velocity не входят.' })),
+    h('section', { class: 'card' },
+      h('h3', { text: 'Приложение 2. Отсутствия в Спринте 12' }),
+      h('div', { class: 'tscroll' }, h('table', { class: 'data' },
+        h('thead', {}, h('tr', {}, ['Кто', 'Причина', 'Рабочие дни Спринта'].map((t) => h('th', { text: t })))),
+        h('tbody', {}, ...ABSENCES.map((a) => h('tr', {}, h('td', { text: a.who }), h('td', { text: a.why }), h('td', { class: 'mono', text: `${a.days[0]}–${a.days[a.days.length - 1]} (${a.days.length} дня)` }))),
+          h('tr', {}, h('td', { text: 'Вся команда' }), h('td', { text: 'праздничный день' }), h('td', { class: 'mono', text: `${HOLIDAY} (1 день)` }))))),
+      h('p', { class: 'note', text: 'Полоса в тёмной ленте сверху показывает, сколько разработчиков доступно в каждый из десяти дней.' })),
+    h('section', { class: 'card' },
+      h('h3', { text: 'Приложение 3. Бэклог Продукта с оценками' }),
+      h('p', { class: 'help', text: 'Элементы упорядочены владельцем продукта. Оценки — в баллах по ряду Фибоначчи. Пометка «цель» показывает, какие элементы нужны для цели Спринта.' }),
+      backlogTable()),
+    h('section', { class: 'card' },
+      h('h3', { text: 'Задание практикума 6' }),
+      h('ol', { class: 'task-list' },
+        h('li', { text: 'Рассчитайте среднюю velocity, медиану и диапазон за пять Спринтов.' }),
+        h('li', { text: 'Рассчитайте ёмкость Спринта 12 в человеко-днях с учётом отсутствий и коэффициент ёмкости.' }),
+        h('li', { text: 'Получите скорректированный прогноз: сколько баллов команда реально может взять.' }),
+        h('li', { text: 'Соберите Бэклог Спринта под цель владельца продукта, не нарушая зависимости и прогноз.' }),
+        h('li', { text: 'Разберите три спорные оценки покера планирования и проверьте план Спринта, который предложил ИИ.' }),
+        h('li', { text: 'Напишите вывод для владельца продукта: что входит в Спринт, что нет и почему.' }))),
+    h('section', { class: 'card' },
+      h('h3', { text: 'Прежде чем считать: ваш прогноз' }),
+      h('p', { class: 'lead', text: 'Ответьте по первому впечатлению. Прогноз не оценивается: на шаге 2 вы сравните его с расчётом.' }),
+      h('div', { class: 'field', style: 'max-width:360px' }, h('label', { class: 'lbl', for: 'g-pts', text: 'Сколько баллов вы бы взяли в Спринт 12?' }),
+        numInput('g-pts', g.pts, (v) => { g.pts = v; persist(); renderSteps(); }, 'Прогноз объёма Спринта')),
+      h('span', { class: 'lbl', text: 'На что вы опираетесь?' }), bases,
+      h('div', { class: 'actions' }, h('button', { class: 'btn btn-primary', type: 'button', text: 'Перейти к расчёту', onclick: () => go(1) })))
+  ];
+}
+
+/* ---- Step 2: calculation ---- */
+const CALC_ROWS = [
+  { k: 'avg', q: 'Средняя velocity, баллов', f: 'сумма пяти значений ÷ 5', w: '(один знак после запятой или целое)' },
+  { k: 'median', q: 'Медиана velocity, баллов', f: 'середина ряда, упорядоченного по возрастанию' },
+  { k: 'range', q: 'Диапазон velocity: от … до …', f: 'наименьшее и наибольшее значение', two: true },
+  { k: 'full', q: 'Полная ёмкость, человеко-дней', f: 'разработчики × рабочие дни' },
+  { k: 'lost', q: 'Потери, человеко-дней', f: 'отпуска + обучение + праздник у всех' },
+  { k: 'cap', q: 'Доступная ёмкость, человеко-дней', f: 'полная ёмкость − потери' },
+  { k: 'ratio', q: 'Коэффициент ёмкости', f: 'доступная ÷ полная', w: '(доля, например 0,80, или проценты)' },
+  { k: 'forecast', q: 'Скорректированный прогноз, баллов', f: 'средняя velocity × коэффициент', w: '(целое число)' }
+];
+function calcCell(k, st) {
+  if (!st) return [];
+  const x = st.r[k], out = [pill(x)];
+  if (x === 'bad' && st.hint[k]) out.push(h('div', { class: 'rowhint', text: st.hint[k] }));
+  if (state.shown2 && x !== 'ok') out.push(h('div', { class: 'rowhint mono', text: 'ответ: ' + ANSWERS[k] }));
+  return out;
+}
+const calcLine = (st) => !state.checks2 ? 'Проверка показывает, где ошибка, но не называет правильное число.'
+  : state.checks2 < 2 && !state.shown2 ? `Проверок: ${state.checks2}. Верно ${st.ok} из ${st.total}. Ответ можно открыть после второй проверки.`
+    : `Проверок: ${state.checks2}. Верно ${st.ok} из ${st.total}.`;
+function redrawCalc() {
+  if (state.checks2) {
+    const st = calcStatus();
+    CALC_ROWS.forEach((r) => { const c = $('#st-' + r.k); if (c) c.replaceChildren(...calcCell(r.k, st)); });
+    const s2 = $('#calc-status'); if (s2) s2.textContent = calcLine(st);
+  }
+  renderRail(); renderSteps();
+}
+function viewCalc() {
+  const st = state.checks2 ? calcStatus() : null;
+  const inp = (k, label) => numInput('c-' + k, state.calc[k], (v) => { state.calc[k] = v; persist(); redrawCalc(); }, label);
+  const table = h('div', { class: 'tscroll' }, h('table', { class: 'data calc' },
+    h('thead', {}, h('tr', {}, ['Что считаем', 'Формула', 'Ваш расчёт', 'Проверка'].map((t) => h('th', { text: t })))),
+    h('tbody', {}, CALC_ROWS.map((r) => h('tr', {}, h('td', {}, r.q, r.w ? h('div', { class: 'kind', text: r.w }) : null), h('td', { class: 'formula', text: r.f }),
+      h('td', {}, r.two ? h('div', { style: 'display:flex;gap:6px;align-items:center' }, inp('min', 'Наименьшая velocity'), '–', inp('max', 'Наибольшая velocity')) : inp(r.k, r.q)),
+      h('td', { id: 'st-' + r.k }, calcCell(r.k, st)))))));
+  const out = [
+    h('section', { class: 'card' }, h('h3', { text: 'Посчитайте сами' }),
+      h('p', { class: 'lead', text: 'Формула стоит рядом с каждым вопросом. ИИ подключится позже: без своего расчёта ошибку в его плане не заметить.' }),
+      table),
+    h('section', { class: 'card' },
+      h('div', { class: 'actions' },
+        h('button', { class: 'btn btn-primary', type: 'button', text: 'Проверить', onclick: () => { state.checks2++; persist(); render(); } }),
+        h('button', { class: 'btn', type: 'button', text: state.shown2 ? 'Ответ показан' : 'Показать ответ', disabled: state.shown2 || state.checks2 < 2, onclick: () => { state.shown2 = true; persist(); render(); } }),
+        state.checks2 > 0 ? h('button', { class: 'btn', type: 'button', text: 'Дальше: сборка Спринта', onclick: () => go(2) }) : null),
+      h('p', { class: 'status', id: 'calc-status', text: calcLine(st) }))
+  ];
+  if (state.checks2) {
+    const g = state.guess, base = BASES.find(([v]) => v === g.base);
+    out.push(h('section', { class: 'card' }, h('h3', { text: 'Ваш прогноз и расчёт' }),
+      h('div', { class: 'compare' },
+        h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Ваш прогноз на шаге 1' }), h('b', { text: g.pts ? `${g.pts} ${ptsWord(num(g.pts) || 0)}` : '—' })),
+        h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Средняя velocity' }), h('b', { text: `${fmt1(REF.avg)}` })),
+        h('div', { class: 'stat hot' }, h('span', { class: 'lbl', text: 'Доступно человеко-дней' }), h('b', { text: `${REF.cap} из ${REF.full}` })),
+        h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Прогноз по данным' }), h('b', { text: '≈ 27' }))),
+      h('p', { class: 'lead', text: base ? `Вы опирались: «${base[1]}». ${g.base === 'avgcap' ? 'Данные подтверждают этот подход.' : g.base === 'best' ? 'Лучший Спринт случился при полной команде и удачном стечении обстоятельств; в Спринте 12 нет 14 из 60 человеко-дней.' : g.base === 'last' ? 'Один Спринт — одна точка; среднее по пяти устойчивее, а ёмкость в этот раз на 23 % меньше.' : 'Потребность владельца продукта не меняет того, сколько команда может сделать. Если цели не хватает ёмкости, меняют состав работы или цель, а не прогноз.'}` : 'Основание прогноза не было выбрано.' })));
+  }
+  out.push(hintCard([['vel', 'Velocity'], ['cap', 'Ёмкость'], ['fc', 'Прогноз']]));
+  return out;
+}
+
+/* ---- Step 3: assembling the Sprint ---- */
+const buildLine = (b) => !state.checks3 ? 'Отмечайте элементы: счётчик обновляется сразу, проверка — по кнопке.'
+  : state.checks3 < 2 && !state.shown3 ? `Проверок: ${state.checks3}. Пройдено ${b.ok} из ${b.total}. Эталон можно открыть после второй проверки.`
+    : `Проверок: ${state.checks3}. Пройдено ${b.ok} из ${b.total}.`;
+function counterBox(b) {
+  const pct = Math.min(100, 100 * b.sum / 45), lim = 100 * REF.limit / 45, fc = 100 * 27 / 45;
+  return h('div', { id: 'counter', style: 'display:flex;flex-direction:column;gap:8px' },
+    h('div', { class: 'counter' }, h('span', { class: 'bignum ' + (b.sum > REF.limit ? 'bad' : b.sum ? 'ok' : ''), text: `${b.sum} ${ptsWord(b.sum)}` }),
+      h('span', { class: 'lead', text: `Выбрано элементов: ${b.sel.length}. Прогноз 27, допустимый максимум ${REF.limit}.` })),
+    h('div', { class: 'bar' }, h('i', { class: b.sum > REF.limit ? 'over' : '', style: `width:${pct}%` }), h('b', { class: 'soft', style: `left:${fc}%`, title: 'прогноз 27' }), h('b', { style: `left:${lim}%`, title: `допустимый максимум ${REF.limit}` })),
+    h('div', { class: 'legend' }, h('span', { text: 'Шкала до 45 баллов; серая метка — прогноз 27, тёмная — максимум с допуском.' })));
+}
+function checkRows(b) {
+  if (!state.checks3) return [];
+  return b.rows.map((r) => h('div', { class: 'checkrow' }, pill(r.st, { ok: 'пройдено', bad: 'не пройдено' }), h('div', {}, r.t, r.why ? h('div', { class: 'rowhint', text: r.why }) : null)));
+}
+function redrawBuild() {
+  const b = buildStatus();
+  ITEMS.forEach((x) => { const row = $('#row-' + x.id); if (row) row.classList.toggle('on', state.pick.includes(x.id)); });
+  const c = $('#counter'); if (c) c.replaceWith(counterBox(b));
+  const ch = $('#build-checks'); if (ch) ch.replaceChildren(...checkRows(b));
+  const sl = $('#build-status'); if (sl) sl.textContent = buildLine(b);
+  renderRail(); renderSteps();
+}
+function viewBuild() {
+  const b = buildStatus();
+  const out = [
+    h('section', { class: 'card' }, h('h3', { text: 'Соберите Бэклог Спринта' }),
+      h('p', { class: 'lead', text: 'По Scrum Guide на Планировании Спринта разработчики выбирают элементы из Бэклога Продукта, которые войдут в Спринт, и делают это так, чтобы достичь цели Спринта. Отметьте элементы, которые вы берёте. Прогноз с шага 2 — ваша рамка.' }),
+      h('div', { class: 'goalbox' }, h('span', { class: 'lbl', text: 'Цель Спринта' }), h('b', { text: GOAL_TEXT })),
+      counterBox(b), backlogTable({ select: true })),
+    h('section', { class: 'card' },
+      h('div', { class: 'actions' },
+        h('button', { class: 'btn btn-primary', type: 'button', text: 'Проверить', onclick: () => { state.checks3++; persist(); render(); } }),
+        h('button', { class: 'btn', type: 'button', text: state.shown3 ? 'Эталон показан' : 'Показать эталон', disabled: state.shown3 || state.checks3 < 2, onclick: () => { state.shown3 = true; persist(); render(); } }),
+        state.checks3 > 0 ? h('button', { class: 'btn', type: 'button', text: 'Дальше: покер планирования', onclick: () => go(3) }) : null),
+      h('p', { class: 'status', id: 'build-status', text: buildLine(b) }),
+      h('div', { class: 'checkrows', id: 'build-checks' }, checkRows(b)))
+  ];
+  if (state.shown3) out.push(h('section', { class: 'card' }, h('h3', { text: 'Эталон' }),
+    h('p', { class: 'lead', text: `Набор на ${REF.goalPts}–28 баллов, закрывающий цель: «Карточка ресторана с меню» (8) → «Корзина с несколькими ресторанами» (13) → «Оплата ресторану после доставки» (5) = ${REF.goalPts}. Это ровно те три элемента, без которых покупатель не сможет заказать и оплатить. Если остаётся запас, можно добавить «Повтор прошлого заказа» (2) — он зависит только от оплаты и даёт 28. Элементы на 3 балла («Push о статусе заказа», «Рейтинг и отзывы», «Чаевые курьеру») дают 29: это ещё в допуске, но уже без запаса на неизвестное.` }),
+    h('p', { class: 'note', text: 'Обратите внимание: порядок владельца продукта и цель совпадают. Так бывает не всегда. Если бы на первом месте стояли «Промокоды», разработчикам пришлось бы обсуждать с владельцем продукта, что важнее — порядок или цель.' })));
+  if (state.checks3) out.push(h('section', { class: 'card' }, h('h3', { text: 'Почему это важно' }),
+    h('p', { class: 'lead', text: 'Scrum Guide 2020: Цель Спринта — единственная задача Спринта; она создаёт согласованность и фокус, а состав работы может уточняться по ходу Спринта, не затрагивая цель. Спринт, набранный «по приоритету до упора», рассыпается при первом же сюрпризе, потому что в нём нечего защищать.' })));
+  return out;
+}
+
+/* ---- Step 4: planning poker ---- */
+function viewPoker() {
+  const checked = state.pokerChecked, allAnswered = POKER.every((p) => state.poker[p.id]);
+  const cards = POKER.map((p, idx) => {
+    const item = BY_ID[p.id];
+    const hands = h('div', { class: 'hands' }, p.est.map((e, i) => h('div', { class: 'hand' + (checked && i === p.far ? ' far' : ''), title: DEVS[i] }, h('b', { text: e }), h('span', { text: DEVS[i] }))));
+    const opts = h('div', { class: 'radio-list' }, POKER_OPTS.map(([v, t]) => {
+      const i = h('input', { type: 'radio', name: 'pk-' + p.id, value: v, id: `pk-${p.id}-${v}`, disabled: checked }); i.checked = state.poker[p.id] === v;
+      i.addEventListener('change', () => { state.poker[p.id] = v; persist(); const b = $('#poker-btn'); if (b) b.disabled = !POKER.every((q) => state.poker[q.id]); renderSteps(); renderRail(); });
+      const cls = checked && state.poker[p.id] === v ? (v === POKER_RIGHT ? ' right' : ' wrong') : checked && v === POKER_RIGHT ? ' right' : '';
+      return h('label', { for: `pk-${p.id}-${v}`, class: cls.trim() }, i, h('span', { text: t }));
+    }));
+    return h('section', { class: 'card' }, h('h3', { text: `Спорная оценка ${idx + 1}: «${item.n}»` }),
+      h('p', { class: 'help', text: item.d + '. Карты открыты одновременно, баллы по ряду Фибоначчи.' }),
+      hands,
+      h('span', { class: 'lbl', text: 'Что делать Scrum-мастеру и команде?' }), opts,
+      checked ? h('div', { class: 'reflect' }, h('b', { text: state.poker[p.id] === POKER_RIGHT ? 'Верно. ' : 'Не лучший выбор. ' }), POKER_WHY[state.poker[p.id]] || POKER_WHY.discuss, '\n\nЧто было на самом деле: ', p.why) : null);
+  });
+  return [
+    h('section', { class: 'card' }, h('h3', { text: 'Покер планирования: три расхождения' }),
+      h('p', { class: 'lead', text: 'Перед Планированием команда переоценивала элементы, где оценки разошлись. Пять разработчиков показали карты одновременно. В каждом случае выберите, что делать дальше. Правильный ответ один и тот же — но важно понять, почему.' })),
+    ...cards,
+    h('section', { class: 'card' },
+      h('div', { class: 'actions' },
+        checked ? h('button', { class: 'btn', type: 'button', text: 'Ответить заново', onclick: () => { state.poker = {}; state.pokerChecked = false; persist(); render(); } })
+          : h('button', { class: 'btn btn-primary', id: 'poker-btn', type: 'button', text: 'Проверить', disabled: !allAnswered, onclick: () => { state.pokerChecked = true; persist(); render(); } }),
+        checked ? h('button', { class: 'btn btn-primary', type: 'button', text: 'Дальше: план от ИИ', onclick: () => go(4) }) : null),
+      checked ? h('p', { class: 'lead', text: `Верно ${POKER.filter((p) => state.poker[p.id] === POKER_RIGHT).length} из ${POKER.length}. Кон: смысл покера планирования — не в карточках, а в разговоре, который они запускают. Крайняя оценка — это сигнал, что кто-то видит задачу иначе. Пока это не обсуждено, любое число — догадка.` }) : h('p', { class: 'status', text: 'Ответьте по всем трём элементам, затем нажмите «Проверить».' }))
+  ];
+}
+
+/* ---- Step 5: AI plan with errors ---- */
+function viewAi() {
+  const rev = state.markRevealed, mk = markStatus();
+  const planSum = AI_PLAN_IDS.reduce((a, id) => a + BY_ID[id].p, 0);
+  const rows = AI_ROWS.map((r, i) => {
+    const m = state.marks[r.id];
+    const radio = (v, t) => { const inp = h('input', { type: 'radio', name: 'mk-' + r.id, value: v, disabled: rev }); inp.checked = m === v;
+      inp.addEventListener('change', () => { state.marks[r.id] = v; if (v !== 'err') delete state.kinds[r.id]; persist(); const sel = $('#kind-' + r.id); if (sel) { sel.hidden = v !== 'err'; if (v !== 'err') sel.value = ''; } const b = $('#mark-btn'); if (b) b.disabled = !markStatus().allMarked; }); return h('label', {}, inp, t); };
+    const kindSel = () => { const sel = h('select', { id: 'kind-' + r.id, 'aria-label': 'В чём ошибка', disabled: rev, hidden: m !== 'err' }, h('option', { value: '', text: 'В чём ошибка?' }), AI_KINDS.map(([v, t]) => h('option', { value: v, text: t }))); sel.value = state.kinds[r.id] || '';
+      sel.addEventListener('change', () => { state.kinds[r.id] = sel.value; persist(); const b = $('#mark-btn'); if (b) b.disabled = !markStatus().allMarked; }); return sel; };
+    const cls = rev ? (r.err ? (m === 'err' ? 'found' : 'missed') : (m === 'err' ? 'alarm' : '')) : '';
+    const verdict = () => { if (!rev) return null; if (r.err) return m === 'err' ? h('span', { class: 'pill ok', text: state.kinds[r.id] === r.kind ? 'нашли, причина верна' : 'нашли, причина другая' }) : h('span', { class: 'pill bad', text: 'пропустили' }); return m === 'err' ? h('span', { class: 'pill warn', text: 'ложная тревога' }) : h('span', { class: 'pill ok', text: 'верно' }); };
+    return h('div', { class: 'ai-row ' + cls, id: 'ai-' + r.id },
+      h('div', { class: 'txt' }, h('span', { class: 'n', text: String(i + 1) }), r.t, rev ? h('div', { class: 'rowhint', style: 'max-width:none' }, h('b', { text: 'По данным: ' }), r.fact) : null),
+      h('div', { class: 'ctl' }, h('div', { class: 'pick' }, radio('ok', 'верно'), radio('err', 'ошибка')), kindSel(), verdict()));
+  });
+  const out = [
+    h('section', { class: 'card' },
+      h('div', { class: 'field-top' }, h('h3', { text: 'План Спринта от ИИ' }), h('span', { class: 'pill info', text: 'Источник: учебный ответ' })),
+      h('p', { class: 'lead', text: 'Scrum-мастер попросил ИИ «составить план Спринта 12 по данным команды». Ответ выглядит убедительно и даже цитирует Scrum Guide. В нём спрятаны ошибки, которые часто делают и люди, и ИИ при планировании. Сравните каждое утверждение со своим расчётом с шагов 2 и 3.' }),
+      h('div', { class: 'claims' },
+        h('div', { class: 'claim' }, h('span', { class: 'lbl', text: 'Объём плана ИИ' }), h('p', { text: `${planSum} ${ptsWord(planSum)}, ${AI_PLAN_IDS.length} элементов` })),
+        h('div', { class: 'claim' }, h('span', { class: 'lbl', text: 'Ваш прогноз с шага 2' }), h('p', { text: state.calc.forecast ? `${state.calc.forecast} ${ptsWord(num(state.calc.forecast) || 0)}` : 'не заполнен' })))),
+    h('section', { class: 'card' }, h('h3', { text: 'Найдите ошибки ИИ' }),
+      h('p', { class: 'lead', text: 'Отметьте каждое утверждение как «верно» или «ошибка». Для ошибки выберите, в чём она. Затем сверьте свою проверку.' })),
+    h('div', { class: 'ai' }, rows),
+    h('section', { class: 'card' },
+      rev ? h('div', { class: 'bigline' }, h('span', { class: 'bignum ' + (mk.found === AI_ERRORS && !mk.alarms ? 'ok' : 'bad'), text: `Найдено ${mk.found} из ${AI_ERRORS}` }),
+        h('span', { class: 'lead', text: `Причина названа верно: ${mk.kindOk} из ${mk.found}. ${mk.alarms ? `Ложных тревог: ${mk.alarms}. Верное утверждение тоже надо уметь подтвердить.` : 'Ложных тревог нет.'}` })) : null,
+      h('div', { class: 'actions' },
+        rev ? h('button', { class: 'btn', type: 'button', text: 'Проверить заново', onclick: () => { state.marks = {}; state.kinds = {}; state.markRevealed = false; persist(); render(); } })
+          : h('button', { class: 'btn btn-primary', id: 'mark-btn', type: 'button', text: 'Сверить мою проверку', disabled: !mk.allMarked, onclick: () => { state.markRevealed = true; persist(); render(); } }),
+        rev ? h('button', { class: 'btn btn-primary', type: 'button', text: 'К выводам и итогу', onclick: () => go(5) }) : null),
+      rev ? h('p', { class: 'note', text: 'Общий урок: ИИ взял из данных только то, что подтверждало большой план, — лучший Спринт и полную команду. Проверка плана ИИ начинается с вопроса «на какие данные он опёрся и какие пропустил».' }) : h('p', { class: 'status', text: 'Отметьте все восемь утверждений; для каждой ошибки укажите причину.' }))
+  ];
+  return out;
+}
+
+/* ---- Step 6: conclusion and summary ---- */
+function viewConclude() {
+  const ta = h('textarea', { id: 'concl', rows: 7, placeholder: 'Айгерим, в Спринт 12 мы берём … баллов: … Не берём …, потому что …' }); ta.value = state.conclusion;
+  ta.addEventListener('input', () => { state.conclusion = ta.value; persist(); refreshConclude(); });
+  const canRef = conclusionChecks()[5].on;
+  return [
+    h('section', { class: 'card' }, h('h3', { text: 'Вывод для владельца продукта' }),
+      h('p', { class: 'lead', text: 'Напишите 2–3 предложения, которые разработчики скажут Айгерим в конце Планирования Спринта: что входит в Спринт, что не входит и почему. Эталон откроется для сравнения, когда вывод будет написан.' }),
+      ta,
+      h('div', { class: 'checks', id: 'concl-checks' }, conclusionChecks().map((c) => h('span', { class: 'chk' + (c.on ? ' on' : ''), text: c.k }))),
+      h('div', { class: 'actions' }, h('button', { class: 'btn', id: 'ref-btn', type: 'button', text: state.shownRef ? 'Эталон показан' : 'Показать эталон', disabled: state.shownRef || !canRef, onclick: () => { state.shownRef = true; persist(); render(); } })),
+      state.shownRef ? h('div', { class: 'reflect', text: CONCLUSION_REF }) : null,
+      state.shownRef ? h('p', { class: 'help', text: 'Чек-лист сильного вывода: число баллов и его основание; перечень того, что входит, с привязкой к цели; перечень того, что не входит; причина — в человеко-днях, а не в ощущениях; позиция по плану «на 41».' }) : null),
+    summaryCard()
+  ];
+}
+function refreshConclude() {
+  const box = $('#concl-checks'); if (box) box.replaceChildren(...conclusionChecks().map((c) => h('span', { class: 'chk' + (c.on ? ' on' : ''), text: c.k })));
+  const b = $('#ref-btn'); if (b) b.disabled = state.shownRef || !conclusionChecks()[5].on;
+  const s = $('#summary'); if (s) s.replaceWith(summaryCard());
+  renderRail(); renderSteps();
+}
+function summaryCard() {
+  const g = goals(), m = calcStatus(), b = buildStatus(), mk = markStatus();
+  const pokerOk = POKER.filter((p) => state.poker[p.id] === POKER_RIGHT).length;
+  return h('section', { class: 'card', id: 'summary' }, h('h3', { text: 'Итог практикума' }),
+    h('div', { class: 'compare' },
+      h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Расчёт' }), h('b', { text: `${m.ok} из ${m.total}` })),
+      h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Сборка Спринта' }), h('b', { text: `${b.ok} из ${b.total}` })),
+      h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Покер' }), h('b', { text: `${pokerOk} из ${POKER.length}` })),
+      h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Ошибки ИИ' }), h('b', { text: `${mk.found} из ${AI_ERRORS}` }))),
+    h('div', { class: 'goal-list', style: 'display:flex;flex-direction:column;gap:6px' }, g.map((x) => h('div', { class: 'goal' + (x.on ? ' on' : '') }, h('span', { class: 'dot' }), h('span', { text: x.k })))),
+    h('div', { class: 'actions' },
+      h('button', { class: 'btn btn-primary', type: 'button', text: 'Скопировать отчёт', onclick: (e) => copyText(report(), e.currentTarget) }),
+      state.downloads ? h('button', { class: 'btn', type: 'button', text: 'Скачать отчёт', onclick: saveReport }) : null,
+      h('button', { class: 'btn', type: 'button', text: 'Начать заново', onclick: restart })),
+    h('div', { class: 'status', id: 'status', role: 'status', 'aria-live': 'polite' }),
+    h('details', {}, h('summary', { text: 'Отчёт в формате markdown' }), h('pre', { class: 'preview', text: report() })));
+}
+function report() {
+  const L = [], m = calcStatus(), b = buildStatus(), mk = markStatus(), c = state.calc;
+  L.push('# Практикум 6: Планирование Спринта по данным, а не по ощущениям (кейс «Витрина»)', '');
+  L.push('## Исходные данные', '', `Команда «Доставка еды», ${TEAM} разработчиков, Спринт ${DAYS} рабочих дней. Velocity: ${VELOCITY.join(', ')}. Отсутствия: ${ABSENCES.map((a) => `${a.who} — ${a.why}, ${a.days.length} дня`).join('; ')}; праздник у всех — 1 день.`, '');
+  L.push(`Цель Спринта: ${GOAL_TEXT}`, '');
+  L.push('## Мой прогноз на шаге 1', '', `${state.guess.pts || '—'} баллов. Основание: ${(BASES.find(([v]) => v === state.guess.base) || ['', '—'])[1]}.`, '');
+  L.push('## Мой расчёт', '', '| Что | Мой ответ | Проверка |', '|---|---|---|');
+  CALC_ROWS.forEach((r) => L.push(`| ${r.q} | ${r.two ? `${c.min || '—'}–${c.max || '—'}` : c[r.k] || '—'} | ${state.checks2 ? ({ ok: 'верно', bad: 'неверно', empty: 'пусто' })[m.r[r.k]] : 'не проверялось'} |`));
+  L.push('', `Эталон: средняя ${fmt1(REF.avg)}, медиана ${REF.median}, диапазон ${REF.min}–${REF.max}; ёмкость ${REF.cap} из ${REF.full} человеко-дней, коэффициент ${fmt2(REF.ratio)}, прогноз ≈ 27 баллов.`, '');
+  L.push('## Бэклог Спринта', '', ...(b.sel.length ? b.sel.map((x) => `- ${x.n} (${x.p})`) : ['—']), '', `Итого: ${b.sum} баллов. Проверки пройдены: ${b.ok} из ${b.total}.`, '');
+  L.push('## Покер планирования', '', ...POKER.map((p) => `- «${BY_ID[p.id].n}» (${p.est.join('-')}): ${(POKER_OPTS.find(([v]) => v === state.poker[p.id]) || ['', '—'])[1]}${state.pokerChecked ? (state.poker[p.id] === POKER_RIGHT ? ' — верно' : ' — не лучший выбор') : ''}`), '');
+  L.push('## Проверка плана ИИ', '', '| № | Утверждение ИИ | Моя оценка | Итог |', '|---|---|---|---|');
+  AI_ROWS.forEach((r, i) => L.push(`| ${i + 1} | ${r.t.replace(/\|/g, '/')} | ${state.marks[r.id] === 'err' ? 'ошибка: ' + ((AI_KINDS.find(([v]) => v === state.kinds[r.id]) || ['', '—'])[1]) : state.marks[r.id] === 'ok' ? 'верно' : '—'} | ${state.markRevealed ? (r.err ? (state.marks[r.id] === 'err' ? 'нашли' : 'пропустили') : (state.marks[r.id] === 'err' ? 'ложная тревога' : 'верно')) : 'не сверялось'} |`));
+  L.push('', `Найдено ошибок: ${mk.found} из ${AI_ERRORS}.`, '');
+  L.push('## Вывод для владельца продукта', '', state.conclusion || '—', '');
+  if (state.shownRef) L.push('## Эталон вывода', '', CONCLUSION_REF, '');
+  return L.join('\n');
+}
+async function saveReport() {
+  try { await state.downloads.save({ filename: 'praktikum-6-planirovanie-sprinta.md', data: report() }); }
+  catch (e) { if (e && e.code !== 'declined') setStatus('Файл не сохранён. Скопируйте отчёт кнопкой рядом.', 'err'); }
+}
+function setStatus(t, cls) { const el = $('#status'); if (el) { el.textContent = t; el.className = 'status' + (cls ? ' ' + cls : ''); } }
+async function copyText(t, btn) {
+  try { await navigator.clipboard.writeText(t); if (btn) { const o = btn.textContent; btn.textContent = 'Скопировано'; setTimeout(() => (btn.textContent = o), 1600); } }
+  catch (e) { setStatus('Браузер не дал скопировать. Откройте блок с текстом и выделите его вручную.', 'err'); }
+}
+function restart() {
+  if (!window.confirm('Сбросить все ответы и начать практикум заново?')) return;
+  store.del(KEY);
+  Object.assign(state, { step: 0, guess: { pts: '', base: '' }, calc: { avg: '', median: '', min: '', max: '', full: '', lost: '', cap: '', ratio: '', forecast: '' }, checks2: 0, shown2: false, hints: {},
+    pick: [], checks3: 0, shown3: false, poker: {}, pokerChecked: false, marks: {}, kinds: {}, markRevealed: false, conclusion: '', shownRef: false });
+  render(); window.scrollTo({ top: 0 });
+}
+
+/* ---- Rail ---- */
+function renderRail() {
+  const g = goals(), b = buildStatus(), kids = [];
+  kids.push(h('div', { class: 'rail-sec' }, h('h3', { text: 'Чему учит практикум' }), ...g.map((x) => h('div', { class: 'goal' + (x.on ? ' on' : '') }, h('span', { class: 'dot' }), h('span', { text: x.k })))));
+  kids.push(h('div', { class: 'rail-sec' }, h('h4', { text: 'Ёмкость Спринта 12' }),
+    h('div', { class: 'compare', style: 'grid-template-columns:1fr 1fr' },
+      h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Человеко-дней' }), h('b', { text: state.checks2 ? `${REF.cap} / ${REF.full}` : '? / 60' })),
+      h('div', { class: 'stat' + (b.sum > REF.limit ? ' hot' : '') }, h('span', { class: 'lbl', text: 'В Спринте, баллов' }), h('b', { text: String(b.sum) })))));
+  const tip = railTip();
+  if (tip) kids.push(h('div', { class: 'rail-sec tip' }, h('h4', { text: 'Коуч' }), h('p', { text: tip.b }), tip.q ? h('p', { class: 'q', text: tip.q }) : null));
+  $('#rail').replaceChildren(...kids);
+}
+function railTip() {
+  const m = calcStatus(), b = buildStatus();
+  if (state.step === 0) return { b: 'Посмотрите на ленту сверху: в пяти из десяти дней команда не в полном составе. Запишите прогноз — потом будет с чем сравнить.', q: 'Какой из пяти Спринтов больше похож на следующий?' };
+  if (state.step === 1) {
+    if (!state.checks2) return { b: 'Считайте по формуле рядом с вопросом, затем нажмите «Проверить». Подсказки — внизу.' };
+    if (m.r.lost === 'bad' || m.r.cap === 'bad') return { b: 'Самая частая ошибка здесь — праздник: он у каждого из шести, а не один день на команду.', q: 'Сколько человеко-дней стоит один выходной у всей команды?' };
+    if (m.r.forecast === 'bad') return { b: 'Прогноз — это velocity, уменьшенная на долю потерянной ёмкости.', q: 'Какую velocity корректировать: лучшую, последнюю или среднюю?' };
+    if (m.ok < m.total) return { b: 'Проверка показала, где ошибка. Откройте подсказку по нужному блоку.' };
+    return { b: 'Расчёт верен: около 27 баллов. Теперь это ваша рамка на следующем шаге.', q: 'Хватит ли 27 баллов на цель владельца продукта?' };
+  }
+  if (state.step === 2) {
+    if (!state.checks3) return { b: 'Начните с элементов, помеченных «цель», и смотрите на зависимости. Остальное — только если остался запас.' };
+    if (b.rows[0].st === 'bad') return { b: 'Объём больше допустимого. Что убрать так, чтобы цель осталась достижимой?' };
+    if (b.rows[1].st === 'bad') return { b: 'Цель не закрыта. Спринт без цели — просто список задач.', q: 'Без какого элемента покупатель не сможет оплатить заказ?' };
+    if (b.rows[2].st === 'bad') return { b: 'Зависимость нарушена: элемент нельзя завершить без того, от чего он зависит.' };
+    return { b: 'Спринт собран под цель. На Планировании команда ещё разложит элементы на задачи — это третья тема Планирования по Scrum Guide.', q: 'Что команда скажет владельцу продукта, если попросят добавить «Промокоды»?' };
+  }
+  if (state.step === 3) return state.pokerChecked ? { b: 'Крайняя оценка — не ошибка, а информация. Разговор о ней дешевле, чем сюрприз в середине Спринта.' } : { b: 'Смотрите не на числа, а на разброс. Что он говорит о понимании задачи в команде?' };
+  if (state.step === 4) return state.markRevealed ? { b: 'Каждую найденную ошибку можно превратить в правило запроса к ИИ: дать все данные и попросить показать расчёт.' } : { b: 'Держите рядом свой расчёт: 27 баллов и 46 человеко-дней. Каждое число ИИ сверяйте с ним.', q: 'Какие данные ИИ использовал, а какие пропустил?' };
+  return { b: 'Вывод для владельца продукта строится на числах: что берём, что не берём, почему. Это разговор о ёмкости, а не о желании.' };
+}
+
+/* ================= Boot ================= */
+function buildRuler() {
+  const r = $('#ruler'); if (!r) return;
+  DAILY.forEach((n, i) => {
+    const d = i + 1;
+    const who = ABSENCES.filter((a) => a.days.includes(d)).map((a) => `${a.who} (${a.why})`).join(', ');
+    r.append(h('span', { class: d === HOLIDAY ? 'hol' : n < TEAM ? 'short' : '', style: `height:${d === HOLIDAY ? 6 : Math.round(8 + 32 * n / TEAM)}px`, 'data-day': `день ${d}`, 'data-short': String(d), 'data-n': d === HOLIDAY ? 'праздник' : String(n),
+      title: d === HOLIDAY ? `День ${d}: праздничный день, никого` : `День ${d}: доступно ${n} из ${TEAM}${who ? '; отсутствуют: ' + who : ''}` }));
+  });
+}
+function boot() {
+  if (!unlocked(state.step)) state.step = 0;
+  buildRuler(); render();
+  const get = async (name) => { try { return window.claude && window.claude.use ? await window.claude.use(name) : null; } catch (e) { return null; } };
+  get('downloads').then((dl) => { state.downloads = dl || null; if (state.step === 5) render(); });
+}
+boot();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1797 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#20242B">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<script src="pwa-shim.js"></script>
+</head>
+<body>
+<nav class="pwa-nav"><a href="./">← Все практикумы</a></nav>
+<title>Встреча с партнёрами</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --bg:#EEF1EF; --surface:#FFFFFF; --surface-2:#F6F8F7; --ink:#17201D; --muted:#5C6763; --line:#D5DCD8;
+  --accent:#0E5A63; --accent-ink:#FFFFFF; --signal:#C9741F;
+  --good:#2F7D4F; --good-bg:#E5F2EA; --mid:#94700F; --mid-bg:#F6EFD9; --bad:#B0443A; --bad-bg:#F7E4E1;
+  --seg-off:#DCE2DF;
+  --cat-dc:#3D5FC4; --cat-fiber:#B8651B; --cat-radio:#8A4FB0; --cat-ftth:#2B8574; --cat-node:#58697A; --cat-it:#B0446A;
+  --ph-open:#2F7D8A; --ph-facts:#3D5FC4; --ph-ideas:#8A4FB0; --ph-decide:#C9741F; --ph-close:#2F7D4F; --ph-pause:#9AA6A1;
+  --display:"Unbounded", "Golos Text", system-ui, sans-serif;
+  --body:"Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#111715; --surface:#19211F; --surface-2:#1E2826; --ink:#E4EBE8; --muted:#9AA6A1; --line:#2D3835;
+    --accent:#62B4BC; --accent-ink:#0C1A1C; --signal:#E89A4A;
+    --good:#66B987; --good-bg:#1C3326; --mid:#D9B44E; --mid-bg:#33301C; --bad:#E57A6C; --bad-bg:#3A221F;
+    --seg-off:#2C3734;
+    --ph-open:#5FB8C4; --ph-facts:#86A0EE; --ph-ideas:#C292E2; --ph-decide:#E89A4A; --ph-close:#66B987; --ph-pause:#6E7B76;
+    --cat-dc:#86A0EE; --cat-fiber:#E89A4A; --cat-radio:#C292E2; --cat-ftth:#5FC2B0; --cat-node:#A3B3C0; --cat-it:#E5809F;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#111715; --surface:#19211F; --surface-2:#1E2826; --ink:#E4EBE8; --muted:#9AA6A1; --line:#2D3835;
+  --accent:#62B4BC; --accent-ink:#0C1A1C; --signal:#E89A4A;
+  --good:#66B987; --good-bg:#1C3326; --mid:#D9B44E; --mid-bg:#33301C; --bad:#E57A6C; --bad-bg:#3A221F;
+  --seg-off:#2C3734;
+  --ph-open:#5FB8C4; --ph-facts:#86A0EE; --ph-ideas:#C292E2; --ph-decide:#E89A4A; --ph-close:#66B987; --ph-pause:#6E7B76;
+  --cat-dc:#86A0EE; --cat-fiber:#E89A4A; --cat-radio:#C292E2; --cat-ftth:#5FC2B0; --cat-node:#A3B3C0; --cat-it:#E5809F;
+}
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--ink); font-family:var(--body); font-size:16px; line-height:1.55; padding-inline:16px; padding-block:0 48px}
+.wrap{max-width:860px; margin:0 auto}
+header.top{padding-block:28px 12px; display:grid; gap:6px}
+.eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--signal)}
+h1{font-family:var(--display); font-weight:700; font-size:clamp(26px,5vw,38px); line-height:1.1; margin:0; text-wrap:balance}
+.lede{color:var(--muted); max-width:62ch; margin:0}
+nav.tabs{position:sticky; top:env(safe-area-inset-top,0px); z-index:5; background:var(--bg); display:flex; gap:4px; overflow-x:auto; padding-block:10px; border-bottom:1px solid var(--line); margin-bottom:22px; scrollbar-width:none}
+nav.tabs button{flex:0 0 auto; font:500 14px var(--body); color:var(--muted); background:none; border:1px solid transparent; border-radius:999px; padding:7px 14px; cursor:pointer}
+nav.tabs button[aria-selected="true"]{background:var(--ink); color:var(--bg)}
+nav.tabs button:hover:not([aria-selected="true"]){border-color:var(--line); color:var(--ink)}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--signal); outline-offset:2px}
+h2{font-family:var(--display); font-weight:500; font-size:20px; line-height:1.25; margin:0; text-wrap:balance}
+h3{font-size:17px; font-weight:600; margin:0}
+.muted{color:var(--muted)}
+.mono{font-family:var(--mono); font-size:12px; letter-spacing:.04em}
+.panel{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:20px}
+.stack{display:grid; gap:14px}
+.row{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+.btn{font:600 15px var(--body); border-radius:8px; padding:10px 16px; cursor:pointer; border:1px solid var(--line); background:var(--surface); color:var(--ink)}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+.btn:disabled{opacity:.45; cursor:default}
+.btn.link{border:none; background:none; padding:6px 0; color:var(--accent); font-weight:500}
+
+/* case list */
+.case-list{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:12px}
+.case-card{text-align:left; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px; cursor:pointer; display:grid; gap:8px; color:var(--ink); font:inherit}
+.case-card:hover{border-color:var(--accent)}
+.case-card .proj{font-family:var(--mono); font-size:11.5px; color:var(--muted); letter-spacing:.03em}
+.case-card .title{font-weight:600; font-size:16.5px; line-height:1.3}
+.status{font-family:var(--mono); font-size:11.5px; display:inline-flex; gap:6px; align-items:center; color:var(--muted)}
+.status .dot{width:8px; height:8px; border-radius:50%; background:var(--seg-off)}
+.status.done .dot{background:var(--good)}
+.status.done{color:var(--good)}
+
+/* signal meters */
+.meters{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding:14px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:10px}
+.meter{display:grid; gap:6px; min-width:0}
+.meter .lab{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); display:flex; justify-content:space-between; gap:6px}
+.meter .lab b{color:var(--ink); font-weight:600; font-variant-numeric:tabular-nums}
+.bars{display:flex; align-items:flex-end; gap:3px; height:26px}
+.bars i{flex:1; background:var(--seg-off); border-radius:2px; transition:background .3s}
+.bars i.on{background:var(--accent)}
+.bars.low i.on{background:var(--bad)}
+.bars.high i.on{background:var(--good)}
+@media (max-width:520px){ .meters{gap:10px; padding:12px} .meter .lab{font-size:10px; letter-spacing:.04em; flex-direction:column; gap:0} }
+
+.scene{font-size:16.5px}
+.scene p{margin:0 0 10px}
+.who{font-family:var(--mono); font-size:12px; color:var(--muted)}
+.options{display:grid; gap:10px}
+.opt{text-align:left; background:var(--surface); color:var(--ink); border:1px solid var(--line); border-radius:10px; padding:14px 16px; cursor:pointer; font:inherit; line-height:1.45; display:grid; grid-template-columns:28px 1fr; gap:10px}
+.opt .k{font-family:var(--mono); font-weight:600; color:var(--accent)}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:disabled{cursor:default; opacity:.55}
+.opt.chosen{opacity:1; border-width:2px}
+.opt.chosen.good{border-color:var(--good)} .opt.chosen.mid{border-color:var(--mid)} .opt.chosen.bad{border-color:var(--bad)}
+.fb{border-radius:10px; padding:14px 16px; display:grid; gap:6px}
+.fb.good{background:var(--good-bg)} .fb.mid{background:var(--mid-bg)} .fb.bad{background:var(--bad-bg)}
+.fb .verdict{font-family:var(--mono); font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.06em}
+.fb.good .verdict{color:var(--good)} .fb.mid .verdict{color:var(--mid)} .fb.bad .verdict{color:var(--bad)}
+.delta{font-family:var(--mono); font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums}
+
+/* protocol */
+.protocol{border:1px dashed var(--line); border-radius:10px; padding:18px; background:var(--surface); display:grid; gap:10px}
+.protocol ol{margin:0; padding-left:20px; display:grid; gap:6px}
+.chip{display:inline-block; font-family:var(--mono); font-size:11px; padding:2px 8px; border-radius:999px; vertical-align:1px}
+.chip.good{background:var(--good-bg); color:var(--good)} .chip.mid{background:var(--mid-bg); color:var(--mid)} .chip.bad{background:var(--bad-bg); color:var(--bad)}
+
+/* errors module */
+.answer{font-size:17px; line-height:1.9}
+.seg{cursor:pointer; border-radius:4px; padding:2px 3px; box-decoration-break:clone; -webkit-box-decoration-break:clone; border-bottom:1.5px dotted var(--muted)}
+.seg:hover{background:var(--surface-2)}
+.seg.sel{background:var(--mid-bg); border-bottom:2px solid var(--mid)}
+.seg.hit{background:var(--good-bg); border-bottom:2px solid var(--good)}
+.seg.miss{background:var(--bad-bg); border-bottom:2px dashed var(--bad)}
+.seg.false{text-decoration:line-through; text-decoration-color:var(--muted); border-bottom-color:transparent}
+.seg.locked{cursor:default}
+.explain{display:grid; gap:8px; margin:0; padding:0; list-style:none}
+.explain li{padding:10px 12px; border-radius:8px; background:var(--surface-2); font-size:15px}
+.explain li b{font-weight:600}
+.better{border-left:3px solid var(--good); padding:4px 0 4px 14px}
+.pager{display:flex; justify-content:space-between; align-items:center; gap:10px}
+
+/* questions */
+.badq{font-family:var(--display); font-weight:500; font-size:clamp(20px,4vw,26px); line-height:1.25; color:var(--bad); text-wrap:balance}
+textarea{width:100%; min-height:84px; font:16px/1.5 var(--body); color:var(--ink); background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:12px; resize:vertical}
+.hints{margin:0; padding:0; list-style:none; display:grid; gap:6px}
+.hints li{font-size:14.5px; padding:8px 12px; border-radius:8px}
+.hints li.warn{background:var(--mid-bg)} .hints li.ok{background:var(--good-bg)}
+.checks{display:grid; gap:8px}
+.checks label{display:flex; gap:10px; align-items:flex-start; cursor:pointer}
+.checks input{margin-top:4px; width:18px; height:18px; accent-color:var(--accent)}
+.examples{margin:0; padding-left:20px; display:grid; gap:4px}
+
+/* profile */
+.comp{display:grid; grid-template-columns:minmax(150px,220px) 1fr 48px; gap:12px; align-items:center; padding-block:8px; border-bottom:1px solid var(--line)}
+.comp:last-child{border-bottom:none}
+.comp .bars{height:20px}
+.comp .pct{font-family:var(--mono); font-size:13px; text-align:right; font-variant-numeric:tabular-nums}
+.comp .name{font-weight:500; line-height:1.25}
+.comp .name small{display:block; color:var(--muted); font-weight:400; font-size:12.5px}
+@media (max-width:520px){ .comp{grid-template-columns:1fr 44px} .comp .bars{grid-column:1 / -1; order:3} }
+.stats{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
+.stat{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:14px}
+.stat b{font-family:var(--display); font-size:24px; font-weight:500; display:block; font-variant-numeric:tabular-nums}
+.stat span{font-size:13px; color:var(--muted)}
+
+/* notes */
+.notes{display:grid; gap:14px}
+.note{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:18px; display:grid; gap:8px}
+.note .src{font-family:var(--mono); font-size:11.5px; color:var(--signal); letter-spacing:.03em}
+.note ul{margin:0; padding-left:20px; display:grid; gap:4px}
+.flow{display:flex; flex-wrap:wrap; gap:6px; align-items:center; font-size:14px}
+.flow span{background:var(--surface-2); border:1px solid var(--line); border-radius:6px; padding:4px 10px}
+.flow em{color:var(--muted); font-style:normal}
+/* sync + student */
+.sync{font-family:var(--mono); font-size:11.5px; color:var(--muted); display:inline-flex; gap:6px; align-items:center}
+.sync .dot{width:7px; height:7px; border-radius:50%; background:var(--seg-off)}
+.sync.ok .dot{background:var(--good)} .sync.warn .dot{background:var(--mid)} .sync.bad .dot{background:var(--bad)}
+.field{display:grid; gap:4px; flex:1 1 200px}
+.field label{font-size:13px; color:var(--muted)}
+input[type="text"], select{font:16px var(--body); color:var(--ink); background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:9px 12px; width:100%}
+.banner{background:var(--surface); border:1px solid var(--signal); border-radius:10px; padding:14px 16px; display:grid; gap:10px; margin-bottom:18px}
+.copybox{width:100%; min-height:160px; font:13px/1.5 var(--mono)}
+
+/* teacher */
+.tbl-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:10px; background:var(--surface)}
+table{border-collapse:collapse; width:100%; font-size:14px; min-width:640px}
+th,td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top}
+th{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); font-weight:600; background:var(--surface-2)}
+tr:last-child td{border-bottom:none}
+td.num{font-variant-numeric:tabular-nums; font-family:var(--mono); font-size:13px}
+.dist{display:grid; gap:8px}
+.dist-row{display:grid; grid-template-columns:24px 1fr 90px; gap:10px; align-items:center; font-size:14px}
+.dist-row .k{font-family:var(--mono); font-weight:600; color:var(--accent)}
+.dist-bar{height:8px; border-radius:4px; background:var(--seg-off); overflow:hidden; margin-top:4px}
+.dist-bar i{display:block; height:100%}
+.dist-bar i.good{background:var(--good)} .dist-bar i.mid{background:var(--mid)} .dist-bar i.bad{background:var(--bad)}
+.dist-row .n{font-family:var(--mono); font-size:12.5px; text-align:right; color:var(--muted); font-variant-numeric:tabular-nums}
+details{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:12px 16px}
+details summary{cursor:pointer; font-weight:600}
+details ul{margin:10px 0 0; padding-left:20px; display:grid; gap:6px}
+details ul li span{color:var(--muted); font-size:13px}
+/* AI */
+.ai-box{border:1px dashed var(--accent); border-radius:10px; padding:14px 16px}
+.ai-tag{font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); font-weight:600}
+.scores{display:flex; flex-wrap:wrap; gap:6px}
+.people{display:flex; flex-wrap:wrap; gap:8px 16px; font-size:14px; color:var(--muted)}
+.person{display:inline-flex; gap:6px; align-items:center}
+.person i{width:10px; height:10px; border-radius:50%; display:inline-block}
+.person b{color:var(--ink); font-weight:600}
+.chat{display:flex; flex-direction:column; gap:10px; max-height:min(60vh,560px); overflow-y:auto; padding:4px 2px}
+.msg{--who:var(--muted); max-width:85%; align-self:flex-start; background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--who); border-radius:10px; padding:10px 14px; display:grid; gap:2px; line-height:1.45}
+.msg-who{font-family:var(--mono); font-size:11.5px; color:var(--who); font-weight:600}
+.msg.me{align-self:flex-end; background:var(--accent); color:var(--accent-ink); border-color:var(--accent)}
+.msg.me .msg-who{color:var(--accent-ink); opacity:.8}
+.msg.typing{opacity:.7; font-style:italic}
+.debrief-list{margin:0; padding-left:20px; display:grid; gap:6px}
+.rw-old{color:var(--muted); text-decoration:line-through; text-decoration-color:var(--bad)}
+@media (max-width:520px){ .msg{max-width:94%} }
+/* visuals */
+.ico{--cat:var(--accent); width:40px; height:40px; border-radius:10px; display:grid; place-items:center; color:var(--cat); background:color-mix(in srgb, var(--cat) 14%, transparent); flex:0 0 auto}
+.ico svg{width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round}
+.ico.lg{width:56px; height:56px; border-radius:14px} .ico.lg svg{width:32px; height:32px}
+.card-top{display:flex; gap:10px; align-items:center}
+.card-top .proj{flex:1; min-width:0}
+.case-head{display:flex; gap:14px; align-items:center}
+.cat-label{font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--cat)}
+.filters{display:flex; flex-wrap:wrap; gap:8px}
+.filters button{--cat:var(--ink); display:inline-flex; align-items:center; gap:6px; font:500 14px var(--body); color:var(--ink); background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:5px 12px 5px 6px; cursor:pointer}
+.filters button .ico{width:24px; height:24px; border-radius:50%} .filters button .ico svg{width:15px; height:15px}
+.filters button[aria-pressed="true"]{border-color:var(--cat); background:color-mix(in srgb, var(--cat) 12%, var(--surface))}
+.filters button .n{font-family:var(--mono); font-size:12px; color:var(--muted)}
+.hero-strip{display:flex; gap:8px; margin-top:6px; flex-wrap:wrap}
+.table-svg{width:100%; max-width:480px; display:block; margin:0 auto}
+.table-svg .tbl{fill:var(--surface-2); stroke:var(--line); stroke-width:1.5}
+.table-svg .doc{fill:var(--surface); stroke:var(--line); stroke-width:1}
+.table-svg .docl{stroke:var(--line); stroke-width:1}
+.table-svg .lbl{fill:var(--ink); font:600 12px var(--body); text-anchor:middle}
+.table-svg .sub{fill:var(--muted); font:400 10.5px var(--body); text-anchor:middle}
+.table-svg .ini{fill:#fff; font:600 12.5px var(--body); text-anchor:middle; dominant-baseline:central}
+.table-svg .me-ini{fill:var(--accent-ink)}
+.table-svg .ring{fill:none; stroke:var(--signal); stroke-width:2.5}
+.table-svg .bub{fill:var(--signal)}
+.table-svg .bubt{fill:#fff; font:700 9px var(--body); text-anchor:middle; dominant-baseline:central}
+.table-svg .thinking{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.35}}
+@media (prefers-reduced-motion: reduce){ .table-svg .thinking{animation:none} }
+/* builder */
+.brief-facts{display:flex; flex-wrap:wrap; gap:8px}
+.brief-facts span{background:var(--surface-2); border:1px solid var(--line); border-radius:999px; padding:3px 12px; font-size:14px}
+.b-grid{display:grid; gap:18px; grid-template-columns:1fr}
+@media (min-width:820px){ .b-grid{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); align-items:start} .palette{position:sticky; top:72px; max-height:calc(100vh - 90px); overflow-y:auto; padding-right:4px} }
+.over{color:var(--bad); font-weight:600}
+.timeline{display:grid; gap:4px}
+.tl-bar{position:relative; display:flex; height:30px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); overflow:visible}
+.tl-seg{height:100%; border-right:2px solid var(--surface); min-width:3px}
+.tl-seg:first-child{border-radius:7px 0 0 7px}
+.tl-limit{position:absolute; top:-6px; bottom:-6px; width:0; border-left:2px dashed var(--ink)}
+.tl-limit span{position:absolute; top:-18px; right:4px; font:600 11px var(--mono); white-space:nowrap; color:var(--ink)}
+.tl-ticks{position:relative; height:16px}
+.tl-ticks span{position:absolute; transform:translateX(-50%); font:11px var(--mono); color:var(--muted)}
+.tl-ticks span:first-child{transform:none}
+.tl-ticks span:last-child{transform:translateX(-100%)}
+.timeline{margin-top:16px}
+.agenda{list-style:none; margin:0; padding:0; display:grid; gap:6px}
+.ag-row{display:grid; grid-template-columns:44px 1fr auto auto; gap:10px; align-items:center; background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--ph); border-radius:8px; padding:8px 10px}
+.ag-row.trap{background:var(--bad-bg)}
+.ag-time{color:var(--muted); font-size:12px}
+.ag-main{display:grid; line-height:1.3; min-width:0}
+.ag-ph{font:600 10.5px var(--mono); text-transform:uppercase; letter-spacing:.06em; color:var(--muted)}
+.ag-min,.ag-move{display:flex; align-items:center; gap:4px}
+.ag-min .mono{min-width:22px; text-align:center; font-size:13px}
+.mini{width:28px; height:28px; border-radius:6px; border:1px solid var(--line); background:var(--surface-2); color:var(--ink); cursor:pointer; font:600 14px var(--body); display:grid; place-items:center; padding:0}
+.mini:disabled{opacity:.35; cursor:default}
+.ag-empty{padding:16px; border:1px dashed var(--line); border-radius:8px; font-size:14.5px}
+@media (max-width:560px){ .ag-row{grid-template-columns:40px 1fr auto} .ag-main{grid-column:2 / -1} .ag-min{grid-column:2; grid-row:2} .ag-move{grid-column:3; grid-row:2} }
+.checks-list{list-style:none; margin:0; padding:0; display:grid; gap:8px}
+.ck{display:grid; grid-template-columns:12px 1fr; gap:10px; font-size:14.5px; line-height:1.45}
+.ck-dot{width:10px; height:10px; border-radius:50%; margin-top:6px}
+.ck.good .ck-dot{background:var(--good)} .ck.mid .ck-dot{background:var(--mid)} .ck.bad .ck-dot{background:var(--bad)}
+.ck b{font-weight:600}
+.pal-group{display:grid; gap:6px}
+.pal-ph{font:600 11px var(--mono); text-transform:uppercase; letter-spacing:.08em; color:var(--ink); display:flex; align-items:center; gap:6px}
+.pal-ph::before{content:""; width:10px; height:10px; border-radius:3px; background:var(--ph)}
+.pal-card{text-align:left; display:grid; gap:2px; background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--ph); border-radius:8px; padding:8px 10px; cursor:pointer; color:var(--ink); font:inherit}
+.pal-card:hover{border-color:var(--ph)}
+.pal-card.used{opacity:.6}
+.pal-name{font-weight:600; font-size:14.5px}
+.pal-name .mono{font-weight:400; font-size:11.5px}
+.pal-desc{font-size:13px; color:var(--muted); line-height:1.4}
+/* prep */
+.ava{display:inline-grid; place-items:center; border-radius:50%; color:#fff; font:600 13px var(--body); flex:0 0 auto}
+.ava-row{display:flex; align-items:center; gap:4px; flex-wrap:wrap}
+.ava-row .ava{margin-right:-8px; border:2px solid var(--surface)}
+.ava-row .status{margin-left:14px}
+.rp-card{cursor:default}
+.prep-grid{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.prep-card{background:var(--surface); border:1px solid var(--line); border-top:4px solid var(--who); border-radius:10px; padding:14px; display:grid; gap:10px; align-content:start}
+.prep-head{display:flex; gap:10px; align-items:center}
+.prep-pub{margin:0; font-size:14px; color:var(--muted)}
+.prep-card textarea{min-height:58px; font-size:15px; padding:8px 10px}
+.prep-check{display:flex; gap:8px; align-items:center; font-size:14.5px; cursor:pointer}
+.prep-check input{width:18px; height:18px; accent-color:var(--accent)}
+.prep-mini summary{color:var(--accent)}
+.prep-line{font-size:14px; line-height:1.45}
+.reveal{border:1px solid var(--line); border-left:4px solid var(--who); border-radius:10px; padding:12px 14px; display:grid; gap:10px; background:var(--surface-2)}
+.reveal-cols{display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); font-size:14.5px; line-height:1.45}
+.rv-ai{font-size:14.5px; padding:6px 10px; border-radius:6px; background:var(--surface)}
+.rv-ai.good{background:var(--good-bg)} .rv-ai.mid{background:var(--mid-bg)}
+footer{margin-top:36px; font-size:13px; color:var(--muted); max-width:70ch}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">Практикум 8: тренажёр фасилитатора · Кейс «Витрина», вымышленные данные</div>
+    <h1>Встреча с партнёрами</h1>
+    <div class="hero-strip" id="hero-strip" aria-hidden="true"></div>
+    <p class="lede">Ситуации из запуска «Доставки еды» на маркетплейсе «Корзина»: встречи с ресторанами, курьерской службой, интегратором, крупными продавцами и санитарной службой. Здесь вы ведёте встречу, а не только управляете сроками. Каждое решение меняет три «уровня сигнала» за столом.</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Разделы">
+    <button role="tab" id="t-cases" data-tab="cases" aria-selected="true">Ситуации</button>
+    <button role="tab" id="t-errors" data-tab="errors" aria-selected="false">Найди ошибку</button>
+    <button role="tab" id="t-questions" data-tab="questions" aria-selected="false">Мастерская вопросов</button>
+    <button role="tab" id="t-builder" data-tab="builder" aria-selected="false">Конструктор встречи</button>
+    <button role="tab" id="t-roleplay" data-tab="roleplay" aria-selected="false">Ролевая игра · AI</button>
+    <button role="tab" id="t-profile" data-tab="profile" aria-selected="false">Мой профиль</button>
+    <button role="tab" id="t-notes" data-tab="notes" aria-selected="false">Шпаргалка</button>
+  </nav>
+
+
+  <main id="view"></main>
+
+  <footer>
+    Основано на PMBOK 7 (разд. 2.3.3 «Фасилитация и поддержка»), PMI Agile Practice Guide (4.2.1.1), ICAgile Agile Coaching Learning Outcomes (трек Team Facilitation), Scrum Guide Expansion Pack, книге С. Вискарди «Руководство профессионального скрам-мастера» и сценариях Diwakar Kumar Singh «Scrum Master Scenario Based Interview Questions». Маркетплейс «Корзина», партнёры и имена в кейсах вымышлены. Прогресс хранится только в этом браузере. AI-функции работают через Claude-аккаунт того, кто открыл страницу.
+  </footer>
+</div>
+
+<script>
+const COMP = {
+  neutral:  {name:"Нейтральность", hint:"процесс, а не своя позиция"},
+  voice:    {name:"Вовлечение всех", hint:"слышны не только первые лица"},
+  conflict: {name:"Работа с конфликтом", hint:"факты отдельно от оценок"},
+  focus:    {name:"Цель и договорённости", hint:"кто, что, к какому сроку"},
+  questions:{name:"Сильные вопросы", hint:"открытые, без скрытого совета"},
+  safety:   {name:"Безопасность", hint:"о проблемах говорить не страшно"}
+};
+
+const ICONS = {
+  dc:'<svg viewBox="0 0 24 24"><path d="M3 13h18"/><path d="M4.5 13a7.5 7.5 0 0 1 15 0"/><path d="M12 5.5V4M10.5 4h3"/><path d="M5 16.5h14M7 20h10"/></svg>',
+  fiber:'<svg viewBox="0 0 24 24"><rect x="2.5" y="7" width="13" height="9" rx="1.5"/><path d="M15.5 10h3.5l2.5 3v3h-6"/><circle cx="7" cy="18.5" r="2"/><circle cx="17.5" cy="18.5" r="2"/><path d="M9 18.5h6.5"/></svg>',
+  radio:'<svg viewBox="0 0 24 24"><rect x="2.5" y="9" width="6" height="6" rx="1"/><rect x="15.5" y="9" width="6" height="6" rx="1"/><path d="M8.5 12h7"/><path d="M12 12V5.5M9.5 5.5h5"/><path d="M12 12v6.5M9.5 18.5h5"/></svg>',
+  ftth:'<svg viewBox="0 0 24 24"><path d="M3.5 4.5h17l-1.5 15h-14z"/><path d="M8 8.5a4 4 0 0 0 8 0"/><path d="M8 4.5V3M16 4.5V3"/></svg>',
+  node:'<svg viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.5 3.3 8 8 9.5 4.7-1.5 8-5 8-9.5V6z"/><path d="M9 12.5l2 2 4-4.5"/></svg>',
+  it:'<svg viewBox="0 0 24 24"><rect x="5" y="2.5" width="14" height="19" rx="2"/><path d="M9 6.5h6M9 10h6M9 13.5h3"/><path d="M12 18.5h.01"/></svg>'
+};
+const CATS = {dc:"Рестораны", fiber:"Курьеры", radio:"Интегратор", ftth:"Продавцы", node:"Санитарная служба", it:"Платформа"};
+const icoHtml = (cat, cls="") => `<span class="ico ${cls}" style="--cat:var(--cat-${cat})" aria-hidden="true">${ICONS[cat]||ICONS.node}</span>`;
+let caseFilter = "";
+
+const CASES = [
+{ id:"kickoff", cat:"fiber", proj:"Курьеры · 12 районов города", title:"Кик-офф с новой курьерской службой",
+  steps:[
+  { who:"Переговорная, 9 человек", text:["Первая встреча с курьерской службой «Стрела»: директор Ринат Асхатович, два координатора смен, руководитель диспетчерской. С вашей стороны специалист отдела операций и юрист. На встречу 90 минут.","С чего начнёте?"],
+    options:[
+    { t:"Сразу открываете презентацию: график запуска, требования к курьерам, регламенты. 40 слайдов, время дорогое.", d:{e:-15,t:-5,r:5}, c:{voice:-1},
+      fb:"Информация нужная, но встреча превращается в доклад. Координаторы смен, которые будут управлять курьерами, промолчат, и их вопросы всплывут через месяц уже на первых заказах."},
+    { t:"Называете цель встречи и ожидаемый результат: план первых 4 недель, каналы коммуникации, правила эскалации. Затем короткий круг: имя, роль и «что для вас будет признаком хорошего старта».", d:{e:15,t:10,r:10}, c:{focus:1,voice:1,safety:1},
+      fb:"Цель и результат задают рамку, а круг включает каждого с первых минут. Ответы про «хороший старт» сразу становятся материалом для договорённостей."},
+    { t:"Просите директора курьерской службы рассказать о компании и опыте.", d:{e:0,t:5,r:-5}, c:{voice:-1},
+      fb:"Вежливо, но так вы задаёте тон «говорят первые лица». Координаторы останутся зрителями."}
+    ]},
+  { who:"30-я минута", text:["Координатор смены Дамир осторожно говорит: «У вас по Старому центру норматив доставки 30 минут, а там вечером дворы перекрыты и курьер последние 500 метров идёт пешком. Это нереально».","Директор перебивает: «Справимся, это мы потом обсудим»."],
+    options:[
+    { t:"Соглашаетесь: «Хорошо, обсудите у себя и дайте ответ до пятницы».", d:{e:-10,t:-10,r:-5}, c:{safety:-1,voice:-1},
+      fb:"Вы показали, что сигнал «снизу» можно закрыть «сверху». В следующий раз Дамир промолчит, и вы узнаете о проблеме, когда покупатели начнут жаловаться на опоздания."},
+    { t:"«Ринат Асхатович, давайте зафиксируем сейчас. Дамир, что именно делает 30 минут нереальными и сколько нужно по вашему опыту?» Записываете риск в общий документ на экране.", d:{e:10,t:10,r:15}, c:{safety:1,voice:1,focus:1,questions:1},
+      fb:"Вы не спорите с директором, а возвращаете вопрос во встречу и превращаете тревогу в риск с владельцем. Это и значит сделать проблему видимой."},
+    { t:"Отвечаете сами: «30 минут — согласованный норматив, пересматривать не будем».", d:{e:-10,t:-15,r:-5}, c:{neutral:-1,safety:-1},
+      fb:"Как заказчик вы вправе держаться за норматив, но вы закрыли информацию о риске. Сначала выслушайте данные, а решение о нормативе принимайте отдельно и открыто."}
+    ]}
+  ]},
+{ id:"green", cat:"radio", proj:"Интегратор · подключение 40 ресторанов", title:"Статус, где всё «зелёное»",
+  steps:[
+  { who:"Еженедельный созвон", text:["Третью неделю интегратор «Коннект-Фуд» докладывает «идём по плану». По факту приёмки подключено 6 ресторанов из 18 запланированных."],
+    options:[
+    { t:"Выводите цифры на экран и говорите: «Ваш статус не соответствует действительности».", d:{e:-5,t:-20,r:5}, c:{conflict:-1,safety:-1},
+      fb:"Правда на вашей стороне, но публичное уличение вызывает оборону, и отчёты станут ещё «зеленее»."},
+    { t:"Меняете формат: вместо «как дела» — общая доска план/факт по каждому ресторану, которую заполняют обе стороны, и вопрос «что мешает подключить рестораны этой недели и что нужно от нас?»", d:{e:10,t:10,r:15}, c:{focus:1,questions:1,safety:1},
+      fb:"Фокус переходит с оценки людей на поток работы. Вопрос «что нужно от нас» показывает, что маркетплейс — часть системы, а не только контролёр."},
+    { t:"На встрече молчите, а после пишете жалобу руководству интегратора.", d:{e:-5,t:-15,r:-5}, c:{conflict:-1},
+      fb:"Эскалация бывает нужна, но не первым шагом и не вместо разговора. Встреча, на которой не говорят правду, теряет смысл."}
+    ]},
+  { who:"Через неделю, общая доска", text:["Доска показала: 9 ресторанов стоят, потому что ваш отдел операций не выдаёт доступы в кабинет партнёра.","Санжар из отдела операций: «У нас регламент, задерживаем не мы»."],
+    options:[
+    { t:"«Санжар, давайте не про виноватых. Возьмём путь одного доступа от заявки до выдачи: где он ждёт дольше всего?» Рисуете шаги вместе.", d:{e:15,t:10,r:15}, c:{neutral:1,conflict:1,questions:1},
+      fb:"Переход от «кто виноват» к «где застревает» — классический ход фасилитатора. Вы не защищаете ни своих, ни интегратора."},
+    { t:"Встаёте на сторону коллеги: «Регламент есть регламент, интегратору нужно подавать заявки заранее».", d:{e:-10,t:-15,r:-5}, c:{neutral:-1},
+      fb:"Лояльность к своим понятна, но интегратор видит, что проблемы маркетплейса не обсуждаются. Доверие от этого падает быстро."},
+    { t:"Говорите, что разберётесь с отделом операций отдельно, и переходите к следующему пункту.", d:{e:-5,t:0,r:0}, c:{},
+      fb:"Это нормально, если на встрече нет нужных людей. Но здесь они за столом, и вы упустили шанс разобрать узкое место вместе."}
+    ]}
+  ]},
+{ id:"scope", cat:"ftth", proj:"Продавцы · крупный продавец посуды", title:"Доп. расходы, которых нет в договоре",
+  steps:[
+  { who:"Встреча трёх сторон", text:["Продавец посуды «Фарфор и Ко» требует допсоглашение на +18% к компенсации за доставку: защитная упаковка хрупких наборов, которой не было в договоре. Финансист маркетплейса Жанна против: «В договоре твёрдая ставка»."],
+    options:[
+    { t:"Даёте каждой стороне 5 минут на позицию без перебиваний. Затем на доске три колонки: «знаем точно», «спорно», «каких данных не хватает».", d:{e:10,t:15,r:10}, c:{conflict:1,neutral:1,voice:1},
+      fb:"Когда факты отделены от интерпретаций, напряжение падает. Видно, о чём на самом деле спор."},
+    { t:"Сразу предлагаете компромисс: «+9%, пополам».", d:{e:-5,t:-5,r:5}, c:{neutral:-1,conflict:-1},
+      fb:"Компромисс до того, как поняли интересы сторон, — это торг. Обе стороны чувствуют, что их не услышали, а цифра ни на чём не основана."},
+    { t:"Объявляете, что вопрос решит юрист по договору, и закрываете встречу.", d:{e:-10,t:-5,r:-5}, c:{focus:-1},
+      fb:"Договор важен, но без разбора причины (изменились условия доставки? ошиблись в требованиях к упаковке?) спор повторится со следующим продавцом."}
+    ]},
+  { who:"40-я минута", text:["Выяснилось: требование к упаковке появилось после того, как маркетплейс сменил курьерскую службу. Об этом знали обе стороны, но изменение никто не оформил. Атмосфера напряжённая."],
+    options:[
+    { t:"Фиксируете общий вывод: «Похоже, сбой в нашем общем порядке управления изменениями. Договоримся, как оформляем такие изменения дальше, а по этому случаю — кто и к какой дате готовит расчёт».", d:{e:10,t:15,r:15}, c:{focus:1,neutral:1},
+      fb:"Работа на двух уровнях: решить конкретный случай и починить процесс. Договорённости конкретные: кто, что, к какому сроку."},
+    { t:"Говорите продавцу: «Раз вы знали, надо было поднять вопрос раньше. Значит, за ваш счёт».", d:{e:-10,t:-20,r:0}, c:{neutral:-1,safety:-1},
+      fb:"Формально, может быть, и так. Но вы только что вместе нашли общую ошибку, и обвинение одной стороны разрушит доверие, которое удалось набрать за встречу."},
+    { t:"Благодарите всех и предлагаете «подумать до следующей встречи».", d:{e:0,t:0,r:-10}, c:{focus:-1},
+      fb:"Встреча закончилась без договорённостей. Через неделю придётся начинать с нуля."}
+    ]}
+  ]},
+{ id:"dominant", cat:"dc", proj:"Рестораны · холдинг из 7 ресторанов", title:"Директор холдинга говорит за всех",
+  steps:[
+  { who:"Планёрка по ресторанам", text:["Директор ресторанного холдинга «Семь тарелок» Арсен Маратович занимает 80% эфира. Управляющие ресторанов молчат, хотя вопросы про меню и время приготовления, и отвечать должны они."],
+    options:[
+    { t:"Вводите правило для всех: по каждому ресторану первым отвечает его управляющий, потом комментарии. Подаёте как новый формат планёрки, а не как замечание ему лично.", d:{e:15,t:5,r:10}, c:{voice:1,neutral:1},
+      fb:"Вы меняете структуру вместо замечания. Правила игры другие, а статус человека не задет."},
+    { t:"При всех: «Арсен Маратович, дайте другим сказать».", d:{e:5,t:-15,r:0}, c:{safety:-1},
+      fb:"Работает быстро, но для статусного человека публичное замечание — потеря лица, особенно при подчинённых."},
+    { t:"Ничего не меняете: он директор, ему виднее.", d:{e:-15,t:-5,r:-5}, c:{voice:-1},
+      fb:"Информация о реальном состоянии кухонь до вас не дойдёт."}
+    ]},
+  { who:"После планёрки", text:["Директор подходит к вам: «Мои управляющие не всегда видят общую картину, поэтому отвечаю я»."],
+    options:[
+    { t:"«Понимаю. Давайте так: управляющие дают факты по своему ресторану, вы — общую картину и решения. Мне важно слышать и то, и другое».", d:{e:10,t:15,r:10}, c:{neutral:1,voice:1,conflict:1},
+      fb:"Вы признаёте его роль и интерес и предлагаете распределение, при котором нужны оба голоса."},
+    { t:"«Это ваши проблемы. По договору отвечать должны ответственные от каждой точки».", d:{e:0,t:-15,r:0}, c:{conflict:-1},
+      fb:"Ссылка на договор в разговоре о поведении звучит как угроза. Он согласится на словах и продолжит по-старому."},
+    { t:"«Хорошо, тогда отвечайте вы».", d:{e:-10,t:0,r:-5}, c:{voice:-1},
+      fb:"Вы снова отрезали себя от тех, кто знает, что на самом деле происходит на кухне."}
+    ]}
+  ]},
+{ id:"blame", cat:"radio", proj:"Запуск в новом городе · интегратор и курьеры", title:"Партнёры обвиняют друг друга",
+  steps:[
+  { who:"Разбор срыва на 2 недели", text:["Интегратор: «Зоны доставки нам передали не те». Курьерская служба: «Рестораны не были подключены». Оба смотрят на вас."],
+    options:[
+    { t:"Рисуете общую линию времени. Каждая сторона добавляет события и даты. Правило: только факты, без оценок.", d:{e:15,t:10,r:10}, c:{neutral:1,conflict:1,voice:1},
+      fb:"Общая картина на одной доске переводит спор «кто виноват» в разговор «что произошло»."},
+    { t:"Просите каждую сторону письменно прислать объяснительную.", d:{e:-10,t:-10,r:0}, c:{conflict:-1},
+      fb:"Две объяснительные — это две версии, каждая в свою пользу. Разговор переходит в переписку."},
+    { t:"Как заказчик сразу назначаете виновным того, кто, по-вашему, виноват больше. Время дорого.", d:{e:-10,t:-20,r:5}, c:{neutral:-1},
+      fb:"Решение быстрое, но на неполных данных. Вторая сторона запомнит это надолго."}
+    ]},
+  { who:"Линия времени готова", text:["Видно: никто не отвечал за передачу списка подключённых ресторанов и зон доставки от интегратора курьерской службе. Эта зона была на маркетплейсе, то есть на вас."],
+    options:[
+    { t:"Открыто признаёте: «Эта зона была на нас, мы её не закрыли. Предлагаю на каждой передаче совместный акт и короткий созвон трёх сторон».", d:{e:10,t:20,r:15}, c:{safety:1,focus:1},
+      fb:"Вы показываете пример: когда ведущий признаёт свою ошибку, другим тоже становится безопасно признавать свои. PMBOK 7 называет это культурой «быстро ошибиться — быстро научиться»."},
+    { t:"Быстро переводите тему: «Ладно, давайте о дальнейших шагах».", d:{e:0,t:-10,r:5}, c:{safety:-1},
+      fb:"Все заметили. Получается, ошибки здесь признают только партнёры."},
+    { t:"Говорите, что это вопрос к вашему руководству, и закрываете встречу.", d:{e:-5,t:-5,r:-10}, c:{focus:-1},
+      fb:"Причина найдена, а договорённости нет. Следующая передача пройдёт так же."}
+    ]}
+  ]},
+{ id:"online", cat:"it", proj:"Платформа · запуск оплаты заказов еды", title:"Онлайн, камеры выключены",
+  steps:[
+  { who:"Созвон, 14 участников", text:["Вы рассказали план запуска оплаты заказов еды: на созвоне интегратор, платёжный партнёр, ваши разработчики и поддержка покупателей. Спрашиваете: «Есть вопросы?» Тишина. У всех выключены камеры."],
+    options:[
+    { t:"Переходите в чат: «Напишите одним сообщением, какой самый большой риск запуска вы видите. Отправляем все одновременно, по команде».", d:{e:15,t:5,r:10}, c:{voice:1,questions:1,safety:1},
+      fb:"Одновременный ответ снимает эффект «кто первый», а конкретный вопрос работает лучше, чем «есть вопросы?»."},
+    { t:"Просите всех включить камеры.", d:{e:0,t:-5,r:0}, c:{},
+      fb:"Иногда помогает, но требование — это ещё не вовлечение. Тишина останется, просто станет видимой."},
+    { t:"Считаете тишину согласием и закрываете встречу.", d:{e:-15,t:0,r:-10}, c:{voice:-1},
+      fb:"Молчание на онлайн-встрече почти никогда не означает согласия. Возражения всплывут на запуске."}
+    ]}
+  ]},
+{ id:"boss", cat:"fiber", proj:"Курьеры · вечерний пик", title:"Руководитель срывается на партнёра",
+  steps:[
+  { who:"Оперативка", text:["На оперативку без предупреждения заходит ваш директор по операциям Нурсултан Бекович. Слушает 5 минут и начинает кричать на курьерскую службу из-за массовых опозданий в пятницу вечером."],
+    options:[
+    { t:"Даёте ему договорить, затем: «Нурсултан Бекович, давайте зафиксирую требование: план усиления на выходные к 18:00 и разбор причин до пятницы. Кто от курьерской службы это берёт?»", d:{e:5,t:10,r:15}, c:{conflict:1,focus:1,safety:1},
+      fb:"Эмоцию руководителя вы перевели в требование и договорённость. С начальником не спорите, но и не оставляете комнату в оцепенении."},
+    { t:"Молчите до конца: это руководитель.", d:{e:-5,t:-10,r:0}, c:{safety:-1},
+      fb:"Курьерская служба видит, что на ваших встречах так можно. Дальше она будет приносить вам только хорошие новости."},
+    { t:"Возражаете при всех: «С партнёрами так разговаривать нельзя».", d:{e:0,t:0,r:-5}, c:{conflict:-1},
+      fb:"Смелость ценна, но публичный спор с руководителем при партнёре бьёт по вам и не решает проблему опозданий. Это разговор один на один."}
+    ]},
+  { who:"После оперативки", text:["Встреча закончилась. Что делаете дальше?"],
+    options:[
+    { t:"Идёте к руководителю один на один: благодарите за включённость, рассказываете, как устроена оперативка, и предлагаете, как ему лучше подключаться, например в первые 10 минут к ключевым рискам.", d:{e:5,t:10,r:5}, c:{conflict:1,safety:1},
+      fb:"Как пишет Вискарди, ведущий не боится возразить руководителю, но делает это с тактом. Наедине и с предложением, а не с упрёком."},
+    { t:"Ничего. Повторится так повторится.", d:{e:0,t:-10,r:0}, c:{safety:-1},
+      fb:"Повторится. И каждый раз партнёр будет закрываться сильнее."},
+    { t:"Пишете в чат курьерской службе извинения от имени компании.", d:{e:0,t:5,r:0}, c:{},
+      fb:"Хороший жест, но без разговора с руководителем ситуация повторится. К тому же извиняться за руководителя без согласования рискованно."}
+    ]}
+  ]},
+{ id:"twohats", cat:"ftth", proj:"Продавцы · запуск витрины продавца одежды", title:"Вы и заказчик, и ведущий",
+  steps:[
+  { who:"Риск-сессия перед запуском", text:["Крупный продавец одежды «Модный ряд» предлагает перенести запуск своей витрины на 3 недели, чтобы закончить проверку карточек товаров. Вам перенос невыгоден: на сроке завязан ваш KPI. Сессию ведёте вы."],
+    options:[
+    { t:"Говорите прямо: «Сейчас я на минуту выйду из роли ведущего. Как заказчик я против переноса, и вот почему… Теперь снова веду: давайте оценим риски обоих вариантов по одинаковым критериям».", d:{e:10,t:15,r:15}, c:{neutral:1,focus:1},
+      fb:"Нейтральность фасилитатора не значит, что у вас нет интересов. Честно разделяйте роли «заказчик» и «ведущий» и называйте, в какой вы сейчас."},
+    { t:"Ведёте сессию так, чтобы аргументам за перенос досталось меньше времени.", d:{e:-5,t:-20,r:-5}, c:{neutral:-1},
+      fb:"Скрытая манипуляция процессом — самое дорогое, что может сделать фасилитатор. Если её заметят, доверия не будет ни к одной вашей встрече."},
+    { t:"Отказываетесь вести и просите провести сессию коллегу из проектного офиса.", d:{e:5,t:10,r:5}, c:{neutral:1},
+      fb:"Тоже корректный путь, особенно при высоких ставках. Минус: время на погружение коллеги в проект."}
+    ]}
+  ]},
+{ id:"dc_ist", cat:"dc", proj:"Рестораны · тестовый запуск", title:"Ресторан хочет пропустить сценарий пиковой нагрузки",
+  steps:[
+  { who:"Совещание накануне тестового запуска", text:["Завтра тестовый запуск «Доставки еды» с первыми ресторанами. Сеть «Ложка и вилка» предлагает исключить сценарий пиковой нагрузки — 30 заказов за час: «Мы и так работаем в пятницу вечером, это лишние 6 часов».","Алия из вашего отдела операций категорически против. Интегратор молчит: ему важно сдать подключение до конца месяца."],
+    options:[
+    { t:"Решаете сами: сценарий остаётся, это требование маркетплейса, обсуждать нечего.", d:{e:-5,t:-5,r:5}, c:{neutral:-1},
+      fb:"По сути вы, скорее всего, правы: пик — ключевой сценарий для доставки еды. Но решение без разговора оставляет у ресторана ощущение произвола, и на тесте он будет искать формальные лазейки."},
+    { t:"Просите каждую сторону назвать риски: что будет, если сценарий проверить, и что будет, если не проверить. Записываете в две колонки на экране.", d:{e:15,t:10,r:10}, c:{conflict:1,neutral:1,questions:1},
+      fb:"Спор «нужно или не нужно» превращается в сравнение рисков. Обычно сразу видно, что 6 часов теста несопоставимы с кухней, которая захлебнулась в первую же пятницу после запуска."},
+    { t:"Предлагаете компромисс: принять сценарий «на бумаге», по данным ресторана о его обычной загрузке.", d:{e:0,t:5,r:-15}, c:{focus:-1},
+      fb:"Это компромисс ради мира на встрече, а не ради результата. Данные о загрузке зала не проверяют связку кухни с приложением и курьерами именно в пик."}
+    ]},
+  { who:"20 минут спустя", text:["Выясняется, что ресторан боится не потери времени. На прошлом тестовом запуске с другим сервисом доставки при таком тесте кухня не справилась, и ресторан оштрафовали за «срыв испытаний». Он опасается повторения."],
+    options:[
+    { t:"«Спасибо, что сказали. Предлагаю договориться: сбой во время теста — это результат теста, а не повод для штрафа. Впишем это в программу запуска и определим, кто на связи с кухней во время сценария».", d:{e:10,t:20,r:15}, c:{safety:1,focus:1},
+      fb:"Вы сняли настоящий страх, и сопротивление уходит. Тест для того и нужен, чтобы находить сбои до запуска, а не наказывать за них."},
+    { t:"«Штрафы прописаны в договоре, тут я ничего не могу поделать».", d:{e:-5,t:-15,r:-5}, c:{safety:-1},
+      fb:"Формально это правда, но страх остался без ответа. Ресторан будет «страховаться», например заготовит блюда заранее и выдаст их за свежие."},
+    { t:"Переходите к следующему пункту повестки: главное, что сценарий остаётся.", d:{e:-5,t:-5,r:0}, c:{},
+      fb:"Решение принято, но причина сопротивления не снята. На тесте она проявится."}
+    ]}
+  ]},
+{ id:"dc_density", cat:"dc", proj:"Рестораны · коммерческий запрос", title:"Сети пообещали доставку за 20 минут",
+  steps:[
+  { who:"Срочная встреча", text:["Коммерческий отдел подписал сеть из 20 ресторанов с обещанием доставки за 20 минут. Курьерская модель рассчитана на 45 минут. Руководитель логистики: «Это выделенные курьеры у каждой точки, плюс три месяца».","Коммерческий директор Дана требует «найти решение к пятнице»."],
+    options:[
+    { t:"Просите Дану и логиста вместе сформулировать, что на самом деле нужно сети: сколько точек, к какому сроку, какое реальное время. Часто «20 минут» — это обещание для флагманских точек, а не для всех.", d:{e:10,t:10,r:15}, c:{questions:1,focus:1},
+      fb:"Вы переводите спор из позиций («надо» против «нельзя») в интересы. Нередко оказывается, что быстрая доставка нужна только части точек."},
+    { t:"Поддерживаете логиста: «Модель утверждена, менять нельзя».", d:{e:-10,t:-10,r:-10}, c:{neutral:-1},
+      fb:"Вы встали на одну сторону и закрыли разговор. Коммерция пойдёт к руководству в обход вас, и решение примут без логистики."},
+    { t:"Обещаете Дане, что курьерская служба что-нибудь придумает к пятнице.", d:{e:0,t:-10,r:-5}, c:{focus:-1},
+      fb:"Вы взяли обязательство за другую сторону. Курьерская служба почувствует давление, а Дана будет ждать чуда."}
+    ]},
+  { who:"Варианты на доске", text:["Выяснилось: сети нужны 20 минут для 6 точек в центре сейчас и ещё для 14 через год. Логист видит вариант — выделенная курьерская зона в центре. Стоимость пока никто не считал."],
+    options:[
+    { t:"Фиксируете: «Вариант — выделенная курьерская зона в центре. Логист к среде даёт стоимость и срок, Дана к четвергу согласует с сетью поэтапный ввод. Встречаемся в четверг».", d:{e:5,t:10,r:20}, c:{focus:1},
+      fb:"Конкретные владельцы, сроки и следующая точка встречи. Решение ещё не принято, но путь к нему понятен всем."},
+    { t:"Предлагаете сразу утвердить этот вариант, чтобы не терять время.", d:{e:0,t:-5,r:0}, c:{focus:-1},
+      fb:"Без расчёта стоимости и согласования с сетью такое решение развалится через неделю."},
+    { t:"Просите всех подумать и прислать предложения на почту.", d:{e:-10,t:0,r:-10}, c:{focus:-1},
+      fb:"Почта размывает ответственность. Главное, чего добилась встреча, — общее понимание — теряется."}
+    ]}
+  ]},
+{ id:"dc_hse", cat:"node", proj:"Санитарная служба · дарк-кухня", title:"Приём заказов остановлен из-за нарушения",
+  steps:[
+  { who:"Звонок владельца кухонь", text:["Инспектор партнёрской санитарной службы «СанКонтроль» остановил приём заказов у дарк-кухни: сырые и готовые продукты хранились в одном холодильнике.","Владелец сети дарк-кухонь Ержан звонит вам: «Из-за вашего перестраховщика мы теряем день. Это мелочь»."],
+    options:[
+    { t:"Соглашаетесь возобновить приём заказов, раз нарушение уже устранено.", d:{e:0,t:-15,r:5}, c:{safety:-1},
+      fb:"Вы обесценили решение инспектора. В следующий раз он подумает, прежде чем останавливать кухню, а цена ошибки — здоровье покупателей."},
+    { t:"Собираете короткую встречу на кухне: владелец, управляющий кухни, инспектор. Вопрос один: «Что должно быть в порядке, чтобы мы возобновили приём заказов уже сегодня?»", d:{e:15,t:10,r:15}, c:{focus:1,questions:1,conflict:1},
+      fb:"Вы не спорите, мелочь это или нет, а переводите разговор к условиям возобновления. Решение принимают все трое."},
+    { t:"Отвечаете Ержану, что безопасность еды не обсуждается, и заканчиваете разговор.", d:{e:-10,t:-10,r:0}, c:{conflict:-1},
+      fb:"Позиция верная, но разговор закрыт. Владелец пойдёт жаловаться выше, а причина нарушения так и останется неразобранной."}
+    ]},
+  { who:"На кухне", text:["Выясняется: у дарк-кухни нет своего ответственного за санитарные нормы, повара меняются каждую неделю, а инструктаж владелец проводит «по телефону»."],
+    options:[
+    { t:"«Похоже, дело не в одном поваре, а в том, как новые люди выходят на смену. Предлагаю правило допуска к смене: инструктаж на месте, ответственный за санитарию на каждой кухне, журнал. Ержан, кто у вас будет владельцем этого правила?»", d:{e:10,t:10,r:20}, c:{focus:1,neutral:1},
+      fb:"Вы подняли разговор с конкретного нарушения на системную причину и назначили владельца. Это и есть результат разбора."},
+    { t:"Требуете уволить повара-нарушителя.", d:{e:-10,t:-15,r:0}, c:{safety:-1},
+      fb:"Наказание одного человека не меняет систему допуска к смене. Следующий новичок совершит ту же ошибку, а люди начнут скрывать нарушения."},
+    { t:"Пишете владельцу официальное письмо с требованием «усилить контроль».", d:{e:-5,t:-5,r:0}, c:{},
+      fb:"Письмо нужно для документации, но «усилить контроль» без конкретного правила и владельца ничего не меняет."}
+    ]}
+  ]},
+{ id:"dc_handover", cat:"radio", proj:"Интегратор · приёмка подключений", title:"Отдел операций не принимает подключение",
+  steps:[
+  { who:"Приёмочная встреча", text:["Интегратор готов сдать подключение 20 ресторанов. Ваш отдел операций отказывается подписывать: «Нет инструкций по обновлению меню и системе уведомлений, персонал ресторанов не обучен».","Интегратор: «Это мелочи, закроем после подписания»."],
+    options:[
+    { t:"Предлагаете вместе составить список замечаний и разделить его на три группы: блокирует приёмку / закрываем после подписания с датой / не замечание.", d:{e:15,t:10,r:15}, c:{focus:1,conflict:1,neutral:1},
+      fb:"Общий список с категориями убирает спор «всё или ничего». Обе стороны видят, о чём реально идёт речь и что можно сделать уже сейчас."},
+    { t:"Давите на отдел операций: «Нам надо закрыть этап в этом квартале, подпишите с замечаниями».", d:{e:-10,t:-15,r:5}, c:{neutral:-1},
+      fb:"Вы закрываете этап за счёт тех, кто потом каждый день будет жить с этими подключениями. Отдел операций это запомнит."},
+    { t:"Откладываете приёмку на месяц, пока всё не будет идеально.", d:{e:-5,t:-5,r:-10}, c:{},
+      fb:"Ждать «идеального» без списка и сроков — значит отложить спор, а не решить его."}
+    ]}
+  ]},
+{ id:"fiber_land", cat:"node", proj:"Санитарная служба · 4 дарк-кухни", title:"Дарк-кухня не согласована с санитарной службой",
+  steps:[
+  { who:"Планёрка по запуску кухонь", text:["Партнёр открывает 4 дарк-кухни, по двум нет заключения санитарной службы. Партнёр предлагает: «Давайте запускать, пока предновогодний спрос, бумаги потом оформим».","Юрист маркетплейса Айгерим против. Через месяц пик новогодних заказов пройдёт."],
+    options:[
+    { t:"Разрешаете партнёру запускать под его ответственность.", d:{e:5,t:-10,r:-10}, c:{focus:-1},
+      fb:"Ответственность перед покупателем всё равно на маркетплейсе. Одна жалоба или проверка может остановить всю «Доставку еды» в городе и обойтись дороже месяца задержки."},
+    { t:"Выносите на экран три вопроса: какие кухни можно запускать сейчас, что нужно для заключения по оставшимся двум, есть ли запасной вариант. Даёте слово и партнёру, и юристу.", d:{e:15,t:10,r:15}, c:{focus:1,voice:1,neutral:1},
+      fb:"Вы не выбираете между «запускать» и «ждать», а раскладываете проблему на части. Обычно половину кухонь можно запускать, пока юристы решают остальное."},
+    { t:"Объявляете, что пока нет всех заключений, запуск стоит.", d:{e:-10,t:-5,r:-10}, c:{},
+      fb:"Юридически безопасно, но вы потеряете сезон и на тех кухнях, где заключения уже есть."}
+    ]},
+  { who:"Полчаса спустя", text:["Управляющий кухнями Арман говорит, что одну кухню можно временно перенести в соседнее помещение, где заключение уже есть: плюс 1,2 км до зоны доставки, зато без ожидания. Директор партнёра недоволен: «Это наши деньги»."],
+    options:[
+    { t:"«Давайте посчитаем оба варианта: перенос и ожидание заключения — по деньгам и по срокам. Айгерим, сколько реально займёт заключение? Арман, сколько дней на перенос?» Решаете после цифр.", d:{e:10,t:10,r:15}, c:{questions:1,neutral:1,focus:1},
+      fb:"Вы дали слово управляющему и перевели спор в цифры. Кто платит за перенос, решится честнее, когда видна цена ожидания."},
+    { t:"Сразу решаете: переносим, оплачивает партнёр.", d:{e:-5,t:-15,r:5}, c:{neutral:-1},
+      fb:"Быстро, но партнёр почувствует, что идея его управляющего обернулась против его компании. В следующий раз Арман промолчит."},
+    { t:"Говорите, что перенос надо согласовать с санитарной службой заново, и откладываете вопрос.", d:{e:-5,t:0,r:-10}, c:{},
+      fb:"Согласование нужно, но без цифр и владельца вопрос провисит до конца сезона."}
+    ]}
+  ]},
+{ id:"fiber_otdr", cat:"fiber", proj:"Курьеры · приёмка районов", title:"Замеры времени доставки не сходятся",
+  steps:[
+  { who:"Приёмка", text:["В 3 районах из 12 среднее время доставки выше норматива. Курьерская служба: «В пределах погрешности: ваше приложение фиксирует вручение с задержкой». Ваш аналитик качества Санжар: «Пересобирать маршруты и добавлять курьеров».","Обе стороны раздражены и намекают на некомпетентность друг друга."],
+    options:[
+    { t:"Предлагаете сначала договориться о критерии: какой норматив и какой метод замера используем — по договору, по отметке в приложении или по опросу покупателей. Результаты обсуждаем потом.", d:{e:10,t:15,r:15}, c:{conflict:1,neutral:1,focus:1},
+      fb:"Спорить о результатах бессмысленно, пока стороны меряют разными линейками. Договорённость о критерии снимает половину конфликта."},
+    { t:"Встаёте на сторону аналитика: «Наш специалист сказал пересобирать — значит, пересобирать».", d:{e:-10,t:-15,r:0}, c:{neutral:-1},
+      fb:"Возможно, Санжар прав, но решение «по статусу» курьерская служба воспримет как произвол и будет оспаривать каждую следующую приёмку."},
+    { t:"Предлагаете принять районы: разница же небольшая.", d:{e:0,t:0,r:-10}, c:{focus:-1},
+      fb:"Конфликт закрыт сейчас, но вы приняли риск на месяцы жалоб покупателей."}
+    ]},
+  { who:"Критерий согласован", text:["Договорились мерить по приложению: от передачи заказа курьеру до отметки «вручено», с поправкой на задержку. Повторный замер: два района действительно вне норматива, один в норме. Курьерская служба ворчит, но соглашается."],
+    options:[
+    { t:"«Спасибо, что пошли на повторный замер. Итог: по двум районам пересобираем маршруты — кто и к какому сроку? И давайте впишем метод замера в регламент приёмки для всех районов».", d:{e:10,t:15,r:15}, c:{focus:1,safety:1},
+      fb:"Вы признали вклад партнёра, зафиксировали конкретные действия и улучшили процесс на будущее."},
+    { t:"«Видите, аналитик был прав».", d:{e:-5,t:-15,r:0}, c:{safety:-1,neutral:-1},
+      fb:"Фраза «мы были правы» превращает общий результат в чью-то победу. Курьерская служба запомнит проигрыш, а не договорённость."},
+    { t:"Подписываете протокол с замечаниями и расходитесь.", d:{e:0,t:0,r:5}, c:{},
+      fb:"Рабочий вариант, но без сроков и без изменения регламента спор повторится на следующей приёмке."}
+    ]}
+  ]},
+{ id:"fiber_subs", cat:"fiber", proj:"Курьеры · 5 районов", title:"На планёрку приходят разные люди",
+  steps:[
+  { who:"Еженедельная планёрка", text:["Курьерская служба поручила районы трём региональным перевозчикам. На каждую планёрку приходят разные люди, за район целиком не отвечает никто, а договорённости прошлой недели «никто не помнит»."],
+    options:[
+    { t:"Вводите структуру: от каждого района один постоянный ответственный, общий трекер договорённостей на экране, в начале каждой встречи сверка прошлых договорённостей.", d:{e:10,t:10,r:15}, c:{focus:1,voice:1},
+      fb:"Структура и видимые договорённости решают проблему «никто не помнит». Вы не обвиняете людей, а меняете правила встречи."},
+    { t:"Требуете, чтобы на планёрки ходил только директор курьерской службы.", d:{e:-10,t:0,r:-5}, c:{voice:-1},
+      fb:"Общение станет «проще», но вы потеряете людей, которые реально знают, что происходит в районах."},
+    { t:"Начинаете сами писать протоколы и рассылать всем.", d:{e:0,t:5,r:5}, c:{},
+      fb:"Полезно, но вы взяли на себя работу, которая должна быть общей. Протокол прочитают, а ответственность не появится."}
+    ]}
+  ]},
+{ id:"fiber_damage", cat:"fiber", proj:"Курьеры · доставка посуды", title:"Курьеры разбили партию посуды",
+  steps:[
+  { who:"Разбор инцидента", text:["При доставке партии наборов посуды продавца «Фарфор и Ко» половина пришла с боем. Продавец требует компенсацию и грозит уйти с витрины.","Курьерская служба: «В инструкции по упаковке хрупких товаров этого типа коробок не было». Ваш специалист по стандартам: «Инструкцию выдавали, там всё есть»."],
+    options:[
+    { t:"Предлагаете восстановить последовательность: у кого какая версия инструкции была, когда и как проверяли упаковку перед передачей курьеру. Только факты и документы.", d:{e:10,t:10,r:15}, c:{conflict:1,neutral:1},
+      fb:"Хронология с документами быстро показывает, где разошлись версии. Без неё останется спор «нам не давали» — «мы давали»."},
+    { t:"Говорите курьерской службе: «Разбили вы — значит, вы и платите».", d:{e:-10,t:-15,r:5}, c:{neutral:-1},
+      fb:"Может, так и окажется. Но если ошибка в инструкции маркетплейса, вы потеряете и доверие курьеров, и спор с продавцом."},
+    { t:"Передаёте вопрос юристам обеих сторон.", d:{e:-5,t:-5,r:-5}, c:{},
+      fb:"Юристы понадобятся, но сначала нужно понять, что произошло. Иначе они будут спорить о версиях, а не о фактах."}
+    ]},
+  { who:"Хронология готова", text:["Инструкция была, но устарела на два года: новые коробки в ней не описаны. А проверку упаковки при приёме от продавца курьерская служба не делала."],
+    options:[
+    { t:"«Причин две: устаревшая инструкция — наша часть, отсутствие проверки при приёме — часть курьерской службы. Предлагаю: компенсацию обсуждаем с продавцом вместе, а в регламент добавляем обязательную проверку упаковки и актуализацию инструкций. Кто чем владеет?»", d:{e:10,t:15,r:15}, c:{neutral:1,focus:1,safety:1},
+      fb:"Вы честно разделили ответственность, включая свою, и договорились о системных изменениях. Такой разбор укрепляет партнёрство."},
+    { t:"Пользуетесь тем, что проверки не было, и перекладываете всю ответственность на курьерскую службу.", d:{e:-5,t:-20,r:0}, c:{neutral:-1},
+      fb:"Формально может сработать, но партнёр видит, что вы промолчали о своей части. В следующий раз он скроет проблему до последнего."},
+    { t:"Фиксируете обе причины и откладываете решение до ответа юристов.", d:{e:0,t:5,r:-5}, c:{},
+      fb:"Честно, но без владельцев действий регламент приёма так и не изменится."}
+    ]}
+  ]}
+
+];
+
+const ERRORS = [
+{ id:"e1", sit:"Интегратор и ваш отдел операций не могут договориться о порядке приёмки подключённых ресторанов. Как вы поможете им прийти к решению?",
+  segs:[
+   {t:"Я соберу встречу обеих сторон"},
+   {t:"и сам предложу порядок приёмки, который считаю правильным,", bad:true, c:"neutral", why:"Решение за участников. Фасилитатор помогает группе выработать решение, а не приносит его готовым."},
+   {t:"затем попрошу каждую сторону рассказать о своих ограничениях"},
+   {t:"и добьюсь, чтобы они приняли мой вариант.", bad:true, c:"focus", why:"«Добиться принятия» — это продажа, а не фасилитация. Согласие без участия разваливается на первом же ресторане."}
+  ],
+  better:"Соберу обе стороны. Сначала каждая опишет, что для неё критично в приёмке и почему. Вместе выпишем общие требования и расхождения, предложим варианты и договоримся о критериях выбора. Моя роль — процесс, решение за ними. Если вопрос в моей зоне как заказчика, скажу об этом открыто."},
+{ id:"e2", sit:"На планёрке директор ресторанного холдинга доминирует, управляющие молчат. Что вы сделаете?",
+  segs:[
+   {t:"На следующей встрече я подниму этот вопрос при всех", bad:true, c:"safety", why:"Публичный разбор поведения человека при его подчинённых и при заказчике — потеря лица. Защищаться он будет, а меняться нет."},
+   {t:"и попрошу его быть внимательнее к другим.", bad:true, c:"voice", why:"Просьба «быть внимательнее» — нравоучение, структура встречи от неё не меняется. Меняйте правила, а не уговаривайте."},
+   {t:"Также я буду давать слово по кругу,"},
+   {t:"чтобы у всех было время высказаться."}
+  ],
+  better:"Изменю структуру для всех: по каждому ресторану первым отвечает его управляющий, круг и тайм-бокс. С директором поговорю отдельно: о его роли и о том, зачем мне нужны голоса управляющих."},
+{ id:"e3", sit:"На встречах по итогам этапа представители курьерской службы молчат, обратной связи нет. Как вы это измените?",
+  segs:[
+   {t:"Я начну встречу с короткой разминки,"},
+   {t:"а если не поможет, напомню, что по договору они обязаны давать обратную связь.", bad:true, c:"safety", why:"Договор как способ заставить говорить окончательно убивает безопасность. Честной обратной связи под угрозой не бывает."},
+   {t:"Можно также собрать анонимные ответы заранее."},
+   {t:"Если и это не сработает, буду проводить итоги только с нашей стороной.", bad:true, c:"voice", why:"Убрав сторону, вы теряете половину информации. Молчание — сигнал, в нём надо разобраться, а не обходить его."}
+  ],
+  better:"Начну с разминки и анонимного сбора мнений до встречи. Спрошу, что мешает говорить открыто: возможно, дело в формате или в присутствии руководства. Покажу на своём примере, как разбирать и наши ошибки тоже."},
+{ id:"e4", sit:"Интегратор третий месяц не укладывается в сроки подключения ресторанов. Что вы сделаете?",
+  segs:[
+   {t:"Я проведу разбор причин вместе с интегратором"},
+   {t:"и сам составлю для них план улучшений,", bad:true, c:"neutral", why:"План, написанный за партнёра, — ваш план, а не его. Ответственность за выполнение тоже останется на вас."},
+   {t:"где укажу, что именно им нужно изменить.", bad:true, c:"conflict", why:"Разбор, в котором меняться должна только одна сторона, — это уже не разбор. В задержках почти всегда есть доля маркетплейса: доступы, согласования, данные о ресторанах."},
+   {t:"Через месяц проверю выполнение."}
+  ],
+  better:"Проведу совместный разбор на фактах (план/факт, где работа простаивала), включая наши задержки. План улучшений интегратор составляет сам. Договариваемся о 2–3 действиях с каждой стороны и дате проверки."},
+{ id:"e5", sit:"Представители интегратора и курьерской службы сорвались на крик на совещании. Ваши действия?",
+  segs:[
+   {t:"Я спокойно, но твёрдо остановлю обсуждение"},
+   {t:"и объясню, кто из них прав по существу,", bad:true, c:"neutral", why:"Это роль судьи, а не ведущего. Проигравшая сторона закроется, а конфликт уйдёт в подполье."},
+   {t:"после чего мы вернёмся к повестке, как будто ничего не было.", bad:true, c:"conflict", why:"Если сделать вид, что ничего не было, напряжение никуда не денется и выстрелит позже. Конфликт надо назвать и переупаковать в вопрос."},
+   {t:"При необходимости объявлю перерыв."}
+  ],
+  better:"Остановлю и назову, что происходит: «Градус высокий, давайте сделаем паузу на 5 минут». После паузы каждый сформулирует, что ему нужно, и мы отделим факты от оценок. Если за 10 минут не решаем — выносим в отдельную встречу с владельцем вопроса."},
+{ id:"e6", sit:"На показе этапа крупные продавцы требуют изменений в кабинете продавца, которые не входят в объём работ. Как поступите?",
+  segs:[
+   {t:"Поблагодарю за обратную связь"},
+   {t:"и сразу объясню, что изменения не входят в договор и рассматриваться не будут.", bad:true, c:"questions", why:"Вы закрыли информацию, не узнав, что за ней стоит. Возможно, это критичная потребность, и дешевле учесть её сейчас."},
+   {t:"Запишу все пожелания в отдельный список,"},
+   {t:"чтобы потом оценить влияние и приоритет вместе с ответственными."}
+  ],
+  better:"Поблагодарю и спрошу, какую проблему решает каждое изменение. Запишу всё в список изменений и честно скажу, что в объём этапа это не входит. Договоримся, кто и когда оценит влияние на сроки и стоимость и примет решение."},
+{ id:"e7", sit:"Интегратор отстаёт с подключением ресторанов, из-за него курьерская служба не может начать обучение курьеров по районам. Как вы проведёте встречу двух партнёров?",
+  segs:[
+   {t:"Я соберу обоих партнёров"},
+   {t:"и сразу при всех покажу, кто именно сорвал график,", bad:true, c:"conflict", why:"Если в начале встречи публично назначить виноватого, дальше будет только оборона. Сначала общая картина, выводы потом."},
+   {t:"затем мы обсудим, как вернуть сроки,"},
+   {t:"и я назначу каждому новый дедлайн.", bad:true, c:"focus", why:"Срок, назначенный без исполнителя, — это пожелание. Сроки, которые партнёр назвал сам, выполняются чаще."}
+  ],
+  better:"Соберу обоих и выведу на экран общий график: где работы одного зависят от другого. Попрошу каждого назвать, что мешает и что нужно от смежника и от нас. Новые сроки партнёры называют сами, я фиксирую их вместе с зависимостями, через неделю сверяемся."},
+{ id:"e8", sit:"Курьерская служба просит перенести запуск в новых районах из-за нехватки курьеров перед праздниками. Ваши действия?",
+  segs:[
+   {t:"Я выслушаю курьерскую службу,"},
+   {t:"но заранее скажу, что перенос невозможен,", bad:true, c:"neutral", why:"Решение объявлено до того, как вы услышали данные. Дальше партнёр будет защищаться, а не искать варианты."},
+   {t:"попрошу показать, какие районы уже укомплектованы,"},
+   {t:"и предупрежу о штрафах, если сроки сорвутся.", bad:true, c:"safety", why:"Угроза штрафами закрывает честный разговор. Партнёр начнёт скрывать реальное состояние по районам."}
+  ],
+  better:"Попрошу показать состояние по районам и вместе посмотрим варианты: какие районы запускаем в срок, можно ли временно привлечь курьеров из других районов и сколько это стоит. Как заказчик честно скажу, чем нам грозит перенос, и договоримся, кто к какой дате готовит предложение."}
+
+];
+
+const QUESTIONS = [
+{ id:"q1", bad:"Почему вы опять сорвали сроки подключения?", tip:"«Почему» в напряжённой ситуации звучит как обвинение и запускает оправдания, а не анализ.", ex:["Что помешало подключить рестораны в срок?","Где работа простаивала дольше всего на этом этапе?","Что поможет нам уложиться в следующий срок?"]},
+{ id:"q2", bad:"Всем всё понятно?", tip:"Закрытый вопрос: ответ «да» ничего не проверяет, а сказать «нет» при всех неловко.", ex:["Что в этом плане вызывает больше всего сомнений?","Как вы объясните этот план своим курьерам завтра утром?"]},
+{ id:"q3", bad:"Может, вам стоит вывести вторую смену курьеров?", tip:"Совет под видом вопроса. Решение уже предложено, люди просто соглашаются или отбиваются.", ex:["Какие варианты вы видите, чтобы наверстать отставание?","Что нужно, чтобы ускорить доставку в этом районе?"]},
+{ id:"q4", bad:"Есть вопросы?", tip:"Самый частый вопрос онлайн-встреч и самый частый ответ на него — тишина.", ex:["Какой один вопрос по запуску у вас остался? Напишите в чат.","Что бы вы проверили в первую очередь, если бы отвечали за запуск?"]},
+{ id:"q5", bad:"Вы согласны, что это ваша зона ответственности?", tip:"Наводящий вопрос: правильный ответ уже заложен, и любой другой звучит как спор.", ex:["Как вы видите распределение ответственности на этом участке?","Что нужно, чтобы у этой задачи был один понятный владелец?"]},
+{ id:"q6", bad:"Кто виноват в сбое приёма заказов?", tip:"Поиск виноватого останавливает поиск причин. Люди начинают защищаться.", ex:["Какая последовательность событий привела к сбою?","Что в процессе позволило этому случиться и что мы изменим?"]},
+{ id:"q7", bad:"Вы же понимаете, что за это будут штрафы?", tip:"Угроза в форме вопроса. Ответить можно только «да», а разговор закрывается.", ex:["Как вы оцениваете последствия задержки для вас и для нас?","Что нам сделать вместе, чтобы до штрафов не дошло?"]},
+{ id:"q8", bad:"Вы успеете к пятнице, да?", tip:"Хвост «да?» подталкивает к нужному ответу. Получите обещание вместо реальной оценки.", ex:["Насколько вы уверены в пятнице по шкале от 1 до 5? Что нужно, чтобы стало 5?","Что может помешать закончить к пятнице?"]},
+{ id:"q9", bad:"Вы проверили, что меню ресторанов соответствует карточкам на витрине?", tip:"Закрытый вопрос: ответ «да» ничего не говорит о том, как проверяли и что нашли.", ex:["Как вы проверяли соответствие меню карточкам на витрине?","Какие расхождения нашлись при проверке меню?"]},
+{ id:"q10", bad:"Почему у вас в районе опять нет старшего курьера?", tip:"«Почему» вместе с «опять» звучит как обвинение. Ответом будут оправдания, а не решение.", ex:["Кто сейчас отвечает за доставку в районе и как с ним связаться?","Что нужно, чтобы в районе всегда был ответственный?"]}
+
+];
+const QCHECKS = ["Открытый: на него нельзя ответить «да» или «нет»","Нейтральный: без обвинения и без нужного мне ответа","Без скрытого совета: решение ищут участники","Смотрит вперёд: на причины, варианты или следующий шаг"];
+
+/* ---------- state ---------- */
+const KEY = "kz.facilitation.state";
+let S = {cases:{}, errors:{}, qs:{}, student:{name:"", group:""}};
+try{ const raw = localStorage.getItem(KEY); if(raw) S = Object.assign(S, JSON.parse(raw)); }catch(e){}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+/* ---------- AI (Claude) ---------- */
+let sampleFn = null, aiOff = false;
+let aiReady = null;
+function initAI(){
+  aiReady = (async()=>{
+    if(!window.claude || !window.claude.use){ aiOff = true; return; }
+    try{ sampleFn = await claude.use("sample"); }catch(e){}
+    if(!sampleFn) aiOff = true;
+  })();
+  return aiReady;
+}
+const AI_OFF_MSG = "AI недоступен: откройте страницу в Claude и разрешите ей обращаться к Claude.";
+function aiErr(e){
+  const c = e && e.code;
+  if(["not_granted","sampling_disabled","not_declared","capability_disabled","capability_removed"].includes(c)){ aiOff = true; return AI_OFF_MSG; }
+  if(c==="rate_limited") return "Слишком много запросов подряд. Подождите минуту и попробуйте снова.";
+  if(c==="session_expired") return "Сессия Claude истекла — войдите заново и повторите.";
+  if(c==="invalid_json") return "AI ответил в неожиданном формате. Нажмите ещё раз.";
+  if(c==="refused") return "AI не стал отвечать на этот текст. Переформулируйте.";
+  if(c==="prompt_too_large") return "Встреча получилась слишком длинной для AI. Завершите её и получите разбор.";
+  return "Не удалось получить ответ. Попробуйте ещё раз.";
+}
+async function getSample(){ if(aiReady) await aiReady; return aiOff ? null : sampleFn; }
+
+function aiQuestionBlock(it, rec, ta){
+  const box = $(`<div class="ai-box stack" style="gap:10px">
+    <div class="row" style="justify-content:space-between"><span class="ai-tag">AI-тренер</span></div>
+    <div class="ai-body"></div>
+    <div class="row"><button class="btn primary" id="ai-q">${rec.ai?"Проверить ещё раз":"Проверить с AI"}</button><span class="mono muted" id="ai-q-status" role="status"></span></div>
+  </div>`);
+  const body = box.querySelector(".ai-body"), btn = box.querySelector("#ai-q"), st = box.querySelector("#ai-q-status");
+  const draw = (a)=>{
+    body.innerHTML = "";
+    if(!a){ body.append($(`<p class="muted" style="margin:0; font-size:14.5px">AI оценит вашу формулировку по четырём критериям и предложит, как её усилить.</p>`)); return; }
+    const L = [["open","Открытый"],["neutral","Нейтральный"],["no_advice","Без совета"],["forward","Вперёд"]];
+    const sc = $(`<div class="scores"></div>`);
+    L.forEach(([k,n])=>{ const v = Math.max(0,Math.min(2,Number(a.scores?.[k])||0));
+      const c = v===2?"good":(v===1?"mid":"bad");
+      const el = $(`<span class="chip ${c}"></span>`); el.textContent = `${n} · ${v}/2`; sc.append(el); });
+    body.append(sc);
+    const v = document.createElement("h3"); v.textContent = a.verdict||""; body.append(v);
+    const f = document.createElement("p"); f.style.margin="0"; f.textContent = a.feedback||""; body.append(f);
+    if(a.improved){ const b=$(`<div class="better"><div class="mono" style="color:var(--good); margin-bottom:4px">ВАША ИДЕЯ, СИЛЬНЕЕ</div><div></div></div>`); b.lastElementChild.textContent = a.improved; body.append(b); }
+  };
+  draw(rec.ai);
+  btn.onclick = async ()=>{
+    const answer = ta.value.trim();
+    if(!answer){ ta.focus(); return; }
+    const sample = await getSample();
+    if(!sample){ st.textContent = AI_OFF_MSG; return; }
+    btn.disabled = true; st.textContent = "AI читает ваш вариант…";
+    const prompt = `Ты — тренер по фасилитации для руководителей проектов маркетплейса «Корзина» (одежда, посуда, товары для дома, запуск «Доставки еды»), которые ведут встречи с партнёрами: ресторанами, курьерской службой, интегратором по подключению ресторанов, крупными продавцами, санитарной службой.
+Студент переписывал неудачный вопрос, который руководители проектов часто задают партнёрам.
+
+Исходный вопрос: «${it.bad}»
+Чем он плох: ${it.tip}
+Вариант студента: «${answer}»
+
+Оцени вариант студента по 4 критериям, каждый 0, 1 или 2:
+- open — открытый: на него нельзя ответить «да» или «нет»;
+- neutral — нейтральный: без обвинения, оценки и без подсказанного «правильного» ответа;
+- no_advice — без скрытого совета: решение ищут участники, а не ведущий;
+- forward — смотрит вперёд: на причины, варианты или следующий шаг, а не на вину.
+Будь честным и конкретным, не хвали формально. Если вариант не вопрос или не по теме — ставь 0 и объясни почему.
+
+Ответь только JSON вида:
+{"scores":{"open":2,"neutral":1,"no_advice":2,"forward":1},"verdict":"одна короткая фраза-итог","feedback":"2–3 предложения: что получилось и что конкретно поправить","improved":"улучшенная версия именно его формулировки, с сохранением его идеи"}
+Пиши по-русски, обращайся к студенту на «вы».`;
+    try{
+      const a = await sample.json(prompt, {modelTier:"quick"});
+      if(!a || typeof a!=="object" || !a.scores) throw {code:"invalid_json"};
+      rec.ai = {scores:a.scores, verdict:String(a.verdict||""), feedback:String(a.feedback||""), improved:String(a.improved||"")};
+      rec.text = ta.value; rec.done = true;
+      rec.checks = ["open","neutral","no_advice","forward"].map(k=>Number(a.scores[k])===2);
+      S.qs[it.id] = rec; save();
+      render();
+    }catch(e){ st.textContent = aiErr(e); btn.disabled = false; }
+  };
+  return box;
+}
+
+const $ = (h)=>{ const t=document.createElement("template"); t.innerHTML=h.trim(); return t.content.firstElementChild; };
+const esc = s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const quality = d => { const s=d.e+d.t+d.r; return s>=20?"good":(s<=-10?"bad":"mid"); };
+const QLABEL = {good:"Сильный ход", mid:"Рабочий, но не лучший", bad:"Рискованный ход"};
+const clamp = v=>Math.max(0,Math.min(100,v));
+const LETTERS = ["А","Б","В","Г"];
+
+function bars(v, n=10){
+  const on = Math.round(v/100*n);
+  const cls = v<35?"low":(v>=70?"high":"");
+  let h = `<div class="bars ${cls}" aria-hidden="true">`;
+  for(let i=0;i<n;i++) h += `<i class="${i<on?"on":""}" style="height:${30+70*(i+1)/n}%"></i>`;
+  return h+"</div>";
+}
+function meters(m){
+  const L=[["e","Вовлечённость"],["t","Доверие"],["r","Результат"]];
+  return `<div class="meters" role="group" aria-label="Состояние встречи">${L.map(([k,n])=>
+    `<div class="meter"><div class="lab"><span>${n}</span><b>${m[k]}</b></div>${bars(m[k])}</div>`).join("")}</div>`;
+}
+
+/* ---------- tabs ---------- */
+const view = document.getElementById("view");
+let tab = "cases";
+const TABS = ["cases","errors","questions","builder","roleplay","profile","notes"];
+function setTab(t){
+  tab = TABS.includes(t)?t:"cases";
+  document.querySelectorAll("nav.tabs button").forEach(b=>b.setAttribute("aria-selected", b.dataset.tab===tab));
+  render();
+}
+document.querySelectorAll("nav.tabs button").forEach(b=>b.addEventListener("click",()=>{ caseRun=null; rpPrep=null; setTab(b.dataset.tab); window.scrollTo({top:0}); }));
+
+function render(){
+  view.innerHTML="";
+  ({cases:renderCases, errors:renderErrors, questions:renderQuestions, profile:renderProfile, notes:renderNotes, roleplay:renderRoleplay, builder:renderBuilder})[tab]();
+}
+
+/* ---------- cases ---------- */
+let caseRun = null; // {c, step, m, picks:[], answered}
+function renderCases(){
+  if(caseRun) return renderCaseRun();
+  const done = CASES.filter(c=>S.cases[c.id]).length;
+  const wrap = $(`<section class="stack"></section>`);
+  wrap.append($(`<div class="row" style="justify-content:space-between"><h2>Выберите ситуацию</h2><span class="mono muted">Пройдено ${done} из ${CASES.length}</span></div>`));
+  const f = $(`<div class="filters" role="group" aria-label="Направление"></div>`);
+  const mk = (key, label, n)=>{ const b = $(`<button aria-pressed="${caseFilter===key}" style="${key?`--cat:var(--cat-${key})`:""}">${key?icoHtml(key):""}<span>${label}</span><span class="n">${n}</span></button>`);
+    if(!key) b.style.paddingLeft = "12px";
+    b.onclick = ()=>{ caseFilter = key; render(); }; return b; };
+  f.append(mk("", "Все", CASES.length));
+  Object.keys(CATS).forEach(k=>{ const n = CASES.filter(c=>c.cat===k).length; if(n) f.append(mk(k, CATS[k], n)); });
+  wrap.append(f);
+  const list = $(`<div class="case-list"></div>`);
+  CASES.filter(c=>!caseFilter || c.cat===caseFilter).forEach(c=>{
+    const rec = S.cases[c.id];
+    const card = $(`<button class="case-card">
+      <span class="card-top">${icoHtml(c.cat)}<span class="proj">${esc(c.proj)}</span></span>
+      <span class="title">${esc(c.title)}</span>
+      <span class="status ${rec?"done":""}"><span class="dot"></span>${rec?`пройдено · результат ${rec.final.r}`:`${c.steps.length} ${c.steps.length>1?"шага":"шаг"}`}</span>
+    </button>`);
+    card.addEventListener("click",()=>{ caseRun={c, step:0, m:{e:50,t:50,r:50}, picks:[], answered:null}; render(); window.scrollTo({top:0}); });
+    list.append(card);
+  });
+  wrap.append(list);
+  view.append(wrap);
+}
+function renderCaseRun(){
+  const R = caseRun, c = R.c;
+  const wrap = $(`<section class="stack"></section>`);
+  const back = $(`<button class="btn link">← Все ситуации</button>`);
+  back.onclick=()=>{ caseRun=null; render(); };
+  wrap.append(back);
+  wrap.append($(`<div class="case-head">${icoHtml(c.cat,"lg")}<div class="stack" style="gap:4px"><span class="cat-label" style="--cat:var(--cat-${c.cat})">${c.proj.startsWith(CATS[c.cat]||"~")?"":(CATS[c.cat]||"")+" · "}${esc(c.proj)}</span><h2>${esc(c.title)}</h2></div></div>`));
+  wrap.append($(meters(R.m)));
+
+  if(R.step >= c.steps.length){ wrap.append(renderProtocol()); view.append(wrap); return; }
+
+  const st = c.steps[R.step];
+  const panel = $(`<div class="panel stack"></div>`);
+  panel.append($(`<div class="who">Шаг ${R.step+1} из ${c.steps.length} · ${esc(st.who)}</div>`));
+  panel.append($(`<div class="scene">${st.text.map(p=>`<p>${esc(p)}</p>`).join("")}</div>`));
+  const opts = $(`<div class="options"></div>`);
+  st.options.forEach((o,i)=>{
+    const q = quality(o.d);
+    const b = $(`<button class="opt ${R.answered===i?"chosen "+q:""}"><span class="k">${LETTERS[i]}</span><span>${esc(o.t)}</span></button>`);
+    if(R.answered!==null) b.disabled = true;
+    b.onclick=()=>{
+      R.answered=i;
+      R.m = {e:clamp(R.m.e+o.d.e), t:clamp(R.m.t+o.d.t), r:clamp(R.m.r+o.d.r)};
+      R.picks.push({step:R.step, opt:i});
+      render();
+    };
+    opts.append(b);
+  });
+  panel.append(opts);
+  if(R.answered!==null){
+    const o = st.options[R.answered], q = quality(o.d);
+    const sg = v=> (v>0?"+":"")+v;
+    const fb = $(`<div class="fb ${q}" role="status"><span class="verdict">${QLABEL[q]}</span><div>${esc(o.fb)}</div>
+      <div class="delta">вовлечённость ${sg(o.d.e)} · доверие ${sg(o.d.t)} · результат ${sg(o.d.r)}</div></div>`);
+    panel.append(fb);
+    const last = R.step === c.steps.length-1;
+    const nx = $(`<div class="row"><button class="btn primary">${last?"Итоги встречи":"Дальше"}</button></div>`);
+    nx.querySelector("button").onclick=()=>{
+      R.step++; R.answered=null;
+      if(R.step>=c.steps.length){ S.cases[c.id] = {picks:R.picks, final:R.m}; save(); }
+      render();
+    };
+    panel.append(nx);
+  }
+  wrap.append(panel);
+  view.append(wrap);
+}
+function renderProtocol(){
+  const R = caseRun, c = R.c, m = R.m;
+  const avg = Math.round((m.e+m.t+m.r)/3);
+  const summary = avg>=70 ? "Встреча сработала: люди говорили, доверие выросло, договорённости есть." :
+                  avg>=50 ? "Встреча прошла, но часть потенциала потеряна. Посмотрите на рискованные ходы ниже." :
+                            "После такой встречи проблем станет больше, чем было. Попробуйте пройти ещё раз иначе.";
+  const box = $(`<div class="protocol">
+    <span class="mono" style="color:var(--signal)">ПРОТОКОЛ · ${esc(c.title.toUpperCase())}</span>
+    <h3>${summary}</h3>
+    <ol>${R.picks.map(p=>{ const o=c.steps[p.step].options[p.opt]; const q=quality(o.d);
+      return `<li><span class="chip ${q}">${QLABEL[q]}</span> ${esc(o.t)}</li>`; }).join("")}</ol>
+    <div class="row"><button class="btn primary" id="again">Пройти заново</button><button class="btn" id="tolist">К ситуациям</button></div>
+  </div>`);
+  box.querySelector("#again").onclick=()=>{ caseRun={c, step:0, m:{e:50,t:50,r:50}, picks:[], answered:null}; render(); };
+  box.querySelector("#tolist").onclick=()=>{ caseRun=null; render(); };
+  return box;
+}
+
+/* ---------- errors ---------- */
+let eIdx = 0, eSel = new Set(), eChecked = false;
+function renderErrors(){
+  const it = ERRORS[eIdx];
+  const wrap = $(`<section class="stack"></section>`);
+  wrap.append($(`<div class="stack" style="gap:6px"><h2>Где ведущий перестал быть ведущим?</h2>
+    <p class="muted" style="margin:0">Перед вами «образцовый» ответ на вопрос с собеседования. Нажмите на фрагменты, где руководитель проекта решает за участников, давит или закрывает информацию. Затем проверьте себя.</p></div>`));
+  const panel = $(`<div class="panel stack"></div>`);
+  panel.append($(`<div class="who">Ситуация ${eIdx+1} из ${ERRORS.length}</div>`));
+  panel.append($(`<h3>${esc(it.sit)}</h3>`));
+  const ans = $(`<p class="answer" style="margin:0"></p>`);
+  it.segs.forEach((s,i)=>{
+    let cls = "seg";
+    if(eChecked){
+      cls += " locked";
+      if(s.bad && eSel.has(i)) cls+=" hit";
+      else if(s.bad) cls+=" miss";
+      else if(eSel.has(i)) cls+=" false";
+    } else if(eSel.has(i)) cls+=" sel";
+    const sp = $(`<span class="${cls}" role="button" tabindex="${eChecked?-1:0}" aria-pressed="${eSel.has(i)}">${esc(s.t)}</span>`);
+    const toggle=()=>{ if(eChecked) return; eSel.has(i)?eSel.delete(i):eSel.add(i); render(); };
+    sp.onclick=toggle; sp.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggle(); } };
+    ans.append(sp, document.createTextNode(" "));
+  });
+  panel.append(ans);
+  if(!eChecked){
+    const r = $(`<div class="row"><button class="btn primary">Проверить</button><span class="mono muted">выбрано: ${eSel.size}</span></div>`);
+    r.querySelector("button").onclick=()=>{
+      eChecked=true;
+      const hits = it.segs.map((s,i)=>s.bad && eSel.has(i)?i:-1).filter(i=>i>=0);
+      const falses = [...eSel].filter(i=>!it.segs[i].bad).length;
+      S.errors[it.id] = {hits, falses, total: it.segs.filter(s=>s.bad).length};
+      save(); render();
+    };
+    panel.append(r);
+  } else {
+    const rec = S.errors[it.id];
+    const fbq = rec.hits.length===rec.total && rec.falses===0 ? "good" : (rec.hits.length>0?"mid":"bad");
+    panel.append($(`<div class="fb ${fbq}"><span class="verdict">Найдено ${rec.hits.length} из ${rec.total}${rec.falses?` · лишних отметок: ${rec.falses}`:""}</span></div>`));
+    const ul = $(`<ul class="explain"></ul>`);
+    it.segs.forEach((s,i)=>{ if(s.bad) ul.append($(`<li><b>«${esc(s.t)}»</b><br>${esc(s.why)}</li>`)); });
+    panel.append(ul);
+    panel.append($(`<div class="better"><div class="mono" style="color:var(--good); margin-bottom:4px">КАК МОЖНО ИНАЧЕ</div>${esc(it.better)}</div>`));
+  }
+  wrap.append(panel);
+  const pg = $(`<div class="pager"><button class="btn" id="prev">← Назад</button><span class="mono muted">${eIdx+1} / ${ERRORS.length}</span><button class="btn primary" id="next">Следующая →</button></div>`);
+  pg.querySelector("#prev").disabled = eIdx===0;
+  pg.querySelector("#next").disabled = eIdx===ERRORS.length-1;
+  pg.querySelector("#prev").onclick=()=>{ eIdx--; eSel=new Set(); eChecked=false; render(); };
+  pg.querySelector("#next").onclick=()=>{ eIdx++; eSel=new Set(); eChecked=false; render(); };
+  wrap.append(pg);
+  view.append(wrap);
+}
+
+/* ---------- questions ---------- */
+let qIdx = 0, qShown = false;
+function hintsFor(txt){
+  const t = txt.trim().toLowerCase();
+  const out = [];
+  if(!t) return out;
+  if(/^почему|^зачем/.test(t)) out.push(["warn","Начинается с «почему/зачем»: в напряжённой ситуации это звучит как обвинение. Попробуйте «что…», «как…»."]);
+  if(/^(есть ли|все ли|можно ли|будет ли|вы |вам |понятно|согласны|успеете|готовы|может,? |может быть)/.test(t)) out.push(["warn","Похоже на закрытый вопрос или подсказку. На него легко ответить «да» или «нет»."]);
+  if(/(вы же|разве|не кажется ли|, да\??$|, верно\??$|, правда\??$)/.test(t)) out.push(["warn","Есть наводящая конструкция: ответ уже подсказан."]);
+  if(/виноват|опять|снова|всегда|никогда/.test(t)) out.push(["warn","Слова-оценки («виноват», «опять», «всегда») переводят разговор в защиту."]);
+  if(/стоит|нужно бы|надо бы|почему бы не/.test(t)) out.push(["warn","Похоже на совет внутри вопроса."]);
+  if(/^(что|как|какой|какая|какие|каким|где|когда|насколько|сколько|кто|чем|откуда|за счёт|за счет)/.test(t) && !out.length) out.push(["ok","Открытое начало, явных ловушек нет. Сверьтесь с чек-листом ниже."]);
+  if(!/\?\s*$/.test(t)) out.push(["warn","Не забудьте, что это вопрос: в конце нужен знак вопроса."]);
+  return out;
+}
+function renderQuestions(){
+  const it = QUESTIONS[qIdx];
+  const rec = S.qs[it.id] || {text:"", checks:[]};
+  const wrap = $(`<section class="stack"></section>`);
+  wrap.append($(`<div class="stack" style="gap:6px"><h2>Переформулируйте вопрос</h2>
+    <p class="muted" style="margin:0">Так руководители проектов часто спрашивают партнёров. Перепишите вопрос, чтобы он открывал разговор, а не закрывал его.</p></div>`));
+  const panel = $(`<div class="panel stack"></div>`);
+  panel.append($(`<div class="who">Вопрос ${qIdx+1} из ${QUESTIONS.length}</div>`));
+  panel.append($(`<div class="badq">«${esc(it.bad)}»</div>`));
+  const ta = $(`<textarea id="q-${it.id}" placeholder="Ваш вариант вопроса…" aria-label="Ваш вариант вопроса"></textarea>`);
+  ta.value = rec.text;
+  panel.append(ta);
+  const hintBox = $(`<ul class="hints" aria-live="polite"></ul>`);
+  panel.append(hintBox);
+  const drawHints=()=>{ hintBox.innerHTML = hintsFor(ta.value).map(([k,m])=>`<li class="${k}">${esc(m)}</li>`).join(""); };
+  ta.addEventListener("input",()=>{ rec.text = ta.value; S.qs[it.id]=rec; save(); if(qShown) drawHints(); });
+  if(!qShown){
+    const r = $(`<div class="row"><button class="btn primary">Проверить</button></div>`);
+    r.querySelector("button").onclick=()=>{ if(!ta.value.trim()){ ta.focus(); return; } qShown=true; render(); };
+    panel.append(r);
+  } else {
+    drawHints();
+    panel.append($(`<div class="fb mid"><span class="verdict">Что не так с исходным</span><div>${esc(it.tip)}</div></div>`));
+    const ch = $(`<div class="stack" style="gap:8px"><h3>Проверьте свой вариант</h3><div class="checks"></div></div>`);
+    QCHECKS.forEach((label,i)=>{
+      const l = $(`<label><input type="checkbox" id="qc-${it.id}-${i}"><span>${esc(label)}</span></label>`);
+      const cb = l.querySelector("input"); cb.checked = !!rec.checks[i];
+      cb.onchange=()=>{ rec.checks[i]=cb.checked; rec.text=ta.value; rec.done=true; S.qs[it.id]=rec; save(); };
+      ch.querySelector(".checks").append(l);
+    });
+    panel.append(ch);
+    rec.done = true; S.qs[it.id]=rec; save();
+    panel.append(aiQuestionBlock(it, rec, ta));
+    panel.append($(`<div class="better"><div class="mono" style="color:var(--good); margin-bottom:4px">ВАРИАНТЫ ДЛЯ СРАВНЕНИЯ</div><ul class="examples">${it.ex.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`));
+  }
+  wrap.append(panel);
+  const pg = $(`<div class="pager"><button class="btn" id="prev">← Назад</button><span class="mono muted">${qIdx+1} / ${QUESTIONS.length}</span><button class="btn primary" id="next">Следующий →</button></div>`);
+  pg.querySelector("#prev").disabled = qIdx===0;
+  pg.querySelector("#next").disabled = qIdx===QUESTIONS.length-1;
+  pg.querySelector("#prev").onclick=()=>{ qIdx--; qShown=!!(S.qs[QUESTIONS[qIdx].id]||{}).done; render(); };
+  pg.querySelector("#next").onclick=()=>{ qIdx++; qShown=!!(S.qs[QUESTIONS[qIdx].id]||{}).done; render(); };
+  wrap.append(pg);
+  view.append(wrap);
+}
+
+/* ---------- profile ---------- */
+function computeProfile(st=S){
+  const p = {}; Object.keys(COMP).forEach(k=>p[k]={plus:0,minus:0});
+  const cs = st.cases||{}, es = st.errors||{}, qs = st.qs||{};
+  CASES.forEach(c=>{ const rec=cs[c.id]; if(!rec||!Array.isArray(rec.picks)) return;
+    rec.picks.forEach(pk=>{ const o=c.steps[pk.step]?.options[pk.opt]; if(!o) return;
+      Object.entries(o.c).forEach(([k,v])=>{ if(v>0) p[k].plus+=v; else p[k].minus+=-v; }); }); });
+  ERRORS.forEach(it=>{ const rec=es[it.id]; if(!rec||!Array.isArray(rec.hits)) return;
+    it.segs.forEach((s,i)=>{ if(!s.bad) return; if(rec.hits.includes(i)) p[s.c].plus++; else p[s.c].minus++; }); });
+  QUESTIONS.forEach(it=>{ const rec=qs[it.id]; if(!rec||!rec.done) return;
+    const ch = rec.checks||[]; const n = QCHECKS.filter((_,i)=>ch[i]).length; p.questions.plus+=n; p.questions.minus+=QCHECKS.length-n; });
+  return p;
+}
+const pctOf = x => (x.plus+x.minus) ? Math.round(x.plus/(x.plus+x.minus)*100) : null;
+function weakestOf(p){ let w=null, wv=101; Object.keys(COMP).forEach(k=>{ const v=pctOf(p[k]); if(v!==null && v<wv){ wv=v; w=k; } }); return [w, wv]; }
+function renderProfile(){
+  const p = computeProfile();
+  const casesDone = CASES.filter(c=>S.cases[c.id]).length;
+  const errDone = ERRORS.filter(e=>S.errors[e.id]).length;
+  const qDone = QUESTIONS.filter(q=>(S.qs[q.id]||{}).done).length;
+  const wrap = $(`<section class="stack"></section>`);
+  wrap.append($(`<div class="stack" style="gap:6px"><h2>Профиль фасилитатора</h2>
+    <p class="muted" style="margin:0">Компетенции взяты из трека ICAgile Team Facilitation и раздела 2.3.3 PMBOK 7. Полоса показывает долю сильных ходов среди всех ваших решений по этой компетенции.</p></div>`));
+  wrap.append($(`<div class="stats">
+    <div class="stat"><b>${casesDone}/${CASES.length}</b><span>ситуаций</span></div>
+    <div class="stat"><b>${errDone}/${ERRORS.length}</b><span>разборов ответов</span></div>
+    <div class="stat"><b>${qDone}/${QUESTIONS.length}</b><span>вопросов</span></div></div>`));
+  const panel = $(`<div class="panel"></div>`);
+  let weakest=null, wv=101;
+  Object.entries(COMP).forEach(([k,meta])=>{
+    const {plus,minus}=p[k]; const tot=plus+minus;
+    const pct = tot? Math.round(plus/tot*100) : null;
+    if(pct!==null && pct<wv){ wv=pct; weakest=k; }
+    panel.append($(`<div class="comp"><div class="name">${meta.name}<small>${meta.hint}</small></div>${tot?bars(pct,12):'<div class="bars"></div>'}<div class="pct">${tot?pct+"%":"—"}</div></div>`));
+  });
+  wrap.append(panel);
+  if(weakest && wv<70){
+    const tipMap = {
+      neutral:"Перед встречей решите, где вы ведущий, а где заказчик, и называйте смену роли вслух.",
+      voice:"Добавьте в каждую встречу хотя бы одну структуру, которая даёт слово всем: круг, одновременный ответ в чат, работу в парах.",
+      conflict:"Когда спорят, сначала отделите факты от оценок. Линия времени или три колонки на доске почти всегда помогают.",
+      focus:"Заканчивайте каждую встречу фразой «Давайте проговорим: кто, что, к какому сроку».",
+      questions:"Замените «почему» на «что помешало» и уберите хвосты «да?» и «верно?».",
+      safety:"Признайте вслух одну ошибку своей стороны. Это лучший способ показать, что здесь об ошибках можно говорить."
+    };
+    wrap.append($(`<div class="fb mid"><span class="verdict">Зона роста: ${COMP[weakest].name}</span><div>${tipMap[weakest]}</div></div>`));
+  }
+  const reset = $(`<div class="row"><button class="btn" id="reset">Сбросить прогресс</button><span id="confirm" class="row" hidden><span class="muted">Удалить все ответы в этом браузере?</span><button class="btn primary" id="yes">Да, сбросить</button><button class="btn" id="no">Отмена</button></span></div>`);
+  reset.querySelector("#reset").onclick=()=>{ reset.querySelector("#confirm").hidden=false; };
+  reset.querySelector("#no").onclick=()=>{ reset.querySelector("#confirm").hidden=true; };
+  reset.querySelector("#yes").onclick=()=>{ S={cases:{},errors:{},qs:{},student:S.student}; save(); eSel=new Set(); eChecked=false; qShown=false; render(); };
+  wrap.append(reset);
+  view.append(wrap);
+}
+
+/* ---------- notes ---------- */
+function renderNotes(){
+  view.append($(`<section class="notes">
+    <h2>Шпаргалка ведущего</h2>
+    <div class="note"><span class="src">СТРУКТУРА ВСТРЕЧИ С ПАРТНЁРОМ</span>
+      <div class="flow"><span>Цель и результат</span><em>→</em><span>Правила</span><em>→</em><span>Факты</span><em>→</em><span>Интересы сторон</span><em>→</em><span>Варианты</span><em>→</em><span>Решение</span><em>→</em><span>Кто · что · когда</span></div>
+    </div>
+    <div class="note"><span class="src">PMBOK 7 · 2.3.3 «ФАСИЛИТАЦИЯ И ПОДДЕРЖКА»</span>
+      <ul><li>Фасилитация помогает команде прийти к консенсусу, разрешить конфликт и принять решение. Вклад ведущего в продвижение к целям непредвзятый.</li>
+      <li>Когда сталкиваются приоритеты руководителей, нейтральная фасилитация помогает больше, чем подробные рекомендации.</li></ul></div>
+    <div class="note"><span class="src">PMI AGILE PRACTICE GUIDE · 4.2.1.1</span>
+      <ul><li>Сдвиг роли: от «управления координацией» к «фасилитации сотрудничества».</li>
+      <li>Ведущий — беспристрастный «строитель мостов». Он не принимает решений за тех, кто должен отвечать за них сам.</li></ul></div>
+    <div class="note"><span class="src">ICAGILE · AGILE TEAM FACILITATION</span>
+      <ul><li>Базовые навыки: присутствие, слушание, сильные вопросы, обратная связь, наблюдение, работа с конфликтом.</li>
+      <li>Различайте четыре режима: фасилитация (процесс), коучинг (вопросы), менторинг (опыт), обучение (знания). Выбирайте осознанно.</li></ul></div>
+    <div class="note"><span class="src">SCRUM GUIDE EXPANSION PACK</span>
+      <ul><li>Ведущий — не председатель, не надсмотрщик, не «герой», спасающий встречу, и не бронировщик переговорок. Он помогает группе работать эффективно.</li></ul></div>
+    <div class="note"><span class="src">С. ВИСКАРДИ · «РУКОВОДСТВО ПРОФЕССИОНАЛЬНОГО СКРАМ-МАСТЕРА»</span>
+      <ul><li>Задавайте встрече рабочий тон с первых минут: зачем мы здесь и что получим.</li>
+      <li>Не бойтесь возразить руководителю, если он ломает формат. Делайте это с тактом и лучше наедине.</li></ul></div>
+    <div class="note"><span class="src">ДВЕ ШЛЯПЫ · ОСОБЕННОСТЬ РАБОТЫ С ПАРТНЁРАМИ</span>
+      <ul><li>Руководитель проекта со стороны маркетплейса почти всегда одновременно заказчик (у него есть интересы) и ведущий (он отвечает за процесс).</li>
+      <li>Называйте вслух, в какой вы роли: «Как заказчик я против… А теперь как ведущий предлагаю сравнить варианты».</li>
+      <li>Если ставки высоки, пусть встречу проведёт коллега из проектного офиса.</li></ul></div>
+    <div class="note"><span class="src">ТРЕВОЖНЫЕ ФРАЗЫ ВЕДУЩЕГО</span>
+      <ul><li>«Все согласны? Отлично» — молчание принято за согласие.</li>
+      <li>«Давайте я предложу правильный вариант» — решение за группу.</li>
+      <li>«Это мы потом обсудим» — сигнал о риске закрыт.</li>
+      <li>«По договору вы обязаны…» в разговоре о поведении — безопасность разрушена.</li></ul></div>
+  </section>`));
+}
+
+/* ---------- meeting builder ---------- */
+const PHASES = {
+  open:  {name:"Открытие", color:"var(--ph-open)"},
+  facts: {name:"Факты и картина", color:"var(--ph-facts)"},
+  ideas: {name:"Варианты", color:"var(--ph-ideas)"},
+  decide:{name:"Решение", color:"var(--ph-decide)"},
+  close: {name:"Закрытие", color:"var(--ph-close)"},
+  pause: {name:"Пауза", color:"var(--ph-pause)"},
+  trap:  {name:"Привычные ходы", color:"var(--bad)"}
+};
+const PH_ORDER = {open:0, facts:1, ideas:2, decide:3, close:4};
+const TECH = [
+ {id:"goal", ph:"open", name:"Цель и ожидаемый результат", def:5, min:3, max:10, desc:"Зачем собрались и что будет на выходе к концу встречи."},
+ {id:"rules", ph:"open", name:"Правила встречи", def:5, min:3, max:10, desc:"По очереди, факты отдельно от оценок, кто фиксирует, телефоны.", tags:{conflict:1}},
+ {id:"intro", ph:"open", name:"Круг: роль и ожидание", def:10, min:5, max:20, desc:"Каждый за 30–60 секунд: кто я и что для меня успех встречи.", tags:{silent:1}},
+ {id:"checkin", ph:"open", name:"Чек-ин одним словом", def:5, min:3, max:8, desc:"С каким настроем пришли — одним словом. Онлайн — в чат одновременно.", tags:{silent:1}},
+ {id:"planfact", ph:"facts", name:"Доска план/факт", def:15, min:10, max:25, desc:"По каждому ресторану или району: план, факт, что мешает."},
+ {id:"timeline", ph:"facts", name:"Общая линия времени", def:20, min:15, max:30, desc:"Стороны вместе наносят события и даты. Только факты.", tags:{conflict:1}},
+ {id:"three", ph:"facts", name:"Три колонки: знаем / спорно / нет данных", def:15, min:10, max:20, desc:"Отделяет факты от интерпретаций, показывает, о чём на самом деле спор.", tags:{conflict:1}},
+ {id:"silentnotes", ph:"facts", name:"Тихий сбор на стикерах", def:10, min:5, max:15, desc:"Каждый молча пишет проблемы и риски, потом выкладываем и группируем.", tags:{silent:1, conflict:1}},
+ {id:"deps", ph:"facts", name:"Карта зависимостей партнёров", def:15, min:10, max:25, desc:"Кто от кого что ждёт и к какому сроку.", tags:{conflict:1}},
+ {id:"riskmatrix", ph:"facts", name:"Матрица рисков: вероятность × влияние", def:20, min:15, max:30, desc:"Риски раскладываются по двум осям, видно, с чем работать в первую очередь."},
+ {id:"124all", ph:"ideas", name:"1-2-4-Все", def:15, min:12, max:20, desc:"Сначала каждый сам, потом пары, четвёрки, общий круг. Слышны все.", tags:{silent:1}},
+ {id:"pairs", ph:"ideas", name:"Пары смежников", def:15, min:10, max:20, desc:"Партнёры, зависящие друг от друга, вместе ищут решение одной проблемы.", tags:{conflict:1}},
+ {id:"brainstorm", ph:"ideas", name:"Мозговой штурм вслух", def:15, min:10, max:20, desc:"Все предлагают идеи вслух, критика запрещена. Громкие голоса доминируют.", tags:{loud:1}},
+ {id:"gallery", ph:"ideas", name:"Галерея вариантов", def:20, min:15, max:25, desc:"Группы готовят варианты на плакатах, все обходят и комментируют.", tags:{offline:1}},
+ {id:"criteria", ph:"decide", name:"Сначала критерии, потом выбор", def:15, min:10, max:20, desc:"Договариваемся, по чему выбираем (срок, цена, риск), и только потом сравниваем варианты.", tags:{conflict:1}},
+ {id:"dots", ph:"decide", name:"Голосование точками", def:10, min:5, max:15, desc:"У каждого 3 голоса, распределяет между вариантами."},
+ {id:"fist", ph:"decide", name:"Кулак пяти", def:5, min:3, max:10, desc:"Каждый показывает степень согласия от 0 до 5. Меньше 3 — обсуждаем, что нужно для «да».", tags:{silent:1}},
+ {id:"owner", ph:"decide", name:"Решает владелец после обсуждения", def:5, min:3, max:10, desc:"Обсуждение консультативное, решение — за заранее названным владельцем."},
+ {id:"www", ph:"close", name:"Кто — что — когда", def:10, min:5, max:15, desc:"Каждое действие с владельцем и сроком, вслух и на экране."},
+ {id:"parking", ph:"close", name:"Парковка вопросов", def:5, min:3, max:10, desc:"Что не успели — с владельцем и датой следующего обсуждения."},
+ {id:"checkout", ph:"close", name:"Чек-аут: уверенность от 1 до 5", def:5, min:3, max:8, desc:"Насколько каждый уверен, что договорённости выполнимы.", tags:{silent:1}},
+ {id:"break", ph:"pause", name:"Перерыв", def:10, min:5, max:15, desc:"Обязателен на встречах дольше 75 минут."},
+ {id:"slides", ph:"trap", name:"Презентация заказчика на 40 слайдов", def:30, min:10, max:40, desc:"Подробно рассказать всё самим.", why:"Встреча превращается в доклад, партнёры молчат, вопросы всплывут потом на первых заказах."},
+ {id:"reports", ph:"trap", name:"Отчёт каждого по кругу без структуры", def:30, min:10, max:40, desc:"Каждая сторона рассказывает, как у неё дела.", why:"Долго и скучно, проблемы тонут в деталях, конфликтующие стороны ждут повода возразить."},
+ {id:"freetalk", ph:"trap", name:"Свободная дискуссия «кто что думает»", def:30, min:10, max:40, desc:"Открываем обсуждение без рамки.", why:"Говорят самые громкие, конфликт разгорается без правил и без фактов."},
+ {id:"bossdecides", ph:"trap", name:"Решение объявит руководитель в конце", def:5, min:3, max:10, desc:"Обсудили — руководитель решил.", why:"Участие превращается в имитацию, договорённости не держатся. Если решает владелец, скажите это в начале."}
+];
+const TECH_BY = Object.fromEntries(TECH.map(t=>[t.id,t]));
+const BRIEFS = [
+ {id:"dc_kickoff", cat:"it", title:"Кик-офф запуска «Доставки еды»", people:12, minutes:90, format:"офлайн",
+  context:"Старт запуска «Доставки еды» в первом городе. За столом интегратор по подключению ресторанов, курьерская служба, представители двух ресторанных сетей, санитарная служба, ваш отдел операций, поддержка покупателей и закупки — 12 человек. Интегратор и курьерская служба конфликтовали на прошлом проекте: каждый считает, что другой сорвал ему сроки. Отдел операций и закупки на таких встречах обычно молчат.",
+  goal:"Общий план работ до тестового запуска, правила взаимодействия партнёров и порядок эскалации.",
+  flags:{conflict:1, silent:1, decision:1}},
+ {id:"fiber_accept", cat:"fiber", title:"Приёмка районов доставки с разногласиями", people:6, minutes:60, format:"офлайн",
+  context:"Курьерская служба сдаёт 12 районов. По 3 районам аналитик качества не согласен с замерами времени доставки, обе стороны раздражены. Участники: директор и координатор курьерской службы, ваш аналитик качества, специалист отдела операций, представитель интегратора и вы.",
+  goal:"Согласовать критерий приёмки и решение по каждому спорному району.",
+  flags:{conflict:1, decision:1}},
+ {id:"node_ll", cat:"radio", title:"Разбор уроков после запуска в городе", people:10, minutes:75, format:"онлайн",
+  context:"Запуск «Доставки еды» в новом городе сорвался на две недели. Интегратор и курьерская служба до сих пор обвиняют друг друга. Встреча онлайн: два партнёра, аналитик качества, отдел операций, закупки и проектный офис. Половина участников не включает камеры.",
+  goal:"3–5 конкретных улучшений процесса для следующих городов, у каждого — владелец.",
+  flags:{conflict:1, silent:1, online:1, decision:1}},
+ {id:"ftth_risk", cat:"ftth", title:"Риск-сессия перед запуском витрины продавца", people:8, minutes:60, format:"офлайн",
+  context:"Через месяц запуск витрины крупного продавца одежды. Представители продавца, курьерская служба, ваш отдел операций, маркетинг и поддержка покупателей. Многие видят друг друга впервые.",
+  goal:"Топ рисков запуска с владельцами и мерами.",
+  flags:{silent:1, decision:1, newgroup:1}}
+];
+let bIdx = 0, bAI = {}, bAIBusy = false, bAIErr = "";
+function bAgenda(){ S.builder = S.builder || {}; const b = BRIEFS[bIdx]; if(!S.builder[b.id]) S.builder[b.id] = []; return S.builder[b.id]; }
+function bItems(){ return bAgenda().map(a=>({...TECH_BY[a.id], min_:a.min})).filter(x=>x.id); }
+function bChecks(){
+  const b = BRIEFS[bIdx], items = bItems(), F = b.flags;
+  const total = items.reduce((s,x)=>s+x.min_,0);
+  const has = (pred)=>items.some(pred);
+  const out = [];
+  const add = (lvl, title, text)=>out.push({lvl, title, text});
+  if(!items.length){ add("bad","Сценарий пуст","Добавьте техники из палитры."); return {out, total}; }
+  // timing
+  if(total > b.minutes) add("bad", `Перебор: ${total} из ${b.minutes} мин`, `Не хватает ${total-b.minutes} мин. Сократите блоки или уберите лишнее — встреча с партнёрами, которая затянулась, теряет людей.`);
+  else if(total < b.minutes*0.75) add("mid", `Заполнено ${total} из ${b.minutes} мин`, "Много свободного времени. Это либо незаполненные блоки, либо повод закончить раньше и сказать это в начале.");
+  else if(total === b.minutes && b.minutes >= 60) add("mid", "Нет запаса времени", "Встречи с партнёрами почти всегда идут дольше плана. Оставьте 5–10 минут буфера.");
+  else add("good", `Тайминг: ${total} из ${b.minutes} мин`, "Укладываетесь и есть небольшой запас.");
+  // opening
+  const gi = items.findIndex(x=>x.id==="goal");
+  if(gi===-1) add("bad","Нет цели встречи","Без цели и ожидаемого результата люди не понимают, ради чего спорят. Начните с «Цель и ожидаемый результат».");
+  else if(gi>1) add("mid","Цель звучит слишком поздно","Цель и результат лучше называть в первые минуты, до любых обсуждений.");
+  else add("good","Встреча начинается с цели","Все с первых минут понимают, что нужно получить на выходе.");
+  // close
+  const last3 = items.slice(-3);
+  if(!items.some(x=>x.id==="www")) add("bad","Нет фиксации «кто — что — когда»","Встреча без владельцев и сроков — самая частая причина, почему с партнёрами «договорились, но ничего не изменилось».");
+  else if(!last3.some(x=>x.id==="www")) add("mid","Договорённости фиксируются не в конце","«Кто — что — когда» стоит поставить в финал, чтобы собрать все решения встречи.");
+  else add("good","Встреча закрывается договорённостями","Каждое действие получит владельца и срок.");
+  // phases order
+  const ord = items.filter(x=>x.ph in PH_ORDER).map(x=>PH_ORDER[x.ph]);
+  const firstDecide = items.findIndex(x=>x.ph==="decide"), lastFacts = items.map(x=>x.ph).lastIndexOf("facts");
+  if(!has(x=>x.ph==="facts")) add("mid","Нет блока фактов","Решения без общей картины держатся на мнениях. Добавьте план/факт, линию времени или три колонки.");
+  else if(firstDecide>-1 && firstDecide < lastFacts) add("mid","Решение раньше фактов","Сначала собираем картину и варианты, потом решаем. Иначе решение придётся пересматривать.");
+  else add("good","Логика «факты → варианты → решение»","Группа сначала видит картину, потом выбирает.");
+  if(F.decision && !has(x=>x.ph==="decide")) add("bad","Нет способа принять решение","В вводной нужно решение, а в сценарии не сказано, как его примут: критерии, голосование, кулак пяти или владелец.");
+  // conflict
+  if(F.conflict){
+    const cTool = has(x=>x.tags&&x.tags.conflict&&x.ph!=="open");
+    if(!cTool) add("bad","Конфликт без инструмента","Стороны в конфликте. Нужна техника, которая отделяет факты от оценок: линия времени, три колонки, карта зависимостей, критерии.");
+    else add("good","Есть инструмент для конфликта","Спор переводится в факты и критерии, а не в «кто прав».");
+    if(!has(x=>x.id==="rules")) add("mid","Нет правил встречи","Когда стороны конфликтуют, договорённость о правилах в начале (по очереди, факты отдельно от оценок) экономит время потом.");
+    if(has(x=>x.id==="brainstorm")) add("mid","Мозговой штурм вслух при конфликте","В конфликте громкие голоса перехватят штурм. Попробуйте 1-2-4-Все или пары смежников.");
+  }
+  // silent
+  if(F.silent){
+    if(!has(x=>x.tags&&x.tags.silent)) add("mid","Молчащие останутся молчать","В вводной есть те, кто обычно молчит. Добавьте технику, где говорит каждый: тихий сбор, 1-2-4-Все, кулак пяти, круг.");
+    else add("good","Слово получат и тихие","Есть техника, в которой высказывается каждый.");
+  }
+  // online
+  if(F.online && has(x=>x.tags&&x.tags.offline)) add("mid","Офлайн-техника в онлайн-встрече","Галерею на плакатах онлайн не провести. Замените её на работу в онлайн-доске или 1-2-4-Все в сессионных комнатах.");
+  // intro size
+  const intro = items.find(x=>x.id==="intro");
+  if(intro && intro.min_ < Math.ceil(b.people*0.8)) add("mid","Круг не уложится", `Круг на ${b.people} человек займёт минимум ${Math.ceil(b.people*0.8)} мин, а у вас ${intro.min_}.`);
+  if(F.newgroup && !has(x=>x.id==="intro"||x.id==="checkin")) add("mid","Люди видят друг друга впервые","Добавьте короткое знакомство: роль и ожидание. Без этого первые 20 минут уйдут на присматривание.");
+  // break
+  if(b.minutes >= 90 && !has(x=>x.id==="break")) add("mid","Нет перерыва","На 90 минутах внимание падает. Перерыв на 10 минут — ещё и время для разговоров в кулуарах.");
+  // traps
+  items.filter(x=>x.ph==="trap").forEach(x=>add("bad", `Ловушка: ${x.name}`, x.why));
+  return {out, total};
+}
+function bTimeline(items, total, minutes){
+  const scale = Math.max(total, minutes);
+  let segs = "", t = 0;
+  items.forEach(x=>{ const w = x.min_/scale*100; segs += `<div class="tl-seg" style="width:${w}%; background:${PHASES[x.ph].color}" title="${esc(x.name)} · ${x.min_} мин"></div>`; t += x.min_; });
+  const mark = minutes/scale*100;
+  const ticks = []; for(let m=0; m<=scale; m+=15) ticks.push(`<span style="left:${m/scale*100}%">${m}</span>`);
+  return `<div class="timeline"><div class="tl-bar">${segs}<div class="tl-limit" style="left:${mark}%"><span>${minutes} мин</span></div></div><div class="tl-ticks">${ticks.join("")}</div></div>`;
+}
+function fmtT(m){ return `${Math.floor(m/60)}:${String(m%60).padStart(2,"0")}`; }
+function renderBuilder(){
+  const b = BRIEFS[bIdx], ag = bAgenda(), items = bItems();
+  const {out, total} = bChecks();
+  const wrap = $(`<section class="stack"></section>`);
+  wrap.append($(`<div class="stack" style="gap:6px"><h2>Соберите сценарий встречи</h2>
+    <p class="muted" style="margin:0; max-width:62ch">Прочитайте вводную, соберите встречу из техник и уложитесь во время. Проверка срабатывает сразу, а AI-тренер прокомментирует сценарий целиком.</p></div>`));
+  const f = $(`<div class="filters" role="group" aria-label="Вводная"></div>`);
+  BRIEFS.forEach((x,i)=>{ const btn = $(`<button aria-pressed="${i===bIdx}" style="--cat:var(--cat-${x.cat})">${icoHtml(x.cat)}<span>${esc(x.title)}</span></button>`); btn.onclick=()=>{ bIdx=i; bAIErr=""; render(); }; f.append(btn); });
+  wrap.append(f);
+  wrap.append($(`<div class="panel stack" style="gap:10px">
+    <div class="case-head">${icoHtml(b.cat,"lg")}<div class="stack" style="gap:4px"><span class="cat-label" style="--cat:var(--cat-${b.cat})">Вводная</span><h3>${esc(b.title)}</h3></div></div>
+    <div class="brief-facts"><span><b>${b.people}</b> человек</span><span><b>${b.minutes}</b> минут</span><span><b>${esc(b.format)}</b></span></div>
+    <p style="margin:0">${esc(b.context)}</p>
+    <div><span class="mono" style="color:var(--signal)">НУЖНО ПОЛУЧИТЬ</span><p style="margin:4px 0 0">${esc(b.goal)}</p></div>
+  </div>`));
+
+  const grid = $(`<div class="b-grid"></div>`);
+  // left: agenda
+  const left = $(`<div class="stack"></div>`);
+  left.append($(`<div class="row" style="justify-content:space-between"><h3>Ваш сценарий</h3><span class="mono ${total>b.minutes?"over":"muted"}">${total} / ${b.minutes} мин</span></div>`));
+  left.append($(bTimeline(items, total, b.minutes)));
+  const list = $(`<ol class="agenda"></ol>`);
+  let t = 0;
+  ag.forEach((a,i)=>{
+    const x = TECH_BY[a.id]; if(!x) return;
+    const li = $(`<li class="ag-row ${x.ph==="trap"?"trap":""}" style="--ph:${PHASES[x.ph].color}">
+      <span class="ag-time mono">${fmtT(t)}</span>
+      <div class="ag-main"><span class="ag-ph">${PHASES[x.ph].name}</span><b>${esc(x.name)}</b></div>
+      <div class="ag-min"><button class="mini" data-a="minus" aria-label="Меньше">−</button><span class="mono">${a.min}</span><button class="mini" data-a="plus" aria-label="Больше">+</button></div>
+      <div class="ag-move"><button class="mini" data-a="up" aria-label="Выше" ${i===0?"disabled":""}>↑</button><button class="mini" data-a="down" aria-label="Ниже" ${i===ag.length-1?"disabled":""}>↓</button><button class="mini" data-a="del" aria-label="Убрать">×</button></div>
+    </li>`);
+    t += a.min;
+    li.querySelectorAll("button").forEach(btn=>btn.onclick=()=>{
+      const act = btn.dataset.a;
+      if(act==="minus") a.min = Math.max(x.min, a.min - (a.min>5?5:1));
+      if(act==="plus") a.min = Math.min(x.max, a.min + (a.min>=5?5:1));
+      if(act==="up" && i>0) [ag[i-1],ag[i]] = [ag[i],ag[i-1]];
+      if(act==="down" && i<ag.length-1) [ag[i+1],ag[i]] = [ag[i],ag[i+1]];
+      if(act==="del") ag.splice(i,1);
+      save(); render();
+    });
+    list.append(li);
+  });
+  if(!ag.length) list.append($(`<li class="ag-empty muted">Пока пусто. Нажимайте на техники в палитре — они добавятся сюда по порядку.</li>`));
+  left.append(list);
+  if(ag.length){ const clr = $(`<button class="btn link" style="justify-self:start">Очистить сценарий</button>`); clr.onclick=()=>{ ag.splice(0); delete bAI[b.id]; save(); render(); }; left.append(clr); }
+  // checks
+  const goodN = out.filter(c=>c.lvl==="good").length;
+  const ck = $(`<div class="panel stack" style="gap:10px"><div class="row" style="justify-content:space-between"><h3>Проверка сценария</h3><span class="mono muted">${goodN} из ${out.length} в порядке</span></div><ul class="checks-list"></ul></div>`);
+  out.sort((a,b)=>({bad:0,mid:1,good:2}[a.lvl]-{bad:0,mid:1,good:2}[b.lvl])).forEach(c=>{
+    const li = $(`<li class="ck ${c.lvl}"><span class="ck-dot"></span><div><b>${esc(c.title)}</b><div>${esc(c.text)}</div></div></li>`); ck.querySelector("ul").append(li); });
+  left.append(ck);
+  // AI
+  const ai = $(`<div class="ai-box stack" style="gap:10px"><span class="ai-tag">AI-тренер</span><div class="ai-body"></div>
+    <div class="row"><button class="btn primary" id="b-ai" ${bAIBusy||!ag.length?"disabled":""}>${bAIBusy?"Тренер читает сценарий…":(bAI[b.id]?"Прокомментировать ещё раз":"Прокомментировать сценарий")}</button><span class="mono muted">${esc(bAIErr)}</span></div></div>`);
+  const body = ai.querySelector(".ai-body"), a = bAI[b.id];
+  if(!a) body.append($(`<p class="muted" style="margin:0; font-size:14.5px">Тренер посмотрит на сценарий глазами участников этой встречи: где возникнет напряжение, кто выпадет, что сработает.</p>`));
+  else {
+    const h = document.createElement("h3"); h.textContent = a.overall||""; body.append(h);
+    const mkList=(title, arr, cls)=>{ if(!Array.isArray(arr)||!arr.length) return; const d=$(`<div class="stack" style="gap:6px"><div class="mono" style="color:var(--${cls})">${title}</div><ul class="debrief-list"></ul></div>`); arr.slice(0,4).forEach(x=>{ const li=document.createElement("li"); li.textContent=String(x); d.querySelector("ul").append(li); }); body.append(d); };
+    mkList("ЧТО СРАБОТАЕТ", a.strengths, "good");
+    if(Array.isArray(a.risks) && a.risks.length){
+      const d=$(`<div class="stack" style="gap:6px"><div class="mono" style="color:var(--mid)">ГДЕ МОЖЕТ ПОЙТИ НЕ ТАК</div><ul class="debrief-list"></ul></div>`);
+      a.risks.slice(0,4).forEach(r=>{ const li=document.createElement("li"); const b1=document.createElement("b"); b1.textContent=(r.moment||"")+": "; li.append(b1, document.createTextNode((r.risk||"")+" "), Object.assign(document.createElement("span"),{className:"muted", textContent:"→ "+(r.tip||"")})); d.querySelector("ul").append(li); });
+      body.append(d);
+    }
+    if(a.opening_line){ const bb=$(`<div class="better"><div class="mono" style="color:var(--good); margin-bottom:4px">ПЕРВАЯ ФРАЗА ВЕДУЩЕГО</div><div></div></div>`); bb.lastElementChild.textContent="«"+a.opening_line+"»"; body.append(bb); }
+  }
+  ai.querySelector("#b-ai").onclick = bAskAI;
+  left.append(ai);
+  grid.append(left);
+  // right: palette
+  const right = $(`<div class="palette stack" style="gap:12px"><h3>Палитра техник</h3></div>`);
+  Object.keys(PHASES).forEach(ph=>{
+    const techs = TECH.filter(x=>x.ph===ph); if(!techs.length) return;
+    const g = $(`<div class="pal-group"><div class="pal-ph" style="--ph:${PHASES[ph].color}">${PHASES[ph].name}</div></div>`);
+    techs.forEach(x=>{
+      const used = ag.some(a=>a.id===x.id);
+      const btn = $(`<button class="pal-card ${used?"used":""}" style="--ph:${PHASES[ph].color}"><span class="pal-name">${esc(x.name)}<span class="mono muted"> · ${x.def} мин</span></span><span class="pal-desc">${esc(x.desc)}</span></button>`);
+      btn.onclick=()=>{ ag.push({id:x.id, min:x.def}); save(); render(); };
+      g.append(btn);
+    });
+    right.append(g);
+  });
+  grid.append(right);
+  wrap.append(grid);
+  view.append(wrap);
+}
+async function bAskAI(){
+  const b = BRIEFS[bIdx];
+  const sample = await getSample();
+  if(!sample){ bAIErr = AI_OFF_MSG; render(); return; }
+  bAIBusy = true; bAIErr = ""; render();
+  const {out, total} = bChecks();
+  let t = 0;
+  const agenda = bItems().map(x=>{ const s = `${fmtT(t)}–${fmtT(t+x.min_)} · ${x.name} (${PHASES[x.ph].name}, ${x.min_} мин): ${x.desc}`; t += x.min_; return s; }).join("\n");
+  const prompt = `Ты — опытный фасилитатор и тренер руководителей проектов маркетплейса «Корзина», которые ведут встречи с партнёрами в ходе запуска «Доставки еды» (рестораны, курьерская служба, интегратор по подключению ресторанов, крупные продавцы одежды и посуды, санитарная служба). Прокомментируй сценарий встречи, который собрал студент.
+
+Вводная: ${b.title}. ${b.people} человек, ${b.minutes} минут, ${b.format}.
+${b.context}
+Нужно получить: ${b.goal}
+
+Сценарий студента (всего ${total} мин):
+${agenda}
+
+Автоматическая проверка уже нашла:
+${out.map(c=>`- [${c.lvl==="good"?"ок":c.lvl==="mid"?"внимание":"проблема"}] ${c.title}`).join("\n")}
+
+Не повторяй автоматическую проверку. Посмотри на сценарий глазами конкретных участников этой встречи: где возникнет напряжение, кто выпадет из разговора, где техника не подходит для этой группы, хватит ли времени на реальное обсуждение. Будь конкретным, ссылайся на шаги сценария.
+
+Ответь только JSON вида:
+{"overall":"1–2 предложения общей оценки","strengths":["что сработает и почему"],"risks":[{"moment":"шаг сценария","risk":"что может пойти не так с этими участниками","tip":"что изменить"}],"opening_line":"как ведущему начать эту встречу — одна-две фразы"}
+2–3 пункта в strengths, 2–4 в risks. По-русски, на «вы».`;
+  try{
+    const a = await sample.json(prompt, {cache:false});
+    if(!a || typeof a!=="object" || !a.overall) throw {code:"invalid_json"};
+    bAI[b.id] = a;
+  }catch(e){ if(!(e&&e.code==="cancelled")) bAIErr = aiErr(e); }
+  bAIBusy = false;
+  if(tab==="builder") render();
+}
+
+/* ---------- roleplay with AI participants ---------- */
+const RP = [
+{ id:"scope", cat:"ftth", title:"Спор о доп. расходах", proj:"Продавцы · крупный продавец посуды",
+  goal:"Довести встречу до договорённости: что делаем с требованием +18% за защитную упаковку и как дальше оформляем изменения условий. Решают участники, ваша задача — процесс.",
+  people:[
+   {name:"Ринат Асхатович", role:"директор продавца «Фарфор и Ко»", color:"#C0623A", persona:"Напористый, около 50 лет, привык давить статусом. Требует допсоглашение на +18% к компенсации за доставку из-за защитной упаковки хрупких наборов. Перебивает, особенно своего руководителя склада. Смягчается, если признают его опыт и дают понятную структуру разговора; злится, если его обвиняют или читают ему договор."},
+   {name:"Дамир", role:"руководитель склада продавца", color:"#3F8A63", persona:"Тихий, конкретный, знает факты. Говорит, только если к нему обращаются прямо и безопасно; при директоре осторожен. Знает ключевое: требование к упаковке появилось после смены курьерской службы маркетплейсом два месяца назад, обе стороны были на той встрече, но изменение никто не оформил."},
+   {name:"Жанна", role:"финансист маркетплейса", color:"#6A6FC0", persona:"Ваша коллега. Жёсткая, держится за «твёрдую ставку по договору», боится прецедента для других продавцов. Готова обсуждать, если увидит факты и понятный порядок оформления изменений. Обижается, если ведущий публично встаёт на сторону продавца."}
+  ],
+  hidden:"Требование к упаковке появилось после смены курьерской службы маркетплейсом; обе стороны об этом знали; процесс управления изменениями не сработал. Справедливый итог: зафиксировать факт, продавец готовит расчёт фактических доп. расходов (скорее всего меньше 18%), маркетплейс оформляет изменение, все договариваются о процедуре на будущее.",
+  opening:[{who:"Ринат Асхатович", text:"Давайте сразу к делу. Без допсоглашения на восемнадцать процентов мы хрупкие наборы через вашу доставку не отправляем. Это не наше решение было менять курьеров."},{who:"Жанна", text:"У нас твёрдая ставка по договору. Никаких восемнадцати процентов."}]
+},
+{ id:"status", cat:"radio", title:"«Всё по плану»", proj:"Интегратор · подключение 40 ресторанов",
+  goal:"Понять реальное состояние работ (к этой неделе по плану 18 ресторанов, по приёмке подключено 6) и договориться о шагах, которые разблокируют работу.",
+  people:[
+   {name:"Арсен Маратович", role:"директор интегратора", color:"#C0623A", persona:"Доминирует, отвечает за всех, держит «зелёный» статус, чтобы не потерять лицо и не получить штрафы. Начинает признавать проблемы, только если разговор не про вину, а про то, что мешает и что нужно от маркетплейса."},
+   {name:"Асем", role:"инженер внедрения интегратора", color:"#3F8A63", persona:"Знает детали по каждому ресторану. Молчит, пока говорит директор; заговорит, если ведущий даст ей слово прямо или введёт структуру (например, разбор по ресторанам). Знает: 9 ресторанов стоят без доступов в кабинет партнёра от отдела операций, ещё 3 ждут планшеты для кухни."},
+   {name:"Санжар", role:"отдел операций маркетплейса", color:"#6A6FC0", persona:"Ваш коллега. Защищает регламент выдачи доступов (5 рабочих дней, заявки по одной). Обороняется, если его обвиняют; конструктивен, если путь заявки разбирают как процесс. Может сам предложить пакетную подачу заявок."}
+  ],
+  hidden:"Узкое место — доступы от отдела операций (заявки по одной, 5 дней), плюс 3 ресторана ждут планшеты. Хороший итог: общая доска план/факт по ресторанам, пакетная подача заявок на доступы, понятный владелец по планшетам.",
+  opening:[{who:"Арсен Маратович", text:"По ресторанам всё идёт по графику. Есть небольшие моменты, но мы их закрываем. К концу месяца выйдем на план."}]
+},
+{ id:"blame", cat:"radio", title:"Партнёры обвиняют друг друга", proj:"Запуск в новом городе · интегратор и курьеры",
+  goal:"Разобраться, почему запуск сорван на две недели, без поиска виноватого, и договориться, как не допустить этого в следующих городах.",
+  people:[
+   {name:"Даурен", role:"курьерская служба", color:"#C0623A", persona:"Эмоциональный. Считает, что список ресторанов и зоны доставки передали не те и поздно. Обижается на намёки, что курьеры не были готовы. Остывает, когда факты выкладывают на общую линию времени."},
+   {name:"Олжас", role:"интегратор по подключению ресторанов", color:"#3F8A63", persona:"Сдержанный, язвительный. Уверен, что курьеры не были готовы: не было обученных людей и зоны в приложении курьера не настроены. Ссылается на переписку, любит ловить на противоречиях."},
+   {name:"Гульнара", role:"аналитик качества маркетплейса", color:"#6A6FC0", persona:"Ваша коллега. Знает, что передачу списка ресторанов и зон от интегратора курьерам никто не оформлял актом и что это зона маркетплейса, но боится об этом сказать. Скажет, если ведущий создаст безопасность или сам признает долю маркетплейса."}
+  ],
+  hidden:"Обе стороны отчасти правы: зоны настроили на 6 дней позже, один ресторан подключили с неверным адресом. Корневая причина — никто не отвечал за передачу списка ресторанов и зон (зона маркетплейса). Хороший итог: совместный акт передачи и короткий созвон трёх сторон на каждом этапе.",
+  opening:[{who:"Даурен", text:"Мы курьеров набрали вовремя. А список ресторанов приехал не тот, ещё и на неделю позже."},{who:"Олжас", text:"Интересно. Только зоны в приложении курьера не были настроены ещё шесть дней. Переписка у меня есть, могу показать."}]
+},
+{ id:"dc_ist", cat:"dc", title:"Программа тестового запуска", proj:"Рестораны · перед тестовым запуском",
+  goal:"Договориться о программе тестового запуска: какие сценарии нагрузки проверяем, кто за что отвечает и что считается успехом.",
+  people:[
+   {name:"Ержан", role:"интегратор", color:"#C0623A", persona:"Хочет сдать подключение до конца месяца, давит сроками, предлагает сократить программу теста. Готов сдвинуться на два дня, если увидит, что маркетплейс тоже идёт навстречу."},
+   {name:"Виктор", role:"управляющий сети «Ложка и вилка»", color:"#3F8A63", persona:"Против сценария пиковой нагрузки в 30 заказов за час, говорит «мы и так работаем по пятницам». На самом деле боится штрафа: на прошлом тесте с другим сервисом кухня не справилась, и ресторан оштрафовали. Признается, только если ведущий создаст безопасность и спросит о причинах."},
+   {name:"Алия", role:"отдел операций маркетплейса", color:"#6A6FC0", persona:"Ваша коллега. Резко настаивает на полной программе, не доверяет партнёрам. Смягчается, когда её опасения вносят в программу и признают её экспертизу."}
+  ],
+  hidden:"Виктор боится штрафа за сбой кухни на тесте, а не потери времени. Ержан готов сдвинуться на два дня. Хороший итог: полная программа теста, договорённость, что сбой на тесте — это результат, а не штраф, понятные роли на связи с кухней и дата.",
+  opening:[{who:"Ержан", text:"Предлагаю ускориться: убираем сценарии пиковой нагрузки и отказа планшета на кухне, рестораны и так работают. Иначе до конца месяца не сдадим."},{who:"Алия", text:"Без сценария пика я запуск не принимаю. Точка."}]
+},
+{ id:"fiber_frost", cat:"node", title:"Дарк-кухни перед новогодним пиком", proj:"Санитарная служба · 4 дарк-кухни",
+  goal:"Решить, как запустить дарк-кухни до новогоднего пика: какие кухни запускаем сейчас, что делаем с двумя без заключения санитарной службы, кто за что отвечает.",
+  people:[
+   {name:"Канат Болатович", role:"директор сети дарк-кухонь", color:"#C0623A", persona:"Хочет запускать без заключений («потом оформим»), постоянно ссылается на сезон. Перебивает управляющего. Становится конструктивнее, когда видит цифры и понятный план."},
+   {name:"Арман", role:"управляющий кухнями", color:"#3F8A63", persona:"Знает, что вторую кухню можно временно перенести в соседнее помещение с действующим заключением: плюс 1,2 км до зоны доставки и 4 дня на переезд. При директоре стесняется, заговорит, если его прямо спросить о кухнях."},
+   {name:"Айгерим", role:"юрист маркетплейса", color:"#6A6FC0", persona:"Ваша коллега. Против любого запуска без заключения. Знает, что по первой кухне заключение будет примерно через 10 дней, а по второй инспектор нашёл серьёзные замечания. Раздражается, когда её называют тормозом проекта."}
+  ],
+  hidden:"Кухня 1: заключение через ~10 дней, успевают до пика. Кухня 2: замечания серьёзные, но есть перенос в соседнее помещение (+1,2 км, 4 дня). Хороший итог: запускать согласованные кухни сейчас, кухню 1 — после заключения, кухню 2 — с переносом, кто платит за перенос — решить по расчёту.",
+  opening:[{who:"Канат Болатович", text:"Сезон уходит. Предлагаю запускать все четыре кухни, бумаги оформим по ходу. Иначе встанем до февраля."},{who:"Айгерим", text:"Без заключения санитарной службы мы не имеем права выводить кухни на витрину."}]
+}
+
+];
+const RP_MAX_TURNS = 14;
+let rp = null; // {sc, log:[{who,text}], m, busy, ctl, err, draft, debrief, dbBusy}
+/* ---------- preparation before a roleplay meeting ---------- */
+const RP_PUB = {
+  "Ринат Асхатович":"Директор продавца посуды. Требует допсоглашение на +18% за защитную упаковку хрупких наборов.",
+  "Дамир":"Руководитель склада продавца, собирает отправления.",
+  "Жанна":"Финансист маркетплейса, ваша коллега. Отвечает за бюджет направления.",
+  "Арсен Маратович":"Директор интегратора. Третью неделю докладывает «идём по плану».",
+  "Асем":"Инженер внедрения интегратора, ведёт подключение ресторанов.",
+  "Санжар":"Отдел операций маркетплейса, выдаёт доступы в кабинет партнёра.",
+  "Даурен":"Курьерская служба, набирала курьеров для нового города.",
+  "Олжас":"Интегратор, подключал рестораны и настраивал зоны.",
+  "Гульнара":"Аналитик качества маркетплейса, ваша коллега.",
+  "Ержан":"Интегратор, отвечает за сдачу подключений в срок.",
+  "Виктор":"Управляющий ресторанной сети. Предлагает убрать сценарий пиковой нагрузки из теста.",
+  "Алия":"Отдел операций маркетплейса, будет сопровождать рестораны после запуска.",
+  "Канат Болатович":"Директор сети дарк-кухонь. Предлагает запускать без заключений санитарной службы.",
+  "Арман":"Управляющий кухнями, работает на площадках.",
+  "Айгерим":"Юрист маркетплейса, ведёт согласования с санитарной службой."
+};
+const PREP_FIELDS = [
+  ["pos","Позиция: что он скажет на встрече"],
+  ["int","Реальный интерес: что ему на самом деле нужно"],
+  ["fear","Чего он боится"],
+  ["move","Мой ход: как я его включу или успокою"]
+];
+let rpPrep = null; // scenario being prepared
+function prepData(sc){
+  S.prep = S.prep || {};
+  if(!S.prep[sc.id]) S.prep[sc.id] = {people:{}, opening:"", hats:""};
+  const d = S.prep[sc.id];
+  sc.people.forEach(p=>{ if(!d.people[p.name]) d.people[p.name] = {pos:"", int:"", fear:"", move:"", silent:false}; });
+  return d;
+}
+function prepText(sc, d){
+  return sc.people.map(p=>{ const x = d.people[p.name]||{};
+    return `- ${p.name} (${p.role}): позиция — ${x.pos||"не заполнено"}; интерес — ${x.int||"не заполнено"}; боится — ${x.fear||"не заполнено"}; будет молчать — ${x.silent?"да":"нет"}; план ведущего — ${x.move||"не заполнено"}`; }).join("\n")
+    + `\nПервая фраза ведущего: ${d.opening||"не заполнено"}\nКак разделит роли заказчика и ведущего: ${d.hats||"не заполнено"}`;
+}
+function avatar(p, size=40){
+  const ini = p.name.split(/\s+/).map(w=>w[0]).slice(0,2).join("");
+  return `<span class="ava" style="background:${p.color}; width:${size}px; height:${size}px">${esc(ini)}</span>`;
+}
+function renderPrep(){
+  const sc = rpPrep, d = prepData(sc);
+  const wrap = $(`<section class="stack"></section>`);
+  const back = $(`<button class="btn link">← Все сценарии</button>`);
+  back.onclick = ()=>{ rpPrep = null; render(); };
+  wrap.append(back);
+  wrap.append($(`<div class="case-head">${icoHtml(sc.cat,"lg")}<div class="stack" style="gap:4px"><span class="cat-label" style="--cat:var(--cat-${sc.cat})">Подготовка · ${esc(sc.proj)}</span><h2>${esc(sc.title)}</h2></div></div>`));
+  wrap.append($(`<div class="panel stack" style="gap:8px"><span class="mono" style="color:var(--signal)">ЦЕЛЬ ВСТРЕЧИ</span><p style="margin:0">${esc(sc.goal)}</p>
+    <p class="muted" style="margin:0; font-size:14.5px">Перед сложной встречей опытный ведущий отделяет позицию человека (что он говорит) от интереса (что ему на самом деле нужно) и страха. Заполните карту — после встречи увидите, что угадали.</p></div>`));
+  const grid = $(`<div class="prep-grid"></div>`);
+  sc.people.forEach(p=>{
+    const x = d.people[p.name];
+    const card = $(`<div class="prep-card" style="--who:${p.color}">
+      <div class="prep-head">${avatar(p)}<div><b>${esc(p.name)}</b><div class="muted" style="font-size:13.5px">${esc(p.role)}</div></div></div>
+      <p class="prep-pub">${esc(RP_PUB[p.name]||"")}</p></div>`);
+    PREP_FIELDS.forEach(([k,label])=>{
+      const id = `prep-${sc.id}-${p.name.replace(/\s+/g,"_")}-${k}`;
+      const f = $(`<div class="field"><label for="${id}">${label}</label><textarea id="${id}" rows="2"></textarea></div>`);
+      const ta = f.querySelector("textarea"); ta.value = x[k]||"";
+      ta.addEventListener("input", ()=>{ x[k] = ta.value; save(); updStart(); });
+      card.append(f);
+    });
+    const cid = `prep-${sc.id}-${p.name.replace(/\s+/g,"_")}-silent`;
+    const cb = $(`<label class="prep-check"><input type="checkbox" id="${cid}"><span>Скорее будет молчать</span></label>`);
+    cb.querySelector("input").checked = !!x.silent;
+    cb.querySelector("input").onchange = e=>{ x.silent = e.target.checked; save(); };
+    card.append(cb);
+    grid.append(card);
+  });
+  wrap.append(grid);
+  const gen = $(`<div class="panel stack" style="gap:12px">
+    <div class="field"><label for="prep-${sc.id}-opening">Моя первая фраза на встрече</label><textarea id="prep-${sc.id}-opening" rows="2" placeholder="Например: «Сегодня у нас 30 минут, и на выходе нужно…»"></textarea></div>
+    <div class="field"><label for="prep-${sc.id}-hats">Где я заказчик, а где ведущий — как это разделю</label><textarea id="prep-${sc.id}-hats" rows="2"></textarea></div>
+  </div>`);
+  [["opening","#prep-"+sc.id+"-opening"],["hats","#prep-"+sc.id+"-hats"]].forEach(([k,sel])=>{ const ta = gen.querySelector(sel); ta.value = d[k]||""; ta.addEventListener("input",()=>{ d[k]=ta.value; save(); }); });
+  wrap.append(gen);
+  const go = $(`<div class="row"><button class="btn primary" id="prep-go">Начать встречу с этой подготовкой</button><span class="mono muted" id="prep-hint"></span></div>`);
+  const btn = go.querySelector("#prep-go"), hint = go.querySelector("#prep-hint");
+  function updStart(){
+    const missing = sc.people.filter(p=>!(d.people[p.name].int||"").trim()).map(p=>p.name.split(" ")[0]);
+    btn.disabled = missing.length>0;
+    hint.textContent = missing.length ? `Заполните реальный интерес: ${missing.join(", ")}` : "";
+  }
+  updStart();
+  btn.onclick = ()=>{ const copy = JSON.parse(JSON.stringify(d)); rpPrep = null; rpStart(sc, copy); };
+  wrap.append(go);
+  view.append(wrap);
+}
+function prepDetails(){
+  const sc = rp.sc, d = rp.prep;
+  const det = $(`<details class="prep-mini"><summary>Моя подготовка</summary><div class="stack" style="gap:8px; margin-top:10px"></div></details>`);
+  const box = det.querySelector("div");
+  sc.people.forEach(p=>{ const x = d.people[p.name]||{};
+    const r = document.createElement("div"); r.className = "prep-line";
+    const b = document.createElement("b"); b.textContent = p.name + (x.silent?" · молчит":"") + ": ";
+    r.append(b, document.createTextNode(`интерес — ${x.int||"—"}; боится — ${x.fear||"—"}; мой ход — ${x.move||"—"}`));
+    box.append(r); });
+  if(d.opening){ const r=document.createElement("div"); r.className="prep-line"; const b=document.createElement("b"); b.textContent="Первая фраза: "; r.append(b, document.createTextNode(d.opening)); box.append(r); }
+  return det;
+}
+function prepReveal(a){
+  const sc = rp.sc, d = rp.prep;
+  const box = $(`<div class="stack" style="gap:10px"><div class="mono" style="color:var(--accent)">ПОДГОТОВКА ПРОТИВ РЕАЛЬНОСТИ</div></div>`);
+  if(a && a.prep_summary){ const p=document.createElement("p"); p.style.margin="0"; p.textContent=a.prep_summary; box.append(p); }
+  const rev = Array.isArray(a && a.prep_review) ? a.prep_review : [];
+  sc.people.forEach(p=>{
+    const x = d.people[p.name]||{}, r = rev.find(z=>z && String(z.name||"").includes(p.name.split(" ")[0]));
+    const card = $(`<div class="reveal" style="--who:${p.color}"><div class="prep-head">${avatar(p,32)}<b>${esc(p.name)}</b></div>
+      <div class="reveal-cols"><div><div class="mono muted">ВАША ГИПОТЕЗА</div><div class="rv-h"></div></div><div><div class="mono muted">НА САМОМ ДЕЛЕ</div><div class="rv-t"></div></div></div></div>`);
+    card.querySelector(".rv-h").textContent = `Интерес: ${x.int||"—"}. Страх: ${x.fear||"—"}. ${x.silent?"Думали, что будет молчать.":""}`;
+    card.querySelector(".rv-t").textContent = p.persona;
+    if(r){
+      const add=(lbl,txt,cls)=>{ if(!txt) return; const dv=document.createElement("div"); dv.className="rv-ai "+cls; const b=document.createElement("b"); b.textContent=lbl+" "; dv.append(b, document.createTextNode(String(txt))); card.append(dv); };
+      add("Угадали:", r.hit, "good"); add("Упустили:", r.miss, "mid"); add("Во встрече:", r.used, "");
+    }
+    box.append(card);
+  });
+  return box;
+}
+
+function rpPerson(sc, who){ return sc.people.find(p=>p.name===who) || sc.people.find(p=>who && (who.includes(p.name.split(" ")[0]))) ; }
+function rpTranscript(){ return rp.log.map(l=> l.me ? `Ведущий (вы): ${l.text}` : `${l.who}: ${l.text}`).join("\n"); }
+function rpRules(){
+  const sc = rp.sc;
+  return `Ты — движок ролевой игры для тренировки фасилитации. Пользователь — руководитель проекта маркетплейса «Корзина» на стороне заказчика; он ведёт встречу с партнёрами по запуску «Доставки еды». Ты играешь ВСЕХ остальных участников встречи, и только их.
+
+Сценарий: ${sc.title} (${sc.proj}).
+Цель ведущего: ${sc.goal}
+Участники:
+${sc.people.map(p=>`- ${p.name} (${p.role}): ${p.persona}`).join("\n")}
+Скрытая правда (участники раскрывают её постепенно и только в ответ на хорошую фасилитацию, никогда целиком сразу): ${sc.hidden}
+
+Правила:
+- Реагируй на действия ведущего реалистично. Хорошая фасилитация — цель и структура, слово каждому, открытые нейтральные вопросы, факты отдельно от оценок, признание доли заказчика, фиксация договорённостей «кто, что, когда» — участники раскрываются, напряжение падает. Плохая — решает за всех, встаёт на чью-то сторону, обвиняет, давит договором или штрафами, задаёт закрытые и наводящие вопросы, игнорирует молчащих — участники обороняются, замыкаются, спорят, доминирующий перехватывает разговор.
+- За ход отвечают 1–3 участника, каждый 1–3 коротких предложения, живой разговорной русской речью, как на реальной планёрке. Не все говорят каждый ход. Если ведущий обратился к кому-то по имени, первым отвечает он.
+- Не помогай ведущему, не подсказывай, не выходи из роли, не пиши авторских ремарок и описаний действий.
+- Если ведущий пишет что-то постороннее, участники реагируют с недоумением в своём характере.
+- Оцени состояние встречи после хода по шкалам 0–100: e — вовлечённость, t — доверие, r — движение к результату. Сейчас: e=${rp.m.e}, t=${rp.m.t}, r=${rp.m.r}. Меняй каждую шкалу не больше чем на 15 за ход.
+
+Ответь только JSON вида:
+{"replies":[{"who":"<точное имя участника из списка>","text":"реплика"}],"meters":{"e":55,"t":50,"r":45}}`;
+}
+function rpStart(sc, prep){
+  rp = {sc, prep: prep||null, last: sc.opening.map(o=>o.who), log: sc.opening.map(o=>({who:o.who, text:o.text})), m:{e:45,t:40,r:30}, busy:false, ctl:null, err:"", draft:"", debrief:null, dbBusy:false};
+  render(); window.scrollTo({top:0});
+}
+async function rpSend(){
+  const text = rp.draft.trim();
+  if(!text || rp.busy) return;
+  const sample = await getSample();
+  if(!sample){ rp.err = AI_OFF_MSG; render(); return; }
+  rp.log.push({me:true, who:"Вы", text}); rp.last = ["Вы"]; rp.draft = ""; rp.err = ""; rp.busy = true;
+  rp.ctl = new AbortController();
+  render();
+  const prompt = `${rpRules()}\n\nСтенограмма встречи:\n${rpTranscript()}\n\nСгенерируй ответ участников на последнюю реплику ведущего.`;
+  try{
+    const a = await sample.json(prompt, {modelTier:"quick", cache:false, signal:rp.ctl.signal});
+    const reps = Array.isArray(a && a.replies) ? a.replies : [];
+    if(!reps.length) throw {code:"invalid_json"};
+    rp.last = [];
+    reps.slice(0,3).forEach(r=>{ const p = rpPerson(rp.sc, String(r.who||"")); if(p && r.text){ rp.log.push({who:p.name, text:String(r.text)}); rp.last.push(p.name); } });
+    if(a.meters){ ["e","t","r"].forEach(k=>{ const v = Number(a.meters[k]); if(Number.isFinite(v)) rp.m[k] = clamp(Math.round(Math.max(rp.m[k]-15, Math.min(rp.m[k]+15, v)))); }); }
+  }catch(e){
+    if(e && e.code==="cancelled"){ rp.log.pop(); rp.draft = text; }
+    else { rp.log.pop(); rp.draft = text; rp.err = aiErr(e); }
+  }
+  rp.busy = false; rp.ctl = null;
+  if(tab==="roleplay") render();
+}
+async function rpDebrief(){
+  const sample = await getSample();
+  if(!sample){ rp.err = AI_OFF_MSG; render(); return; }
+  rp.dbBusy = true; rp.err = ""; render();
+  const sc = rp.sc;
+  const prompt = `Ты — опытный тренер по фасилитации (опора: ICAgile Agile Team Facilitation, PMBOK 7 раздел 2.3.3 «Фасилитация и поддержка», PMI Agile Practice Guide 4.2.1.1). Разбери, как руководитель проекта маркетплейса на стороне заказчика провёл встречу с партнёрами в учебной ролевой игре.
+
+Сценарий: ${sc.title} (${sc.proj}).
+Цель ведущего: ${sc.goal}
+Участники: ${sc.people.map(p=>`${p.name} — ${p.role}`).join("; ")}.
+Что было скрыто и могло быть раскрыто: ${sc.hidden}
+Итоговые шкалы встречи: вовлечённость ${rp.m.e}, доверие ${rp.m.t}, результат ${rp.m.r}.
+${rp.prep ? `\nПеред встречей ведущий составил карту участников:\n${prepText(sc, rp.prep)}\n\nНастоящие характеры участников:\n${sc.people.map(p=>`- ${p.name}: ${p.persona}`).join("\n")}\n` : ""}
+Стенограмма:
+${rpTranscript()}
+
+Оцени только реплики ведущего. Будь честным и конкретным, цитируй его реплики, без общих слов. Особо отметь: держал ли он нейтральность, хотя сам представляет заказчика; дал ли слово молчащим; отделял ли факты от оценок; закончил ли договорённостями «кто, что, когда».
+
+Ответь только JSON вида:
+{"summary":"2–3 предложения итога","reached_goal":false,"strengths":["конкретная сильная сторона со ссылкой на реплику"],"growth":["что конкретно сделать иначе и пример формулировки"],"competencies":{"neutral":60,"voice":40,"conflict":50,"focus":30,"questions":55,"safety":45},"best_line":"лучшая реплика ведущего дословно или пустая строка","rewrite":{"original":"самая слабая реплика ведущего дословно","better":"как её можно было сказать"}}
+2–3 пункта в strengths и в growth. Пиши по-русски, обращайся к ведущему на «вы».${rp.prep ? `\nВедущий готовился к встрече, поэтому добавь в тот же JSON ещё два поля: "prep_summary" — 1–2 предложения, насколько подготовка помогла во встрече, и "prep_review" — массив по одному элементу на каждого участника: {"name":"имя участника","hit":"что ведущий угадал","miss":"что упустил","used":"как подготовка проявилась во встрече или почему нет"}.` : ""}`;
+  try{
+    const a = await sample.json(prompt, {cache:false});
+    if(!a || typeof a!=="object" || !a.summary) throw {code:"invalid_json"};
+    rp.debrief = a;
+  }catch(e){ if(!(e && e.code==="cancelled")) rp.err = aiErr(e); }
+  rp.dbBusy = false;
+  if(tab==="roleplay") render();
+}
+
+function rpTable(){
+  const sc = rp.sc, n = sc.people.length;
+  const pos = n>=3 ? [[66,74],[180,44],[294,74]] : [[115,56],[245,56]];
+  const last = new Set(rp.last||[]);
+  let g = `<svg viewBox="0 0 360 222" class="table-svg" role="img" aria-label="Стол переговоров: ${esc(sc.people.map(p=>p.name).join(", "))} и вы">`;
+  g += `<ellipse cx="180" cy="128" rx="122" ry="40" class="tbl"/>`;
+  g += `<rect x="128" y="114" width="30" height="21" rx="2" class="doc" transform="rotate(-6 143 124)"/><path d="M134 120h17M134 125h17M134 130h11" class="docl" transform="rotate(-6 143 124)"/>`;
+  g += `<rect x="198" y="112" width="34" height="22" rx="2" class="doc"/><path d="M203 128l6-6 5 4 6-8 7 5" class="docl" fill="none"/>`;
+  sc.people.forEach((p,i)=>{
+    const [x,y] = pos[i] || [180,40];
+    const ini = p.name.split(/\s+/).map(w=>w[0]).slice(0,2).join("");
+    const talking = last.has(p.name);
+    g += `<text x="${x}" y="${y-30}" class="lbl">${esc(p.name.split(" ")[0])}</text>`;
+    if(talking) g += `<circle cx="${x}" cy="${y}" r="24" class="ring"/>`;
+    g += `<circle cx="${x}" cy="${y}" r="19" fill="${p.color}"/><text x="${x}" y="${y}" class="ini">${esc(ini)}</text>`;
+    if(talking || rp.busy) g += `<g class="${rp.busy?"thinking":""}"><rect x="${x+15}" y="${y-31}" width="24" height="15" rx="7.5" class="bub"/><text x="${x+27}" y="${y-23.5}" class="bubt">•••</text></g>`;
+  });
+  const meTalk = last.has("Вы");
+  if(meTalk) g += `<circle cx="180" cy="186" r="24" class="ring"/>`;
+  g += `<circle cx="180" cy="186" r="19" fill="var(--accent)"/><text x="180" y="186" class="ini me-ini">Вы</text><text x="180" y="219" class="sub">ведущий</text>`;
+  return g + `</svg>`;
+}
+function renderRoleplay(){
+  if(!rp) return rpPrep ? renderPrep() : renderRpList();
+  const sc = rp.sc;
+  const turns = rp.log.filter(l=>l.me).length;
+  const wrap = $(`<section class="stack"></section>`);
+  const back = $(`<button class="btn link">← Все сценарии</button>`);
+  back.onclick = ()=>{ if(rp.ctl) rp.ctl.abort(); rp = null; render(); };
+  wrap.append(back);
+  wrap.append($(`<div class="stack" style="gap:4px"><span class="mono muted">${esc(sc.proj)}</span><h2>${esc(sc.title)}</h2></div>`));
+  wrap.append($(`<div class="panel stack" style="gap:10px"><div><span class="mono" style="color:var(--signal)">ВАША ЦЕЛЬ</span><p style="margin:4px 0 0">${esc(sc.goal)}</p></div>
+    ${rpTable()}<div class="people">${sc.people.map(p=>`<span class="person"><i style="background:${p.color}"></i><b>${esc(p.name)}</b> ${esc(p.role)}</span>`).join("")}</div></div>`));
+  if(rp.prep) wrap.append(prepDetails());
+  wrap.append($(meters(rp.m)));
+
+  const chat = $(`<div class="chat" aria-live="polite"></div>`);
+  rp.log.forEach(l=>{
+    const b = document.createElement("div");
+    b.className = "msg" + (l.me ? " me" : "");
+    const who = document.createElement("div"); who.className = "msg-who";
+    if(l.me){ who.textContent = "Вы · ведущий"; }
+    else { const p = rpPerson(sc, l.who); who.textContent = l.who + (p ? " · " + p.role : ""); if(p) b.style.setProperty("--who", p.color); }
+    const t = document.createElement("div"); t.textContent = l.text;
+    b.append(who, t); chat.append(b);
+  });
+  if(rp.busy){ chat.append($(`<div class="msg typing"><div class="msg-who">Участники</div><div>обдумывают ответ…</div></div>`)); }
+  wrap.append(chat);
+
+  if(rp.err) wrap.append($(`<div class="fb bad"><div>${esc(rp.err)}</div></div>`));
+
+  if(!rp.debrief){
+    const done = turns >= RP_MAX_TURNS;
+    const inp = $(`<div class="panel stack" style="gap:10px">
+      <label for="rp-input" class="mono muted">${done ? "Время встречи вышло — получите разбор" : `ВАША РЕПЛИКА · ход ${turns+1} из ${RP_MAX_TURNS}`}</label>
+      <textarea id="rp-input" placeholder="Например: «Давайте договоримся, что хотим получить к концу встречи…»"></textarea>
+      <div class="row">
+        <button class="btn primary" id="rp-send">Сказать</button>
+        <button class="btn" id="rp-stop" ${rp.busy?"":"hidden"}>Остановить</button>
+        <button class="btn" id="rp-end" style="margin-left:auto">${rp.dbBusy?"Тренер пишет разбор…":"Завершить и получить разбор"}</button>
+      </div>
+      <span class="mono muted" style="font-size:11.5px">Ctrl/⌘ + Enter — отправить</span>
+    </div>`);
+    const ta = inp.querySelector("textarea");
+    ta.value = rp.draft; ta.disabled = rp.busy || done || rp.dbBusy;
+    ta.addEventListener("input", ()=>{ rp.draft = ta.value; });
+    ta.addEventListener("keydown", e=>{ if(e.key==="Enter" && (e.metaKey||e.ctrlKey)){ e.preventDefault(); rpSend(); } });
+    const send = inp.querySelector("#rp-send"); send.disabled = rp.busy || done || rp.dbBusy; send.onclick = rpSend;
+    inp.querySelector("#rp-stop").onclick = ()=>{ if(rp.ctl) rp.ctl.abort(); };
+    const end = inp.querySelector("#rp-end"); end.disabled = rp.busy || rp.dbBusy || turns < 2; end.onclick = rpDebrief;
+    if(turns < 2) end.title = "Сделайте хотя бы 2 хода";
+    wrap.append(inp);
+    view.append(wrap);
+    chat.scrollTop = chat.scrollHeight;
+    if(!ta.disabled) ta.focus({preventScroll:true});
+    return;
+  }
+  wrap.append(renderDebrief(rp.debrief));
+  view.append(wrap);
+}
+function renderDebrief(a){
+  const box = $(`<div class="protocol"><span class="mono" style="color:var(--signal)">РАЗБОР ТРЕНЕРА</span></div>`);
+  const h = document.createElement("h3"); h.textContent = a.summary || ""; box.append(h);
+  const goal = $(`<span class="chip ${a.reached_goal?"good":"bad"}">${a.reached_goal?"Цель встречи достигнута":"Цель встречи не достигнута"}</span>`);
+  box.append(goal);
+  const list = (title, items, cls)=>{ if(!Array.isArray(items)||!items.length) return;
+    const d = $(`<div class="stack" style="gap:6px"><div class="mono" style="color:var(--${cls})">${title}</div><ul class="debrief-list"></ul></div>`);
+    items.slice(0,4).forEach(x=>{ const li=document.createElement("li"); li.textContent=String(x); d.querySelector("ul").append(li); });
+    box.append(d); };
+  list("ЧТО ПОЛУЧИЛОСЬ", a.strengths, "good");
+  list("ЧТО УСИЛИТЬ", a.growth, "mid");
+  if(a.best_line){ const b=$(`<div class="better"><div class="mono" style="color:var(--good); margin-bottom:4px">ЛУЧШАЯ РЕПЛИКА</div><div></div></div>`); b.lastElementChild.textContent = "«"+a.best_line+"»"; box.append(b); }
+  if(a.rewrite && a.rewrite.original){
+    const r = $(`<div class="stack" style="gap:6px"><div class="mono" style="color:var(--bad)">БЫЛО</div><div class="rw-old"></div><div class="mono" style="color:var(--good)">МОЖНО ТАК</div><div class="rw-new"></div></div>`);
+    r.querySelector(".rw-old").textContent = "«"+a.rewrite.original+"»"; r.querySelector(".rw-new").textContent = "«"+(a.rewrite.better||"")+"»"; box.append(r);
+  }
+  if(a.competencies){
+    const cp = $(`<div><div class="mono muted" style="margin-bottom:4px">КОМПЕТЕНЦИИ ВО ВСТРЕЧЕ</div></div>`);
+    Object.entries(COMP).forEach(([k,meta])=>{ const v = Number(a.competencies[k]); if(!Number.isFinite(v)) return; const pv = clamp(Math.round(v));
+      cp.append($(`<div class="comp"><div class="name">${meta.name}<small>${meta.hint}</small></div>${bars(pv,12)}<div class="pct">${pv}%</div></div>`)); });
+    box.append(cp);
+  }
+  if(rp.prep) box.append(prepReveal(a));
+  const row = $(`<div class="row"><button class="btn primary" id="rp-again">Сыграть заново</button><button class="btn" id="rp-list">Другой сценарий</button></div>`);
+  row.querySelector("#rp-again").onclick = ()=>rpStart(rp.sc, rp.prep);
+  row.querySelector("#rp-list").onclick = ()=>{ rp=null; render(); };
+  box.append(row);
+  return box;
+}
+function renderRpList(){
+  const wrap = $(`<section class="stack"></section>`);
+  wrap.append($(`<div class="stack" style="gap:6px"><h2>Проведите встречу сами</h2>
+    <p class="muted" style="margin:0; max-width:62ch">Участников играет AI: у каждого свой характер, интересы и то, о чём он молчит. Пишите реплики как ведущий. Хорошая фасилитация раскрывает людей, плохая их закрывает. Можно сначала подготовиться: составить карту участников — после встречи увидите, что угадали. В конце AI-тренер разберёт встречу.</p></div>`));
+  const list = $(`<div class="case-list"></div>`);
+  RP.forEach(sc=>{
+    const c = $(`<div class="case-card rp-card"><span class="card-top">${icoHtml(sc.cat)}<span class="proj">${esc(sc.proj)}</span></span><span class="title">${esc(sc.title)}</span>
+      <span class="muted" style="font-size:14px; line-height:1.4">${esc(sc.goal)}</span>
+      <span class="ava-row">${sc.people.map(p=>avatar(p,28)).join("")}<span class="status">${sc.people.map(p=>esc(p.name.split(" ")[0])).join(" · ")}</span></span>
+      <div class="row" style="gap:8px; margin-top:4px"><button class="btn primary" data-a="prep">Подготовиться</button><button class="btn" data-a="go">Сразу на встречу</button></div></div>`);
+    c.querySelector('[data-a="prep"]').onclick = ()=>{ rpPrep = sc; render(); window.scrollTo({top:0}); };
+    c.querySelector('[data-a="go"]').onclick = ()=>rpStart(sc);
+    list.append(c);
+  });
+  wrap.append(list);
+  wrap.append($(`<p class="muted" style="margin:0; font-size:13.5px">Каждая реплика — запрос к Claude от аккаунта того, кто открыл страницу. При первом запросе Claude попросит разрешение.</p>`));
+  view.append(wrap);
+}
+
+document.getElementById("hero-strip").innerHTML = Object.keys(CATS).map(k=>icoHtml(k)).join("");
+const h = (location.hash||"").replace("#","");
+setTab(h);
+initAI();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "Тренажёры: маркетплейс «Корзина»",
+  "short_name": "Корзина",
+  "description": "Три учебных тренажёра по Agile и Kanban на кейсе маркетплейса: Epic Lens, Flow Lens, Board Lens",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#E6E8E3",
+  "theme_color": "#20242B",
+  "lang": "ru",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

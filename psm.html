@@ -1,0 +1,1127 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#20242B">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<script src="pwa-shim.js"></script>
+</head>
+<body>
+<nav class="pwa-nav"><a href="./">← Все практикумы</a></nav>
+
+<title>Подготовка к PSM I — Scrum Way</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: the same control desk as the other practicums. A dark band carries the title, the three stages
+   (mode, questions, result) and, during the exam, the clock. Below: the question sheet beside a progress rail.
+   Signal orange is reserved for the exam clock running out and for the pass threshold line. */
+:root {
+  --paper: #E6E8E3;
+  --sheet: #FBFBF9;
+  --sheet-2: #F0F1ED;
+  --ink: #1D2026;
+  --ink-2: #5A6068;
+  --rule: #D3D6CF;
+  --rule-2: #B4B9B0;
+  --band: #20242B;
+  --band-ink: #E9EBE6;
+  --band-ink-2: #9AA1AB;
+  --signal: #F2551D;
+  --signal-tint: #FDE3D8;
+  --cobalt: #2D4FE3;
+  --cobalt-tint: #E2E7FC;
+  --amber: #D9960B;
+  --violet: #7650C4;
+  --green: #2D8A57;
+  --ok: #23804A; --ok-tint: #DDF0E3;
+  --warn: #9A6400; --warn-tint: #F8ECCB;
+  --bad: #C42B2B; --bad-tint: #F8DEDC;
+  --on-fill: #FFFFFF;
+  --font-display: "Dela Gothic One", "Golos Text", system-ui, sans-serif;
+  --font-body: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #14161A; --sheet: #1D2026; --sheet-2: #252930; --ink: #ECEDE9; --ink-2: #A2A8B0; --rule: #333840; --rule-2: #4A5059;
+    --band: #0C0E11; --band-ink: #ECEDE9; --band-ink-2: #8E959F;
+    --signal: #FF7341; --signal-tint: #44231A; --cobalt: #8EA4FF; --cobalt-tint: #232C52; --amber: #F2B84B; --violet: #B79BF0; --green: #6CCB93;
+    --ok: #6CCB93; --ok-tint: #173323; --warn: #F2C14E; --warn-tint: #3A2D0E; --bad: #FF8A80; --bad-tint: #401A18;
+    --on-fill: #14161A; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #14161A; --sheet: #1D2026; --sheet-2: #252930; --ink: #ECEDE9; --ink-2: #A2A8B0; --rule: #333840; --rule-2: #4A5059;
+  --band: #0C0E11; --band-ink: #ECEDE9; --band-ink-2: #8E959F;
+  --signal: #FF7341; --signal-tint: #44231A; --cobalt: #8EA4FF; --cobalt-tint: #232C52; --amber: #F2B84B; --violet: #B79BF0; --green: #6CCB93;
+  --ok: #6CCB93; --ok-tint: #173323; --warn: #F2C14E; --warn-tint: #3A2D0E; --bad: #FF8A80; --bad-tint: #401A18;
+  --on-fill: #14161A; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55; padding-inline: 16px; padding-block: 0 56px; font-variant-numeric: tabular-nums; margin: 0; }
+.wrap { max-width: 1320px; margin-inline: auto; }
+h1, h2, h3, h4, p { margin: 0; }
+h1, h2, h3 { text-wrap: balance; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2.5px solid var(--cobalt); outline-offset: 2px; }
+.mono { font-variant-numeric: tabular-nums; }
+
+/* ---------- Control band ---------- */
+.band { background: var(--band); color: var(--band-ink); margin-inline: -16px; padding-inline: 16px; padding-block: 26px 0; }
+.band-top { display: flex; flex-wrap: wrap; gap: 14px 40px; align-items: end; justify-content: space-between; }
+.brand { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.brand h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(26px, 4vw, 40px); line-height: 1; letter-spacing: -0.01em; }
+.brand p { color: var(--band-ink-2); max-width: 62ch; font-size: 14.5px; }
+.casetag { font-size: 13px; color: var(--band-ink-2); border: 1px solid #454b55; border-radius: 999px; padding: 4px 12px; white-space: nowrap; }
+.band-meta { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.clock { font-family: var(--font-display); font-size: 26px; line-height: 1; color: var(--band-ink); padding: 6px 14px; border-radius: 10px; background: #2b3038; }
+.clock.low { color: var(--signal); background: rgba(242, 85, 29, .18); }
+.clock small { font-family: var(--font-body); font-size: 12px; color: var(--band-ink-2); display: block; margin-top: 4px; }
+
+/* Ruler: 80 question marks, filled as answered */
+.ruler { margin-top: 22px; display: grid; grid-template-columns: repeat(var(--cols, 40), minmax(0, 1fr)); gap: 3px; align-items: end; height: 20px; }
+.ruler span { height: 10px; border-radius: 3px; background: #343a44; }
+.ruler span.done { background: var(--band-ink-2); }
+.ruler span.ok { background: var(--green); }
+.ruler span.bad { background: var(--signal); }
+.ruler span.now { outline: 2px solid var(--band-ink); outline-offset: 2px; }
+@media (max-width: 640px) { .ruler { grid-template-columns: repeat(20, minmax(0, 1fr)); } .ruler span:nth-child(n+21) { display: none; } }
+
+.steps { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding-block: 22px 24px; border-top: 1px solid #3a4049; margin-top: 16px; }
+.steps::before { content: ""; position: absolute; left: 14px; right: 14px; top: 36px; height: 3px; background: #3e444e; border-radius: 3px; }
+.step { appearance: none; position: relative; text-align: left; cursor: pointer; border: 0; background: transparent; color: var(--band-ink); padding: 0 10px 0 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.step .dot { width: 31px; height: 31px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 14px; background: var(--band); border: 3px solid #5b626d; color: var(--band-ink-2); position: relative; z-index: 1; }
+.step .t { font-weight: 600; font-size: 14px; line-height: 1.25; }
+.step .s { font-size: 12.5px; color: var(--band-ink-2); line-height: 1.3; }
+.step:hover .dot { border-color: var(--band-ink); }
+.step.done .dot { background: var(--green); border-color: var(--green); color: var(--band); }
+.step[aria-current="step"] .dot { background: var(--signal); border-color: var(--signal); color: var(--band); box-shadow: 0 0 0 5px rgba(242, 85, 29, .25); }
+.step.locked { cursor: not-allowed; }
+.step.locked .dot { border-style: dashed; }
+.step.locked .t, .step.locked .s { color: #6d7480; }
+@media (max-width: 860px) { .step .s { display: none; } .step .t { font-size: 12px; } }
+@media (max-width: 520px) { .step .t { display: none; } }
+
+/* ---------- Working area ---------- */
+.workspace { display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr); align-items: start; padding-top: 24px; }
+@media (min-width: 1100px) { .workspace { grid-template-columns: minmax(0, 1fr) 320px; } }
+.panel { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.card { background: var(--sheet); border-radius: 16px; padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.card > h3, .sec-h { font-family: var(--font-display); font-weight: 400; font-size: 19px; line-height: 1.2; letter-spacing: -0.005em; }
+.lead { color: var(--ink-2); max-width: 72ch; }
+.lbl { font-size: 13px; color: var(--ink-2); font-weight: 600; }
+.grid2 { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .grid2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+@media (max-width: 600px) { .card { padding: 18px 16px; border-radius: 12px; } }
+
+.btn { appearance: none; cursor: pointer; border: 1.5px solid var(--ink); background: transparent; border-radius: 999px; padding: 8px 18px; font-weight: 600; line-height: 1.2; color: var(--ink); }
+.btn:hover { background: var(--sheet-2); }
+.btn[disabled] { opacity: .4; cursor: not-allowed; }
+.btn-primary { background: var(--ink); color: var(--sheet); }
+.btn-primary:hover { background: var(--ink); filter: brightness(1.25); }
+.btn-small { padding: 5px 13px; font-size: 13px; border-width: 1px; border-color: var(--rule-2); font-weight: 500; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.status { min-height: 20px; font-size: 13.5px; color: var(--ink-2); }
+.status.err { color: var(--bad); }
+
+textarea, input[type="text"], input[type="number"], select { width: 100%; border: 1.5px solid var(--rule); background: var(--sheet); border-radius: 10px; padding: 9px 12px; }
+textarea:hover, input:hover, select:hover { border-color: var(--rule-2); }
+textarea { resize: vertical; line-height: 1.55; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.help { font-size: 13px; color: var(--ink-2); }
+details > summary { cursor: pointer; color: var(--ink-2); font-size: 13.5px; }
+
+/* Mode cards */
+.modes { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 720px) { .modes { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.mode { position: relative; display: flex; flex-direction: column; gap: 10px; padding: 20px 22px; border-radius: 14px; background: var(--sheet-2); border: 1.5px solid transparent; }
+.mode h4 { font-family: var(--font-display); font-weight: 400; font-size: 20px; }
+.mode .facts { display: flex; flex-wrap: wrap; gap: 6px; }
+.mode.exam { border-color: var(--rule-2); }
+.fact { font-size: 12.5px; padding: 2px 10px; border-radius: 999px; background: var(--sheet); color: var(--ink-2); }
+.tagline { display: flex; flex-wrap: wrap; gap: 6px; }
+.tagpill { font-size: 12.5px; padding: 3px 10px; border-radius: 999px; background: var(--sheet-2); color: var(--ink-2); display: inline-flex; gap: 6px; align-items: center; }
+.tagpill b { color: var(--ink); font-weight: 600; }
+
+/* Question */
+.q-meta { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 13px; color: var(--ink-2); }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; padding: 2px 10px 2px 8px; border-radius: 999px; white-space: nowrap; }
+.pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.pill.ok { color: var(--ok); background: var(--ok-tint); }
+.pill.warn { color: var(--warn); background: var(--warn-tint); }
+.pill.bad { color: var(--bad); background: var(--bad-tint); }
+.pill.bad::before { border-radius: 1px; transform: rotate(45deg); }
+.pill.info { color: var(--ink-2); background: var(--sheet-2); }
+.pill.topic { color: var(--cobalt); background: var(--cobalt-tint); }
+.q-text { font-size: 18px; font-weight: 500; line-height: 1.45; }
+.multi-note { font-size: 13px; color: var(--signal); font-weight: 600; }
+.opts { display: flex; flex-direction: column; gap: 8px; }
+.opt { display: flex; gap: 12px; align-items: flex-start; padding: 11px 14px; border: 1.5px solid var(--rule); border-radius: 12px; cursor: pointer; background: var(--sheet); text-align: left; width: 100%; line-height: 1.45; }
+.opt:hover { border-color: var(--rule-2); background: var(--sheet-2); }
+.opt .let { flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-size: 12.5px; font-weight: 700; border: 1.5px solid var(--rule-2); color: var(--ink-2); margin-top: 1px; }
+.opt.sel { border-color: var(--ink); }
+.opt.sel .let { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
+.opt.right { border-color: var(--ok); background: var(--ok-tint); }
+.opt.right .let { background: var(--ok); color: var(--on-fill); border-color: var(--ok); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-tint); }
+.opt.wrong .let { background: var(--bad); color: var(--on-fill); border-color: var(--bad); }
+.opt.miss { border-color: var(--ok); border-style: dashed; }
+.opt[disabled] { cursor: default; }
+.opt[disabled]:hover { background: inherit; }
+.opt.right[disabled]:hover { background: var(--ok-tint); } .opt.wrong[disabled]:hover { background: var(--bad-tint); }
+.multi .opt .let { border-radius: 7px; }
+.explain { padding: 14px 16px; background: var(--cobalt-tint); border-radius: 4px 14px 14px 14px; display: flex; flex-direction: column; gap: 6px; }
+.explain .ref { font-size: 13px; color: var(--ink-2); }
+.explain b { font-family: var(--font-display); font-weight: 400; font-size: 15px; }
+.nav { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+/* Result */
+.bigline { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: baseline; }
+.bignum { font-family: var(--font-display); font-size: 44px; line-height: 1.1; }
+.bignum.bad { color: var(--signal); } .bignum.ok { color: var(--ok); }
+.compare { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+.stat { padding: 12px 14px; background: var(--sheet-2); border-radius: 10px; display: flex; flex-direction: column; gap: 2px; }
+.stat b { font-family: var(--font-display); font-weight: 400; font-size: 24px; line-height: 1.15; }
+.stat.hot b { color: var(--signal); }
+.topics { display: flex; flex-direction: column; gap: 12px; }
+.topic-row { display: grid; gap: 4px 14px; grid-template-columns: minmax(0, 1fr) 64px; align-items: center; }
+.topic-row .bar { grid-column: 1; height: 12px; border-radius: 999px; background: var(--rule); position: relative; overflow: hidden; }
+.topic-row .bar i { position: absolute; inset: 0 auto 0 0; border-radius: 999px; background: var(--ok); }
+.topic-row .bar i.warn { background: var(--amber); } .topic-row .bar i.bad { background: var(--bad); }
+.topic-row .bar::after { content: ""; position: absolute; top: -2px; bottom: -2px; left: 85%; width: 2px; background: var(--signal); }
+.topic-row .pct { grid-column: 2; grid-row: 1 / span 2; font-family: var(--font-display); font-size: 20px; text-align: right; }
+.topic-row .nm { font-weight: 600; font-size: 14px; }
+.topic-row .adv { grid-column: 1 / span 2; font-size: 13px; color: var(--ink-2); }
+.review { display: flex; flex-direction: column; gap: 12px; }
+.rv { padding: 14px 16px; border-radius: 12px; background: var(--sheet-2); display: flex; flex-direction: column; gap: 8px; border-left: 4px solid var(--bad); }
+.rv.ok { border-left-color: var(--ok); }
+.rv .q { font-weight: 500; }
+.rv .a { font-size: 14px; }
+.rv .a span { color: var(--ink-2); }
+.note { font-size: 13px; color: var(--ink-2); border-left: 3px solid var(--rule-2); padding-left: 10px; }
+
+/* ---------- Rail ---------- */
+.rail { background: var(--sheet); border-radius: 16px; display: flex; flex-direction: column; min-width: 0; border-top: 6px solid var(--band); }
+@media (min-width: 1100px) { .rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 14px); max-height: calc(100vh - 28px); overflow: auto; } }
+.rail-sec { padding: 16px 18px; border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; gap: 10px; }
+.rail-sec:last-child { border-bottom: 0; }
+.rail h3 { font-family: var(--font-display); font-weight: 400; font-size: 16px; }
+.rail h4 { font-size: 13px; color: var(--ink-2); font-weight: 600; }
+.goal { display: flex; gap: 10px; align-items: baseline; font-size: 14px; }
+.goal .dot { flex: none; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--rule-2); transform: translateY(1px); }
+.goal.on .dot { background: var(--green); border-color: var(--green); }
+.meter { display: flex; gap: 4px; }
+.meter i { flex: 1; height: 10px; border-radius: 999px; background: var(--rule); }
+.meter i.ok { background: var(--ok); } .meter i.warn { background: var(--amber); } .meter i.bad { background: var(--bad); }
+.attempts { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.attempt { display: flex; gap: 8px; justify-content: space-between; padding: 6px 10px; background: var(--sheet-2); border-radius: 8px; }
+.tip { font-size: 14px; background: var(--cobalt-tint); }
+.tip .q { color: var(--ink-2); font-style: italic; }
+.empty { padding: 26px 18px; text-align: center; color: var(--ink-2); border: 2px dashed var(--rule-2); border-radius: 14px; }
+.qgrid { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 4px; }
+.qgrid button { appearance: none; border: 1px solid var(--rule); background: var(--sheet-2); border-radius: 6px; font-size: 11px; padding: 4px 0; cursor: pointer; color: var(--ink-2); }
+.qgrid button.done { background: var(--rule-2); color: var(--ink); }
+.qgrid button.ok { background: var(--ok-tint); color: var(--ok); border-color: var(--ok); }
+.qgrid button.bad { background: var(--bad-tint); color: var(--bad); border-color: var(--bad); }
+.qgrid button.now { outline: 2px solid var(--ink); outline-offset: 1px; }
+.custom-list { display: flex; flex-direction: column; gap: 8px; }
+.custom-item { display: flex; gap: 10px; justify-content: space-between; align-items: flex-start; padding: 10px 12px; background: var(--sheet-2); border-radius: 10px; font-size: 13.5px; }
+.chk-row { display: flex; gap: 8px; align-items: center; }
+.chk-row input { accent-color: var(--signal); margin: 0; }
+.optfield { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 8px; align-items: center; }
+.optfield label { display: grid; place-items: center; }
+@media (prefers-reduced-motion: no-preference) { .btn, .step .dot, .opt { transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease; } }
+</style>
+
+<header class="band">
+  <div class="wrap">
+    <div class="band-top">
+      <div class="brand">
+        <h1>Подготовка к PSM I</h1>
+        <p>Практикум 0: тренажёр экзамена Scrum.org. 80 вопросов за 60 минут, проходной балл 85 %. Вопросы сценарные, как на реальном экзамене.</p>
+      </div>
+      <div class="band-meta" id="band-meta"></div>
+    </div>
+    <div class="ruler" id="ruler" aria-hidden="true"></div>
+    <nav class="steps" aria-label="Этапы практикума" id="steps"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="workspace">
+    <main class="panel" id="main"></main>
+    <aside class="rail" id="rail" aria-label="Прогресс"></aside>
+  </div>
+</div>
+
+<script>
+/* ================= Банк вопросов ================= */
+/* tag: T теория и ценности, K Scrum-команда, E события, A артефакты и обязательства, S масштабирование, F самоуправление и фокус */
+const TAGS = {
+  T: { n: 'Теория и ценности Scrum', read: '«Определение Scrum», «Теория Scrum», «Ценности Scrum»' },
+  K: { n: 'Scrum-команда', read: '«Scrum-команда», «Разработчики», «Владелец Продукта», «Scrum-мастер»' },
+  E: { n: 'События', read: '«События Scrum», «Спринт», «Планирование Спринта», «Ежедневный Скрам», «Обзор Спринта», «Ретроспектива Спринта»' },
+  A: { n: 'Артефакты и обязательства', read: '«Артефакты Scrum», «Бэклог Продукта», «Бэклог Спринта», «Инкремент» и три обязательства' },
+  S: { n: 'Масштабирование и несколько команд', read: '«Владелец Продукта», «Бэклог Продукта», «Инкремент», «Обязательство: Определение Готовности»' },
+  F: { n: 'Самоуправление и фокус', read: '«Scrum-команда», «Разработчики», «Бэклог Спринта», «Ежедневный Скрам», «Заключительное слово»' }
+};
+const QUESTIONS = [
+  /* ---- Банк первой версии тренажёра (20), формулировки отредактированы ---- */
+  { tag: 'A', text: 'Кто несёт ответственность за управление Бэклогом Продукта?',
+    options: ['Scrum-мастер', 'Разработчики', 'Владелец Продукта', 'Вся Scrum-команда поровну'], correct: 2,
+    explanation: 'Владелец Продукта отвечает за управление Бэклогом Продукта: его содержимое, упорядочивание и прозрачность. Он может делегировать часть работы другим, но ответственность остаётся за ним.',
+    ref: 'Scrum Guide 2020, раздел «Владелец Продукта»' },
+  { tag: 'E', text: 'Какова максимальная длительность Спринта?',
+    options: ['2 недели', '3 недели', '1 месяц', '6 недель'], correct: 2,
+    explanation: 'Спринт — контейнер для всех остальных событий, его длительность не более одного месяца. Чем длиннее Спринт, тем выше риск, что Цель Спринта устареет, и тем ниже предсказуемость.',
+    ref: 'Scrum Guide 2020, раздел «Спринт»' },
+  { tag: 'T', text: 'Каковы три столпа эмпиризма, на которых построен Scrum?',
+    options: ['Планирование, исполнение, контроль', 'Прозрачность, инспекция, адаптация', 'Коммуникация, сотрудничество, доверие', 'Роли, события, артефакты'], correct: 1,
+    explanation: 'Scrum основан на эмпиризме: знание берётся из опыта, а решения принимаются по наблюдаемым фактам. Три столпа — прозрачность, инспекция и адаптация. Без прозрачности инспекция вводит в заблуждение, без адаптации инспекция бессмысленна.',
+    ref: 'Scrum Guide 2020, раздел «Теория Scrum»' },
+  { tag: 'E', text: 'Каков таймбокс Ежедневного Скрама?',
+    options: ['5 минут', '15 минут', '30 минут', 'Зависит от длины Спринта'], correct: 1,
+    explanation: 'Ежедневный Скрам — событие Разработчиков длительностью 15 минут, в одно и то же время и в одном месте каждый рабочий день Спринта. В отличие от других событий, его длина не зависит от длины Спринта.',
+    ref: 'Scrum Guide 2020, раздел «Ежедневный Скрам»' },
+  { tag: 'E', text: 'Кто может отменить Спринт?',
+    options: ['Scrum-мастер', 'Разработчики', 'Владелец Продукта', 'Любой член Scrum-команды'], correct: 2,
+    explanation: 'Спринт можно отменить, если Цель Спринта потеряла смысл. Полномочия отменить Спринт есть только у Владельца Продукта.',
+    ref: 'Scrum Guide 2020, раздел «Спринт»' },
+  { tag: 'E', text: 'Каков таймбокс Планирования Спринта для Спринта длиной один месяц?',
+    options: ['2 часа', '4 часа', '6 часов', '8 часов'], correct: 3,
+    explanation: 'Планирование Спринта ограничено восемью часами для месячного Спринта. Для более коротких Спринтов событие обычно короче.',
+    ref: 'Scrum Guide 2020, раздел «Планирование Спринта»' },
+  { tag: 'K', text: 'Какой размер Scrum-команды рекомендует Scrum Guide?',
+    options: ['3–5 человек', '5–9 человек', '10 человек или меньше', 'Размер не ограничен'], correct: 2,
+    explanation: 'Scrum-команда обычно состоит из 10 человек или меньше: достаточно мала, чтобы оставаться гибкой, и достаточно велика, чтобы делать значимую работу за Спринт. Формулировка «7 ± 2» в Scrum Guide 2020 отсутствует.',
+    ref: 'Scrum Guide 2020, раздел «Scrum-команда»' },
+  { tag: 'A', text: 'Что такое Определение Готовности?',
+    options: ['Критерии приёмки конкретного элемента Бэклога Продукта', 'Формальное описание состояния Инкремента, при котором он соответствует требованиям к качеству продукта', 'Критерии завершения Спринта', 'Список задач, которые Разработчики обязались выполнить'], correct: 1,
+    explanation: 'Определение Готовности — формальное описание состояния Инкремента, при котором он соответствует мерам качества продукта. Пока элемент Бэклога Продукта не соответствует Определению Готовности, он не является частью Инкремента.',
+    ref: 'Scrum Guide 2020, раздел «Обязательство: Определение Готовности»' },
+  { tag: 'T', text: 'Каковы пять ценностей Scrum?',
+    options: ['Честность, целостность, уважение, фокус, смелость', 'Обязательство, фокус, открытость, уважение, смелость', 'Прозрачность, инспекция, адаптация, фокус, смелость', 'Коммуникация, сотрудничество, фокус, уважение, обязательство'], correct: 1,
+    explanation: 'Пять ценностей Scrum: обязательство, фокус, открытость, уважение и смелость. Когда команда живёт этими ценностями, столпы прозрачности, инспекции и адаптации оживают и формируют доверие.',
+    ref: 'Scrum Guide 2020, раздел «Ценности Scrum»' },
+  { tag: 'E', text: 'Какова цель Обзора Спринта?',
+    options: ['Спланировать следующий Спринт', 'Проинспектировать результат Спринта и определить будущие адаптации', 'Проанализировать процессы и взаимодействие в команде', 'Провести демонстрацию и принять работу у Разработчиков'], correct: 1,
+    explanation: 'Обзор Спринта нужен, чтобы проинспектировать результат Спринта и определить будущие адаптации. Scrum-команда и стейкхолдеры обсуждают сделанное и изменения в окружении, по итогам может быть скорректирован Бэклог Продукта. Это не приёмка и не демонстрация.',
+    ref: 'Scrum Guide 2020, раздел «Обзор Спринта»' },
+  { tag: 'A', text: 'Из чего состоит Бэклог Спринта?',
+    options: ['Только из выбранных элементов Бэклога Продукта', 'Из Цели Спринта, выбранных элементов Бэклога Продукта и плана поставки Инкремента', 'Из всех задач, необходимых для завершения проекта', 'Из выбранных элементов Бэклога Продукта и их оценок'], correct: 1,
+    explanation: 'Бэклог Спринта состоит из Цели Спринта (зачем), выбранных элементов Бэклога Продукта (что) и плана поставки Инкремента (как). Это план Разработчиков и для Разработчиков.',
+    ref: 'Scrum Guide 2020, раздел «Бэклог Спринта»' },
+  { tag: 'K', text: 'Кому принадлежит Бэклог Спринта и кто его формирует?',
+    options: ['Владельцу Продукта', 'Scrum-мастеру', 'Разработчикам', 'Стейкхолдерам'], correct: 2,
+    explanation: 'Бэклог Спринта создают Разработчики на Планировании Спринта и уточняют в ходе Спринта. Только они решают, как превратить выбранные элементы в Инкремент.',
+    ref: 'Scrum Guide 2020, разделы «Бэклог Спринта», «Разработчики»' },
+  { tag: 'A', text: 'Что такое Инкремент?',
+    options: ['Сумма всех выполненных за Спринт задач', 'Конкретный шаг к Цели Продукта, пригодный к использованию и соответствующий Определению Готовности', 'Скорость команды за Спринт', 'Отчёт о прогрессе для стейкхолдеров'], correct: 1,
+    explanation: 'Инкремент — конкретная ступень к Цели Продукта. Каждый Инкремент дополняет предыдущие и проверяется вместе с ними. Чтобы приносить ценность, Инкремент должен быть пригоден к использованию, то есть соответствовать Определению Готовности.',
+    ref: 'Scrum Guide 2020, раздел «Инкремент»' },
+  { tag: 'K', text: 'Кто отвечает за эффективность Scrum-команды?',
+    options: ['Владелец Продукта', 'Разработчики', 'Scrum-мастер', 'Руководитель подразделения'], correct: 2,
+    explanation: 'Scrum-мастер отвечает за эффективность Scrum-команды: помогает ей улучшать практики в рамках Scrum, устраняет препятствия и следит, чтобы события проходили продуктивно и в рамках таймбокса.',
+    ref: 'Scrum Guide 2020, раздел «Scrum-мастер»' },
+  { tag: 'E', text: 'Когда заканчивается Спринт?',
+    options: ['Когда все элементы Бэклога Спринта выполнены', 'Когда истекает таймбокс', 'Когда достигнута Цель Спринта', 'Когда Владелец Продукта принимает Инкремент'], correct: 1,
+    explanation: 'Спринт имеет фиксированную длительность и заканчивается по истечении таймбокса. Новый Спринт начинается сразу после завершения предыдущего. Досрочно завершить Спринт нельзя, его можно только отменить решением Владельца Продукта.',
+    ref: 'Scrum Guide 2020, раздел «Спринт»' },
+  { tag: 'E', text: 'Какова цель Ежедневного Скрама?',
+    options: ['Отчитаться о прогрессе перед Scrum-мастером', 'Проинспектировать прогресс к Цели Спринта и при необходимости адаптировать Бэклог Спринта', 'Синхронизировать работу со стейкхолдерами', 'Обновить диаграмму сгорания'], correct: 1,
+    explanation: 'Ежедневный Скрам проводится, чтобы проинспектировать прогресс к Цели Спринта и адаптировать Бэклог Спринта, скорректировав план на следующий день. Формат выбирают сами Разработчики.',
+    ref: 'Scrum Guide 2020, раздел «Ежедневный Скрам»' },
+  { tag: 'E', text: 'Кто участвует в Обзоре Спринта?',
+    options: ['Только Scrum-команда', 'Scrum-команда и ключевые стейкхолдеры', 'Вся организация', 'Только Владелец Продукта и стейкхолдеры'], correct: 1,
+    explanation: 'Обзор Спринта — рабочая сессия Scrum-команды и ключевых стейкхолдеров. Вместе они обсуждают результаты Спринта, прогресс к Цели Продукта и то, что делать дальше.',
+    ref: 'Scrum Guide 2020, раздел «Обзор Спринта»' },
+  { tag: 'K', text: 'Как Scrum-мастер служит Владельцу Продукта?',
+    options: ['Пишет элементы Бэклога Продукта и оценивает их', 'Помогает находить техники определения Цели Продукта и управления Бэклогом Продукта, содействует взаимодействию со стейкхолдерами', 'Упорядочивает Бэклог Продукта вместо него', 'Принимает решение о выпуске Инкремента'], correct: 1,
+    explanation: 'Scrum-мастер помогает Владельцу Продукта находить техники эффективного определения Цели Продукта и управления Бэклогом Продукта, помогает команде понимать потребность в ясных элементах Бэклога и содействует сотрудничеству со стейкхолдерами по запросу.',
+    ref: 'Scrum Guide 2020, раздел «Scrum-мастер»' },
+  { tag: 'A', text: 'Какое обязательство связано с Бэклогом Продукта?',
+    options: ['Цель Спринта', 'Цель Продукта', 'Определение Готовности', 'Критерии приёмки'], correct: 1,
+    explanation: 'У каждого артефакта своё обязательство: Бэклог Продукта — Цель Продукта, Бэклог Спринта — Цель Спринта, Инкремент — Определение Готовности. Обязательства повышают прозрачность и фокус.',
+    ref: 'Scrum Guide 2020, раздел «Артефакты Scrum»' },
+  { tag: 'E', text: 'Каков таймбокс Ретроспективы Спринта для Спринта длиной один месяц?',
+    options: ['1 час', '2 часа', '3 часа', '4 часа'], correct: 2,
+    explanation: 'Ретроспектива Спринта ограничена тремя часами для месячного Спринта и обычно короче для коротких Спринтов. Это последнее событие Спринта.',
+    ref: 'Scrum Guide 2020, раздел «Ретроспектива Спринта»' },
+
+  /* ---- Из авторских разборов, видео 11–30 ---- */
+  { tag: 'K', text: 'В Scrum-команде 14 человек, и руководство предлагает добавить ещё троих, «чтобы быстрее закрыть Бэклог Продукта». Что ближе всего к позиции Scrum Guide?',
+    options: ['Чем больше людей, тем быстрее результат: добавить', 'Оптимально 7 ± 2 человека, поэтому команду нужно сократить ровно до девяти', 'Команда обычно состоит из 10 человек или меньше; если людей больше, стоит переформировать её в несколько сплочённых команд на один продукт', 'Размер команды определяет Scrum-мастер по своему усмотрению'], correct: 2,
+    explanation: 'Рост команды растит число связей и согласований, а не результат. Scrum Guide говорит о 10 человеках или меньше; если команда больше, её переформируют в несколько Scrum-команд, работающих над одним продуктом с общей Целью Продукта, Бэклогом и Владельцем Продукта. «7 ± 2» — формулировка из устаревших материалов.',
+    ref: 'Scrum Guide 2020, раздел «Scrum-команда»' },
+  { tag: 'K', text: 'Из чего состоит Scrum-команда согласно Scrum Guide 2020?',
+    options: ['Из Владельца Продукта, Scrum-мастера и команды разработки как отдельной подкоманды', 'Из трёх ролей: менеджер проекта, аналитик, тестировщики', 'Из трёх подотчётностей — Владелец Продукта, Scrum-мастер и Разработчики — без подкоманд и иерархий', 'Из Владельца Продукта и Разработчиков; Scrum-мастер — внешний консультант'], correct: 2,
+    explanation: 'В Scrum Guide 2020 слово «роли» заменено на «подотчётности», а идея «команда разработки внутри команды» убрана. Scrum-команда — единое целое из Владельца Продукта, Scrum-мастера и Разработчиков, без подкоманд и начальников внутри.',
+    ref: 'Scrum Guide 2020, раздел «Scrum-команда»' },
+  { tag: 'A', text: 'Новая Scrum-команда спорит, кто должен написать Определение Готовности. Что соответствует Scrum Guide?',
+    options: ['Пишет Владелец Продукта, потому что он принимает работу', 'Задаёт Scrum-мастер как хранитель процесса', 'Если в организации есть стандарт готовности, команда следует ему как минимуму; если нет, Scrum-команда создаёт своё Определение Готовности для продукта', 'Диктует заказчик в договоре'], correct: 2,
+    explanation: 'Определение Готовности — не личное решение одного человека. Если оно является частью стандартов организации, все Scrum-команды обязаны следовать ему как минимуму. Если такого стандарта нет, Scrum-команда создаёт Определение Готовности, подходящее для продукта.',
+    ref: 'Scrum Guide 2020, раздел «Обязательство: Определение Готовности»' },
+  { tag: 'E', text: 'На какие три темы отвечает Scrum-команда на Планировании Спринта?',
+    options: ['Кто виноват, что делать и кто отвечает за срыв', 'Почему этот Спринт ценен, что может быть сделано в этом Спринте и как будет сделана выбранная работа', 'Бюджет, сроки и ресурсы Спринта', 'Что было в прошлом Спринте, что не успели и что переносим'], correct: 1,
+    explanation: 'Планирование Спринта раскрывает три темы: зачем (Цель Спринта), что (выбранные элементы Бэклога Продукта) и как (план поставки Инкремента). Без ответа «зачем» команда набирает работу, не понимая, ради чего.',
+    ref: 'Scrum Guide 2020, раздел «Планирование Спринта»' },
+  { tag: 'T', text: 'Команда показывает стейкхолдерам только удачные части работы и скрывает проблемы, а потом удивляется, что решения по продукту оказываются неверными. Какой столп эмпиризма подорван в первую очередь?',
+    options: ['Адаптация', 'Прозрачность', 'Планирование', 'Контроль'], correct: 1,
+    explanation: 'Столпы работают только вместе: без прозрачности инспекция вводит в заблуждение, а решения на основе такой инспекции ведут к потерям и рискам. Первая проблема здесь — непрозрачность процесса и артефактов.',
+    ref: 'Scrum Guide 2020, раздел «Теория Scrum»' },
+  { tag: 'T', text: 'Разработчик видит, что принятое командой техническое решение ведёт в тупик, но молчит, чтобы «не портить отношения». Какой ценности Scrum здесь недостаёт?',
+    options: ['Смелости', 'Фокуса', 'Обязательства', 'Уважения'], correct: 0,
+    explanation: 'Члены Scrum-команды должны иметь смелость поступать правильно и работать над сложными проблемами, в том числе открыто говорить о них. Пять ценностей — обязательство, фокус, открытость, уважение, смелость — это конкретный набор, а не любые «хорошие слова».',
+    ref: 'Scrum Guide 2020, раздел «Ценности Scrum»' },
+  { tag: 'A', text: 'Что такое Цель Продукта?',
+    options: ['Список всех функций продукта', 'Будущее состояние продукта, долгосрочная цель Scrum-команды и обязательство Бэклога Продукта', 'То же, что Цель Спринта', 'Дата выпуска очередного релиза'], correct: 1,
+    explanation: 'Цель Продукта описывает будущее состояние продукта и служит долгосрочной целью для планирования Scrum-команды. Это обязательство Бэклога Продукта: весь Бэклог существует, чтобы приближать команду к этой цели, а Спринты — шаги к ней.',
+    ref: 'Scrum Guide 2020, раздел «Обязательство: Цель Продукта»' },
+  { tag: 'A', text: 'В середине Спринта Инкремент готов и соответствует Определению Готовности. Стейкхолдеры просят поставить его сейчас. Когда это допустимо?',
+    options: ['Только в конце Спринта', 'В любой момент, как только Инкремент соответствует Определению Готовности', 'Только после одобрения на Обзоре Спринта', 'Не чаще одного раза за Спринт'], correct: 1,
+    explanation: 'Инкремент может быть поставлен стейкхолдерам до окончания Спринта, и за Спринт может быть создано несколько Инкрементов. Обзор Спринта — это инспекция и обратная связь, а не ворота для выпуска.',
+    ref: 'Scrum Guide 2020, раздел «Инкремент»' },
+  { tag: 'F', text: 'Руководитель требует, чтобы оценки элементов Бэклога Продукта ставил Владелец Продукта и обязательно в стори-поинтах, «как положено в Scrum». Что верно?',
+    options: ['Верно: Владелец Продукта оценивает, а стори-поинты обязательны', 'Оценивают Разработчики, которые будут делать работу; конкретную технику оценки Scrum не предписывает', 'Оценивает Scrum-мастер на основе скорости команды', 'Оценивает руководитель в человеко-часах'], correct: 1,
+    explanation: 'За оценку размера отвечают Разработчики, которые выполняют работу. Ни стори-поинты, ни покер планирования, ни скорость команды в Scrum Guide не прописаны: это популярные практики, а не требования фреймворка.',
+    ref: 'Scrum Guide 2020, раздел «Бэклог Продукта»' },
+  { tag: 'A', text: 'Команда поставила в календарь еженедельное «уточнение Бэклога» и называет его шестым событием Scrum. Что верно?',
+    options: ['Уточнение Бэклога Продукта — шестое официальное событие Scrum', 'Уточнение Бэклога Продукта — постоянная деятельность по разбиению и детализации элементов, а не отдельное событие', 'Уточнение Бэклога — часть Обзора Спринта', 'Уточнение Бэклога — обязанность только Scrum-мастера'], correct: 1,
+    explanation: 'В Scrum ровно пять событий: Спринт, Планирование Спринта, Ежедневный Скрам, Обзор Спринта и Ретроспектива Спринта. Уточнение Бэклога Продукта — непрерывная деятельность, в ходе которой элементы разбиваются и уточняются; команда сама решает, как и когда это делать.',
+    ref: 'Scrum Guide 2020, раздел «Бэклог Продукта»' },
+  { tag: 'E', text: 'Чем по сути является Обзор Спринта?',
+    options: ['Формальной приёмкой с подписанием акта', 'Рабочей сессией, на которой Scrum-команда и стейкхолдеры вместе инспектируют результат и решают, что делать дальше', 'Презентацией, где команда показывает слайды', 'Встречей только для руководства'], correct: 1,
+    explanation: 'Обзор Спринта — рабочая сессия, и Scrum Guide прямо предостерегает от сведения его к презентации. Команда и стейкхолдеры обсуждают Инкремент, изменения в окружении и следующие шаги; по итогам может быть скорректирован Бэклог Продукта.',
+    ref: 'Scrum Guide 2020, раздел «Обзор Спринта»' },
+  { tag: 'F', text: 'Через три дня после Планирования Разработчики поняли, что часть плана не работает и нужны другие задачи. Может ли Бэклог Спринта меняться в ходе Спринта?',
+    options: ['Нет, после Планирования он заморожен до конца Спринта', 'Да, Разработчики уточняют его на протяжении Спринта по мере того, как узнают новое, сохраняя Цель Спринта', 'Да, но менять его может только Владелец Продукта', 'Нет, любое изменение — нарушение Scrum'], correct: 1,
+    explanation: 'Бэклог Спринта — живой план Разработчиков, он уточняется в течение всего Спринта по мере поступления новых знаний. Меняться может объём и способ работы, а Цель Спринта остаётся неизменной; если объём нужно пересмотреть, Разработчики договариваются с Владельцем Продукта.',
+    ref: 'Scrum Guide 2020, разделы «Бэклог Спринта», «Спринт»' },
+  { tag: 'K', text: 'Кому служит Scrum-мастер?',
+    options: ['Только Разработчикам', 'Scrum-команде, Владельцу Продукта и организации', 'Только Владельцу Продукта', 'Только руководству компании'], correct: 1,
+    explanation: 'Scrum-мастер служит на трёх уровнях: Scrum-команде (самоуправление, кросс-функциональность, качество), Владельцу Продукта (Цель Продукта, управление Бэклогом, работа со стейкхолдерами) и организации (внедрение Scrum, устранение барьеров, объяснение эмпирического подхода).',
+    ref: 'Scrum Guide 2020, раздел «Scrum-мастер»' },
+  { tag: 'E', text: 'Спринт завершён: прошли Обзор и Ретроспектива. Когда начинается следующий Спринт?',
+    options: ['Сразу после завершения предыдущего', 'Через несколько дней паузы на подготовку', 'Когда Владелец Продукта подготовит Бэклог Продукта', 'Когда руководство согласует старт'], correct: 0,
+    explanation: 'Новый Спринт начинается немедленно после окончания предыдущего. Между Спринтами нет промежутков: Scrum — непрерывный ритм, а не серия отдельных проектов с перерывами.',
+    ref: 'Scrum Guide 2020, раздел «Спринт»' },
+  { tag: 'T', text: 'Является ли скорость команды (velocity) обязательной частью Scrum?',
+    options: ['Да, без скорости Scrum не работает', 'Нет, скорости нет в Scrum Guide; это дополнительная практика', 'Да, её обязан считать Scrum-мастер', 'Да, это официальная метрика Scrum'], correct: 1,
+    explanation: 'Scrum — фреймворк, описанный в Scrum Guide. Скорость, стори-поинты, покер планирования, доски — популярные дополняющие практики, которые команда может использовать, но они не являются частью Scrum. На экзамене важно отделять фреймворк от практик.',
+    ref: 'Scrum Guide 2020, раздел «Определение Scrum»' },
+  { tag: 'K', text: 'Что означает, что Scrum-команда кросс-функциональна?',
+    options: ['Каждый участник умеет делать всё', 'У команды есть все навыки, необходимые для создания ценности в каждом Спринте, без зависимости от внешних людей', 'В команде смешаны сотрудники разных отделов', 'Команда подчиняется нескольким руководителям'], correct: 1,
+    explanation: 'Кросс-функциональность означает, что внутри команды в сумме есть все навыки для создания ценности каждый Спринт, и ей не нужно ждать другие отделы. Это не требование, чтобы каждый умел всё.',
+    ref: 'Scrum Guide 2020, раздел «Scrum-команда»' },
+  { tag: 'K', text: 'Инкремент вышел с дефектами и не по стандарту качества. Кто отвечает за то, чтобы Инкремент соответствовал Определению Готовности?',
+    options: ['Владелец Продукта, потому что он принимает работу', 'Разработчики', 'Scrum-мастер, потому что он следит за процессом', 'Отдельный отдел тестирования'], correct: 1,
+    explanation: 'Разработчики несут ответственность за то, чтобы каждый Инкремент соответствовал Определению Готовности. Качество встраивается в работу, а не проверяется кем-то после. Владелец Продукта отвечает за ценность, Scrum-мастер — за эффективность команды.',
+    ref: 'Scrum Guide 2020, раздел «Разработчики»' },
+  { tag: 'S', text: 'Над одним продуктом работают четыре Scrum-команды. Сколько у них Владельцев Продукта, Бэклогов Продукта и Целей Продукта?',
+    options: ['У каждой команды свои', 'Один Владелец Продукта, один Бэклог Продукта и одна Цель Продукта на всех', 'Один Владелец Продукта, но бэклоги у каждой команды отдельные', 'Один Бэклог Продукта, а Владельца Продукта в каждой команде свой'], correct: 1,
+    explanation: 'Один продукт — один Бэклог Продукта, один Владелец Продукта и одна Цель Продукта, сколько бы команд над ним ни работало. Иначе источники приоритетов расходятся и команды тянут продукт в разные стороны.',
+    ref: 'Scrum Guide 2020, разделы «Владелец Продукта», «Бэклог Продукта»' },
+  { tag: 'A', multi: true, text: 'Какие пары «артефакт — обязательство» верны? Выберите три.',
+    options: ['Бэклог Продукта — Цель Продукта', 'Бэклог Спринта — Определение Готовности', 'Бэклог Спринта — Цель Спринта', 'Инкремент — Определение Готовности', 'Инкремент — Цель Продукта'], correct: [0, 2, 3],
+    explanation: 'Артефакты и обязательства работают парами: Бэклог Продукта — Цель Продукта, Бэклог Спринта — Цель Спринта, Инкремент — Определение Готовности. Бэклог без цели — просто список, Инкремент без Определения Готовности — непонятно, готов ли он.',
+    ref: 'Scrum Guide 2020, раздел «Артефакты Scrum»' },
+  { tag: 'F', text: 'Scrum-мастер слышит от Разработчиков: «План менять нельзя до завтрашнего Ежедневного Скрама». Что верно?',
+    options: ['Верно: корректировать план можно только на Ежедневном Скраме', 'Неверно: Ежедневный Скрам улучшает коммуникацию, но Разработчики могут корректировать план в любой момент дня', 'Верно, иначе нарушается ритм Спринта', 'Неверно: план меняется только на Планировании Спринта'], correct: 1,
+    explanation: 'Ежедневный Скрам — не единственный момент, когда Разработчики могут корректировать план. Они часто общаются в течение дня и адаптируют работу по мере необходимости. Самоуправление не работает по расписанию.',
+    ref: 'Scrum Guide 2020, раздел «Ежедневный Скрам»' },
+
+  /* ---- Оригинальные сценарные вопросы: теория и ценности ---- */
+  { tag: 'T', text: 'Руководство маркетплейса просит Scrum-мастера «адаптировать Scrum»: убрать Ретроспективу и сделать Спринт шесть недель, «потому что у нас своя специфика». Как это соотносится со Scrum Guide?',
+    options: ['Это допустимо: Scrum — гибкий фреймворк, и каждая часть необязательна', 'Удаление элементов Scrum скрывает проблемы и ограничивает пользу; результат уже не Scrum, хотя его можно так называть', 'Допустимо убрать Ретроспективу, но Спринт не может быть длиннее месяца', 'Scrum-мастер обязан выполнить любое решение руководства'], correct: 1,
+    explanation: 'Scrum Guide содержит минимум правил. Изменение сути Scrum, пропуск элементов или несоблюдение правил скрывают проблемы и ограничивают пользу, потенциально делая Scrum бесполезным. Фреймворк неполон намеренно: его дополняют практиками, а не урезают.',
+    ref: 'Scrum Guide 2020, разделы «Определение Scrum», «Заключительное слово»' },
+  { tag: 'T', text: 'Scrum-команда пропускает Обзор Спринта, когда «показывать нечего». Какой принцип Scrum она нарушает?',
+    options: ['Принцип фиксированного таймбокса', 'Каждое событие — формальная возможность инспекции и адаптации; пропуск события снижает прозрачность и упускает возможность улучшения', 'Принцип единого Владельца Продукта', 'Ничего не нарушает: события проводятся по необходимости'], correct: 1,
+    explanation: 'Все события Scrum — формальные возможности для инспекции и адаптации артефактов. Если проводить их не так, как задумано, теряется прозрачность и упускается возможность инспекции и адаптации. Отсутствие результата как раз и стоит проинспектировать со стейкхолдерами.',
+    ref: 'Scrum Guide 2020, разделы «Теория Scrum», «События Scrum»' },
+  { tag: 'T', text: 'На Ретроспективе команда честно обсудила провалы Спринта, но ничего не поменяла в работе. Какой столп эмпиризма здесь не работает?',
+    options: ['Прозрачность', 'Инспекция', 'Адаптация', 'Все три работают нормально'], correct: 2,
+    explanation: 'Инспекция без адаптации бессмысленна: если процесс или продукт отклоняются от приемлемых пределов, корректировка должна быть сделана как можно скорее. Обсуждение без изменений — это инспекция без адаптации.',
+    ref: 'Scrum Guide 2020, раздел «Теория Scrum»' },
+  { tag: 'T', text: 'Чем Scrum в первую очередь описан в Scrum Guide?',
+    options: ['Методологией с подробными инструкциями для каждого случая', 'Лёгким фреймворком, намеренно неполным, в рамках которого применяются различные процессы и техники', 'Набором лучших практик разработки программного обеспечения', 'Стандартом управления проектами'], correct: 1,
+    explanation: 'Scrum — лёгкий фреймворк, который помогает людям, командам и организациям создавать ценность через адаптивные решения сложных проблем. Он намеренно неполон и определяет только то, что нужно для реализации теории Scrum.',
+    ref: 'Scrum Guide 2020, раздел «Определение Scrum»' },
+  { tag: 'T', text: 'Команда взяла в Спринт столько работы, что к концу недели параллельно открыто двенадцать задач и ни одна не закончена. Какая ценность Scrum страдает прежде всего?',
+    options: ['Открытость', 'Уважение', 'Фокус', 'Смелость'], correct: 2,
+    explanation: 'Основной фокус Scrum-команды — работа Спринта ради максимального продвижения к его цели. Множество параллельно открытых задач рассеивает фокус и мешает достижению Цели Спринта.',
+    ref: 'Scrum Guide 2020, раздел «Ценности Scrum»' },
+  { tag: 'T', text: 'Какие утверждения о Scrum верны? Выберите два.', multi: true,
+    options: ['Scrum основан на эмпиризме и бережливом мышлении', 'Scrum предписывает конкретные инженерные практики', 'Scrum использует итеративный и инкрементальный подход для оптимизации предсказуемости и контроля рисков', 'Scrum эффективен только для разработки программного обеспечения'], correct: [0, 2],
+    explanation: 'Scrum основан на эмпиризме и бережливом мышлении (сокращение потерь, фокус на главном) и использует итеративно-инкрементальный подход. Он не предписывает инженерных практик и применяется далеко за пределами разработки программного обеспечения.',
+    ref: 'Scrum Guide 2020, разделы «Определение Scrum», «Теория Scrum»' },
+  { tag: 'T', text: 'Разработчик с опытом в другой команде настаивает, что «в Scrum нужно обязательно вести диаграмму сгорания». Что ответит Scrum-мастер, опираясь на Scrum Guide?',
+    options: ['Да, диаграмма сгорания — обязательный артефакт Scrum', 'Диаграмма сгорания — полезная практика прогнозирования, но Scrum не требует её; команда сама решает, что использовать', 'Диаграммы сгорания запрещены, потому что это инструмент классического управления проектами', 'Вести диаграмму обязан Владелец Продукта'], correct: 1,
+    explanation: 'Scrum Guide упоминает, что для прогнозирования прогресса используются различные практики, но подчёркивает, что они не заменяют эмпиризм. Scrum не требует ни одну конкретную технику; ценность имеет только то, что уже произошло.',
+    ref: 'Scrum Guide 2020, раздел «Спринт»' },
+  { tag: 'T', text: 'Какие из перечисленного относятся к пяти ценностям Scrum? Выберите все верные.', multi: true,
+    options: ['Открытость', 'Прозрачность', 'Уважение', 'Эффективность', 'Обязательство'], correct: [0, 2, 4],
+    explanation: 'Ценности Scrum: обязательство, фокус, открытость, уважение и смелость. Прозрачность — столп эмпиризма, а не ценность; эффективность в списке отсутствует. Экзамен часто смешивает столпы и ценности в одном вопросе.',
+    ref: 'Scrum Guide 2020, раздел «Ценности Scrum»' },
+  { tag: 'T', text: 'Владелец Продукта на каждом Обзоре Спринта говорит стейкхолдерам «всё по плану», хотя команда отстаёт от Цели Продукта. Что должен сделать Scrum-мастер?',
+    options: ['Ничего: общение со стейкхолдерами — зона ответственности Владельца Продукта', 'Помочь Владельцу Продукта и команде сделать реальное состояние продукта прозрачным: без прозрачности решения стейкхолдеров будут ошибочными', 'Самому доложить руководству об отставании, минуя Владельца Продукта', 'Предложить сократить Цель Продукта, чтобы отчёт стал правдой'], correct: 1,
+    explanation: 'Scrum-мастер отвечает за понимание и применение Scrum, в том числе за прозрачность. Непрозрачные артефакты ведут к решениям, снижающим ценность и увеличивающим риск. Scrum-мастер работает через Владельца Продукта и команду, а не вместо них.',
+    ref: 'Scrum Guide 2020, разделы «Теория Scrum», «Scrum-мастер»' },
+  { tag: 'T', text: 'Что из перечисленного Scrum Guide называет результатом применения ценностей Scrum членами команды?',
+    options: ['Рост скорости команды каждый Спринт', 'Оживление столпов прозрачности, инспекции и адаптации и формирование доверия', 'Сокращение числа событий', 'Повышение зарплат участников'], correct: 1,
+    explanation: 'Когда Scrum-команда воплощает пять ценностей, столпы эмпиризма оживают и формируют доверие. Ценности определяют работу, действия и поведение участников.',
+    ref: 'Scrum Guide 2020, раздел «Ценности Scrum»' },
+  { tag: 'T', text: 'Инкремент получился хуже, чем ожидали стейкхолдеры. Scrum-мастер предлагает «не выносить это на Обзор, чтобы не расстраивать людей». Какое утверждение верно?',
+    options: ['Это разумная защита команды', 'Это противоречит открытости и прозрачности: Scrum-команда и стейкхолдеры открыты в отношении работы и её вызовов', 'Решение правильное, если его одобрит Владелец Продукта', 'Scrum Guide не регулирует общение со стейкхолдерами'], correct: 1,
+    explanation: 'Ценность открытости требует, чтобы команда и стейкхолдеры были открыты в отношении работы и вызовов. Скрывая проблемы, Scrum-мастер лишает стейкхолдеров возможности принять верные решения на Обзоре Спринта.',
+    ref: 'Scrum Guide 2020, разделы «Ценности Scrum», «Обзор Спринта»' },
+
+  /* ---- Scrum-команда ---- */
+  { tag: 'K', text: 'Стейкхолдер приходит прямо к Разработчикам и просит «по-быстрому» добавить функцию в текущий Спринт. Что должен сделать Scrum-мастер?',
+    options: ['Разрешить, если Разработчики не против', 'Помочь стейкхолдеру понять, что изменения в Бэклог Продукта идут через Владельца Продукта, и организовать их разговор', 'Самостоятельно добавить функцию в Бэклог Спринта', 'Запретить стейкхолдерам общаться с командой'], correct: 1,
+    explanation: 'Чтобы Владелец Продукта был успешен, организация должна уважать его решения. Все, кто хочет изменить Бэклог Продукта, делают это через Владельца Продукта. Scrum-мастер обучает этому стейкхолдеров, не отгораживая команду от общения.',
+    ref: 'Scrum Guide 2020, разделы «Владелец Продукта», «Scrum-мастер»' },
+  { tag: 'K', text: 'Владелец Продукта уходит в отпуск на две недели и назначает трёх человек из отдела маркетинга «коллективно отвечать за Бэклог». Что верно?',
+    options: ['Это допустимо: Владелец Продукта может быть комитетом', 'Владелец Продукта — один человек, а не комитет; он может делегировать работу, но ответственность остаётся за ним', 'Scrum-мастер автоматически становится Владельцем Продукта', 'Разработчики сами упорядочивают Бэклог до его возвращения'], correct: 1,
+    explanation: 'Владелец Продукта — один человек, не комитет. Он может представлять потребности многих стейкхолдеров и делегировать работу по Бэклогу Продукта другим, но отвечает за неё по-прежнему он.',
+    ref: 'Scrum Guide 2020, раздел «Владелец Продукта»' },
+  { tag: 'K', text: 'Какие виды ответственности Scrum Guide закрепляет за Разработчиками? Выберите все верные.', multi: true,
+    options: ['Создание плана Спринта — Бэклога Спринта', 'Упорядочивание Бэклога Продукта', 'Соблюдение качества через следование Определению Готовности', 'Ежедневная адаптация плана для достижения Цели Спринта', 'Отмена Спринта при устаревании цели'], correct: [0, 2, 3],
+    explanation: 'Разработчики отвечают за создание Бэклога Спринта, за качество через Определение Готовности, за ежедневную адаптацию плана к Цели Спринта и за то, чтобы держать друг друга ответственными как профессионалы. Упорядочивание Бэклога Продукта — у Владельца Продукта, отмена Спринта — тоже его полномочие.',
+    ref: 'Scrum Guide 2020, раздел «Разработчики»' },
+  { tag: 'K', text: 'Руководитель отдела просит Scrum-мастера каждую неделю присылать отчёт, кто из Разработчиков сколько задач закрыл. Как поступить Scrum-мастеру?',
+    options: ['Присылать: Scrum-мастер отвечает за контроль команды', 'Объяснить, что Scrum-команда отвечает за результат как единое целое, и предложить руководителю инспектировать Инкремент на Обзоре Спринта', 'Переложить отчёт на Владельца Продукта', 'Отказаться без объяснений'], correct: 1,
+    explanation: 'Scrum-команда — сплочённая единица, ответственная за всю работу над продуктом. Scrum-мастер — настоящий лидер, служащий команде и организации, он помогает организации понимать эмпирический подход, а не поставляет инструменты индивидуального контроля.',
+    ref: 'Scrum Guide 2020, разделы «Scrum-команда», «Scrum-мастер»' },
+  { tag: 'K', text: 'В команде два тестировщика считают, что отвечают только за тестирование, а программисты — только за код. На Обзоре Спринта выяснилось, что протестированного Инкремента нет. Чья это ответственность по Scrum?',
+    options: ['Тестировщиков, которые не успели', 'Всей Scrum-команды: внутри неё нет подкоманд и индивидуальных титулов, за Инкремент отвечают Разработчики вместе', 'Scrum-мастера, который не распределил задачи', 'Владельца Продукта, который взял слишком много'], correct: 1,
+    explanation: 'Внутри Scrum-команды нет подкоманд и иерархий; все Разработчики, независимо от навыков, несут общую ответственность за создание пригодного Инкремента в каждом Спринте.',
+    ref: 'Scrum Guide 2020, разделы «Scrum-команда», «Разработчики»' },
+  { tag: 'K', text: 'Как Scrum-мастер служит организации? Выберите все верные.', multi: true,
+    options: ['Руководит, обучает и консультирует организацию по внедрению Scrum', 'Назначает Владельцев Продукта в каждую команду', 'Помогает сотрудникам и стейкхолдерам понимать эмпирический подход к сложной работе', 'Устраняет барьеры между стейкхолдерами и Scrum-командами', 'Утверждает бюджеты продуктов'], correct: [0, 2, 3],
+    explanation: 'Scrum-мастер служит организации, руководя и обучая внедрению Scrum, планируя и советуя внедрение, помогая понимать эмпирический подход и устраняя барьеры между стейкхолдерами и командами. Кадровые и бюджетные решения в Scrum Guide за ним не закреплены.',
+    ref: 'Scrum Guide 2020, раздел «Scrum-мастер»' },
+  { tag: 'K', text: 'Scrum-мастер замечает, что Владелец Продукта формулирует элементы Бэклога так, что Разработчики их не понимают. Что уместно сделать Scrum-мастеру?',
+    options: ['Переписать элементы Бэклога самому', 'Помочь Scrum-команде осознать потребность в ясных и лаконичных элементах Бэклога Продукта и предложить Владельцу Продукта техники их формулирования', 'Попросить Разработчиков просто догадываться по контексту', 'Передать упорядочивание Бэклога Разработчикам'], correct: 1,
+    explanation: 'Одна из форм служения Владельцу Продукта: помогать Scrum-команде понимать потребность в ясных и кратких элементах Бэклога Продукта и находить техники для управления им. Scrum-мастер не подменяет Владельца Продукта.',
+    ref: 'Scrum Guide 2020, раздел «Scrum-мастер»' },
+
+  /* ---- События ---- */
+  { tag: 'E', text: 'Scrum-мастер приглашает на Ежедневный Скрам руководителя отдела, чтобы он «был в курсе». Разработчики недовольны. Как правильно?',
+    options: ['Руководитель вправе присутствовать и задавать вопросы', 'Ежедневный Скрам — событие Разработчиков; если Владелец Продукта или Scrum-мастер активно работают над элементами Бэклога Спринта, они участвуют как Разработчики, остальным там делать нечего', 'Руководитель может присутствовать, если получит разрешение Владельца Продукта', 'Ежедневный Скрам нужно проводить без Scrum-мастера в любом случае'], correct: 1,
+    explanation: 'Ежедневный Скрам — событие для Разработчиков Scrum-команды. Владелец Продукта и Scrum-мастер участвуют только как Разработчики, если активно работают над элементами Бэклога Спринта. Scrum-мастеру стоит удовлетворить интерес руководителя иначе, например через Обзор Спринта.',
+    ref: 'Scrum Guide 2020, раздел «Ежедневный Скрам»' },
+  { tag: 'E', text: 'В середине Спринта маркетплейс отменил запуск «Доставки еды», ради которого была сформулирована Цель Спринта. Что происходит со Спринтом?',
+    options: ['Разработчики заканчивают Спринт как есть, чтобы не нарушать ритм', 'Владелец Продукта может отменить Спринт, поскольку Цель Спринта устарела; затем сразу начинается новый Спринт', 'Scrum-мастер продлевает Спринт до новой цели', 'Команда сама заменяет Цель Спринта на другую'], correct: 1,
+    explanation: 'Спринт может быть отменён, если Цель Спринта потеряла актуальность; сделать это вправе только Владелец Продукта. Цель Спринта не меняется в ходе Спринта, а новый Спринт начинается сразу после окончания предыдущего.',
+    ref: 'Scrum Guide 2020, раздел «Спринт»' },
+  { tag: 'E', text: 'Какие действия в ходе Спринта допустимы согласно Scrum Guide? Выберите все верные.', multi: true,
+    options: ['Пересмотр объёма работы Спринта по согласованию Разработчиков и Владельца Продукта', 'Изменение Цели Спринта под новые приоритеты', 'Уточнение Бэклога Продукта', 'Снижение качества ради выполнения всех элементов Бэклога Спринта', 'Изменения, ставящие под угрозу Цель Спринта'], correct: [0, 2],
+    explanation: 'В течение Спринта не делается изменений, угрожающих Цели Спринта, качество не снижается, а Бэклог Продукта уточняется по необходимости. Объём может быть уточнён и пересогласован с Владельцем Продукта по мере поступления новых знаний. Цель Спринта остаётся неизменной.',
+    ref: 'Scrum Guide 2020, раздел «Спринт»' },
+  { tag: 'E', text: 'На Ретроспективе команда выявила улучшение: автоматизировать проверку карточек товаров. Как распорядиться этим улучшением согласно Scrum Guide?',
+    options: ['Записать в отдельный план улучшений Scrum-мастера', 'Самые важные улучшения реализуются как можно скорее; их можно добавить в Бэклог Спринта следующего Спринта', 'Реализовать только после одобрения руководства', 'Отложить до следующей Ретроспективы'], correct: 1,
+    explanation: 'Scrum-команда определяет наиболее полезные изменения и реализует их как можно скорее. Улучшения могут даже быть добавлены в Бэклог Спринта следующего Спринта.',
+    ref: 'Scrum Guide 2020, раздел «Ретроспектива Спринта»' },
+  { tag: 'E', text: 'Команда проводит Обзор Спринта длиной три часа при двухнедельном Спринте: демонстрация, обсуждение, уточнение Бэклога. Что верно?',
+    options: ['Это нарушение: Обзор Спринта не должен превышать двух часов при любой длине Спринта', 'Это допустимо: максимум для месячного Спринта — четыре часа, для коротких Спринтов обычно меньше, но жёсткой формулы нет', 'Обзор Спринта не имеет таймбокса', 'Обзор Спринта должен быть не короче четырёх часов'], correct: 1,
+    explanation: 'Обзор Спринта — предпоследнее событие Спринта с таймбоксом не более четырёх часов для месячного Спринта. Для коротких Спринтов событие обычно короче, но Scrum Guide не задаёт пропорциональную формулу как правило.',
+    ref: 'Scrum Guide 2020, раздел «Обзор Спринта»' },
+
+  /* ---- Артефакты и обязательства ---- */
+  { tag: 'A', text: 'Стейкхолдеры недовольны: на Обзоре Спринта команда показывает работу, которая «почти готова», но не протестирована. Что должен сделать Scrum-мастер?',
+    options: ['Предложить показывать такую работу как часть Инкремента, но с пометкой', 'Напомнить команде, что работа, не соответствующая Определению Готовности, не является частью Инкремента и не предъявляется на Обзоре; элемент возвращается в Бэклог Продукта', 'Попросить Владельца Продукта принять работу условно', 'Снизить Определение Готовности, чтобы работа считалась готовой'], correct: 1,
+    explanation: 'Если элемент Бэклога Продукта не соответствует Определению Готовности, его нельзя выпускать и даже представлять на Обзоре Спринта; он возвращается в Бэклог Продукта для рассмотрения в будущем. Понижать планку качества ради демонстрации нельзя.',
+    ref: 'Scrum Guide 2020, раздел «Обязательство: Определение Готовности»' },
+  { tag: 'A', text: 'Разработчики выполнили все элементы Бэклога Спринта, но Цель Спринта не достигнута, потому что элементы не складываются в единое целое. Что это говорит о Планировании?',
+    options: ['Планирование прошло правильно: все элементы выполнены', 'Цель Спринта должна быть единым связным целым, ради которого выбираются элементы; выбор элементов без ясной цели — ошибка Планирования', 'Цель Спринта нужно было опустить', 'Виноват Владелец Продукта, который не принял работу'], correct: 1,
+    explanation: 'Цель Спринта — единственная цель Спринта и обязательство Разработчиков. Она создаёт связность и фокус, заставляя команду работать вместе, а не над разрозненными инициативами. Элементы выбираются ради цели, а не наоборот.',
+    ref: 'Scrum Guide 2020, раздел «Обязательство: Цель Спринта»' },
+  { tag: 'A', text: 'Что должно произойти, чтобы Scrum-команда перешла к новой Цели Продукта?',
+    options: ['Истёк квартал', 'Текущая Цель Продукта достигнута или от неё отказались', 'Сменился Scrum-мастер', 'Прошёл очередной Обзор Спринта'], correct: 1,
+    explanation: 'Цель Продукта — долгосрочная цель Scrum-команды. Команда должна достичь одной цели или отказаться от неё, прежде чем браться за следующую. В один момент времени у Бэклога Продукта одна Цель Продукта.',
+    ref: 'Scrum Guide 2020, раздел «Обязательство: Цель Продукта»' },
+  { tag: 'A', text: 'Какие утверждения о Бэклоге Продукта верны? Выберите все верные.', multi: true,
+    options: ['Это упорядоченный, постоянно развивающийся список того, что нужно для улучшения продукта', 'Это единственный источник работы для Scrum-команды', 'Он фиксируется на старте продукта и не меняется', 'Элементы, которые команда может завершить за один Спринт, считаются готовыми к выбору на Планировании', 'Его упорядочивает Scrum-мастер'], correct: [0, 1, 3],
+    explanation: 'Бэклог Продукта — эмерджентный упорядоченный список и единственный источник работы Scrum-команды. Элементы, которые Разработчики могут завершить за один Спринт, считаются готовыми к выбору. Упорядочивает его Владелец Продукта.',
+    ref: 'Scrum Guide 2020, раздел «Бэклог Продукта»' },
+  { tag: 'A', text: 'Команда разработки платёжного модуля ведёт для себя отдельный «технический бэклог» задач по инфраструктуре, невидимый Владельцу Продукта. Что верно?',
+    options: ['Это нормально: технические задачи не касаются Владельца Продукта', 'Бэклог Продукта — единственный источник работы; скрытый список снижает прозрачность, и техническую работу тоже следует сделать видимой в Бэклоге Продукта', 'Технический бэклог должен вести Scrum-мастер', 'Технические задачи вообще не планируются в Scrum'], correct: 1,
+    explanation: 'Бэклог Продукта — единственный источник работы Scrum-команды, и артефакты призваны максимизировать прозрачность ключевой информации. Параллельный скрытый список лишает Владельца Продукта возможности упорядочивать всю работу над продуктом.',
+    ref: 'Scrum Guide 2020, разделы «Артефакты Scrum», «Бэклог Продукта»' },
+  { tag: 'A', text: 'Бэклог Спринта по Scrum Guide должен обладать достаточной детализацией, чтобы…',
+    options: ['Руководство могло контролировать загрузку каждого Разработчика', 'Разработчики могли инспектировать свой прогресс на Ежедневном Скраме', 'Владелец Продукта мог принять работу', 'Scrum-мастер мог посчитать скорость'], correct: 1,
+    explanation: 'Бэклог Спринта — хорошо видимый план в реальном времени для Разработчиков. Он детализирован ровно настолько, чтобы Разработчики могли инспектировать прогресс на Ежедневном Скраме и обновлять план по ходу Спринта.',
+    ref: 'Scrum Guide 2020, раздел «Бэклог Спринта»' },
+
+  /* ---- События: ещё два сценария ---- */
+  { tag: 'E', text: 'Разработчики хотят заменить Ежедневный Скрам переписыванием в чате «когда удобно», потому что часть команды в другом часовом поясе. Что соответствует Scrum Guide?',
+    options: ['Ежедневный Скрам можно отменить по решению Разработчиков', 'Ежедневный Скрам проводится каждый рабочий день Спринта в одно и то же время и место, чтобы снизить сложность; формат и техники Разработчики выбирают сами', 'Формат Ежедневного Скрама задаёт Scrum-мастер', 'Ежедневный Скрам обязателен только при Спринтах длиннее двух недель'], correct: 1,
+    explanation: 'Ежедневный Скрам — 15-минутное событие, которое проводится в одно время и в одном месте каждый рабочий день Спринта, чтобы уменьшить сложность. Структуру и техники Разработчики выбирают сами, но событие нельзя превратить в асинхронную переписку «по желанию».',
+    ref: 'Scrum Guide 2020, раздел «Ежедневный Скрам»' },
+  { tag: 'E', text: 'Кто в итоге решает, сколько элементов Бэклога Продукта войдёт в Спринт, когда Владелец Продукта настаивает на большем объёме, чем Разработчики считают выполнимым?',
+    options: ['Владелец Продукта, потому что он отвечает за ценность', 'Разработчики: только они решают, сколько работы могут выполнить за Спринт', 'Scrum-мастер как арбитр', 'Руководство на основании прошлой скорости'], correct: 1,
+    explanation: 'Через обсуждение с Владельцем Продукта Разработчики выбирают элементы для Спринта. Выбор объёма — исключительно их решение, ведь только Разработчики могут оценить, что они способны завершить.',
+    ref: 'Scrum Guide 2020, раздел «Планирование Спринта»' },
+
+  /* ---- Масштабирование и несколько команд ---- */
+  { tag: 'S', text: 'Три Scrum-команды работают над одним продуктом. На Обзоре Спринта стейкхолдеры получают три отдельных Инкремента, которые не интегрированы между собой. Что верно?',
+    options: ['Это нормально: у каждой команды свой Инкремент', 'Инкременты команд, работающих над одним продуктом, должны объединяться в один пригодный к использованию Инкремент; команды отвечают за интеграцию', 'Интеграцией занимается отдельная команда интеграции после Обзора', 'Владелец Продукта выбирает лучший из трёх Инкрементов'], correct: 1,
+    explanation: 'Каждый Инкремент дополняет предыдущие и тщательно проверяется вместе с ними, чтобы все Инкременты работали вместе. Для нескольких команд на один продукт это значит один интегрированный Инкремент, пригодный к использованию.',
+    ref: 'Scrum Guide 2020, разделы «Инкремент», «Обязательство: Определение Готовности»' },
+  { tag: 'S', text: 'Пять Scrum-команд одного продукта имеют разные Определения Готовности: одна считает работу готовой без тестов на интеграцию. Что рекомендует Scrum Guide?',
+    options: ['Каждая команда вправе иметь своё Определение Готовности', 'Если несколько команд работают над одним продуктом, они должны вместе определить и соблюдать одно Определение Готовности', 'Определение Готовности для всех устанавливает самая опытная команда', 'Scrum-мастера команд выбирают самое мягкое Определение, чтобы ускорить работу'], correct: 1,
+    explanation: 'Если над одним продуктом работают несколько Scrum-команд, они должны совместно определить и соблюдать одно и то же Определение Готовности. Иначе объединённый Инкремент непрозрачен по качеству.',
+    ref: 'Scrum Guide 2020, раздел «Обязательство: Определение Готовности»' },
+  { tag: 'S', text: 'Руководство маркетплейса решает: у каждой из шести команд одного продукта будет свой Владелец Продукта, чтобы «разгрузить» единственного. Как это соотносится со Scrum Guide?',
+    options: ['Это соответствует Scrum: один Владелец Продукта на команду', 'У продукта один Владелец Продукта и один Бэклог Продукта; Владелец Продукта может делегировать работу помощникам, но ответственность остаётся за ним одним', 'Владельцев Продукта должно быть столько же, сколько Scrum-мастеров', 'Scrum Guide не высказывается о числе Владельцев Продукта'], correct: 1,
+    explanation: 'Один продукт имеет одного Владельца Продукта и один Бэклог Продукта. Делегировать работу можно, но единая точка ответственности за ценность и приоритеты продукта остаётся одна, иначе команды будут тянуть продукт в разные стороны.',
+    ref: 'Scrum Guide 2020, разделы «Владелец Продукта», «Бэклог Продукта»' },
+  { tag: 'S', text: 'Две Scrum-команды работают над одним продуктом. Одна предлагает Спринт в одну неделю, другая — в четыре. Что важно учесть?',
+    options: ['Scrum Guide требует одинаковую длину Спринтов для всех команд продукта', 'Scrum Guide не предписывает единую длину, но команды должны обеспечивать интегрированный Инкремент и общую прозрачность; разная длина усложняет это, и команды должны договориться сами', 'Длину Спринта назначает Владелец Продукта', 'Длину Спринта назначает самый опытный Scrum-мастер'], correct: 1,
+    explanation: 'Scrum Guide ограничивает Спринт одним месяцем, но не требует единой длины для всех команд. Однако команды одного продукта отвечают за общий интегрированный Инкремент, единый Бэклог и единую Цель Продукта; выбирать ритм, который это обеспечивает, — задача самоуправляемых команд.',
+    ref: 'Scrum Guide 2020, разделы «Спринт», «Scrum-команда»' },
+  { tag: 'S', text: 'Что должно быть общим у нескольких Scrum-команд, работающих над одним продуктом? Выберите все верные.', multi: true,
+    options: ['Цель Продукта', 'Бэклог Продукта', 'Владелец Продукта', 'Scrum-мастер', 'Бэклог Спринта'], correct: [0, 1, 2],
+    explanation: 'Общими для команд одного продукта являются Цель Продукта, Бэклог Продукта и Владелец Продукта. У каждой команды собственный Бэклог Спринта и своя Цель Спринта; Scrum-мастер может быть свой у каждой команды или общий — Scrum Guide этого не предписывает.',
+    ref: 'Scrum Guide 2020, разделы «Владелец Продукта», «Бэклог Продукта», «Бэклог Спринта»' },
+  { tag: 'S', text: 'Команда из 23 человек работает над одним продуктом. Руководство спрашивает Scrum-мастера, как быть. Что предлагает Scrum Guide?',
+    options: ['Оставить одну большую команду: Scrum Guide не ограничивает размер', 'Разделить на несколько сплочённых Scrum-команд, сосредоточенных на одном продукте, с общей Целью Продукта, Бэклогом Продукта и Владельцем Продукта', 'Назначить несколько Scrum-мастеров внутри одной команды', 'Разделить команду на подкоманды по специальностям'], correct: 1,
+    explanation: 'Если Scrum-команды становятся слишком большими, им следует переформироваться в несколько сплочённых Scrum-команд, сосредоточенных на одном продукте. Они делят одну Цель Продукта, Бэклог Продукта и одного Владельца Продукта.',
+    ref: 'Scrum Guide 2020, раздел «Scrum-команда»' },
+  { tag: 'S', text: 'Несколько команд одного продукта хотят проводить общий Обзор Спринта. Что верно?',
+    options: ['Это запрещено: у каждой команды свой Обзор', 'Это допустимо: Scrum Guide не предписывает, как организовать событие для нескольких команд, важно, чтобы инспектировался интегрированный Инкремент и обсуждался прогресс к Цели Продукта', 'Общий Обзор заменяет Ретроспективу', 'Общий Обзор проводится только с разрешения руководства'], correct: 1,
+    explanation: 'Scrum Guide не описывает механику событий для нескольких команд. Главное — цель события: инспекция результата Спринта, определение адаптаций и обсуждение прогресса к Цели Продукта вместе со стейкхолдерами.',
+    ref: 'Scrum Guide 2020, раздел «Обзор Спринта»' },
+  { tag: 'S', text: 'В организации Scrum-мастер отвечает за три команды, две из которых работают над разными продуктами. Что верно?',
+    options: ['Это нарушение Scrum: один Scrum-мастер на одну команду', 'Scrum Guide не запрещает этого, но Scrum-мастер отвечает за эффективность каждой из своих команд, и ему следует оценить, справляется ли он', 'Scrum-мастер должен выбрать одну команду и отказаться от остальных', 'Это допустимо, только если команды в одном часовом поясе'], correct: 1,
+    explanation: 'Scrum Guide не задаёт норму «один Scrum-мастер на команду». Он фиксирует подотчётность: Scrum-мастер отвечает за понимание Scrum и эффективность каждой Scrum-команды. Сможет ли один человек это обеспечить — вопрос контекста.',
+    ref: 'Scrum Guide 2020, раздел «Scrum-мастер»' },
+  { tag: 'S', text: 'Разработчики из разных команд одного продукта спорят о порядке интеграции компонентов. К кому обратиться?',
+    options: ['К Владельцу Продукта: он решает технические вопросы', 'Команды самоуправляемы и кросс-функциональны: они сами договариваются о том, как интегрировать работу; Scrum-мастер может помочь организовать разговор', 'К руководителю разработки, который назначит ответственного', 'К Scrum-мастеру, который примет решение'], correct: 1,
+    explanation: 'Разработчики сами решают, как выполнять работу. При нескольких командах способ интеграции — предмет их договорённости. Scrum-мастер содействует, но решения не принимает; Владелец Продукта отвечает за «что» и «зачем», а не за «как».',
+    ref: 'Scrum Guide 2020, разделы «Scrum-команда», «Разработчики»' },
+  { tag: 'S', text: 'Что из перечисленного Scrum Guide относит к продукту?',
+    options: ['Только программное обеспечение', 'Средство доставки ценности с ясной границей, известными стейкхолдерами и пользователями; это может быть услуга, физический продукт или нечто абстрактное', 'Проект с датой завершения', 'Набор функций одной команды'], correct: 1,
+    explanation: 'Продукт — средство доставки ценности, имеющее чёткую границу, известных стейкхолдеров и чётко определённых пользователей или заказчиков. Продукт может быть услугой, физическим продуктом или чем-то более абстрактным.',
+    ref: 'Scrum Guide 2020, раздел «Обязательство: Цель Продукта»' },
+  { tag: 'S', text: 'При работе нескольких команд над одним продуктом кто отвечает за единый порядок элементов в Бэклоге Продукта?',
+    options: ['Scrum-мастера команд совместно', 'Владелец Продукта', 'Самая опытная команда', 'Руководитель программы'], correct: 1,
+    explanation: 'Один Бэклог Продукта — один Владелец Продукта, который отвечает за его содержимое и упорядочивание. Команды могут предлагать и уточнять элементы, но единый порядок задаёт Владелец Продукта.',
+    ref: 'Scrum Guide 2020, разделы «Владелец Продукта», «Бэклог Продукта»' },
+  { tag: 'S', text: 'Организация внедряет Scrum сразу в десяти командах и просит Scrum-мастера подготовить план внедрения. Соответствует ли это его подотчётности?',
+    options: ['Нет, Scrum-мастер работает только внутри своей команды', 'Да, служение организации включает планирование и консультирование по внедрению Scrum', 'Нет, это задача Владельца Продукта', 'Да, но только если он получит титул руководителя'], correct: 1,
+    explanation: 'Scrum-мастер служит организации: руководит, обучает и консультирует по внедрению Scrum, планирует и советует внедрение внутри организации, помогает понять эмпирический подход. Это прямая часть его подотчётности.',
+    ref: 'Scrum Guide 2020, раздел «Scrum-мастер»' },
+
+  /* ---- Самоуправление и фокус ---- */
+  { tag: 'F', text: 'Scrum-мастер каждый день сам распределяет задачи между Разработчиками, чтобы «ничего не забыли». Что не так?',
+    options: ['Всё верно: Scrum-мастер отвечает за эффективность команды', 'Разработчики самоуправляемы: они сами решают, кто, как и над чем работает; Scrum-мастер лишает их этого и мешает развитию ответственности', 'Распределять задачи должен Владелец Продукта', 'Распределять задачи нужно только на Планировании Спринта'], correct: 1,
+    explanation: 'Scrum-команда самоуправляема: участники внутри команды решают, кто, что, когда и как делает. Scrum-мастер коучит команду в самоуправлении и кросс-функциональности, а не управляет работой вместо неё.',
+    ref: 'Scrum Guide 2020, разделы «Scrum-команда», «Scrum-мастер»' },
+  { tag: 'F', text: 'В ходе Спринта Владелец Продукта просит Разработчиков «параллельно» взять срочную задачу из другого продукта. Что должны учесть Разработчики?',
+    options: ['Выполнить просьбу: Владелец Продукта определяет работу', 'Основной фокус Scrum-команды — работа Спринта ради Цели Спринта; стороннюю работу стоит обсудить с Владельцем Продукта в контексте этой цели, а не брать молча', 'Передать задачу Scrum-мастеру', 'Отменить Спринт'], correct: 1,
+    explanation: 'Ценность фокуса означает, что Scrum-команда сосредоточена на работе Спринта и на Цели Спринта. Изменения, ставящие цель под угрозу, недопустимы. Самоуправляемые Разработчики открыто обсуждают такие запросы с Владельцем Продукта.',
+    ref: 'Scrum Guide 2020, разделы «Ценности Scrum», «Спринт»' },
+  { tag: 'F', text: 'Что означает самоуправление Scrum-команды по Scrum Guide 2020?',
+    options: ['Команда сама выбирает, какой продукт делать и какой бюджет использовать', 'Команда внутри себя решает, кто, что, когда и как делает', 'Команда работает без Scrum-мастера', 'Команда не отчитывается ни перед кем'], correct: 1,
+    explanation: 'Scrum-команды самоуправляемы: они внутренне решают, кто, что, когда и как делает. Scrum Guide 2020 заменил «самоорганизацию» на «самоуправление», расширив автономию, но команда по-прежнему работает в рамках Цели Продукта и организации.',
+    ref: 'Scrum Guide 2020, раздел «Scrum-команда»' },
+  { tag: 'F', text: 'Разработчик обнаружил, что для элемента Бэклога Спринта потребуется в три раза больше работы, чем ожидалось, и Цель Спринта под угрозой. Что ему делать в первую очередь?',
+    options: ['Молча работать сверхурочно, чтобы успеть', 'Открыто сообщить команде и Владельцу Продукта, чтобы вместе пересмотреть объём работы без изменения Цели Спринта', 'Дождаться Ретроспективы и там рассказать', 'Снизить качество, чтобы уложиться'], correct: 1,
+    explanation: 'Открытость и прозрачность требуют сразу сообщить о проблеме. Если работа оказывается отличной от ожидаемой, Разработчики обсуждают с Владельцем Продукта объём Бэклога Спринта, не затрагивая Цель Спринта и не снижая качество.',
+    ref: 'Scrum Guide 2020, разделы «Обязательство: Цель Спринта», «Спринт»' },
+  { tag: 'F', text: 'На Ежедневном Скраме Разработчики по очереди отчитываются Scrum-мастеру по трём вопросам, а Scrum-мастер записывает. Что здесь расходится со Scrum Guide?',
+    options: ['Ничего: три вопроса — обязательный формат', 'Ежедневный Скрам — для Разработчиков, а не отчёт Scrum-мастеру; структуру выбирают сами Разработчики, фокус — на прогрессе к Цели Спринта', 'Записывать должен Владелец Продукта', 'Отчёт нужно отправлять стейкхолдерам'], correct: 1,
+    explanation: 'Разработчики сами выбирают структуру и техники Ежедневного Скрама, при условии что он сосредоточен на прогрессе к Цели Спринта и даёт план на следующий день. В Scrum Guide 2020 «три вопроса» как обязательный формат отсутствуют.',
+    ref: 'Scrum Guide 2020, раздел «Ежедневный Скрам»' },
+  { tag: 'F', text: 'Scrum-мастер замечает, что Разработчики ждут, пока он «устранит препятствие», даже когда могут решить вопрос сами. Что ему делать?',
+    options: ['Продолжать решать всё самому: устранение препятствий — его работа', 'Коучить команду в самоуправлении, помогая ей решать то, что в её силах, и браться только за препятствия, которые команда не может устранить сама', 'Передать все препятствия Владельцу Продукта', 'Назначить в команде ответственного за препятствия'], correct: 1,
+    explanation: 'Scrum-мастер служит команде, коуча её в самоуправлении и кросс-функциональности, и устраняет препятствия, мешающие прогрессу. Решать за команду то, что она способна решить сама, значит ослаблять самоуправление.',
+    ref: 'Scrum Guide 2020, раздел «Scrum-мастер»' },
+  { tag: 'F', text: 'Какие утверждения о Цели Спринта верны? Выберите все верные.', multi: true,
+    options: ['Это единственная цель Спринта и обязательство Разработчиков', 'Она создаётся на Планировании Спринта и добавляется в Бэклог Спринта', 'Она может меняться в ходе Спринта вслед за приоритетами', 'Она даёт гибкость в точном составе работы, необходимой для её достижения', 'Её формулирует Scrum-мастер'], correct: [0, 1, 3],
+    explanation: 'Цель Спринта формулирует вся Scrum-команда на Планировании, она добавляется в Бэклог Спринта и остаётся неизменной в течение Спринта. При этом точный состав работы может уточняться: цель фиксирована, путь к ней гибок.',
+    ref: 'Scrum Guide 2020, разделы «Обязательство: Цель Спринта», «Планирование Спринта»' },
+  { tag: 'F', text: 'В организации принято, что Разработчики не могут выпускать Инкремент без подписи руководителя разработки. Что должен сделать Scrum-мастер?',
+    options: ['Принять это как корпоративное правило', 'Помочь организации увидеть, как такое ограничение мешает самоуправлению и поставке ценности, и работать над устранением этого барьера', 'Подписывать Инкременты самому', 'Запретить команде выпускать Инкременты'], correct: 1,
+    explanation: 'Scrum-мастер служит организации, устраняя барьеры между стейкхолдерами и Scrum-командами и помогая понять эмпирический подход. Внешние ворота на выпуск готового Инкремента — препятствие, которое он помогает устранить, а не поддерживает.',
+    ref: 'Scrum Guide 2020, разделы «Scrum-мастер», «Инкремент»' },
+  { tag: 'F', text: 'Как Разработчики держат друг друга ответственными по Scrum Guide?',
+    options: ['Через индивидуальные показатели эффективности', 'Как профессионалы: Разработчики всегда держат друг друга ответственными за работу и качество', 'Через письменные отчёты Scrum-мастеру', 'Через выговоры от Владельца Продукта'], correct: 1,
+    explanation: 'Среди зон ответственности Разработчиков Scrum Guide называет: держать друг друга ответственными как профессионалов. Это внутренний механизм самоуправляемой команды, а не внешний контроль.',
+    ref: 'Scrum Guide 2020, раздел «Разработчики»' },
+  { tag: 'F', text: 'Scrum-команда вместо одной Цели Спринта берёт четыре независимые «мини-цели» для четырёх пар Разработчиков. Чем это плохо?',
+    options: ['Ничем: так удобнее планировать', 'Цель Спринта должна быть единой и создавать связность, побуждая команду работать вместе, а не над разрозненными инициативами', 'Целей Спринта должно быть минимум пять', 'Мини-цели должны формулироваться Владельцем Продукта'], correct: 1,
+    explanation: 'Цель Спринта создаёт связность и фокус, заставляя Scrum-команду работать вместе, а не над отдельными инициативами. Несколько независимых целей дробят команду на подкоманды, которых в Scrum нет.',
+    ref: 'Scrum Guide 2020, разделы «Обязательство: Цель Спринта», «Scrum-команда»' },
+  { tag: 'F', text: 'Разработчики хотят пригласить внешнего эксперта по безопасности платежей на две недели, потому что в команде нет этого навыка. Что верно по отношению к кросс-функциональности?',
+    options: ['Это запрещено: команда должна уметь всё сама', 'Допустимо: команда сама решает, как получить недостающие навыки, и это может быть поводом развивать навык внутри команды, чтобы не зависеть от внешних людей постоянно', 'Эксперт автоматически становится Владельцем Продукта', 'Решение должен принять Scrum-мастер'], correct: 1,
+    explanation: 'Кросс-функциональность означает, что у команды есть все навыки для создания ценности каждый Спринт. Как получить недостающий навык, решает самоуправляемая команда; Scrum-мастер помогает ей развивать кросс-функциональность, чтобы снизить постоянную зависимость от внешних людей.',
+    ref: 'Scrum Guide 2020, разделы «Scrum-команда», «Scrum-мастер»' },
+  { tag: 'F', text: 'Руководство требует, чтобы каждый Разработчик был загружен на 100 %, и просит Scrum-мастера «следить за этим». Какая позиция соответствует Scrum?',
+    options: ['Scrum-мастер должен обеспечить полную загрузку', 'Scrum измеряет результат Инкрементом и прогрессом к целям, а не загрузкой людей; бережливое мышление требует сокращать потери и фокусироваться на главном, а не занимать всех', 'Загрузку контролирует Владелец Продукта', 'Scrum требует загрузки не более 80 %'], correct: 1,
+    explanation: 'Scrum основан на эмпиризме и бережливом мышлении: сокращение потерь и фокус на главном. Ценность создаёт Инкремент, а не занятость. Scrum-мастер помогает организации понять эмпирический подход, а не внедряет контроль загрузки.',
+    ref: 'Scrum Guide 2020, разделы «Теория Scrum», «Scrum-мастер»' }
+];
+
+/* ================= Константы ================= */
+const EXAM = { n: 80, minutes: 60, pass: 85 };
+const LEARN_N = 30;
+const LETTERS = ['A', 'B', 'C', 'D', 'E'];
+
+/* ================= Helpers ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const arr = (v) => (Array.isArray(v) ? v : []);
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') el.className = v; else if (k === 'text') el.textContent = v;
+    else if (k === 'style') el.setAttribute('style', v);
+    else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else if (v === true) el.setAttribute(k, ''); else el.setAttribute(k, v);
+  }
+  for (const kid of kids.flat()) { if (kid == null || kid === false) continue; el.append(kid.nodeType ? kid : document.createTextNode(String(kid))); }
+  return el;
+}
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage may be blocked */ } },
+  del(k) { try { localStorage.removeItem(k); } catch (e) { /* ignore */ } }
+};
+const sameSet = (a, b) => { const x = [...a].sort().join(','), y = [...b].sort().join(','); return x === y; };
+const corr = (q) => (q.multi ? arr(q.correct) : [q.correct]);
+const pad = (n) => String(n).padStart(2, '0');
+const qWord = (n) => { const a = n % 100, b = a % 10; if (a > 10 && a < 20) return 'вопросов'; if (b === 1) return 'вопрос'; if (b >= 2 && b <= 4) return 'вопроса'; return 'вопросов'; };
+function shuffle(a) { const r = a.slice(); for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; } return r; }
+
+/* ================= Банк: встроенный + свои вопросы ================= */
+function sanitizeCustom(list) {
+  return arr(list).filter((q) => q && typeof q.text === 'string' && Array.isArray(q.options) && q.options.length >= 4 && q.options.length <= 5 && TAGS[q.tag])
+    .map((q) => ({ tag: q.tag, text: q.text, options: q.options.map(String), multi: !!q.multi, correct: q.multi ? arr(q.correct).map(Number) : Number(q.correct), explanation: String(q.explanation || ''), ref: String(q.ref || ''), custom: true }))
+    .filter((q) => (q.multi ? q.correct.length >= 2 && q.correct.every((i) => i >= 0 && i < q.options.length) : q.correct >= 0 && q.correct < q.options.length));
+}
+let CUSTOM = sanitizeCustom(store.get('kz.psm.custom', []));
+const bank = () => QUESTIONS.concat(CUSTOM);
+const byTag = (list) => { const c = {}; Object.keys(TAGS).forEach((t) => (c[t] = 0)); list.forEach((q) => { c[q.tag] = (c[q.tag] || 0) + 1; }); return c; };
+
+/* Сборка попытки: равномерно по темам, затем перемешать */
+function pick(n) {
+  const all = shuffle(bank());
+  const groups = {}; Object.keys(TAGS).forEach((t) => (groups[t] = []));
+  all.forEach((q) => groups[q.tag].push(q));
+  const out = []; const keys = Object.keys(TAGS);
+  let guard = 0;
+  while (out.length < Math.min(n, all.length) && guard++ < 10000) {
+    for (const t of keys) { if (out.length >= n) break; const q = groups[t].shift(); if (q) out.push(q); }
+  }
+  return shuffle(out).map((q) => ({ ...q, correct: q.multi ? q.correct.slice() : q.correct }));
+}
+
+/* ================= State ================= */
+const saved = store.get('kz.psm.state', {});
+const state = {
+  step: Number.isInteger(saved.step) ? saved.step : 0,
+  mode: saved.mode || null,            // 'learn' | 'exam'
+  qs: arr(saved.qs),                  // вопросы попытки
+  answers: arr(saved.answers),        // массив индексов (multi) или число
+  checked: arr(saved.checked),        // learn: ответ проверен
+  cur: Number.isInteger(saved.cur) ? saved.cur : 0,
+  startedAt: saved.startedAt || null,
+  deadline: saved.deadline || null,
+  finished: !!saved.finished,
+  finishedAt: saved.finishedAt || null,
+  timedOut: !!saved.timedOut,
+  history: arr(saved.history),        // прошлые попытки
+  sel: [],                             // текущий выбор для multi (learn до проверки)
+  downloads: null, timer: null, adminOpen: false, filter: 'wrong', adminDraft: null
+};
+function persist() {
+  store.set('kz.psm.state', { step: state.step, mode: state.mode, qs: state.qs, answers: state.answers, checked: state.checked, cur: state.cur, startedAt: state.startedAt, deadline: state.deadline, finished: state.finished, finishedAt: state.finishedAt, timedOut: state.timedOut, history: state.history.slice(-12) });
+}
+
+/* ================= Оценка ================= */
+function isRight(q, a) { if (a == null) return false; return q.multi ? Array.isArray(a) && sameSet(a, q.correct) : a === q.correct; }
+function score() {
+  const total = state.qs.length; let ok = 0; const tags = {};
+  Object.keys(TAGS).forEach((t) => (tags[t] = { n: 0, ok: 0 }));
+  state.qs.forEach((q, i) => { const r = isRight(q, state.answers[i]); if (r) ok++; tags[q.tag] = tags[q.tag] || { n: 0, ok: 0 }; tags[q.tag].n++; if (r) tags[q.tag].ok++; });
+  const answered = state.answers.filter((a) => a != null && !(Array.isArray(a) && !a.length)).length;
+  return { total, ok, answered, pct: total ? Math.round(100 * ok / total) : 0, tags };
+}
+const verdict = (pct, mode) => {
+  if (mode === 'exam') return pct >= EXAM.pass ? { t: 'Проходной балл набран', s: 'ok' } : { t: 'Ниже проходного балла', s: 'bad' };
+  return pct >= EXAM.pass ? { t: 'Уровень экзамена', s: 'ok' } : pct >= 70 ? { t: 'Близко к порогу', s: 'warn' } : { t: 'Нужна проработка', s: 'bad' };
+};
+function tagAdvice(t, pct) {
+  const base = TAGS[t];
+  if (pct >= 85) return `Тема уверенная. Для закрепления достаточно бегло перечитать разделы ${base.read}.`;
+  if (pct >= 70) return `Есть пробелы. Перечитайте разделы ${base.read} и обратите внимание на формулировки «кто отвечает» и «когда».`;
+  return `Слабая тема. Прочитайте разделы ${base.read} целиком, затем разберите все ошибки по этой теме ниже.`;
+}
+
+/* ================= Таймер ================= */
+function startTimer() {
+  stopTimer();
+  if (state.mode !== 'exam' || state.finished || !state.deadline) return;
+  state.timer = setInterval(() => {
+    const left = state.deadline - Date.now();
+    if (left <= 0) { state.timedOut = true; finish(); return; }
+    renderClock();
+  }, 500);
+}
+function stopTimer() { if (state.timer) { clearInterval(state.timer); state.timer = null; } }
+function renderClock() {
+  const el = $('#band-meta'); if (!el) return;
+  const kids = [];
+  if (state.step === 1 && state.mode === 'exam' && !state.finished && state.deadline) {
+    const left = Math.max(0, state.deadline - Date.now()), m = Math.floor(left / 60000), s = Math.floor((left % 60000) / 1000);
+    kids.push(h('div', { class: 'clock' + (left < 5 * 60000 ? ' low' : ''), role: 'timer', 'aria-live': 'off' }, `${pad(m)}:${pad(s)}`, h('small', { text: 'осталось' })));
+  } else if (state.step === 1 && state.mode === 'learn') {
+    kids.push(h('span', { class: 'casetag', text: 'Режим «Обучение»: объяснение после каждого ответа' }));
+  } else {
+    kids.push(h('span', { class: 'casetag', text: `В банке ${bank().length} ${qWord(bank().length)} · Scrum Guide 2020` }));
+  }
+  el.replaceChildren(...kids);
+}
+
+/* ================= Жизненный цикл попытки ================= */
+function startAttempt(mode) {
+  const n = mode === 'exam' ? EXAM.n : LEARN_N;
+  state.mode = mode; state.qs = pick(n); state.answers = new Array(state.qs.length).fill(null); state.checked = new Array(state.qs.length).fill(false);
+  state.cur = 0; state.startedAt = Date.now(); state.finished = false; state.finishedAt = null; state.timedOut = false; state.sel = [];
+  state.deadline = mode === 'exam' ? Date.now() + EXAM.minutes * 60000 : null;
+  state.step = 1; persist(); render(); startTimer(); window.scrollTo({ top: 0 });
+}
+function finish() {
+  stopTimer();
+  if (state.finished) return;
+  state.finished = true; state.finishedAt = Date.now();
+  const s = score();
+  state.history.push({ at: state.finishedAt, mode: state.mode, pct: s.pct, ok: s.ok, total: s.total, timedOut: state.timedOut });
+  state.step = 2; persist(); render(); window.scrollTo({ top: 0 });
+}
+function reset() {
+  stopTimer();
+  state.step = 0; state.mode = null; state.qs = []; state.answers = []; state.checked = []; state.cur = 0; state.startedAt = null; state.deadline = null; state.finished = false; state.timedOut = false; state.sel = [];
+  persist(); render(); window.scrollTo({ top: 0 });
+}
+const unlocked = (i) => i === 0 || (i === 1 && state.qs.length > 0) || (i === 2 && state.finished);
+
+/* ================= Шаги ================= */
+const STEPS = [
+  { t: 'Режим', s: 'Обучение или экзамен' },
+  { t: 'Вопросы', s: 'Сценарии по Scrum Guide' },
+  { t: 'Результат', s: 'Процент, темы, разбор' }
+];
+function renderSteps() {
+  const done = [state.qs.length > 0, state.finished, state.finished];
+  $('#steps').replaceChildren(...STEPS.map((st, i) => h('button', { class: 'step' + (done[i] ? ' done' : '') + (unlocked(i) ? '' : ' locked'), type: 'button', 'aria-current': i === state.step ? 'step' : null, onclick: () => { if (unlocked(i)) go(i); } },
+    h('span', { class: 'dot', text: done[i] && i !== state.step ? '✓' : String(i + 1) }), h('span', { class: 't', text: st.t }), h('span', { class: 's', text: unlocked(i) ? st.s : 'Откроется позже' }))));
+}
+function renderRuler() {
+  const r = $('#ruler'); if (!r) return;
+  const n = state.qs.length || 40;
+  r.style.setProperty('--cols', String(Math.min(n, 40)));
+  const kids = [];
+  for (let i = 0; i < n; i++) {
+    const q = state.qs[i]; const a = state.answers[i];
+    let cls = '';
+    if (q && a != null && !(Array.isArray(a) && !a.length)) cls = (state.mode === 'learn' && state.checked[i]) || state.finished ? (isRight(q, a) ? 'ok' : 'bad') : 'done';
+    if (state.step === 1 && i === state.cur) cls += ' now';
+    kids.push(h('span', { class: cls.trim() || null }));
+  }
+  r.replaceChildren(...kids);
+}
+function go(i) { state.step = i; persist(); render(); window.scrollTo({ top: 0 }); }
+function render() { renderSteps(); renderRuler(); renderClock(); renderMain(); renderRail(); }
+function renderMain() {
+  const views = [viewStart, viewQuestion, viewResult];
+  $('#main').replaceChildren(...(unlocked(state.step) ? views[state.step]() : viewLocked()));
+}
+function viewLocked() {
+  return [h('section', { class: 'card' }, h('h3', { text: 'Этап пока закрыт' }), h('div', { class: 'empty', text: state.step === 2 ? 'Результат появится, когда вы завершите попытку.' : 'Сначала выберите режим и начните попытку.' }),
+    h('div', { class: 'actions' }, h('button', { class: 'btn', type: 'button', text: 'К выбору режима', onclick: () => go(0) })))];
+}
+
+/* ================= Шаг 1: режим ================= */
+function viewStart() {
+  const c = byTag(bank());
+  const resume = state.qs.length && !state.finished;
+  const out = [];
+  if (resume) {
+    const s = score();
+    out.push(h('section', { class: 'card' }, h('h3', { text: 'Есть незавершённая попытка' }),
+      h('p', { class: 'lead', text: `${state.mode === 'exam' ? 'Экзамен' : 'Обучение'}: отвечено ${s.answered} из ${s.total}.${state.mode === 'exam' && state.deadline ? (state.deadline > Date.now() ? ' Таймер продолжает идти.' : ' Время истекло, попытка будет завершена при открытии.') : ''}` }),
+      h('div', { class: 'actions' }, h('button', { class: 'btn btn-primary', type: 'button', text: 'Продолжить', onclick: () => { if (state.mode === 'exam' && state.deadline && state.deadline <= Date.now()) { state.timedOut = true; finish(); } else { go(1); startTimer(); } } }),
+        h('button', { class: 'btn', type: 'button', text: 'Сбросить попытку', onclick: reset }))));
+  }
+  out.push(h('section', { class: 'card' }, h('h3', { text: 'Как устроен тренажёр' }),
+    h('p', { class: 'lead', text: 'Банк вопросов построен по русскому Scrum Guide 2020. Большинство вопросов сценарные: описана ситуация в команде, и нужно выбрать, что соответствует Scrum. Часть вопросов имеет несколько верных ответов, как на реальном экзамене: такие вопросы помечены, и засчитываются только полностью верные ответы.' }),
+    h('div', { class: 'tagline' }, Object.keys(TAGS).map((t) => h('span', { class: 'tagpill' }, h('b', { text: String(c[t]) }), TAGS[t].n))),
+    h('div', { class: 'modes' },
+      h('div', { class: 'mode' }, h('h4', { text: 'Обучение' }),
+        h('p', { class: 'lead', text: `${LEARN_N} случайных вопросов без таймера. После каждого ответа — объяснение и ссылка на раздел Scrum Guide. Подходит для первого знакомства и для работы над слабыми темами.` }),
+        h('div', { class: 'facts' }, h('span', { class: 'fact', text: `${LEARN_N} вопросов` }), h('span', { class: 'fact', text: 'Без таймера' }), h('span', { class: 'fact', text: 'Разбор сразу' })),
+        h('div', { class: 'actions' }, h('button', { class: 'btn btn-primary', type: 'button', text: 'Начать обучение', onclick: () => startAttempt('learn') }))),
+      h('div', { class: 'mode exam' }, h('h4', { text: 'Экзамен' }),
+        h('p', { class: 'lead', text: `${EXAM.n} случайных вопросов за ${EXAM.minutes} минут, проходной балл ${EXAM.pass} %. Объяснения только в итоговом разборе. Можно возвращаться к вопросам и менять ответы до завершения. По истечении времени попытка закрывается автоматически.` }),
+        h('div', { class: 'facts' }, h('span', { class: 'fact', text: `${EXAM.n} вопросов` }), h('span', { class: 'fact', text: `${EXAM.minutes} минут` }), h('span', { class: 'fact', text: `Порог ${EXAM.pass} %` })),
+        h('div', { class: 'actions' }, h('button', { class: 'btn btn-primary', type: 'button', text: 'Начать экзамен', disabled: bank().length < EXAM.n, onclick: () => startAttempt('exam') }), bank().length < EXAM.n ? h('span', { class: 'help', text: `Для экзамена нужно не меньше ${EXAM.n} вопросов в банке.` }) : null)))));
+  out.push(h('section', { class: 'card' }, h('h3', { text: 'Как читать вопросы PSM I' }),
+    h('ul', { class: 'task-list', style: 'margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px' },
+      h('li', {}, 'Ищите ответ в Scrum Guide, а не в практике вашей команды. Скорость, стори-поинты, «три вопроса» и доски — практики, а не Scrum.'),
+      h('li', {}, 'Обращайте внимание на слова «только», «обязан», «всегда»: они часто делают вариант неверным.'),
+      h('li', {}, 'Помните подотчётности: Владелец Продукта — ценность и Бэклог Продукта, Разработчики — Инкремент и Бэклог Спринта, Scrum-мастер — эффективность и понимание Scrum.'),
+      h('li', {}, 'Если вопрос про «что должен сделать Scrum-мастер», верный ответ почти всегда про коучинг, прозрачность и устранение барьеров, а не про принятие решений за команду.'))));
+  out.push(adminCard());
+  return out;
+}
+
+/* ================= Шаг 2: вопрос ================= */
+function currentSel() { const a = state.answers[state.cur]; return Array.isArray(a) ? a.slice() : a == null ? [] : [a]; }
+function viewQuestion() {
+  const q = state.qs[state.cur]; if (!q) return viewLocked();
+  const i = state.cur, a = state.answers[i];
+  const learn = state.mode === 'learn';
+  const revealed = learn ? !!state.checked[i] : false;
+  const chosen = Array.isArray(a) ? a : a == null ? [] : [a];
+  const opts = h('div', { class: 'opts' + (q.multi ? ' multi' : '') }, q.options.map((o, k) => {
+    let cls = 'opt';
+    if (revealed) {
+      const right = q.correct.includes ? q.correct.includes(k) : q.correct === k;
+      const picked = chosen.includes(k);
+      if (right && picked) cls += ' right'; else if (!right && picked) cls += ' wrong'; else if (right) cls += ' miss';
+    } else if (chosen.includes(k)) cls += ' sel';
+    return h('button', { class: cls, type: 'button', disabled: revealed, 'aria-pressed': chosen.includes(k) ? 'true' : 'false', onclick: () => choose(k) }, h('span', { class: 'let', text: LETTERS[k] }), h('span', { text: o }));
+  }));
+  const kids = [
+    h('div', { class: 'q-meta' }, h('span', { class: 'pill topic', text: TAGS[q.tag].n }), h('span', { text: `Вопрос ${i + 1} из ${state.qs.length}` }), q.custom ? h('span', { class: 'pill info', text: 'свой вопрос' }) : null),
+    h('p', { class: 'q-text', text: q.text }),
+    q.multi ? h('p', { class: 'multi-note', text: `Несколько верных ответов: выберите ${corr(q).length}.` }) : null,
+    opts
+  ];
+  if (revealed) {
+    const ok = isRight(q, a);
+    kids.push(h('div', { class: 'explain' }, h('b', { text: ok ? 'Верно' : 'Неверно. Верный ответ: ' + corr(q).map((k) => LETTERS[k]).join(', ') }), h('p', { text: q.explanation }), h('p', { class: 'ref', text: q.ref })));
+  }
+  const last = i === state.qs.length - 1;
+  const s = score();
+  const canCheck = learn && !revealed && chosen.length > 0 && (!q.multi || chosen.length === corr(q).length);
+  const nav = h('div', { class: 'nav' },
+    h('div', { class: 'actions' }, h('button', { class: 'btn', type: 'button', text: 'Назад', disabled: i === 0, onclick: () => { state.cur--; persist(); render(); } })),
+    h('div', { class: 'actions' },
+      learn && !revealed ? h('button', { class: 'btn btn-primary', type: 'button', text: 'Проверить', disabled: !canCheck, onclick: check }) : null,
+      !last ? h('button', { class: 'btn' + (learn && !revealed ? '' : ' btn-primary'), type: 'button', text: 'Далее', disabled: learn && !revealed && chosen.length > 0 && !canCheck, onclick: () => { state.cur++; persist(); render(); } }) : null,
+      last || !learn ? h('button', { class: last ? 'btn btn-primary' : 'btn', type: 'button', text: 'Завершить', onclick: () => confirmFinish(s) }) : null));
+  const hint = learn ? (q.multi && !revealed && chosen.length && chosen.length !== corr(q).length ? h('p', { class: 'status', text: `Выбрано ${chosen.length}, нужно ${corr(q).length}.` }) : null)
+    : h('p', { class: 'status', text: `Отвечено ${s.answered} из ${s.total}. Ответ можно изменить до завершения; объяснения появятся в разборе.` });
+  return [h('section', { class: 'card' }, ...kids, hint, nav)];
+}
+function choose(k) {
+  const q = state.qs[state.cur]; if (!q) return;
+  if (state.mode === 'learn' && state.checked[state.cur]) return;
+  if (q.multi) {
+    const cur = currentSel(); const at = cur.indexOf(k);
+    if (at >= 0) cur.splice(at, 1); else if (cur.length < corr(q).length) cur.push(k); else { cur.shift(); cur.push(k); }
+    state.answers[state.cur] = cur;
+  } else state.answers[state.cur] = k;
+  persist(); render();
+}
+function check() { state.checked[state.cur] = true; persist(); render(); }
+function confirmFinish(s) {
+  if (s.answered < s.total) {
+    const left = s.total - s.answered;
+    if (!window.confirm(`Без ответа ${left} ${qWord(left)}. Они будут засчитаны как неверные. Завершить?`)) return;
+  }
+  finish();
+}
+
+/* ================= Шаг 3: результат ================= */
+function viewResult() {
+  const s = score(), v = verdict(s.pct, state.mode);
+  const mins = state.startedAt && state.finishedAt ? Math.round((state.finishedAt - state.startedAt) / 60000) : null;
+  const rows = Object.keys(TAGS).filter((t) => s.tags[t] && s.tags[t].n).map((t) => {
+    const x = s.tags[t], pct = Math.round(100 * x.ok / x.n), cls = pct >= 85 ? 'ok' : pct >= 70 ? 'warn' : 'bad';
+    return h('div', { class: 'topic-row' }, h('span', { class: 'nm', text: `${TAGS[t].n} · ${x.ok} из ${x.n}` }), h('div', { class: 'bar' }, h('i', { class: cls, style: `width:${pct}%` })), h('span', { class: 'pct', text: pct + ' %' }), h('span', { class: 'adv', text: tagAdvice(t, pct) }));
+  });
+  const wrong = state.qs.map((q, i) => ({ q, i })).filter((x) => !isRight(x.q, state.answers[x.i]));
+  const list = state.filter === 'wrong' ? wrong : state.qs.map((q, i) => ({ q, i }));
+  const review = list.map(({ q, i }) => {
+    const a = state.answers[i]; const chosen = Array.isArray(a) ? a : a == null ? [] : [a]; const ok = isRight(q, a);
+    return h('div', { class: 'rv' + (ok ? ' ok' : '') },
+      h('div', { class: 'q-meta' }, h('span', { class: 'pill ' + (ok ? 'ok' : 'bad'), text: ok ? 'верно' : 'ошибка' }), h('span', { class: 'pill topic', text: TAGS[q.tag].n }), h('span', { text: `№ ${i + 1}` })),
+      h('p', { class: 'q', text: q.text }),
+      h('p', { class: 'a' }, h('span', { text: 'Ваш ответ: ' }), chosen.length ? chosen.map((k) => `${LETTERS[k]}. ${q.options[k]}`).join('; ') : 'не дан'),
+      ok ? null : h('p', { class: 'a' }, h('span', { text: 'Верно: ' }), corr(q).map((k) => `${LETTERS[k]}. ${q.options[k]}`).join('; ')),
+      h('p', { class: 'a', text: q.explanation }), h('p', { class: 'help', text: q.ref }));
+  });
+  return [
+    h('section', { class: 'card' }, h('h3', { text: state.mode === 'exam' ? 'Результат экзамена' : 'Результат обучения' }),
+      h('div', { class: 'bigline' }, h('span', { class: 'bignum ' + (v.s === 'ok' ? 'ok' : v.s === 'bad' ? 'bad' : ''), text: s.pct + ' %' }), h('span', { class: 'pill ' + v.s, text: v.t })),
+      h('div', { class: 'compare' },
+        h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Верных' }), h('b', { text: String(s.ok) })),
+        h('div', { class: 'stat' + (s.total - s.ok ? ' hot' : '') }, h('span', { class: 'lbl', text: 'Ошибок и пропусков' }), h('b', { text: String(s.total - s.ok) })),
+        h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Всего' }), h('b', { text: String(s.total) })),
+        h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Проходной балл' }), h('b', { text: EXAM.pass + ' %' })),
+        mins != null ? h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Время' }), h('b', { text: `${mins} мин` })) : null),
+      state.timedOut ? h('p', { class: 'note', text: 'Время истекло: попытка завершена автоматически, вопросы без ответа засчитаны как неверные.' }) : null,
+      h('p', { class: 'lead', text: resultMessage(s) }),
+      h('div', { class: 'actions' },
+        h('button', { class: 'btn btn-primary', type: 'button', text: 'Новая попытка', onclick: reset }),
+        h('button', { class: 'btn', type: 'button', text: 'Скопировать отчёт', onclick: (e) => copyText(report(), e.currentTarget) }),
+        state.downloads ? h('button', { class: 'btn', type: 'button', text: 'Скачать отчёт', onclick: saveReport }) : null),
+      h('div', { class: 'status', id: 'status', role: 'status', 'aria-live': 'polite' })),
+    h('section', { class: 'card' }, h('h3', { text: 'Разбор по темам' }),
+      h('p', { class: 'lead', text: 'Оранжевая отметка на шкале — проходной балл 85 %. Темы ниже порога стоит перечитать в Scrum Guide 2020 перед следующей попыткой.' }),
+      h('div', { class: 'topics' }, ...rows)),
+    h('section', { class: 'card' }, h('h3', { text: 'Разбор вопросов' }),
+      h('div', { class: 'actions' },
+        h('button', { class: 'btn btn-small' + (state.filter === 'wrong' ? ' btn-primary' : ''), type: 'button', text: `Только ошибки (${wrong.length})`, onclick: () => { state.filter = 'wrong'; render(); } }),
+        h('button', { class: 'btn btn-small' + (state.filter === 'all' ? ' btn-primary' : ''), type: 'button', text: `Все вопросы (${state.qs.length})`, onclick: () => { state.filter = 'all'; render(); } })),
+      review.length ? h('div', { class: 'review' }, ...review) : h('div', { class: 'empty', text: 'Ошибок нет. Все ответы верны.' }))
+  ];
+}
+function resultMessage(s) {
+  if (s.pct === 100) return 'Все ответы верны. Попробуйте режим экзамена с таймером, если ещё не пробовали: на реальном экзамене давление времени меняет восприятие вопросов.';
+  if (s.pct >= EXAM.pass) return 'Результат выше проходного балла. Разберите оставшиеся ошибки: на экзамене вопросы по тем же темам будут сформулированы иначе.';
+  if (s.pct >= 70) return 'Вы близко к проходному баллу. Сосредоточьтесь на двух самых слабых темах ниже и прочитайте указанные разделы Scrum Guide, затем повторите попытку.';
+  return 'Пока ниже порога. Прочитайте Scrum Guide 2020 целиком (это 13 страниц), затем пройдите режим обучения несколько раз, разбирая каждое объяснение.';
+}
+
+/* ================= Отчёт ================= */
+function report() {
+  const s = score(), v = verdict(s.pct, state.mode);
+  const L = ['# Подготовка к PSM I: результат попытки', '', `Режим: ${state.mode === 'exam' ? 'экзамен' : 'обучение'}. Дата: ${new Date(state.finishedAt || Date.now()).toLocaleString('ru-RU')}.`, '',
+    `**Результат: ${s.pct} %** (${s.ok} из ${s.total}). Проходной балл ${EXAM.pass} %. Вердикт: ${v.t}.${state.timedOut ? ' Время истекло.' : ''}`, '',
+    '## По темам', '', '| Тема | Верно | Процент | Что перечитать |', '|---|---|---|---|'];
+  Object.keys(TAGS).forEach((t) => { const x = s.tags[t]; if (!x || !x.n) return; const pct = Math.round(100 * x.ok / x.n); L.push(`| ${TAGS[t].n} | ${x.ok} из ${x.n} | ${pct} % | ${TAGS[t].read} |`); });
+  L.push('', '## Ошибки', '');
+  const wrong = state.qs.map((q, i) => ({ q, i })).filter((x) => !isRight(x.q, state.answers[x.i]));
+  if (!wrong.length) L.push('Ошибок нет.');
+  wrong.forEach(({ q, i }) => {
+    const a = state.answers[i]; const chosen = Array.isArray(a) ? a : a == null ? [] : [a];
+    L.push(`### ${i + 1}. ${q.text}`, '', `Тема: ${TAGS[q.tag].n}`, '', `Ваш ответ: ${chosen.length ? chosen.map((k) => `${LETTERS[k]}. ${q.options[k]}`).join('; ') : 'не дан'}`, '', `Верно: ${corr(q).map((k) => `${LETTERS[k]}. ${q.options[k]}`).join('; ')}`, '', q.explanation, '', `_${q.ref}_`, '');
+  });
+  return L.join('\n');
+}
+async function saveReport() {
+  try { await state.downloads.save({ filename: `psm1-rezultat-${new Date().toISOString().slice(0, 10)}.md`, data: report() }); }
+  catch (e) { if (e && e.code !== 'declined') setStatus('Файл не сохранён. Скопируйте отчёт кнопкой рядом.', 'err'); }
+}
+function setStatus(t, cls) { const el = $('#status'); if (el) { el.textContent = t; el.className = 'status' + (cls ? ' ' + cls : ''); } }
+async function copyText(t, btn) {
+  try { await navigator.clipboard.writeText(t); if (btn) { const o = btn.textContent; btn.textContent = 'Скопировано'; setTimeout(() => (btn.textContent = o), 1600); } }
+  catch (e) { setStatus('Браузер не дал скопировать. Скачайте отчёт или выделите текст разбора вручную.', 'err'); }
+}
+
+/* ================= Админ-панель: свои вопросы ================= */
+function blankDraft() { return { tag: 'T', text: '', options: ['', '', '', ''], multi: false, correct: [], explanation: '', ref: '' }; }
+function adminCard() {
+  const d = state.adminDraft || (state.adminDraft = blankDraft());
+  const det = h('details', { open: state.adminOpen || null, ontoggle: (e) => { state.adminOpen = e.currentTarget.open; } });
+  det.append(h('summary', { text: `Свои вопросы (${CUSTOM.length}). Добавить или удалить` }));
+  const body = h('div', { style: 'display:flex;flex-direction:column;gap:14px;padding-top:14px' });
+  body.append(h('p', { class: 'help', text: 'Собственные вопросы хранятся только в этом браузере и попадают в общий банк для обоих режимов. Формулируйте сценарно и указывайте раздел Scrum Guide.' }));
+  const sel = h('select', { onchange: (e) => { d.tag = e.target.value; } }, Object.keys(TAGS).map((t) => h('option', { value: t, selected: d.tag === t || null, text: TAGS[t].n })));
+  const text = h('textarea', { rows: 2, placeholder: 'Текст вопроса', oninput: (e) => { d.text = e.target.value; } }); text.value = d.text;
+  const optsBox = h('div', { style: 'display:flex;flex-direction:column;gap:8px' });
+  const drawOpts = () => {
+    optsBox.replaceChildren(...d.options.map((o, k) => {
+      const mark = h('input', { type: d.multi ? 'checkbox' : 'radio', name: 'adm-correct', checked: d.correct.includes(k) || null, title: 'Верный ответ', onchange: () => { if (d.multi) { const at = d.correct.indexOf(k); if (at >= 0) d.correct.splice(at, 1); else d.correct.push(k); } else d.correct = [k]; } });
+      const inp = h('input', { type: 'text', placeholder: `Вариант ${LETTERS[k]}`, oninput: (e) => { d.options[k] = e.target.value; } }); inp.value = o;
+      return h('div', { class: 'optfield' }, h('label', {}, mark), inp);
+    }));
+  };
+  drawOpts();
+  const multi = h('label', { class: 'chk-row' }, h('input', { type: 'checkbox', checked: d.multi || null, onchange: (e) => { d.multi = e.target.checked; d.correct = d.multi ? d.correct : d.correct.slice(0, 1); drawOpts(); } }), 'Несколько верных ответов');
+  const five = h('button', { class: 'btn btn-small', type: 'button', text: d.options.length < 5 ? 'Добавить пятый вариант' : 'Убрать пятый вариант', onclick: (e) => { if (d.options.length < 5) d.options.push(''); else { d.options.pop(); d.correct = d.correct.filter((k) => k < 4); } e.currentTarget.textContent = d.options.length < 5 ? 'Добавить пятый вариант' : 'Убрать пятый вариант'; drawOpts(); } });
+  const expl = h('textarea', { rows: 3, placeholder: 'Объяснение своими словами', oninput: (e) => { d.explanation = e.target.value; } }); expl.value = d.explanation;
+  const ref = h('input', { type: 'text', placeholder: 'Например: Scrum Guide 2020, раздел «Спринт»', oninput: (e) => { d.ref = e.target.value; } }); ref.value = d.ref;
+  const st = h('div', { class: 'status', role: 'status' });
+  body.append(
+    h('div', { class: 'grid2' }, h('div', { class: 'field' }, h('span', { class: 'lbl', text: 'Тема' }), sel), h('div', { class: 'field' }, h('span', { class: 'lbl', text: 'Тип' }), multi)),
+    h('div', { class: 'field' }, h('span', { class: 'lbl', text: 'Вопрос' }), text),
+    h('div', { class: 'field' }, h('span', { class: 'lbl', text: 'Варианты (отметьте верные)' }), optsBox, h('div', { class: 'actions' }, five)),
+    h('div', { class: 'field' }, h('span', { class: 'lbl', text: 'Объяснение' }), expl),
+    h('div', { class: 'field' }, h('span', { class: 'lbl', text: 'Ссылка на Scrum Guide' }), ref),
+    h('div', { class: 'actions' }, h('button', { class: 'btn btn-primary', type: 'button', text: 'Сохранить вопрос', onclick: () => {
+      const err = validateDraft(d); if (err) { st.textContent = err; st.className = 'status err'; return; }
+      CUSTOM.push({ tag: d.tag, text: d.text.trim(), options: d.options.map((o) => o.trim()), multi: d.multi, correct: d.multi ? d.correct.slice().sort((a, b) => a - b) : d.correct[0], explanation: d.explanation.trim(), ref: d.ref.trim(), custom: true });
+      store.set('kz.psm.custom', CUSTOM); state.adminDraft = blankDraft(); state.adminOpen = true; render();
+    } }), CUSTOM.length ? h('button', { class: 'btn', type: 'button', text: 'Экспорт своих вопросов (JSON)', onclick: (e) => copyText(JSON.stringify(CUSTOM, null, 2), e.currentTarget) }) : null), st);
+  if (CUSTOM.length) body.append(h('div', { class: 'custom-list' }, ...CUSTOM.map((q, k) => h('div', { class: 'custom-item' }, h('span', {}, h('b', { text: TAGS[q.tag].n + ': ' }), q.text), h('button', { class: 'btn btn-small', type: 'button', text: 'Удалить', onclick: () => { CUSTOM.splice(k, 1); store.set('kz.psm.custom', CUSTOM); state.adminOpen = true; render(); } })))));
+  det.append(body);
+  return h('section', { class: 'card' }, h('h3', { text: 'Банк вопросов' }), h('p', { class: 'lead', text: `Встроенных вопросов: ${QUESTIONS.length}. Своих: ${CUSTOM.length}.` }), det);
+}
+function validateDraft(d) {
+  if (d.text.trim().length < 15) return 'Текст вопроса слишком короткий.';
+  if (d.options.some((o) => !o.trim())) return 'Заполните все варианты ответа.';
+  if (d.multi && d.correct.length < 2) return 'Для вопроса с несколькими ответами отметьте не меньше двух верных.';
+  if (!d.multi && d.correct.length !== 1) return 'Отметьте один верный вариант.';
+  if (d.explanation.trim().length < 20) return 'Напишите объяснение: оно показывается в разборе.';
+  if (!d.ref.trim()) return 'Укажите раздел Scrum Guide.';
+  return '';
+}
+
+/* ================= Rail ================= */
+function renderRail() {
+  const kids = [];
+  const s = score();
+  kids.push(h('div', { class: 'rail-sec' }, h('h3', { text: 'Чему учит практикум' }),
+    ...[['Отличать Scrum от популярных практик', state.history.length > 0], ['Знать подотчётности трёх ролей', s.tags.K && s.tags.K.n > 0 && s.tags.K.ok === s.tags.K.n && state.finished], ['Понимать события и таймбоксы', s.tags.E && s.tags.E.n > 0 && s.tags.E.ok === s.tags.E.n && state.finished], ['Связывать артефакты с обязательствами', s.tags.A && s.tags.A.n > 0 && s.tags.A.ok === s.tags.A.n && state.finished], ['Набирать 85 % в режиме экзамена', state.history.some((x) => x.mode === 'exam' && x.pct >= EXAM.pass)]]
+      .map(([k, on]) => h('div', { class: 'goal' + (on ? ' on' : '') }, h('span', { class: 'dot' }), h('span', { text: k })))));
+  if (state.step === 1 && state.qs.length) {
+    const grid = h('div', { class: 'qgrid' }, state.qs.map((q, i) => {
+      const a = state.answers[i]; const has = a != null && !(Array.isArray(a) && !a.length);
+      let cls = has ? 'done' : ''; if (has && state.mode === 'learn' && state.checked[i]) cls = isRight(q, a) ? 'ok' : 'bad'; if (i === state.cur) cls += ' now';
+      return h('button', { class: cls.trim(), type: 'button', text: String(i + 1), title: `Вопрос ${i + 1}`, onclick: () => { state.cur = i; persist(); render(); } });
+    }));
+    kids.push(h('div', { class: 'rail-sec' }, h('h4', { text: `Отвечено ${s.answered} из ${s.total}` }), grid,
+      state.mode === 'learn' ? h('p', { class: 'help', text: `Верно: ${s.ok} из ${state.checked.filter(Boolean).length} проверенных.` }) : h('p', { class: 'help', text: 'Серые — отвечены. Процент узнаете после завершения.' })));
+  }
+  if (state.step === 2 && state.finished) {
+    const m = Object.keys(TAGS).filter((t) => s.tags[t] && s.tags[t].n).map((t) => { const p = 100 * s.tags[t].ok / s.tags[t].n; return h('i', { class: p >= 85 ? 'ok' : p >= 70 ? 'warn' : 'bad', title: TAGS[t].n }); });
+    kids.push(h('div', { class: 'rail-sec' }, h('h4', { text: 'Темы' }), h('div', { class: 'meter' }, ...m), h('p', { class: 'help', text: 'Теория · Команда · События · Артефакты · Масштабирование · Самоуправление' })));
+  }
+  const tip = railTip(s);
+  if (tip) kids.push(h('div', { class: 'rail-sec tip' }, h('h4', { text: 'Коуч' }), h('p', { text: tip.b }), tip.q ? h('p', { class: 'q', text: tip.q }) : null));
+  if (state.history.length) kids.push(h('div', { class: 'rail-sec' }, h('h4', { text: 'Попытки' }),
+    h('div', { class: 'attempts' }, state.history.slice(-6).reverse().map((t) => h('div', { class: 'attempt' }, h('span', { text: `${t.mode === 'exam' ? 'Экзамен' : 'Обучение'} · ${new Date(t.at).toLocaleDateString('ru-RU')}` }), h('span', { class: 'mono', text: `${t.pct} % · ${t.ok}/${t.total}` })))),
+    h('div', { class: 'actions' }, h('button', { class: 'btn btn-small', type: 'button', text: 'Очистить историю', onclick: () => { state.history = []; persist(); render(); } }))));
+  $('#rail').replaceChildren(...kids);
+}
+function railTip(s) {
+  if (state.step === 0) return { b: 'Начните с режима обучения: он показывает логику верного ответа. Экзамен берите, когда в обучении стабильно выше 85 %.', q: 'Какую тему вы считаете самой слабой до начала?' };
+  if (state.step === 1) {
+    const q = state.qs[state.cur];
+    if (state.mode === 'exam') return { b: 'Не застревайте: на вопрос в среднем 45 секунд. Сомневаетесь — ответьте и вернитесь к нему по сетке справа.', q: q && q.multi ? 'Сколько верных ответов требует этот вопрос?' : 'Есть ли в вариантах слова «только» или «обязан»?' };
+    if (q && q.multi) return { b: 'Вопрос с несколькими ответами засчитывается, только если выбраны все верные и ни одного лишнего.' };
+    return { b: 'Прежде чем нажать «Проверить», сформулируйте про себя, почему остальные варианты неверны. Это и есть подготовка к экзамену.', q: q ? `Какая подотчётность отвечает за это по Scrum Guide: ${TAGS[q.tag].n.toLowerCase()}?` : '' };
+  }
+  const weak = Object.keys(TAGS).filter((t) => s.tags[t] && s.tags[t].n && 100 * s.tags[t].ok / s.tags[t].n < 85).sort((a, b) => (s.tags[a].ok / s.tags[a].n) - (s.tags[b].ok / s.tags[b].n));
+  if (!weak.length) return { b: 'Все темы выше порога. Сделайте перерыв и повторите экзамен через день: устойчивость результата важнее одного удачного прохода.' };
+  return { b: `Самая слабая тема: ${TAGS[weak[0]].n.toLowerCase()}. Перечитайте разделы ${TAGS[weak[0]].read} и пройдите обучение ещё раз.`, q: 'Какие ошибки повторяются: про «кто отвечает» или про «когда»?' };
+}
+
+/* ================= Boot ================= */
+function boot() {
+  if (!unlocked(state.step)) state.step = 0;
+  if (state.mode === 'exam' && !state.finished && state.deadline && state.deadline <= Date.now() && state.qs.length) { state.timedOut = true; state.finished = true; state.finishedAt = state.deadline; const s = score(); state.history.push({ at: state.finishedAt, mode: 'exam', pct: s.pct, ok: s.ok, total: s.total, timedOut: true }); state.step = 2; persist(); }
+  render();
+  if (state.step === 1) startTimer();
+  const get = async (name) => { try { return window.claude && window.claude.use ? await window.claude.use(name) : null; } catch (e) { return null; } };
+  get('downloads').then((dl) => { state.downloads = dl || null; if (state.step === 2) render(); });
+}
+boot();
+</script>
+
+</body>
+</html>

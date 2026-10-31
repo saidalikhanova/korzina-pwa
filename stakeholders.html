@@ -1,0 +1,1044 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#20242B">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<script src="pwa-shim.js"></script>
+</head>
+<body>
+<nav class="pwa-nav"><a href="./">← Все практикумы</a></nav>
+<title>Стейкхолдеры проекта — Корзина</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: the launch programme's control desk. A dark band carries the title and six tabs
+   (case, influence map, engagement, RACI, communications plan, register); below, the working sheet
+   beside a progress rail. Signal orange is reserved for what needs action now: resistance and RACI errors. */
+:root {
+  --paper: #E6E8E3; --sheet: #FBFBF9; --sheet-2: #F0F1ED;
+  --ink: #1D2026; --ink-2: #5A6068; --rule: #D3D6CF; --rule-2: #B4B9B0;
+  --band: #20242B; --band-ink: #E9EBE6; --band-ink-2: #9AA1AB;
+  --signal: #F2551D; --signal-tint: #FDE3D8;
+  --cobalt: #2D4FE3; --cobalt-tint: #E2E7FC;
+  --amber: #D9960B; --violet: #7650C4; --green: #2D8A57;
+  --ok: #23804A; --ok-tint: #DDF0E3; --warn: #9A6400; --warn-tint: #F8ECCB; --bad: #C42B2B; --bad-tint: #F8DEDC;
+  --on-fill: #FFFFFF;
+  --lv-u: #6B7280; --lv-r: #C42B2B; --lv-n: #D9960B; --lv-s: #2D8A57; --lv-l: #7650C4;
+  --q-key: #E2E7FC; --q-sat: #ECEEF6; --q-inf: #E9F1EA; --q-mon: #F0F1ED;
+  --r-R: #2D4FE3; --r-A: #F2551D; --r-C: #D9960B; --r-I: #6B7280;
+  --font-display: "Dela Gothic One", "Golos Text", system-ui, sans-serif;
+  --font-body: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #14161A; --sheet: #1D2026; --sheet-2: #252930; --ink: #ECEDE9; --ink-2: #A2A8B0; --rule: #333840; --rule-2: #4A5059;
+    --band: #0C0E11; --band-ink: #ECEDE9; --band-ink-2: #8E959F;
+    --signal: #FF7341; --signal-tint: #44231A; --cobalt: #8EA4FF; --cobalt-tint: #232C52; --amber: #F2B84B; --violet: #B79BF0; --green: #6CCB93;
+    --ok: #6CCB93; --ok-tint: #173323; --warn: #F2C14E; --warn-tint: #3A2D0E; --bad: #FF8A80; --bad-tint: #401A18;
+    --on-fill: #14161A;
+    --lv-u: #9AA1AB; --lv-r: #FF8A80; --lv-n: #F2B84B; --lv-s: #6CCB93; --lv-l: #B79BF0;
+    --q-key: #232C52; --q-sat: #22262E; --q-inf: #1C2A22; --q-mon: #1D2026;
+    --r-R: #8EA4FF; --r-A: #FF7341; --r-C: #F2B84B; --r-I: #9AA1AB;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #14161A; --sheet: #1D2026; --sheet-2: #252930; --ink: #ECEDE9; --ink-2: #A2A8B0; --rule: #333840; --rule-2: #4A5059;
+  --band: #0C0E11; --band-ink: #ECEDE9; --band-ink-2: #8E959F;
+  --signal: #FF7341; --signal-tint: #44231A; --cobalt: #8EA4FF; --cobalt-tint: #232C52; --amber: #F2B84B; --violet: #B79BF0; --green: #6CCB93;
+  --ok: #6CCB93; --ok-tint: #173323; --warn: #F2C14E; --warn-tint: #3A2D0E; --bad: #FF8A80; --bad-tint: #401A18;
+  --on-fill: #14161A;
+  --lv-u: #9AA1AB; --lv-r: #FF8A80; --lv-n: #F2B84B; --lv-s: #6CCB93; --lv-l: #B79BF0;
+  --q-key: #232C52; --q-sat: #22262E; --q-inf: #1C2A22; --q-mon: #1D2026;
+  --r-R: #8EA4FF; --r-A: #FF7341; --r-C: #F2B84B; --r-I: #9AA1AB;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55; padding-inline: 16px; padding-block: 0 56px; font-variant-numeric: tabular-nums; }
+.wrap { max-width: 1320px; margin-inline: auto; }
+h1, h2, h3, h4, p { margin: 0; }
+h1, h2, h3 { text-wrap: balance; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2.5px solid var(--cobalt); outline-offset: 2px; }
+
+/* ---------- Control band ---------- */
+.band { background: var(--band); color: var(--band-ink); margin-inline: -16px; padding-inline: 16px; padding-block: 26px 0; }
+.band-top { display: flex; flex-wrap: wrap; gap: 14px 40px; align-items: end; justify-content: space-between; }
+.brand { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.brand h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(26px, 4vw, 40px); line-height: 1; letter-spacing: -0.01em; }
+.brand p { color: var(--band-ink-2); max-width: 62ch; font-size: 14.5px; }
+.casetag { font-size: 13px; color: var(--band-ink-2); border: 1px solid #454b55; border-radius: 999px; padding: 4px 12px; white-space: nowrap; }
+.steps { position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); padding-block: 22px 24px; border-top: 1px solid #3a4049; margin-top: 22px; }
+.steps::before { content: ""; position: absolute; left: 14px; right: 14px; top: 36px; height: 3px; background: #3e444e; border-radius: 3px; }
+.step { appearance: none; position: relative; text-align: left; cursor: pointer; border: 0; background: transparent; color: var(--band-ink); padding: 0 10px 0 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.step .dot { width: 31px; height: 31px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 14px; background: var(--band); border: 3px solid #5b626d; color: var(--band-ink-2); position: relative; z-index: 1; }
+.step .t { font-weight: 600; font-size: 14px; line-height: 1.25; }
+.step .s { font-size: 12.5px; color: var(--band-ink-2); line-height: 1.3; }
+.step:hover .dot { border-color: var(--band-ink); }
+.step.done .dot { background: var(--green); border-color: var(--green); color: var(--band); }
+.step[aria-selected="true"] .dot { background: var(--signal); border-color: var(--signal); color: var(--band); box-shadow: 0 0 0 5px rgba(242, 85, 29, .25); }
+@media (max-width: 860px) { .step .s { display: none; } .step .t { font-size: 12px; } }
+@media (max-width: 520px) { .step .t { display: none; } }
+
+/* ---------- Working area ---------- */
+.workspace { display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr); align-items: start; padding-top: 24px; }
+@media (min-width: 1100px) { .workspace { grid-template-columns: minmax(0, 1fr) 320px; } }
+.panel { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.card { background: var(--sheet); border-radius: 16px; padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.card > h3, .sec-h { font-family: var(--font-display); font-weight: 400; font-size: 19px; line-height: 1.2; letter-spacing: -0.005em; }
+.lead { color: var(--ink-2); max-width: 72ch; }
+.lbl { font-size: 13px; color: var(--ink-2); font-weight: 600; }
+.help { font-size: 13px; color: var(--ink-2); }
+@media (max-width: 600px) { .card { padding: 18px 16px; border-radius: 12px; } }
+.btn { appearance: none; cursor: pointer; border: 1.5px solid var(--ink); background: transparent; border-radius: 999px; padding: 8px 18px; font-weight: 600; line-height: 1.2; }
+.btn:hover { background: var(--sheet-2); }
+.btn[disabled] { opacity: .4; cursor: not-allowed; }
+.btn-primary { background: var(--ink); color: var(--sheet); }
+.btn-primary:hover { background: var(--ink); filter: brightness(1.25); }
+.btn-small { padding: 5px 13px; font-size: 13px; border-width: 1px; border-color: var(--rule-2); font-weight: 500; }
+.btn-danger { color: var(--bad); border-color: var(--bad); }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.actions .spacer { flex: 1; }
+.status { min-height: 20px; font-size: 13.5px; color: var(--ink-2); }
+.status.err { color: var(--bad); }
+textarea, input[type="text"], select { width: 100%; border: 1.5px solid var(--rule); background: var(--sheet); border-radius: 10px; padding: 9px 12px; }
+textarea { resize: vertical; line-height: 1.55; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.row2 { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+@media (max-width: 480px) { .row2 { grid-template-columns: minmax(0, 1fr); } }
+input[type=range] { width: 100%; accent-color: var(--cobalt); }
+.rangeVal { font-weight: 600; color: var(--ink); }
+table.data { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.data th, table.data td { text-align: left; padding: 10px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+table.data th { font-size: 12.5px; color: var(--ink-2); font-weight: 600; border-bottom: 2px solid var(--ink); position: sticky; top: 0; background: var(--sheet); }
+table.data tbody tr:last-child td { border-bottom: 0; }
+table.data tbody tr:hover td { background: var(--sheet-2); }
+.tscroll { overflow-x: auto; }
+.who { font-weight: 600; }
+.who small { display: block; font-weight: 400; color: var(--ink-2); font-size: 12px; }
+.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; padding: 2px 10px 2px 8px; border-radius: 999px; white-space: nowrap; }
+.pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.pill.ok { color: var(--ok); background: var(--ok-tint); }
+.pill.warn { color: var(--warn); background: var(--warn-tint); }
+.pill.bad { color: var(--bad); background: var(--bad-tint); }
+.pill.bad::before { border-radius: 1px; transform: rotate(45deg); }
+.pill.info { color: var(--ink-2); background: var(--sheet-2); }
+.pill.hot { color: var(--signal); background: var(--signal-tint); }
+.note { font-size: 13px; color: var(--ink-2); border-left: 3px solid var(--rule-2); padding-left: 10px; }
+.news { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .news { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.newsitem { padding: 16px 16px 14px; background: var(--signal-tint); border-radius: 4px 14px 14px 14px; display: flex; flex-direction: column; gap: 6px; }
+.newsitem b { font-family: var(--font-display); font-weight: 400; font-size: 16px; color: var(--signal); }
+.task-list { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; }
+.task-list li::marker { font-weight: 700; color: var(--ink-2); }
+.stats { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.stat { padding: 12px 14px; background: var(--sheet-2); border-radius: 10px; display: flex; flex-direction: column; gap: 2px; }
+.stat b { font-family: var(--font-display); font-weight: 400; font-size: 24px; line-height: 1.15; }
+.stat span { font-size: 12.5px; color: var(--ink-2); }
+.stat.hot b { color: var(--signal); }
+details > summary { cursor: pointer; color: var(--ink-2); font-size: 13.5px; }
+.reveal { padding: 14px 16px; background: var(--cobalt-tint); border-radius: 4px 14px 14px 14px; font-size: 14px; }
+
+/* ---------- Influence map ---------- */
+.mapLayout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (min-width: 980px) { .mapLayout { grid-template-columns: minmax(0, 1fr) 300px; } }
+.gridShell { display: grid; grid-template-columns: 22px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) 22px; gap: 6px; }
+.axisY { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); text-align: center; font-weight: 600; }
+.axisX { grid-column: 2; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); text-align: center; font-weight: 600; }
+.grid { position: relative; width: 100%; aspect-ratio: 1 / 1; max-height: 680px; border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; touch-action: none; user-select: none; }
+.q { padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; }
+.q h4 { font-family: var(--font-display); font-weight: 400; font-size: 13px; }
+.q p { font-size: 11.5px; color: var(--ink-2); }
+.q.sat { background: var(--q-sat); border-right: 1px dashed var(--rule-2); border-bottom: 1px dashed var(--rule-2); }
+.q.key { background: var(--q-key); border-bottom: 1px dashed var(--rule-2); text-align: right; align-items: flex-end; }
+.q.mon { background: var(--q-mon); border-right: 1px dashed var(--rule-2); justify-content: flex-end; }
+.q.inf { background: var(--q-inf); text-align: right; align-items: flex-end; justify-content: flex-end; }
+.chip { position: absolute; transform: translate(-50%, -50%); display: inline-flex; align-items: center; gap: 6px; padding: 4px 9px 4px 6px; border-radius: 999px; background: var(--sheet); border: 1px solid var(--rule-2); box-shadow: 0 1px 2px rgba(0,0,0,.12), 0 4px 12px rgba(0,0,0,.10); font-size: 12px; font-weight: 600; white-space: nowrap; cursor: grab; touch-action: none; z-index: 2; }
+.chip .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.chip.sel { border-color: var(--cobalt); box-shadow: 0 0 0 2px var(--cobalt); z-index: 4; }
+.chip.dragging { cursor: grabbing; z-index: 5; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--ink-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.profile { background: var(--sheet-2); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.profile h4 { font-family: var(--font-display); font-weight: 400; font-size: 16px; }
+.profile .sub { font-size: 12.5px; color: var(--ink-2); }
+.advice { background: var(--sheet); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.advice .k { font-size: 11.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2); font-weight: 600; }
+.attention { display: flex; flex-direction: column; gap: 6px; }
+.attention h5 { margin: 0; font-size: 13px; font-weight: 600; }
+.attention button { all: unset; cursor: pointer; display: flex; gap: 8px; align-items: center; font-size: 13px; padding: 6px 8px; border-radius: 8px; }
+.attention button:hover, .attention button:focus-visible { background: var(--sheet); }
+.attention .lv i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.empty { color: var(--ink-2); font-size: 13px; }
+
+/* ---------- Engagement ---------- */
+.eng { min-width: 760px; }
+.engRow { display: grid; grid-template-columns: minmax(180px, 1.5fr) repeat(5, minmax(78px, 1fr)) 150px; align-items: center; border-bottom: 1px solid var(--rule); }
+.engRow:last-child { border-bottom: 0; }
+.engRow.head { font-size: 11.5px; color: var(--ink-2); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; background: var(--sheet-2); border-radius: 10px 10px 0 0; }
+.engRow > div { padding: 10px 12px; }
+.engRow.head > div { text-align: center; }
+.engRow.head > div:first-child { text-align: left; }
+.engName { font-weight: 600; font-size: 13px; }
+.engName small { display: block; font-weight: 400; color: var(--ink-2); font-size: 11.5px; }
+.track { grid-column: 2 / span 5; position: relative; height: 40px; padding: 0 !important; display: grid; grid-template-columns: repeat(5, 1fr); }
+.track .cell { border-left: 1px dashed var(--rule); }
+.track .bar { position: absolute; top: 50%; height: 4px; transform: translateY(-50%); border-radius: 2px; background: var(--cobalt); opacity: .4; }
+.mk { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700; }
+.mk.c { color: #fff; }
+.mk.d { background: var(--sheet); border: 2px dashed var(--ink); color: var(--ink); }
+.engCtl { display: flex; flex-direction: column; gap: 4px; }
+.engCtl select { padding: 5px 8px; border-radius: 8px; font-size: 13px; }
+.engLegend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-2); align-items: center; }
+.engLegend .mk { position: static; transform: none; display: inline-grid; width: 20px; height: 20px; font-size: 10px; vertical-align: middle; margin-right: 6px; }
+.lv { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.lv i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.diag { display: flex; flex-direction: column; gap: 8px; }
+.diag .item { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; padding: 10px 12px; background: var(--sheet-2); border-radius: 10px; font-size: 13.5px; }
+.diag .item p { overflow-wrap: anywhere; }
+
+/* ---------- RACI ---------- */
+table.raci { border-collapse: separate; border-spacing: 0; font-size: 13px; min-width: 980px; }
+table.raci th, table.raci td { padding: 6px 6px; border-bottom: 1px solid var(--rule); text-align: center; vertical-align: middle; }
+table.raci th { font-size: 11.5px; color: var(--ink-2); font-weight: 600; border-bottom: 2px solid var(--ink); background: var(--sheet); position: sticky; top: 0; line-height: 1.2; }
+table.raci th.row, table.raci td.row { text-align: left; position: sticky; left: 0; background: var(--sheet); min-width: 220px; max-width: 280px; z-index: 1; padding-left: 10px; }
+table.raci td.row b { display: block; font-weight: 600; }
+table.raci td.row small { color: var(--ink-2); font-size: 11.5px; }
+table.raci td.row .pill { white-space: normal; text-align: left; }
+table.raci th.pm { color: var(--cobalt); }
+table.raci td.row.bad { box-shadow: inset 4px 0 0 var(--signal); }
+table.raci td.row.ok { box-shadow: inset 4px 0 0 var(--ok); }
+table.raci select.cell { width: 3.6em; padding: 5px 2px; text-align: center; border-radius: 8px; font-weight: 700; appearance: none; -webkit-appearance: none; text-align-last: center; background: var(--sheet); }
+table.raci select.cell.R { color: var(--r-R); border-color: var(--r-R); }
+table.raci select.cell.A { color: var(--r-A); border-color: var(--r-A); background: var(--signal-tint); }
+table.raci select.cell.C { color: var(--r-C); border-color: var(--r-C); }
+table.raci select.cell.I { color: var(--r-I); border-color: var(--r-I); }
+table.raci select.cell.miss { outline: 2px dashed var(--signal); outline-offset: 1px; }
+table.raci tfoot td { border-bottom: 0; font-size: 12px; color: var(--ink-2); padding-top: 8px; }
+table.raci tfoot td .pill { font-size: 11.5px; padding: 1px 8px 1px 6px; }
+.raciRef { font-family: ui-monospace, Menlo, monospace; font-weight: 700; display: inline-block; width: 2.2em; padding: 2px 0; border-radius: 6px; }
+.raciRef.R { color: var(--r-R); } .raciRef.A { color: var(--r-A); background: var(--signal-tint); } .raciRef.C { color: var(--r-C); } .raciRef.I { color: var(--r-I); }
+.raciRef.mine { outline: 1.5px solid var(--bad); }
+.raciLegend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; }
+.raciLegend b { display: inline-block; width: 1.6em; text-align: center; border-radius: 6px; margin-right: 6px; font-weight: 700; }
+
+/* ---------- Register ---------- */
+.regcards { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); }
+.regcard { background: var(--sheet-2); border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; font-size: 13.5px; min-width: 0; }
+.regcard h4 { font-size: 15px; font-weight: 600; }
+.regcard .pos { color: var(--ink-2); font-size: 12.5px; }
+.regcard .sec { border-top: 1px dashed var(--rule-2); padding-top: 6px; }
+.regcard .sec h5 { margin: 0 0 4px; font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--cobalt); font-weight: 600; }
+.kv { display: grid; grid-template-columns: minmax(100px, 130px) 1fr; gap: 3px 10px; margin: 0; font-size: 13px; }
+.kv dt { color: var(--ink-2); }
+.kv dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.kv dd.gap { color: var(--signal); }
+.cov .bar { height: 6px; border-radius: 3px; background: var(--rule); min-width: 80px; overflow: hidden; }
+.cov .bar i { display: block; height: 100%; background: var(--cobalt); }
+.cov tr.grp td { background: var(--cobalt-tint); font-weight: 600; font-size: 13px; }
+.src { font-size: 12px; color: var(--ink-2); white-space: nowrap; }
+
+/* ---------- Rail ---------- */
+.rail { background: var(--sheet); border-radius: 16px; display: flex; flex-direction: column; min-width: 0; border-top: 6px solid var(--band); }
+@media (min-width: 1100px) { .rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 14px); max-height: calc(100vh - 28px); overflow: auto; } }
+.rail-sec { padding: 16px 18px; border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; gap: 10px; }
+.rail-sec:last-child { border-bottom: 0; }
+.rail h3 { font-family: var(--font-display); font-weight: 400; font-size: 16px; }
+.rail h4 { font-size: 13px; color: var(--ink-2); font-weight: 600; }
+.goal { display: flex; gap: 10px; align-items: baseline; font-size: 14px; }
+.goal .dot { flex: none; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--rule-2); transform: translateY(1px); }
+.goal.on .dot { background: var(--green); border-color: var(--green); }
+.tip { font-size: 14px; background: var(--cobalt-tint); }
+.tip .q { color: var(--ink-2); font-style: italic; }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--band); color: var(--band-ink); padding: 8px 14px; border-radius: 8px; font-size: 13px; z-index: 20; }
+.confirm { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 13px; }
+@media (prefers-reduced-motion: no-preference) { .btn, .step .dot, .chip { transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease; } }
+</style>
+
+<header class="band">
+  <div class="wrap">
+    <div class="band-top">
+      <div class="brand">
+        <h1>Стейкхолдеры проекта</h1>
+        <p>Практикум 4: стейкхолдеры программы запуска по PMBOK 8. Вы расставляете людей на карте влияния, задаёте желаемый уровень вовлечённости, распределяете роли RACI и собираете реестр, который можно отдать руководству маркетплейса.</p>
+      </div>
+      <span class="casetag">Кейс «Витрина», вымышленные данные</span>
+    </div>
+    <nav class="steps" role="tablist" aria-label="Разделы практикума" id="tabs"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="workspace">
+    <main class="panel" id="main"></main>
+    <aside class="rail" id="rail" aria-label="Прогресс и подсказки"></aside>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ================= Data: case «Витрина», programme «Доставка еды» ================= */
+const LEVELS = [
+  { k: 'U', name: 'Не осведомлён', c: '--lv-u' },
+  { k: 'R', name: 'Сопротивляется', c: '--lv-r' },
+  { k: 'N', name: 'Нейтрален', c: '--lv-n' },
+  { k: 'S', name: 'Поддерживает', c: '--lv-s' },
+  { k: 'L', name: 'Лидирует', c: '--lv-l' }
+];
+const LV = Object.fromEntries(LEVELS.map((l, i) => [l.k, { ...l, i }]));
+const CATS = { internal: 'Внутренний', partner: 'Внешний партнёр', gov: 'Внешний регулятор', market: 'Внешний: рынок' };
+const DIRS = { up: 'Вверх', side: 'В стороны', down: 'Вниз', out: 'Наружу' };
+const PHASES = ['Инициация', 'Планирование', 'Подготовка и интеграции', 'Запуск (35-я неделя)', 'После запуска'];
+const QUAD = {
+  key: { name: 'Управлять плотно', freq: 'Еженедельно', channel: 'Личная встреча, статус программы, управляющий комитет', msg: 'Ключевые решения, риски, вехи, запросы на поддержку' },
+  sat: { name: 'Удовлетворять', freq: 'Ежемесячно', channel: 'Брифинг руководителя, сводка на одной странице', msg: 'Влияние на их зону ответственности, итоги, без деталей' },
+  inf: { name: 'Информировать', freq: 'Раз в 2 недели', channel: 'Дайджест программы, рабочие встречи, канал продавцов', msg: 'Прогресс, сроки, что изменится для них' },
+  mon: { name: 'Наблюдать', freq: 'Ежеквартально', channel: 'Общая рассылка', msg: 'Общие новости программы' }
+};
+const GAP_ACTION = {
+  U: 'Ознакомительная встреча: цели программы и роль стейкхолдера',
+  R: 'Индивидуальная встреча: выявить опасения, предложить компромисс, при необходимости подключить спонсора',
+  N: 'Показать выгоды для их зоны ответственности, вовлечь в принятие решений',
+  S: 'Дать активную роль: амбассадор программы, участие в управляющем комитете',
+  L: 'Поддерживать текущий уровень'
+};
+const PRIO = { h: 'Высокий', m: 'Средний', l: 'Плановый' };
+
+/* People: role, influence, interest, current level; desired level (des) is the reference the student has to reach.
+   The student starts with des = cur and sets the desired level; see REF_DES. */
+const PEOPLE = [
+  { id: 'gd', short: 'Ген. директор', name: 'Алия Сулейменова', role: 'Генеральный директор маркетплейса, спонсор программы', org: 'Маркетплейс «Корзина»', cat: 'internal', dir: 'up', phase: 1,
+    pw: 92, in: 70, cur: 'S', des: 'L', owner: 'Руководитель программы',
+    expect: 'Запуск «Доставки еды» на 35-й неделе; через год еда даёт 10% оборота маркетплейса; витрина одежды и посуды не теряет продаж.',
+    risk: 'Потеря интереса спонсора при первом переносе срока: решения начнут принимать «по умолчанию» без неё.',
+    channel: 'Управляющий комитет программы и личный статус', freq: 'Раз в 2 недели',
+    whyDes: 'Спонсор должен лидировать: публично защищать программу перед продавцами и финансовым директором, а не только поддерживать на словах.' },
+  { id: 'cfo', short: 'Фин. директор', name: 'Марат Есенов', role: 'Финансовый директор', org: 'Маркетплейс «Корзина»', cat: 'internal', dir: 'up', phase: 1,
+    pw: 80, in: 45, cur: 'N', des: 'S', owner: 'Руководитель программы',
+    expect: 'Бюджет программы не превышен; окупаемость направления за 18 месяцев; понятная модель комиссии ресторанов.',
+    risk: 'Заморозка финансирования после первого квартала, если расходы на курьеров выше плана.',
+    channel: 'Ежемесячный финансовый отчёт программы, согласование бюджета', freq: 'Ежемесячно',
+    whyDes: 'Высокое влияние и нейтральность — опасное сочетание: при первом перерасходе он станет противником. Нужна поддержка, лидерство не требуется.' },
+  { id: 'prd', short: 'Дир. по продукту', name: 'Данияр Ахметов', role: 'Директор по продукту', org: 'Маркетплейс «Корзина»', cat: 'internal', dir: 'side', phase: 2,
+    pw: 72, in: 88, cur: 'L', des: 'L', owner: 'Руководитель программы',
+    expect: 'Единая витрина без «второго приложения»; покупательский опыт одежды и посуды не ломается; быстрые эксперименты с меню и поиском.',
+    risk: 'Перетянет на себя решения по приоритетам команды запуска и оттеснит руководителя отдела операций.',
+    channel: 'Еженедельная встреча по продукту, общий бэклог программы', freq: 'Еженедельно',
+    whyDes: 'Уже лидирует — поддерживать уровень и направлять энергию в общие решения, а не в единоличные.' },
+  { id: 'ops', short: 'Рук. операций', name: 'Сауле Бекова', role: 'Руководитель отдела операций (12 специалистов, 4 переходят в команду запуска)', org: 'Маркетплейс «Корзина»', cat: 'internal', dir: 'side', phase: 3,
+    pw: 60, in: 75, cur: 'R', des: 'S', owner: 'Руководитель программы при поддержке спонсора',
+    expect: 'Сохранить срок 5 рабочих дней по запросам продавцов после ухода четырёх специалистов; получить замену или снятие части работ.',
+    risk: 'Срыв передачи специалистов на 18-й неделе: «отдам, когда закрою очередь». Критический путь запуска.',
+    channel: 'Личная встреча раз в неделю, участие в планировании запуска', freq: 'Еженедельно',
+    whyDes: 'Сопротивление руководителя, который отдаёт треть команды, нужно перевести в поддержку: без него интеграции с ресторанами не примут вовремя.' },
+  { id: 'sup', short: 'Рук. поддержки', name: 'Жанна Оразова', role: 'Руководитель службы поддержки покупателей', org: 'Маркетплейс «Корзина»', cat: 'internal', dir: 'side', phase: 3,
+    pw: 45, in: 70, cur: 'N', des: 'S', owner: 'Руководитель команды запуска',
+    expect: 'Сценарии обращений по еде (опоздание, холодное блюдо, отмена) и обучение операторов за 4 недели до запуска.',
+    risk: 'Рост обращений в 2–3 раза в первую неделю без готовых сценариев: падает качество поддержки всего маркетплейса.',
+    channel: 'Рабочая группа по сценариям поддержки, дайджест программы', freq: 'Раз в 2 недели',
+    whyDes: 'Служба первой встретит недовольных покупателей: ей нужно не просто знать, а поддерживать запуск и готовить людей.' },
+  { id: 'rest', short: 'Рестораны', name: 'Ассоциация партнёров-ресторанов', role: 'Представитель 40 ресторанов первого города запуска', org: 'Ассоциация «Городская кухня»', cat: 'partner', dir: 'out', phase: 3,
+    pw: 65, in: 85, cur: 'S', des: 'L', owner: 'Менеджер по партнёрам',
+    expect: 'Комиссия не выше 20%; подключение меню за один день; понятные правила отмены заказов и компенсаций.',
+    risk: 'Уход якорных ресторанов к конкурирующему сервису, если комиссия или сроки подключения не устроят.',
+    channel: 'Встреча с правлением ассоциации, канал партнёров, пилот с 10 ресторанами', freq: 'Еженедельно до запуска',
+    whyDes: 'Без ресторанов направления нет. Ассоциация должна сама вести подключение участников и говорить от имени программы.' },
+  { id: 'cour', short: 'Курьеры', name: 'ООО «Быстрый двор»', role: 'Курьерская служба-партнёр', org: 'ООО «Быстрый двор»', cat: 'partner', dir: 'out', phase: 3,
+    pw: 55, in: 60, cur: 'N', des: 'S', owner: 'Менеджер по логистике',
+    expect: 'Прогноз объёмов заказов по часам; оплата за доставку с гарантированным минимумом; термосумки за счёт маркетплейса.',
+    risk: 'Нехватка курьеров в вечерний пик первой недели: доставка 45 минут не выполняется.',
+    channel: 'Еженедельная операционная встреча, общий чат диспетчеров', freq: 'Еженедельно',
+    whyDes: 'Партнёр, от которого зависит обещание «45 минут». Нейтрального подрядного отношения мало — нужна поддержка и готовность держать резерв.' },
+  { id: 'san', short: 'Сан. служба', name: 'Санитарная служба города', role: 'Контроль хранения и перевозки пищевых продуктов', org: 'Городская санитарная служба', cat: 'gov', dir: 'out', phase: 3,
+    pw: 78, in: 25, cur: 'U', des: 'N', owner: 'Руководитель программы',
+    expect: 'Соблюдение требований к температуре и срокам перевозки еды; документы на курьерскую службу и рестораны до начала продаж.',
+    risk: 'Предписание и остановка продаж еды в первую неделю, если требования узнали поздно.',
+    channel: 'Официальное письмо, консультация до подачи документов', freq: 'По вехам (за 8 и за 2 недели до запуска)',
+    whyDes: 'Регулятор не должен «поддерживать» маркетплейс — достаточно осведомлённого нейтралитета: знает о запуске, видит документы, не имеет претензий.' },
+  { id: 'leg', short: 'Юристы', name: 'Айгерим Токтарова', role: 'Руководитель юридического отдела', org: 'Маркетплейс «Корзина»', cat: 'internal', dir: 'side', phase: 2,
+    pw: 50, in: 35, cur: 'N', des: 'S', owner: 'Руководитель программы',
+    expect: 'Договоры с ресторанами и курьерами; ясное распределение ответственности за качество еды; защита от претензий покупателей.',
+    risk: 'Задержка согласования типового договора на 3–4 недели: рестораны не подключаются вовремя.',
+    channel: 'Статус по договорам в дайджесте, встреча при каждой новой форме договора', freq: 'Раз в 2 недели',
+    whyDes: 'Юристы на критическом пути договоров: нейтральный «рассмотрим в порядке очереди» недопустим, нужна поддержка и приоритет.' },
+  { id: 'mkt', short: 'Маркетинг', name: 'Тимур Касенов', role: 'Директор по маркетингу', org: 'Маркетплейс «Корзина»', cat: 'internal', dir: 'side', phase: 4,
+    pw: 40, in: 80, cur: 'S', des: 'S', owner: 'Руководитель команды запуска',
+    expect: 'Дата запуска известна за 6 недель; бюджет кампании утверждён; есть промокод на первый заказ.',
+    risk: 'Кампания стартует до готовности ресторанов и курьеров: первые покупатели получают плохой опыт.',
+    channel: 'Еженедельная встреча по запуску, общий календарь программы', freq: 'Еженедельно',
+    whyDes: 'Поддерживает и этого достаточно; важнее синхронизировать дату кампании с готовностью, чем повышать уровень.' },
+  { id: 'sel', short: 'Продавцы', name: 'Совет продавцов одежды и посуды', role: 'Представители 300 продавцов действующих линеек', org: 'Продавцы маркетплейса', cat: 'market', dir: 'out', phase: 4,
+    pw: 35, in: 65, cur: 'R', des: 'N', owner: 'Менеджер по работе с продавцами',
+    expect: 'Витрина не отдаст главную страницу еде; акции и сезонные коллекции не сдвинутся; запросы продавцов не станут ждать дольше 5 дней.',
+    risk: 'Волна негатива в канале продавцов и уход части из них на другие площадки; жалобы напрямую генеральному директору.',
+    channel: 'Канал продавцов, ежемесячная встреча совета, ответы на вопросы о витрине', freq: 'Раз в 2 недели',
+    whyDes: 'Переводить в поддержку дорого и не нужно: достаточно снять страхи (место на витрине, сроки запросов) и довести до нейтралитета.' },
+  { id: 'buy', short: 'Покупатели', name: 'Покупатели маркетплейса', role: 'Представлены через исследование (опрос 1 200 человек, 12 интервью)', org: 'Покупатели', cat: 'market', dir: 'out', phase: 4,
+    pw: 30, in: 55, cur: 'U', des: 'S', owner: 'Директор по продукту (исследования)',
+    expect: 'Доставка за 45 минут; знакомые рестораны; еда в том же приложении и с тем же способом оплаты.',
+    risk: 'Низкий спрос в первые недели: покупатели не знают, что в «Корзине» появилась еда.',
+    channel: 'Исследования и опросы, уведомления в приложении после запуска', freq: 'По вехам (до и после запуска)',
+    whyDes: 'Покупатели не осведомлены. К запуску они должны знать и хотеть попробовать, а первые — рекомендовать: это и есть поддержка.' }
+];
+const REF_DES = Object.fromEntries(PEOPLE.map((p) => [p.id, p.des]));
+const PM = { id: 'pm', short: 'Рук. программы', name: 'Руководитель программы (вы)' };
+
+/* RACI: key decisions and work of the launch × stakeholders (+ programme manager) */
+const RACI_COLS = PEOPLE.map((p) => ({ id: p.id, short: p.short, name: p.name })).concat([{ ...PM, pm: true }]);
+const DECISIONS = [
+  { id: 'd1', name: 'Бизнес-кейс и бюджет программы', sub: 'утвердить до 10-й недели',
+    ref: { gd: 'A', cfo: 'R', pm: 'R', prd: 'C', ops: 'C', mkt: 'C', leg: 'I', sup: 'I' },
+    why: 'Деньги утверждает спонсор (A). Считает финансовый директор вместе с руководителем программы (R). Продукт, операции и маркетинг дают вводные (C).' },
+  { id: 'd2', name: 'Модель комиссии для ресторанов', sub: 'ставка, минимальный заказ, компенсации',
+    ref: { prd: 'A', pm: 'R', cfo: 'C', rest: 'C', leg: 'C', gd: 'I', mkt: 'I' },
+    why: 'Коммерческая модель — решение директора по продукту (A). Рестораны консультируют, но не решают (C): иначе комиссия будет нулевой. Спонсора информируют.' },
+  { id: 'd3', name: 'Типовой договор с ресторанами и ответственность за качество еды', sub: 'кто отвечает перед покупателем',
+    ref: { pm: 'A', leg: 'R', rest: 'C', san: 'C', gd: 'I', sup: 'I' },
+    why: 'Юристы готовят договор (R), но за результат отвечает руководитель программы (A): юридический отдел не управляет сроками запуска. Санитарную службу спрашивают о требованиях (C).' },
+  { id: 'd4', name: 'Переход четырёх специалистов в команду запуска на 18-й неделе', sub: 'кто уходит, как сохранить срок 5 дней по запросам продавцов',
+    ref: { ops: 'A', pm: 'R', prd: 'C', gd: 'I', sel: 'I' },
+    why: 'Людьми отдела распоряжается его руководитель (A), даже если она сопротивляется. Руководитель программы готовит план перехода (R). Продавцов информируют о сроках запросов.' },
+  { id: 'd5', name: 'Документы для санитарной службы на перевозку и хранение еды', sub: 'подать за 8 недель до запуска',
+    ref: { pm: 'A', cour: 'R', rest: 'R', san: 'C', leg: 'C', gd: 'I' },
+    why: 'Документы готовят те, кто перевозит и хранит еду (R): курьеры и рестораны. Отвечает за комплект руководитель программы (A). Регулятор консультирует по требованиям, а не исполняет работу.' },
+  { id: 'd6', name: 'Место «Доставки еды» на главной странице витрины', sub: 'баннер, вкладка или раздел каталога',
+    ref: { prd: 'A', mkt: 'R', sel: 'C', buy: 'C', gd: 'I', ops: 'I' },
+    why: 'Витрина — зона директора по продукту (A), макет делает маркетинг (R). Продавцов одежды и посуды обязательно спрашивают (C): это их главный страх. Покупателей — через исследование.' },
+  { id: 'd7', name: 'Договор и уровень обслуживания с курьерской службой', sub: '45 минут, резерв курьеров в пик',
+    ref: { pm: 'A', leg: 'R', cour: 'C', ops: 'C', cfo: 'C', gd: 'I' },
+    why: 'Договор пишут юристы (R), отвечает руководитель программы (A). Курьерскую службу консультируют по нормативам, финансового директора — по ставкам.' },
+  { id: 'd8', name: 'Сценарии поддержки и обучение операторов', sub: 'за 4 недели до запуска',
+    ref: { sup: 'A', pm: 'R', rest: 'C', cour: 'C', prd: 'I' },
+    why: 'За готовность операторов отвечает руководитель поддержки (A). Руководитель программы собирает сценарии (R), рестораны и курьеры подсказывают типовые сбои (C).' },
+  { id: 'd9', name: 'Маркетинговая кампания запуска', sub: 'дата старта, промокод, бюджет',
+    ref: { mkt: 'A', pm: 'R', prd: 'C', cfo: 'C', rest: 'C', gd: 'I', sel: 'I', sup: 'I' },
+    why: 'Кампания — ответственность маркетинга (A). Руководитель программы синхронизирует дату с готовностью (R). Поддержку и продавцов информируют заранее: на них придётся нагрузка.' },
+  { id: 'd10', name: 'Решение о переносе даты запуска', sub: 'если готовность на 33-й неделе ниже 80%',
+    ref: { gd: 'A', pm: 'R', prd: 'C', ops: 'C', cfo: 'C', mkt: 'I', rest: 'I', cour: 'I', sup: 'I', sel: 'I' },
+    why: 'Перенос вехи программы решает спонсор (A) по предложению руководителя программы (R). Все, кто готовится к дате, узнают первыми (I).' }
+];
+/* A deliberately flawed RACI «from the AI»: the validator has to catch it */
+const FLAWED_RACI = {
+  d1: { gd: 'A', cfo: 'A', pm: 'R', prd: 'C', sel: 'I' },
+  d2: { gd: 'A', prd: 'R', pm: 'R', rest: 'R', sel: 'I' },
+  d3: { gd: 'A', leg: 'R', sel: 'I' },
+  d4: { gd: 'A', ops: 'C', pm: 'R', sel: 'I' },
+  d5: { gd: 'A', pm: 'R', san: 'R', sel: 'I' },
+  d6: { prd: 'A', mkt: 'C', sel: 'I', buy: 'I' },
+  d7: { pm: 'A', leg: 'R', sel: 'I' },
+  d8: { sup: 'A', pm: 'R', sel: 'I' },
+  d9: { mkt: 'A', pm: 'R', sel: 'I' },
+  d10: { gd: 'A', pm: 'R', sel: 'I' }
+};
+
+const TABS = [
+  { k: 'case', t: 'Кейс', s: 'программа и задание' },
+  { k: 'map', t: 'Карта влияния', s: 'влияние × интерес' },
+  { k: 'eng', t: 'Вовлечённость', s: 'текущий → желаемый' },
+  { k: 'raci', t: 'RACI', s: 'решения × роли' },
+  { k: 'plan', t: 'План коммуникаций', s: 'канал, частота' },
+  { k: 'reg', t: 'Реестр', s: 'по PMBOK 8' }
+];
+
+/* ================= Helpers ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage may be blocked */ } },
+  del(k) { try { localStorage.removeItem(k); } catch (e) { /* ignore */ } }
+};
+const KEY = 'kz.stakeholders.state';
+function freshEntries() { return PEOPLE.map((p) => ({ ...p, des: p.cur })); }
+const saved = store.get(KEY, {});
+const state = {
+  tab: TABS.some((t) => t.k === saved.tab) ? saved.tab : 'case',
+  entries: Array.isArray(saved.entries) && saved.entries.length ? saved.entries : freshEntries(),
+  moved: !!saved.moved,
+  guess: saved.guess || { key: '', worst: '' },
+  engChecked: !!saved.engChecked,
+  raci: saved.raci || {},
+  raciChecked: !!saved.raciChecked, raciRevealed: !!saved.raciRevealed, raciSource: saved.raciSource || '',
+  reflect: saved.reflect || '',
+  sel: null, pendingDelete: false, downloads: null
+};
+function persist() {
+  store.set(KEY, { tab: state.tab, entries: state.entries, moved: state.moved, guess: state.guess, engChecked: state.engChecked,
+    raci: state.raci, raciChecked: state.raciChecked, raciRevealed: state.raciRevealed, raciSource: state.raciSource, reflect: state.reflect });
+}
+const entry = (id) => state.entries.find((e) => e.id === id);
+const color = (k) => `var(${LV[k].c})`;
+const quadOf = (e) => e.pw >= 50 ? (e.in >= 50 ? 'key' : 'sat') : (e.in >= 50 ? 'inf' : 'mon');
+const gapOf = (e) => LV[e.des].i - LV[e.cur].i;
+function priority(e) {
+  const g = gapOf(e), q = quadOf(e);
+  if (g > 0 && (q === 'key' || q === 'sat') && (e.cur === 'R' || e.cur === 'U' || g >= 2)) return 'h';
+  if (g > 0 && q !== 'mon') return 'm';
+  return 'l';
+}
+const prioRank = { h: 0, m: 1, l: 2 };
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => { t.hidden = true; }, 2200); }
+
+/* ================= Tabs ================= */
+function tabDone(k) {
+  if (k === 'case') return !!(state.guess.key && state.guess.worst);
+  if (k === 'map') return state.moved;
+  if (k === 'eng') return state.engChecked;
+  if (k === 'raci') return raciCheck().errors === 0 && state.raciChecked;
+  if (k === 'plan') return state.engChecked;
+  if (k === 'reg') return !!state.reflect.trim();
+  return false;
+}
+function renderTabs() {
+  $('#tabs').innerHTML = TABS.map((t, i) => `<button class="step${tabDone(t.k) ? ' done' : ''}" role="tab" type="button" data-tab="${t.k}" aria-selected="${t.k === state.tab}" aria-controls="main"><span class="dot">${i + 1}</span><span class="t">${t.t}</span><span class="s">${t.s}</span></button>`).join('');
+  $('#tabs').querySelectorAll('button').forEach((b) => { b.onclick = () => { state.tab = b.dataset.tab; state.sel = null; state.pendingDelete = false; persist(); render(); window.scrollTo({ top: 0 }); }; });
+}
+
+/* ================= Case ================= */
+function renderCase() {
+  return `
+  <section class="card">
+    <h3>Программа запуска направления «Доставка еды»</h3>
+    <p class="lead">Маркетплейс «Корзина» продаёт одежду, посуду и товары для дома в 12 городах. Руководство маркетплейса решило запустить третью линейку — доставку еды из ресторанов — и назначило вас руководителем программы. Запуск в первом городе назначен на 35-ю неделю. С 18-й недели четыре из двенадцати специалистов отдела операций переходят в команду запуска; руководитель отдела против: «Отдам, когда закрою очередь запросов продавцов».</p>
+    <div class="news">
+      <div class="newsitem"><b>Срок</b><span>Запуск на 35-й неделе. Готовность проверяется на 33-й; если ниже 80% — решение о переносе.</span></div>
+      <div class="newsitem"><b>Партнёры</b><span>Ассоциация из 40 ресторанов и курьерская служба «Быстрый двор». Санитарная служба города ещё не знает о программе.</span></div>
+      <div class="newsitem"><b>Напряжение</b><span>300 продавцов одежды и посуды боятся, что витрина отдаст главную страницу еде, а их запросы станут ждать дольше 5 дней.</span></div>
+    </div>
+    <p class="lbl">Стейкхолдеры программы (12)</p>
+    <div class="tscroll"><table class="data">
+      <thead><tr><th>Кто</th><th>Роль в программе</th><th>Чего ждёт</th><th>Сейчас</th></tr></thead>
+      <tbody>${PEOPLE.map((p) => `<tr><td><div class="who">${esc(p.name)}<small>${esc(p.org)}</small></div></td><td>${esc(p.role)}</td><td>${esc(p.expect)}</td><td><span class="lv"><i style="background:${color(p.cur)}"></i>${LV[p.cur].name}</span></td></tr>`).join('')}</tbody>
+    </table></div>
+  </section>
+  <section class="card">
+    <h3>Задание</h3>
+    <ol class="task-list">
+      <li><b>Карта влияния.</b> Проверьте положение каждого стейкхолдера на сетке «влияние × интерес» и при необходимости передвиньте. Откройте профиль, уточните ответственного и заметки.</li>
+      <li><b>Вовлечённость.</b> Для каждого задайте желаемый уровень (матрица оценки вовлечённости, PMBOK 8, рис. 5-23, с. 200). Сверьте с эталоном и прочитайте объяснения.</li>
+      <li><b>RACI.</b> Расставьте R/A/C/I по десяти ключевым решениям запуска. В строке ровно один A и хотя бы один R; следите, чтобы никто не был перегружен ответственностью и никто не остался «только в копии».</li>
+      <li><b>План коммуникаций</b> формируется из карты и разрыва вовлечённости — проверьте, что каналы и частота совпадают с тем, что вы знаете о людях.</li>
+      <li><b>Реестр.</b> Проверьте полноту реестра по требованиям PMBOK 8 (раздел 4, с. 141–142) и напишите вывод для спонсора.</li>
+    </ol>
+    <div class="row2">
+      <div class="field"><label class="lbl" for="gKey">Как думаете: кто попадёт в квадрант «Управлять плотно»?</label><input type="text" id="gKey" value="${esc(state.guess.key)}" placeholder="Например: генеральный директор, …"></div>
+      <div class="field"><label class="lbl" for="gWorst">Чей разрыв вовлечённости опаснее всего для запуска?</label><input type="text" id="gWorst" value="${esc(state.guess.worst)}" placeholder="Один человек или организация и почему"></div>
+    </div>
+    <p class="help">Ответы сохраняются. На вкладке «Реестр» вы сравните их с тем, что получилось.</p>
+    <div class="actions"><button class="btn btn-primary" type="button" id="goMap">К карте влияния</button></div>
+  </section>
+  <section class="card">
+    <h3>Где это в PMBOK 8</h3>
+    <ul class="task-list">
+      <li>Раздел 2.5 «Стейкхолдеры» и состав реестра стейкхолдеров — с. 141–142: идентификация, оценка, классификация.</li>
+      <li>Анализ стейкхолдеров, картирование «влияние × интерес», направление влияния — раздел 5, с. 198–201.</li>
+      <li>Матрица оценки вовлечённости (не осведомлён, сопротивляется, нейтрален, поддерживает, лидирует; текущий и желаемый уровень) — рис. 5-23, с. 200.</li>
+      <li>Матрица распределения ответственности RACI — раздел 5, модели и методы; правило «один A в строке» — практика, а не требование стандарта.</li>
+    </ul>
+  </section>`;
+}
+function bindCase() {
+  $('#gKey').addEventListener('input', (ev) => { state.guess.key = ev.target.value; persist(); renderTabs(); renderRail(); });
+  $('#gWorst').addEventListener('input', (ev) => { state.guess.worst = ev.target.value; persist(); renderTabs(); renderRail(); });
+  $('#goMap').onclick = () => { state.tab = 'map'; persist(); render(); window.scrollTo({ top: 0 }); };
+}
+
+/* ================= Map ================= */
+function renderMap() {
+  const es = state.entries;
+  const key = es.filter((e) => quadOf(e) === 'key').length;
+  const gaps = es.filter((e) => gapOf(e) > 0).length;
+  const resist = es.filter((e) => e.cur === 'R').length;
+  const high = es.filter((e) => priority(e) === 'h').length;
+  return `
+  <section class="card">
+    <h3>Карта влияния и интереса</h3>
+    <div class="stats">
+      <div class="stat"><b>${es.length}</b><span>Стейкхолдеров</span></div>
+      <div class="stat"><b>${key}</b><span>Ключевых игроков</span></div>
+      <div class="stat"><b>${gaps}</b><span>С разрывом вовлечённости</span></div>
+      <div class="stat${resist ? ' hot' : ''}"><b>${resist}</b><span>Сопротивляются</span></div>
+      <div class="stat${high ? ' hot' : ''}"><b>${high}</b><span>Требуют действий сейчас</span></div>
+    </div>
+    <div class="mapLayout">
+      <div>
+        <div class="actions" style="margin-bottom:10px">
+          <button class="btn btn-small" type="button" id="addBtn">+ Новый стейкхолдер</button>
+          <span class="spacer"></span>
+          <button class="btn btn-small" type="button" id="resetBtn">Сбросить пример</button>
+        </div>
+        <div id="resetConfirm" class="confirm" hidden style="margin-bottom:10px">Вернуть исходные данные кейса? Ваши изменения, RACI и ответы будут удалены.
+          <button class="btn btn-small btn-danger" type="button" id="resetYes">Сбросить</button><button class="btn btn-small" type="button" id="resetNo">Отмена</button></div>
+        <div class="gridShell">
+          <div class="axisY">Влияние (власть) →</div>
+          <div class="grid" id="grid">
+            <div class="q sat"><h4>Удовлетворять</h4><p>Высокое влияние, низкий интерес</p></div>
+            <div class="q key"><h4>Управлять плотно</h4><p>Ключевые игроки</p></div>
+            <div class="q mon"><h4>Наблюдать</h4><p>Минимальные усилия</p></div>
+            <div class="q inf"><h4>Информировать</h4><p>Высокий интерес, низкое влияние</p></div>
+          </div>
+          <div class="axisX">Интерес к программе →</div>
+        </div>
+        <div class="legend" style="margin-top:10px">${LEVELS.map((l) => `<span><i style="background:var(${l.c})"></i>${l.name}</span>`).join('')}</div>
+        <p class="help" style="margin-top:6px">Перетаскивайте карточки по сетке (или стрелками с клавиатуры, Shift — шаг 10). Нажмите на карточку, чтобы открыть профиль. Цвет точки — текущий уровень вовлечённости.</p>
+      </div>
+      <aside class="profile" id="profile" aria-live="polite"></aside>
+    </div>
+  </section>`;
+}
+function renderGrid() {
+  const g = $('#grid'); if (!g) return;
+  g.querySelectorAll('.chip').forEach((c) => c.remove());
+  state.entries.forEach((e) => {
+    const c = document.createElement('div');
+    c.className = 'chip' + (e.id === state.sel ? ' sel' : '');
+    c.tabIndex = 0; c.dataset.sid = e.id;
+    c.style.left = e.in + '%'; c.style.top = (100 - e.pw) + '%';
+    c.setAttribute('role', 'button');
+    c.setAttribute('aria-label', `${e.short}: влияние ${e.pw}, интерес ${e.in}, ${LV[e.cur].name}`);
+    c.innerHTML = `<span class="dot" style="background:${color(e.cur)}"></span>${esc(e.short)}`;
+    g.appendChild(c);
+  });
+}
+function renderProfile() {
+  const el = $('#profile'); if (!el) return;
+  const e = state.sel && entry(state.sel);
+  if (!e) { renderAttention(el); return; }
+  const q = quadOf(e), g = gapOf(e), pr = priority(e);
+  el.innerHTML = `
+    <div class="actions"><button class="btn btn-small" type="button" id="backBtn">← Обзор</button></div>
+    <div><h4>${esc(e.name)}</h4><div class="sub">${esc(e.role)} · ${esc(e.org)}</div></div>
+    <div class="actions"><span class="pill ${q === 'key' ? 'hot' : 'info'}">${QUAD[q].name}</span><span class="pill ${pr === 'h' ? 'bad' : pr === 'm' ? 'warn' : 'info'}">${PRIO[pr]} приоритет</span></div>
+    <div class="field"><label class="lbl" for="fName">Имя или организация</label><input type="text" id="fName" value="${esc(e.name)}"></div>
+    <div class="field"><label class="lbl" for="fShort">Короткая подпись на карте</label><input type="text" id="fShort" value="${esc(e.short)}" maxlength="20"></div>
+    <div class="field"><label class="lbl" for="fRole">Роль в программе</label><input type="text" id="fRole" value="${esc(e.role)}"></div>
+    <div class="row2">
+      <div class="field"><label class="lbl" for="fCat">Категория</label><select id="fCat">${Object.entries(CATS).map(([k, v]) => `<option value="${k}" ${k === e.cat ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
+      <div class="field"><label class="lbl" for="fDir">Направление влияния</label><select id="fDir">${Object.entries(DIRS).map(([k, v]) => `<option value="${k}" ${k === e.dir ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label class="lbl" for="fPw">Влияние <span class="rangeVal" id="vPw">${e.pw}</span></label><input type="range" id="fPw" min="0" max="100" value="${e.pw}"></div>
+      <div class="field"><label class="lbl" for="fIn">Интерес <span class="rangeVal" id="vIn">${e.in}</span></label><input type="range" id="fIn" min="0" max="100" value="${e.in}"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label class="lbl" for="fCur">Сейчас</label><select id="fCur">${LEVELS.map((l) => `<option value="${l.k}" ${l.k === e.cur ? 'selected' : ''}>${l.name}</option>`).join('')}</select></div>
+      <div class="field"><label class="lbl" for="fDes">Нужно</label><select id="fDes">${LEVELS.map((l) => `<option value="${l.k}" ${l.k === e.des ? 'selected' : ''}>${l.name}</option>`).join('')}</select></div>
+    </div>
+    <div class="field"><label class="lbl" for="fOwner">Ответственный за отношения</label><input type="text" id="fOwner" value="${esc(e.owner)}"></div>
+    <div class="field"><label class="lbl" for="fExpect">Ожидания</label><textarea id="fExpect" rows="3">${esc(e.expect)}</textarea></div>
+    <div class="field"><label class="lbl" for="fRisk">Риск для программы</label><textarea id="fRisk" rows="2">${esc(e.risk)}</textarea></div>
+    <div class="advice"><span class="k">Рекомендация</span><div><b>${QUAD[q].freq}</b> · ${QUAD[q].channel}</div><div>${g > 0 ? esc(GAP_ACTION[e.cur]) : 'Разрыва нет — поддерживать текущий уровень.'}</div></div>
+    <div id="delZone">${state.pendingDelete
+      ? `<div class="confirm">Убрать из программы? <button class="btn btn-small btn-danger" type="button" id="delYes">Убрать</button><button class="btn btn-small" type="button" id="delNo">Отмена</button></div>`
+      : `<button class="btn btn-small btn-danger" type="button" id="delBtn">Убрать из программы</button>`}</div>`;
+  $('#backBtn').onclick = () => { state.sel = null; state.pendingDelete = false; renderGrid(); renderProfile(); };
+  const bindText = (id, key, after) => $(id).addEventListener('input', (ev) => { e[key] = ev.target.value; persist(); if (after) after(); });
+  bindText('#fName', 'name'); bindText('#fShort', 'short', renderGrid); bindText('#fRole', 'role'); bindText('#fOwner', 'owner'); bindText('#fExpect', 'expect'); bindText('#fRisk', 'risk');
+  $('#fCat').onchange = (ev) => { e.cat = ev.target.value; persist(); };
+  $('#fDir').onchange = (ev) => { e.dir = ev.target.value; persist(); };
+  $('#fPw').addEventListener('input', (ev) => { e.pw = +ev.target.value; $('#vPw').textContent = e.pw; state.moved = true; persist(); renderGrid(); });
+  $('#fIn').addEventListener('input', (ev) => { e.in = +ev.target.value; $('#vIn').textContent = e.in; state.moved = true; persist(); renderGrid(); });
+  $('#fPw').addEventListener('change', () => render());
+  $('#fIn').addEventListener('change', () => render());
+  $('#fCur').onchange = (ev) => { e.cur = ev.target.value; persist(); render(); };
+  $('#fDes').onchange = (ev) => { e.des = ev.target.value; persist(); render(); };
+  if (state.pendingDelete) {
+    $('#delYes').onclick = () => { state.entries = state.entries.filter((x) => x.id !== e.id); state.sel = null; state.pendingDelete = false; persist(); render(); toast('Стейкхолдер убран из программы'); };
+    $('#delNo').onclick = () => { state.pendingDelete = false; renderProfile(); };
+  } else {
+    $('#delBtn').onclick = () => { state.pendingDelete = true; renderProfile(); };
+  }
+}
+function renderAttention(el) {
+  const es = state.entries.slice().sort((a, b) => prioRank[priority(a)] - prioRank[priority(b)] || b.pw - a.pw);
+  const hot = es.filter((e) => priority(e) === 'h'), mid = es.filter((e) => priority(e) === 'm');
+  const item = (e) => `<button type="button" data-sid="${e.id}"><span class="lv"><i style="background:${color(e.cur)}"></i></span><span><b>${esc(e.name)}</b><br><span style="color:var(--ink-2);font-size:12px">${LV[e.cur].name} → ${LV[e.des].name}</span></span></button>`;
+  el.innerHTML = `
+    <div><h4>Кому нужно внимание</h4><div class="sub" style="margin-top:2px">Влиятельные стейкхолдеры с разрывом вовлечённости. Разрыв появится, когда вы задали желаемый уровень.</div></div>
+    <div class="attention"><h5 style="color:var(--signal)">Действовать сейчас</h5>${hot.length ? hot.map(item).join('') : '<span class="empty">Нет критичных разрывов — или желаемые уровни ещё не заданы.</span>'}</div>
+    <div class="attention"><h5>В плане работы</h5>${mid.length ? mid.map(item).join('') : '<span class="empty">Пусто.</span>'}</div>`;
+  el.querySelectorAll('[data-sid]').forEach((b) => { b.onclick = () => { state.sel = b.dataset.sid; renderGrid(); renderProfile(); }; });
+}
+function bindMap() {
+  renderGrid(); renderProfile();
+  const g = $('#grid');
+  let drag = null;
+  g.addEventListener('pointerdown', (ev) => {
+    const c = ev.target.closest('.chip'); if (!c) return;
+    drag = { c, sid: c.dataset.sid, x: ev.clientX, y: ev.clientY, moved: false };
+    c.setPointerCapture(ev.pointerId);
+  });
+  g.addEventListener('pointermove', (ev) => {
+    if (!drag) return;
+    if (!drag.moved && Math.hypot(ev.clientX - drag.x, ev.clientY - drag.y) < 4) return;
+    drag.moved = true; drag.c.classList.add('dragging');
+    const r = g.getBoundingClientRect();
+    const xi = Math.round(Math.min(98, Math.max(2, (ev.clientX - r.left) / r.width * 100)));
+    const yp = Math.round(Math.min(98, Math.max(2, 100 - (ev.clientY - r.top) / r.height * 100)));
+    const e = entry(drag.sid); e.in = xi; e.pw = yp;
+    drag.c.style.left = xi + '%'; drag.c.style.top = (100 - yp) + '%';
+    if (state.sel === drag.sid && $('#fPw')) { $('#fPw').value = yp; $('#vPw').textContent = yp; $('#fIn').value = xi; $('#vIn').textContent = xi; }
+  });
+  const end = () => {
+    if (!drag) return;
+    const d = drag; drag = null;
+    if (d.moved) { state.moved = true; persist(); render(); }
+    else { state.sel = d.sid; state.pendingDelete = false; renderGrid(); renderProfile(); }
+  };
+  g.addEventListener('pointerup', end);
+  g.addEventListener('pointercancel', end);
+  g.addEventListener('keydown', (ev) => {
+    const c = ev.target.closest('.chip'); if (!c) return;
+    const e = entry(c.dataset.sid);
+    const step = ev.shiftKey ? 10 : 2;
+    const moves = { ArrowUp: [0, step], ArrowDown: [0, -step], ArrowLeft: [-step, 0], ArrowRight: [step, 0] };
+    if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); state.sel = e.id; renderGrid(); renderProfile(); focusChip(e.id); return; }
+    if (!moves[ev.key]) return;
+    ev.preventDefault();
+    e.in = Math.min(98, Math.max(2, e.in + moves[ev.key][0]));
+    e.pw = Math.min(98, Math.max(2, e.pw + moves[ev.key][1]));
+    state.moved = true; persist(); renderGrid(); if (state.sel === e.id) renderProfile(); focusChip(e.id);
+  });
+  function focusChip(sid) { const c = g.querySelector(`.chip[data-sid="${sid}"]`); if (c) c.focus(); }
+  $('#addBtn').onclick = () => {
+    const id = 'p' + Date.now().toString(36);
+    state.entries.push({ id, short: 'Новый', name: 'Новый стейкхолдер', role: 'Роль в программе', org: 'Организация', cat: 'internal', dir: 'side', phase: 2, pw: 50, in: 50, cur: 'N', des: 'N', owner: 'Руководитель программы', expect: '', risk: '', channel: '', freq: '', whyDes: '' });
+    state.sel = id; state.pendingDelete = false; persist(); render();
+    const f = $('#fName'); if (f) { f.focus(); f.select(); }
+  };
+  $('#resetBtn').onclick = () => { $('#resetConfirm').hidden = false; };
+  $('#resetNo').onclick = () => { $('#resetConfirm').hidden = true; };
+  $('#resetYes').onclick = () => {
+    store.del(KEY);
+    Object.assign(state, { entries: freshEntries(), moved: false, guess: { key: '', worst: '' }, engChecked: false, raci: {}, raciChecked: false, raciRevealed: false, raciSource: '', reflect: '', sel: null, pendingDelete: false });
+    persist(); render(); toast('Данные кейса восстановлены');
+  };
+}
+
+/* ================= Engagement ================= */
+function engDiff() {
+  return state.entries.filter((e) => REF_DES[e.id]).map((e) => ({ e, ref: REF_DES[e.id], ok: e.des === REF_DES[e.id] }));
+}
+function renderEng() {
+  const es = state.entries.slice().sort((a, b) => gapOf(b) - gapOf(a) || b.pw - a.pw);
+  const set = state.entries.filter((e) => e.des !== e.cur).length;
+  const head = `<div class="engRow head"><div>Стейкхолдер</div>${LEVELS.map((l) => `<div>${l.name}</div>`).join('')}<div>Нужно · разрыв</div></div>`;
+  const rows = es.map((e) => {
+    const ci = LV[e.cur].i, di = LV[e.des].i, g = di - ci;
+    const pos = (i) => (i * 20 + 10) + '%';
+    const lo = Math.min(ci, di), hi = Math.max(ci, di);
+    return `<div class="engRow">
+      <div class="engName">${esc(e.name)}<small>${esc(e.role)}</small></div>
+      <div class="track">${LEVELS.map(() => '<div class="cell"></div>').join('')}
+        ${hi > lo ? `<div class="bar" style="left:${pos(lo)};width:${(hi - lo) * 20}%"></div>` : ''}
+        ${ci === di ? `<span class="mk c" style="left:${pos(ci)};background:${color(e.cur)}" title="Текущий и желаемый совпадают">ТЖ</span>`
+          : `<span class="mk d" style="left:${pos(di)}">Ж</span><span class="mk c" style="left:${pos(ci)};background:${color(e.cur)}">Т</span>`}
+      </div>
+      <div class="engCtl"><select data-des="${e.id}" aria-label="Желаемый уровень: ${esc(e.name)}">${LEVELS.map((l) => `<option value="${l.k}" ${l.k === e.des ? 'selected' : ''}>${l.name}</option>`).join('')}</select>
+        <span class="help" style="text-align:center">${g > 0 ? `<span class="pill ${g >= 2 ? 'bad' : 'warn'}">разрыв +${g}</span>` : g < 0 ? `<span class="pill info">снизить на ${-g}</span>` : 'без разрыва'}</span></div>
+    </div>`;
+  }).join('');
+  const diff = engDiff(), okN = diff.filter((d) => d.ok).length;
+  return `
+  <section class="card">
+    <h3>Матрица оценки вовлечённости</h3>
+    <p class="lead">PMBOK 8, рис. 5-23 (с. 200). Текущий уровень задан кейсом. Ваша задача — выбрать желаемый уровень для каждого: не «все должны лидировать», а тот уровень, который нужен для успеха запуска и которого реально достичь за 17 недель.</p>
+    <div class="engLegend"><span><span class="mk c" style="background:var(--ink-2)">Т</span>Текущий уровень</span><span><span class="mk d">Ж</span>Желаемый уровень</span><span>Задано желаемых уровней: <b>${set}</b> из ${state.entries.length}</span></div>
+    <div class="tscroll"><div class="eng" id="engTable">${head}${rows}</div></div>
+    <div class="actions">
+      <button class="btn btn-primary" type="button" id="engCheck">Сверить с эталоном</button>
+      ${state.engChecked ? `<span class="pill ${okN === diff.length ? 'ok' : okN >= diff.length - 3 ? 'warn' : 'bad'}">Совпало ${okN} из ${diff.length}</span>` : ''}
+    </div>
+    ${state.engChecked ? `<div class="diag">${diff.sort((a, b) => Number(a.ok) - Number(b.ok)).map((d) => `<div class="item"><span class="pill ${d.ok ? 'ok' : 'bad'}">${d.ok ? 'совпало' : 'иначе'}</span><p><b>${esc(d.e.name)}</b>: ${LV[d.e.cur].name} → у вас <b>${LV[d.e.des].name}</b>${d.ok ? '' : `, в эталоне <b>${LV[d.ref].name}</b>`}.<br><span class="help">${esc(d.e.whyDes)}</span></p></div>`).join('')}</div>
+    <p class="note">Эталон — не единственный верный ответ. Если вы выбрали иначе и можете объяснить, какого поведения ждёте от человека и как его добьётесь, — это тоже решение. Важно, чтобы разрыв был осознанным.</p>` : ''}
+  </section>`;
+}
+function bindEng() {
+  document.querySelectorAll('[data-des]').forEach((s) => { s.onchange = () => { entry(s.dataset.des).des = s.value; persist(); render(); }; });
+  $('#engCheck').onclick = () => { state.engChecked = true; persist(); render(); };
+}
+
+/* ================= RACI ================= */
+function raciVal(d, c) { return (state.raci[d] || {})[c] || ''; }
+function raciCheck(m = state.raci) {
+  const rows = DECISIONS.map((d) => {
+    const vals = RACI_COLS.map((c) => (m[d.id] || {})[c.id] || '');
+    const a = vals.filter((v) => v === 'A').length, r = vals.filter((v) => v === 'R').length, filled = vals.filter(Boolean).length;
+    const msgs = [];
+    if (!filled) msgs.push('строка не заполнена');
+    else { if (a === 0) msgs.push('нет A: никто не отвечает за результат'); if (a > 1) msgs.push(`A больше одного (${a}): ответственность размыта`); if (r === 0) msgs.push('нет R: никто не делает работу'); }
+    return { d, a, r, filled, msgs, ok: filled > 0 && msgs.length === 0 };
+  });
+  const cols = RACI_COLS.map((c) => {
+    const vals = DECISIONS.map((d) => (m[d.id] || {})[c.id] || '');
+    const a = vals.filter((v) => v === 'A').length, marked = vals.filter(Boolean);
+    const msgs = [];
+    if (a > 3) msgs.push(`${a} A — перегружен ответственностью`);
+    if (marked.length && marked.every((v) => v === 'I')) msgs.push('везде только I — участие формальное');
+    return { c, a, msgs };
+  });
+  const errors = rows.reduce((n, r) => n + (r.filled ? r.msgs.length : 0), 0) + rows.filter((r) => !r.filled).length;
+  const warnings = cols.reduce((n, c) => n + c.msgs.length, 0);
+  return { rows, cols, errors, warnings };
+}
+function raciScore() {
+  let total = 0, hit = 0;
+  DECISIONS.forEach((d) => RACI_COLS.forEach((c) => { const ref = d.ref[c.id] || '', mine = raciVal(d.id, c.id); if (ref || mine) { total++; if (ref === mine) hit++; } }));
+  return { total, hit };
+}
+function renderRaci() {
+  const chk = raciCheck();
+  const head = `<tr><th class="row">Решение или работа запуска</th>${RACI_COLS.map((c) => `<th${c.pm ? ' class="pm"' : ''} title="${esc(c.name)}">${esc(c.short)}</th>`).join('')}</tr>`;
+  const body = DECISIONS.map((d, i) => {
+    const r = chk.rows[i];
+    const cls = state.raciChecked ? (r.ok ? ' ok' : ' bad') : '';
+    return `<tr><td class="row${cls}"><b>${i + 1}. ${esc(d.name)}</b><small>${esc(d.sub)}</small>${state.raciChecked && r.msgs.length ? `<br><span class="pill bad" style="margin-top:4px">${esc(r.msgs.join('; '))}</span>` : ''}</td>
+      ${RACI_COLS.map((c) => { const v = raciVal(d.id, c.id); return `<td><select class="cell ${v}" data-d="${d.id}" data-c="${c.id}" aria-label="${esc(d.name)} — ${esc(c.name)}"><option value="">·</option><option value="R" ${v === 'R' ? 'selected' : ''}>R</option><option value="A" ${v === 'A' ? 'selected' : ''}>A</option><option value="C" ${v === 'C' ? 'selected' : ''}>C</option><option value="I" ${v === 'I' ? 'selected' : ''}>I</option></select></td>`; }).join('')}</tr>`;
+  }).join('');
+  const foot = `<tr><td class="row">Сколько A на человека</td>${chk.cols.map((c) => `<td>${c.a}${state.raciChecked && c.msgs.length ? `<br><span class="pill warn" title="${esc(c.msgs.join('; '))}">!</span>` : ''}</td>`).join('')}</tr>`;
+  const sc = raciScore();
+  return `
+  <section class="card">
+    <h3>Матрица ответственности RACI</h3>
+    <p class="lead">Десять ключевых решений и работ запуска. Расставьте роли: <b>R</b> — делает, <b>A</b> — отвечает за результат и принимает решение, <b>C</b> — консультируют до решения, <b>I</b> — информируют после. Последний столбец — вы, руководитель программы.</p>
+    <div class="raciLegend"><span><b style="color:var(--r-R)">R</b>Responsible — исполняет</span><span><b style="color:var(--r-A);background:var(--signal-tint)">A</b>Accountable — отвечает, один в строке</span><span><b style="color:var(--r-C)">C</b>Consulted — консультируют</span><span><b style="color:var(--r-I)">I</b>Informed — информируют</span></div>
+    <div class="tscroll"><table class="raci"><thead>${head}</thead><tbody>${body}</tbody><tfoot>${foot}</tfoot></table></div>
+    <div class="actions">
+      <button class="btn btn-primary" type="button" id="raciCheckBtn">Проверить</button>
+      <button class="btn" type="button" id="raciAiBtn" title="Загрузить вариант, который предложил ИИ, и найти в нём ошибки">Вариант ИИ</button>
+      <button class="btn" type="button" id="raciRevealBtn" ${state.raciChecked ? '' : 'disabled'}>Показать эталон</button>
+      <button class="btn btn-small" type="button" id="raciClearBtn">Очистить</button>
+      <span class="spacer"></span>
+      ${state.raciChecked ? `<span class="pill ${chk.errors ? 'bad' : 'ok'}">${chk.errors ? `Ошибок в строках: ${chk.errors}` : 'Строки в порядке'}</span><span class="pill ${chk.warnings ? 'warn' : 'info'}">${chk.warnings ? `Предупреждений: ${chk.warnings}` : 'Нагрузка ровная'}</span>` : ''}
+    </div>
+    ${state.raciChecked ? `<div class="diag">
+      ${chk.rows.filter((r) => r.msgs.length).map((r) => `<div class="item"><span class="pill bad">строка</span><p><b>${esc(r.d.name)}</b>: ${esc(r.msgs.join('; '))}.</p></div>`).join('')}
+      ${chk.cols.filter((c) => c.msgs.length).map((c) => `<div class="item"><span class="pill warn">столбец</span><p><b>${esc(c.c.name)}</b>: ${esc(c.msgs.join('; '))}. ${c.a > 3 ? 'Больше трёх A у одного человека — решения будут ждать его календаря; часть ответственности стоит передать владельцам зон.' : 'Стейкхолдер, которого только информируют, обычно либо не нужен в матрице, либо его мнение потеряли: проверьте, не должен ли он быть C хотя бы в одном решении.'}</p></div>`).join('')}
+      ${!chk.errors && !chk.warnings ? '<div class="item"><span class="pill ok">правила</span><p>В каждой строке ровно один A и хотя бы один R; никто не перегружен и никто не остался только в копии. Теперь сравните содержание с эталоном.</p></div>' : ''}
+      ${state.raciSource === 'ai' ? '<div class="item"><span class="pill info">вариант ИИ</span><p>Это матрица, которую предложил ИИ. Формальные правила ловят часть ошибок, но не все: посмотрите, кто у ИИ отвечает за людей отдела операций и за документы для санитарной службы, и исправьте строки сами.</p></div>' : ''}
+    </div>` : ''}
+    ${state.raciRevealed ? `<div class="reveal"><p class="lbl" style="margin-bottom:8px">Эталон · совпадений ${sc.hit} из ${sc.total} отмеченных ячеек</p>
+      <div class="tscroll"><table class="raci" style="min-width:900px"><thead>${head}</thead><tbody>${DECISIONS.map((d, i) => `<tr><td class="row" style="background:transparent"><b>${i + 1}. ${esc(d.name)}</b><small>${esc(d.why)}</small></td>${RACI_COLS.map((c) => { const ref = d.ref[c.id] || '', mine = raciVal(d.id, c.id); return `<td><span class="raciRef ${ref}${ref !== mine ? ' mine' : ''}" title="${ref !== mine ? 'у вас: ' + (mine || 'пусто') : 'совпало'}">${ref || '·'}</span></td>`; }).join('')}</tr>`).join('')}</tbody></table></div>
+      <p class="help" style="margin-top:8px">Обведены ячейки, где ваш ответ отличается от эталона. Эталон — один из разумных вариантов; главное, чтобы A был у того, кто вправе принять решение, а не у того, кто больше всех заинтересован.</p></div>` : ''}
+  </section>`;
+}
+function bindRaci() {
+  document.querySelectorAll('select.cell').forEach((s) => {
+    s.onchange = () => {
+      const d = s.dataset.d, c = s.dataset.c;
+      state.raci[d] = state.raci[d] || {};
+      if (s.value) state.raci[d][c] = s.value; else delete state.raci[d][c];
+      s.className = 'cell ' + s.value;
+      state.raciSource = 'mine'; persist(); renderRail(); renderTabs();
+      if (state.raciChecked) render();
+    };
+  });
+  $('#raciCheckBtn').onclick = () => { state.raciChecked = true; persist(); render(); };
+  $('#raciRevealBtn').onclick = () => { state.raciRevealed = !state.raciRevealed; persist(); render(); };
+  $('#raciAiBtn').onclick = () => { state.raci = JSON.parse(JSON.stringify(FLAWED_RACI)); state.raciSource = 'ai'; state.raciChecked = true; state.raciRevealed = false; persist(); render(); toast('Загружен вариант ИИ — проверка уже выполнена'); };
+  $('#raciClearBtn').onclick = () => { state.raci = {}; state.raciChecked = false; state.raciRevealed = false; state.raciSource = ''; persist(); render(); };
+}
+
+/* ================= Communications plan ================= */
+function planRows() {
+  return state.entries.slice().sort((a, b) => prioRank[priority(a)] - prioRank[priority(b)] || b.pw - a.pw)
+    .map((e) => { const q = QUAD[quadOf(e)]; return { e, q, freq: e.freq || q.freq, channel: e.channel || q.channel, action: gapOf(e) > 0 ? GAP_ACTION[e.cur] : 'Поддерживать текущий уровень', pr: priority(e) }; });
+}
+function renderPlan() {
+  const rows = planRows();
+  return `
+  <section class="card">
+    <h3>План коммуникаций</h3>
+    <p class="lead">Стратегия и ключевое сообщение берутся из квадранта карты, действие — из разрыва вовлечённости, канал и частота — из профиля стейкхолдера (если пусто, подставляется рекомендация квадранта). Отсортировано по приоритету.</p>
+    <div class="actions"><button class="btn" type="button" id="copyPlan">Скопировать для Excel</button><span class="status" id="planStatus"></span></div>
+    <div class="tscroll"><table class="data"><thead><tr><th>Приоритет</th><th>Стейкхолдер</th><th>Стратегия</th><th>Частота</th><th>Канал</th><th>Ключевое сообщение</th><th>Действие по разрыву</th><th>Ответственный</th></tr></thead>
+    <tbody>${rows.map((r) => `<tr>
+      <td><span class="pill ${r.pr === 'h' ? 'bad' : r.pr === 'm' ? 'warn' : 'info'}">${PRIO[r.pr]}</span></td>
+      <td><div class="who">${esc(r.e.name)}<small>${esc(r.e.role)}</small></div></td>
+      <td>${r.q.name}</td><td>${esc(r.freq)}</td><td>${esc(r.channel)}</td><td>${r.q.msg}</td><td>${esc(r.action)}</td><td>${esc(r.e.owner)}</td></tr>`).join('')}</tbody></table></div>
+    <p class="note">Проверьте себя: у санитарной службы частота «по вехам», а не «ежеквартально», хотя она в квадранте «Удовлетворять». Шаблон квадранта — отправная точка, профиль человека важнее.</p>
+  </section>`;
+}
+function planTSV() {
+  const cols = ['Приоритет', 'Стейкхолдер', 'Роль', 'Организация', 'Стратегия', 'Частота', 'Канал', 'Ключевое сообщение', 'Действие по разрыву', 'Ответственный'];
+  return [cols.join('\t')].concat(planRows().map((r) => [PRIO[r.pr], r.e.name, r.e.role, r.e.org, r.q.name, r.freq, r.channel, r.q.msg, r.action, r.e.owner].map((v) => String(v).replace(/\t|\n/g, ' ')).join('\t'))).join('\n');
+}
+function bindPlan() {
+  $('#copyPlan').onclick = () => copyText(planTSV(), 'План скопирован — вставьте в Excel', '#planStatus');
+}
+function copyText(text, okMsg, statusSel) {
+  const fail = () => { const s = statusSel && $(statusSel); if (s) { s.textContent = 'Не удалось скопировать: выделите таблицу вручную'; s.className = 'status err'; } else toast('Не удалось скопировать'); };
+  try { navigator.clipboard.writeText(text).then(() => toast(okMsg), fail); } catch (e) { fail(); }
+}
+
+/* ================= Register (PMBOK 8) ================= */
+function coverageRows() {
+  const es = state.entries, T = es.length;
+  const n = (f) => es.filter(f).length;
+  return [
+    ['Идентификация', null],
+    ['Имя или название', 'Имя стейкхолдера', n((e) => e.name && e.name !== 'Новый стейкхолдер'), 'с. 141'],
+    ['Должность и организация', 'Организационная должность', n((e) => e.role && e.role !== 'Роль в программе'), 'с. 141'],
+    ['Роль в программе', 'Роль в проекте', n((e) => e.role && e.role !== 'Роль в программе'), 'с. 141'],
+    ['Ответственный за отношения', 'Кто ведёт коммуникацию (практика программы)', n((e) => e.owner), 'с. 141'],
+    ['Оценка', null],
+    ['Требования и ожидания', 'Основные требования и ожидания', n((e) => e.expect), 'с. 142'],
+    ['Потенциал влияния на результат', 'Потенциал влияния на результаты проекта', n((e) => e.pw != null), 'с. 142'],
+    ['Фаза максимального влияния', 'Фаза жизненного цикла, в которой влияние наибольшее', n((e) => e.phase != null), 'с. 142'],
+    ['Риск для программы', 'Угрозы и возможности, связанные со стейкхолдером', n((e) => e.risk), 'с. 142'],
+    ['Классификация', null],
+    ['Внутренний или внешний', 'Внутренний или внешний', n((e) => e.cat), 'с. 142'],
+    ['Влияние и интерес', 'Власть, воздействие, интерес (картирование)', n((e) => e.pw != null && e.in != null), 'с. 142, 200'],
+    ['Направление влияния', 'Вверх, вниз, наружу, в стороны', n((e) => e.dir), 'с. 142, 201'],
+    ['Вовлечённость', null],
+    ['Текущий уровень', 'Матрица оценки вовлечённости, рис. 5-23', n((e) => e.cur), 'с. 199–200'],
+    ['Желаемый уровень', 'Матрица оценки вовлечённости, рис. 5-23', n((e) => e.des && e.des !== e.cur || (REF_DES[e.id] && REF_DES[e.id] === e.cur && state.engChecked)), 'с. 199–200'],
+    ['Канал и частота коммуникации', 'План вовлечения стейкхолдеров', n((e) => e.channel && e.freq), 'с. 201']
+  ].map((r) => r[1] === null ? r : r.concat([T]));
+}
+function renderReg() {
+  const es = state.entries;
+  const keyNow = es.filter((e) => quadOf(e) === 'key').map((e) => e.short).join(', ') || '—';
+  const worst = es.slice().sort((a, b) => prioRank[priority(a)] - prioRank[priority(b)] || b.pw - a.pw)[0];
+  const cov = coverageRows();
+  const covBody = cov.map((r) => r[1] === null ? `<tr class="grp"><td colspan="5">${esc(r[0])}</td></tr>`
+    : `<tr><td>${esc(r[0])}</td><td>${esc(r[1])} <span class="src">${esc(r[3])}</span></td><td class="num">${r[2]} из ${r[4]}</td><td><div class="bar"><i style="width:${r[4] ? Math.round(r[2] / r[4] * 100) : 0}%"></i></div></td><td><span class="pill ${r[2] === r[4] ? 'ok' : r[2] === 0 ? 'bad' : 'warn'}">${r[2] === r[4] ? 'Полностью' : r[2] === 0 ? 'Пробел' : 'Частично'}</span></td></tr>`).join('');
+  return `
+  <section class="card">
+    <h3>Полнота реестра по PMBOK 8</h3>
+    <p class="lead">Состав реестра стейкхолдеров — раздел 4, с. 141–142; матрица вовлечённости — рис. 5-23, с. 200. Таблица считает, у скольких стейкхолдеров заполнено каждое поле. «Желаемый уровень» считается заданным, когда он отличается от текущего или вы сверили его с эталоном.</p>
+    <div class="tscroll cov"><table class="data"><thead><tr><th>Элемент реестра</th><th>Что говорит PMBOK 8</th><th>Заполнено</th><th></th><th>Статус</th></tr></thead><tbody>${covBody}</tbody></table></div>
+  </section>
+  <section class="card">
+    <h3>Реестр стейкхолдеров программы</h3>
+    <div class="actions"><button class="btn" type="button" id="copyReg">Скопировать для Excel</button><span class="status" id="regStatus"></span></div>
+    <div class="regcards">${es.map((e) => {
+      const q = quadOf(e), g = gapOf(e);
+      return `<article class="regcard">
+        <div><h4>${esc(e.name)}</h4><div class="pos">${esc(e.role)} · ${esc(e.org)}</div></div>
+        <div class="sec"><h5>Идентификация</h5><dl class="kv"><dt>Роль</dt><dd>${esc(e.role)}</dd><dt>Ответственный</dt><dd>${e.owner ? esc(e.owner) : '<span class="gap">не назначен</span>'}</dd></dl></div>
+        <div class="sec"><h5>Оценка</h5><dl class="kv"><dt>Ожидания</dt><dd>${e.expect ? esc(e.expect) : '<span class="gap">не записаны</span>'}</dd><dt>Риск</dt><dd>${e.risk ? esc(e.risk) : '<span class="gap">не записан</span>'}</dd><dt>Фаза влияния</dt><dd><select data-phase="${e.id}" style="padding:4px 8px;border-radius:8px;font-size:13px">${PHASES.map((p, i) => `<option value="${i}" ${i === e.phase ? 'selected' : ''}>${p}</option>`).join('')}</select></dd></dl></div>
+        <div class="sec"><h5>Классификация</h5><dl class="kv"><dt>Положение</dt><dd>${CATS[e.cat] || ''}</dd><dt>Влияние / интерес</dt><dd class="num">${e.pw} / ${e.in} · ${QUAD[q].name}</dd><dt>Направление</dt><dd>${DIRS[e.dir] || ''}</dd></dl></div>
+        <div class="sec"><h5>Вовлечённость</h5><dl class="kv"><dt>Сейчас</dt><dd><span class="lv"><i style="background:${color(e.cur)}"></i>${LV[e.cur].name}</span></dd><dt>Нужно</dt><dd><span class="lv"><i style="background:${color(e.des)}"></i>${LV[e.des].name}</span>${g > 0 ? ` <span class="pill ${g >= 2 ? 'bad' : 'warn'}">+${g}</span>` : ''}</dd><dt>Канал</dt><dd>${e.channel ? esc(e.channel) : '<span class="gap">по квадранту</span>'}</dd><dt>Частота</dt><dd>${e.freq ? esc(e.freq) : '<span class="gap">по квадранту</span>'}</dd></dl></div>
+      </article>`; }).join('')}</div>
+  </section>
+  <section class="card">
+    <h3>Вывод для спонсора</h3>
+    <div class="row2">
+      <div class="advice"><span class="k">Ваш прогноз на старте</span><div>Ключевые игроки: ${esc(state.guess.key || '—')}</div><div>Самый опасный разрыв: ${esc(state.guess.worst || '—')}</div></div>
+      <div class="advice"><span class="k">Что показала работа</span><div>В квадранте «Управлять плотно»: ${esc(keyNow)}</div><div>Первый по приоритету: ${worst ? `${esc(worst.name)} (${LV[worst.cur].name} → ${LV[worst.des].name})` : '—'}</div></div>
+    </div>
+    <div class="field"><label class="lbl" for="reflect">Два-три предложения: кого нужно вовлечь в первую очередь, что для этого сделать до 18-й недели и какое решение RACI вы бы вынесли на управляющий комитет</label><textarea id="reflect" rows="4" placeholder="Например: до 18-й недели главный риск — руководитель отдела операций…">${esc(state.reflect)}</textarea></div>
+    ${state.reflect.trim() ? `<details><summary>Сравнить с эталонным выводом</summary><div class="reveal" style="margin-top:8px">
+      <p>1. Критический путь запуска проходит через людей, а не через технологии: руководитель отдела операций сопротивляется передаче четырёх специалистов на 18-й неделе. Нужна личная встреча со спонсором и руководителем программы, где решение о замене или снятии части работ принимается до перехода, а не после.</p>
+      <p style="margin-top:6px">2. Два стейкхолдера с высоким влиянием не осведомлены или нейтральны: санитарная служба и финансовый директор. Санитарной службе нужны документы за 8 недель до запуска; финансовому директору — модель комиссии до того, как её объявят ресторанам.</p>
+      <p style="margin-top:6px">3. На управляющий комитет стоит вынести RACI по решениям 4 (переход специалистов) и 10 (перенос даты): именно там чаще всего два A или ни одного.</p>
+      <p class="help" style="margin-top:8px">Чек-лист вывода: назван конкретный человек, а не «все»; есть срок (неделя); действие привязано к разрыву вовлечённости; упомянуто решение, а не только коммуникация.</p></div></details>` : ''}
+  </section>
+  <section class="card">
+    <h3>Итог</h3>
+    <div class="actions">
+      ${state.downloads ? '<button class="btn btn-primary" type="button" id="dlBtn">Скачать отчёт</button>' : ''}
+      <button class="btn" type="button" id="copyReport">Скопировать отчёт (markdown)</button>
+      <span class="status" id="repStatus"></span>
+    </div>
+  </section>`;
+}
+function regTSV() {
+  const cols = ['Стейкхолдер', 'Роль', 'Организация', 'Положение', 'Направление', 'Влияние', 'Интерес', 'Квадрант', 'Сейчас', 'Нужно', 'Разрыв', 'Ожидания', 'Риск', 'Канал', 'Частота', 'Ответственный', 'Фаза влияния'];
+  return [cols.join('\t')].concat(state.entries.map((e) => [e.name, e.role, e.org, CATS[e.cat] || '', DIRS[e.dir] || '', e.pw, e.in, QUAD[quadOf(e)].name, LV[e.cur].name, LV[e.des].name, gapOf(e), e.expect, e.risk, e.channel, e.freq, e.owner, PHASES[e.phase] || ''].map((v) => String(v ?? '').replace(/\t|\n/g, ' ')).join('\t'))).join('\n');
+}
+function bindReg() {
+  document.querySelectorAll('[data-phase]').forEach((s) => { s.onchange = () => { entry(s.dataset.phase).phase = +s.value; persist(); }; });
+  $('#copyReg').onclick = () => copyText(regTSV(), 'Реестр скопирован — вставьте в Excel', '#regStatus');
+  $('#reflect').addEventListener('input', (ev) => { state.reflect = ev.target.value; persist(); renderTabs(); renderRail(); });
+  $('#reflect').addEventListener('blur', () => render());
+  $('#copyReport').onclick = () => copyText(report(), 'Отчёт скопирован', '#repStatus');
+  const dl = $('#dlBtn'); if (dl) dl.onclick = saveReport;
+}
+
+/* ================= Report ================= */
+function report() {
+  const L = [];
+  L.push('# Практикум 4: стейкхолдеры программы запуска «Доставка еды» (кейс «Витрина»)', '');
+  L.push('## Карта влияния', '', '| Стейкхолдер | Влияние | Интерес | Квадрант | Сейчас | Нужно |', '|---|---|---|---|---|---|');
+  state.entries.forEach((e) => L.push(`| ${e.name} | ${e.pw} | ${e.in} | ${QUAD[quadOf(e)].name} | ${LV[e.cur].name} | ${LV[e.des].name} |`));
+  L.push('', `Прогноз на старте — ключевые игроки: ${state.guess.key || '—'}; самый опасный разрыв: ${state.guess.worst || '—'}.`, '');
+  if (state.engChecked) { const d = engDiff(); L.push('## Вовлечённость', '', `Совпадений с эталоном: ${d.filter((x) => x.ok).length} из ${d.length}.`, ...d.filter((x) => !x.ok).map((x) => `- ${x.e.name}: у меня ${LV[x.e.des].name}, в эталоне ${LV[x.ref].name}`), ''); }
+  L.push('## RACI', '', `| Решение | ${RACI_COLS.map((c) => c.short).join(' | ')} |`, `|---|${RACI_COLS.map(() => '---').join('|')}|`);
+  DECISIONS.forEach((d) => L.push(`| ${d.name} | ${RACI_COLS.map((c) => raciVal(d.id, c.id) || '·').join(' | ')} |`));
+  const chk = raciCheck(), sc = raciScore();
+  L.push('', `Проверка: ошибок в строках ${chk.errors}, предупреждений по людям ${chk.warnings}. ${state.raciRevealed ? `Совпадение с эталоном: ${sc.hit} из ${sc.total}.` : ''}`, '');
+  L.push('## План коммуникаций', '', '| Приоритет | Стейкхолдер | Стратегия | Частота | Канал | Действие | Ответственный |', '|---|---|---|---|---|---|---|');
+  planRows().forEach((r) => L.push(`| ${PRIO[r.pr]} | ${r.e.name} | ${r.q.name} | ${r.freq} | ${r.channel} | ${r.action} | ${r.e.owner} |`));
+  L.push('', '## Полнота реестра (PMBOK 8, с. 141–142)', '');
+  coverageRows().forEach((r) => { if (r[1] !== null) L.push(`- ${r[0]}: ${r[2]} из ${r[4]} (${r[3]})`); });
+  L.push('', '## Вывод для спонсора', '', state.reflect || '—', '');
+  return L.join('\n');
+}
+async function saveReport() {
+  try { await state.downloads.save({ filename: 'praktikum-4-steikholdery.md', data: report() }); }
+  catch (e) { if (e && e.code !== 'declined') { const s = $('#repStatus'); if (s) { s.textContent = 'Файл не сохранён. Скопируйте отчёт кнопкой рядом.'; s.className = 'status err'; } } }
+}
+
+/* ================= Rail ================= */
+function renderRail() {
+  const goals = [
+    { k: 'Прогноз записан на вкладке «Кейс»', on: tabDone('case') },
+    { k: 'Карта влияния проверена и уточнена', on: state.moved },
+    { k: 'Желаемые уровни сверены с эталоном', on: state.engChecked },
+    { k: 'RACI без ошибок в строках', on: tabDone('raci') },
+    { k: 'Вывод для спонсора написан', on: !!state.reflect.trim() }
+  ];
+  const es = state.entries;
+  const chk = raciCheck();
+  const tips = {
+    case: ['Прочитайте, чего ждёт каждый, прежде чем смотреть на карту.', 'Кто из них может остановить запуск одним письмом?'],
+    map: ['Влияние — это право решать или блокировать, интерес — насколько человек следит за программой.', 'Санитарная служба почти не интересуется запуском. Значит ли это, что ею можно не заниматься?'],
+    eng: ['Желаемый уровень — тот, который нужен для успеха, а не максимальный.', 'Нужно ли, чтобы регулятор «поддерживал» маркетплейс?'],
+    raci: ['A — тот, кто вправе принять решение, а не тот, кто больше всех заинтересован.', 'Сколько A у генерального директора получится, если «важные решения — спонсору»?'],
+    plan: ['Шаблон квадранта — отправная точка; частоту задаёт профиль.', 'Кому из списка еженедельные встречи только помешают?'],
+    reg: ['PMBOK 8 перечисляет состав реестра, но не требует заполнять всё сразу.', 'Какие поля нужны уже на 10-й неделе, а какие — к запуску?']
+  }[state.tab];
+  $('#rail').innerHTML = `
+    <div class="rail-sec"><h3>Чему учит практикум</h3>${goals.map((g) => `<div class="goal${g.on ? ' on' : ''}"><span class="dot"></span><span>${g.k}</span></div>`).join('')}</div>
+    <div class="rail-sec"><h4>Сейчас в программе</h4>
+      <div class="stats" style="grid-template-columns:1fr 1fr">
+        <div class="stat"><b>${es.filter((e) => quadOf(e) === 'key').length}</b><span>ключевых игроков</span></div>
+        <div class="stat${es.filter((e) => priority(e) === 'h').length ? ' hot' : ''}"><b>${es.filter((e) => priority(e) === 'h').length}</b><span>действовать сейчас</span></div>
+        <div class="stat"><b>${Object.values(state.raci).reduce((n, r) => n + Object.keys(r).length, 0)}</b><span>ячеек RACI</span></div>
+        <div class="stat${state.raciChecked && chk.errors ? ' hot' : ''}"><b>${state.raciChecked ? chk.errors : '—'}</b><span>ошибок RACI</span></div>
+      </div></div>
+    <div class="rail-sec tip"><h4>Подсказка</h4><p>${tips[0]}</p><p class="q">${tips[1]}</p></div>
+    <div class="rail-sec"><h4>Отчёт</h4><div class="actions">${state.downloads ? '<button class="btn btn-small" type="button" id="railDl">Скачать отчёт</button>' : ''}<button class="btn btn-small" type="button" id="railCopy">Скопировать markdown</button></div>
+      <p class="help">Прогресс сохраняется в этом браузере.</p></div>`;
+  const d = $('#railDl'); if (d) d.onclick = saveReport;
+  $('#railCopy').onclick = () => copyText(report(), 'Отчёт скопирован');
+}
+
+/* ================= Render ================= */
+function renderMain() {
+  const m = $('#main');
+  const html = { case: renderCase, map: renderMap, eng: renderEng, raci: renderRaci, plan: renderPlan, reg: renderReg }[state.tab]();
+  m.innerHTML = html;
+  ({ case: bindCase, map: bindMap, eng: bindEng, raci: bindRaci, plan: bindPlan, reg: bindReg })[state.tab]();
+}
+function render() { renderTabs(); renderMain(); renderRail(); }
+render();
+(async () => {
+  try { state.downloads = window.claude && window.claude.use ? await window.claude.use('downloads') : null; } catch (e) { state.downloads = null; }
+  if (state.downloads) render();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#20242B">
+<title>Тренажёры: маркетплейс «Корзина»</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Golos+Text:wght@400;500;600;700&display=swap">
+<script src="pwa-shim.js"></script>
+<style>
+:root { --paper:#E6E8E3; --sheet:#FBFBF9; --ink:#1D2026; --ink-2:#5A6068; --rule:#D3D6CF; --band:#20242B; --band-ink:#E9EBE6; --band-ink-2:#9AA1AB; --signal:#F2551D; --cobalt:#2D4FE3; --green:#2D8A57; --violet:#7650C4; }
+@media (prefers-color-scheme: dark) { :root { --paper:#14161A; --sheet:#1D2026; --ink:#ECEDE9; --ink-2:#A2A8B0; --rule:#333840; --band:#0C0E11; } }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--paper); color:var(--ink); font-family:"Golos Text",system-ui,sans-serif; font-size:15px; line-height:1.55; }
+.band { background:var(--band); color:var(--band-ink); padding:36px 16px 28px; }
+.wrap { max-width:1080px; margin-inline:auto; }
+h1 { font-family:"Dela Gothic One","Golos Text",sans-serif; font-weight:400; font-size:clamp(26px,5vw,44px); line-height:1.05; margin:0 0 10px; }
+.band p { color:var(--band-ink-2); max-width:64ch; margin:0; }
+.casetag { display:inline-block; margin-top:16px; font-size:13px; color:var(--band-ink-2); border:1px solid #454b55; border-radius:999px; padding:4px 12px; }
+.grid { display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); padding:24px 16px 48px; }
+.card { display:flex; flex-direction:column; gap:10px; background:var(--sheet); border-radius:16px; padding:22px 24px; text-decoration:none; color:inherit; border-top:6px solid var(--c); transition:transform .12s; }
+.card:hover { transform:translateY(-2px); }
+.card h2 { font-family:"Dela Gothic One","Golos Text",sans-serif; font-weight:400; font-size:21px; margin:0; }
+.card .n { font-size:12.5px; color:var(--ink-2); font-weight:600; letter-spacing:.04em; text-transform:uppercase; }
+.card p { margin:0; color:var(--ink-2); }
+.card .go { margin-top:auto; font-weight:600; color:var(--c); }
+.case { background:var(--sheet); border-radius:16px; padding:22px 24px; margin:0 16px 32px; }
+.case h3 { font-family:"Dela Gothic One","Golos Text",sans-serif; font-weight:400; font-size:19px; margin:0 0 8px; }
+.case p { margin:0; color:var(--ink-2); max-width:72ch; }
+footer { color:var(--ink-2); font-size:13px; padding:0 16px 40px; }
+</style>
+</head>
+<body>
+<div class="band"><div class="wrap">
+  <h1>Тренажёры: маркетплейс «Корзина»</h1>
+  <p>Десять практикумов по Scrum, Kanban и PMBOK 8 на одном вымышленном кейсе. Сначала вы считаете и проектируете сами, затем сверяете с подсказками и ответом ИИ.</p>
+  <span class="casetag">Кейс «Витрина», вымышленные данные</span>
+</div></div>
+<div class="wrap">
+  <div class="grid">
+    <a class="card" href="psm.html" style="--c:var(--green)">
+      <span class="n">Сертификация</span>
+      <h2>Подготовка к PSM I</h2>
+      <p>Тренажёр экзамена Scrum.org: обучение с объяснениями и экзамен на 80 вопросов за 60 минут. Банк из 95 сценарных вопросов, разбор по темам.</p>
+      <span class="go">Открыть →</span>
+    </a>
+    <a class="card" href="epic.html" style="--c:var(--cobalt)">
+      <span class="n">Требования</span>
+      <h2>Нарезка эпика</h2>
+      <p>Один эпик, две проекции: пользовательские истории по ценности и WBS по результатам. Возврат одежды, онбординг продавца, спор по заказу.</p>
+      <span class="go">Открыть →</span>
+    </a>
+    <a class="card" href="board.html" style="--c:var(--violet)">
+      <span class="n">Kanban</span>
+      <h2>Канбан-доска</h2>
+      <p>Канбан-доска отдела операций: столбцы, классы обслуживания, лимиты WIP по закону Литтла и перестройка к 18-й неделе.</p>
+      <span class="go">Открыть →</span>
+    </a>
+    <a class="card" href="roadmap.html" style="--c:var(--signal)">
+      <span class="n">Сроки</span>
+      <h2>Дорожная карта</h2>
+      <p>Гибридная дорожная карта запуска «Доставки еды»: критический путь на 35 недель, новости и решение для правления.</p>
+      <span class="go">Открыть →</span>
+    </a>
+    <a class="card" href="stakeholders.html" style="--c:var(--cobalt)">
+      <span class="n">Стейкхолдеры</span>
+      <h2>Стейкхолдеры проекта</h2>
+      <p>Стейкхолдеры программы по PMBOK 8: карта влияния, матрица вовлечённости, RACI, план коммуникаций и реестр.</p>
+      <span class="go">Открыть →</span>
+    </a>
+    <a class="card" href="risks.html" style="--c:var(--violet)">
+      <span class="n">Риски</span>
+      <h2>Реестр рисков</h2>
+      <p>Пре-мортем, реестр рисков с оценкой и рангом, стратегии реагирования и резерв по ожидаемой денежной стоимости.</p>
+      <span class="go">Открыть →</span>
+    </a>
+    <a class="card" href="flow.html" style="--c:var(--signal)">
+      <span class="n">Поток</span>
+      <h2>Метрики потока</h2>
+      <p>Метрики потока: время цикла, пропускная способность, возраст задач, диаграмма накопленного потока и поиск затора.</p>
+      <span class="go">Открыть →</span>
+    </a>
+    <a class="card" href="sprint.html" style="--c:var(--green)">
+      <span class="n">Scrum</span>
+      <h2>Планирование спринта</h2>
+      <p>Планирование Спринта по данным: velocity, ёмкость с учётом отпусков, сборка спринта под цель, покер планирования.</p>
+      <span class="go">Открыть →</span>
+    </a>
+    <a class="card" href="evm.html" style="--c:var(--cobalt)">
+      <span class="n">Бюджет</span>
+      <h2>Освоенный объём</h2>
+      <p>Освоенный объём: EV, отклонения и индексы, прогноз EAC и TCPI, график PV/EV/AC, доклад правлению.</p>
+      <span class="go">Открыть →</span>
+    </a>
+    <a class="card" href="facilitation.html" style="--c:var(--violet)">
+      <span class="n">Фасилитация</span>
+      <h2>Встреча с партнёрами</h2>
+      <p>Тренажёр фасилитатора: 16 ситуаций со встреч с ресторанами, курьерами, интегратором и продавцами; ролевая игра с AI.</p>
+      <span class="go">Открыть →</span>
+    </a>
+  </div>
+  <div class="case">
+    <h3>Общий кейс</h3>
+    <p>Маркетплейс «Корзина» продаёт одежду, посуду и товары для дома и готовит запуск направления «Доставка еды». Отдел операций — руководитель и 12 специалистов — обслуживает 12 городов и работает по Канбану. Запросы продавцов, сбои на витрине, акции, улучшения и релизный комитет по четвергам — всё, с чем команде предстоит разобраться.</p>
+  </div>
+  <footer>Прогресс сохраняется в браузере на этом устройстве. Разбор с помощью ИИ доступен только при открытии тренажёров в Claude; здесь показаны встроенные примеры.</footer>
+</div>
+</body>
+</html>

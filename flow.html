@@ -1,0 +1,1469 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#20242B">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<script src="pwa-shim.js"></script>
+</head>
+<body>
+<nav class="pwa-nav"><a href="./">← Все практикумы</a></nav>
+
+<title>Метрики потока — Корзина</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: the marketplace operations board's control desk. A dark band carries the 20 working days of weeks 6–9,
+   with the Thursday release committee marked in signal orange; below, a working sheet beside a logbook rail.
+   Signal orange is reserved for waiting and the committee: that is where this flow loses its time. */
+:root {
+  --paper: #E6E8E3;      /* concrete */
+  --sheet: #FBFBF9;
+  --sheet-2: #F0F1ED;
+  --ink: #1D2026;
+  --ink-2: #5A6068;
+  --rule: #D3D6CF;
+  --rule-2: #B4B9B0;
+  --band: #20242B;       /* graphite control band, same in both themes */
+  --band-ink: #E9EBE6;
+  --band-ink-2: #9AA1AB;
+  --signal: #F2551D;     /* critical path, launch */
+  --signal-tint: #FDE3D8;
+  --cobalt: #2D4FE3;     /* teams, adaptive work */
+  --cobalt-tint: #E2E7FC;
+  --amber: #D9960B;      /* billing windows */
+  --violet: #7650C4;
+  --green: #2D8A57;
+  --cal: #3A414C;        /* calendar works */
+  --ok: #23804A; --ok-tint: #DDF0E3;
+  --warn: #9A6400; --warn-tint: #F8ECCB;
+  --bad: #C42B2B; --bad-tint: #F8DEDC;
+  --on-fill: #FFFFFF;
+  --c-work: #2D4FE3;     /* chart: work, finished */
+  --c-wait: #F2551D;     /* chart: waiting, started */
+  --font-display: "Dela Gothic One", "Golos Text", system-ui, sans-serif;
+  --font-body: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #14161A; --sheet: #1D2026; --sheet-2: #252930; --ink: #ECEDE9; --ink-2: #A2A8B0; --rule: #333840; --rule-2: #4A5059;
+    --band: #0C0E11; --band-ink: #ECEDE9; --band-ink-2: #8E959F;
+    --signal: #FF7341; --signal-tint: #44231A; --cobalt: #8EA4FF; --cobalt-tint: #232C52; --amber: #F2B84B; --violet: #B79BF0; --green: #6CCB93; --cal: #B9C0CA;
+    --ok: #6CCB93; --ok-tint: #173323; --warn: #F2C14E; --warn-tint: #3A2D0E; --bad: #FF8A80; --bad-tint: #401A18;
+    --on-fill: #14161A; --c-work: #6F8AF7; --c-wait: #E45A2A; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #14161A; --sheet: #1D2026; --sheet-2: #252930; --ink: #ECEDE9; --ink-2: #A2A8B0; --rule: #333840; --rule-2: #4A5059;
+  --band: #0C0E11; --band-ink: #ECEDE9; --band-ink-2: #8E959F;
+  --signal: #FF7341; --signal-tint: #44231A; --cobalt: #8EA4FF; --cobalt-tint: #232C52; --amber: #F2B84B; --violet: #B79BF0; --green: #6CCB93; --cal: #B9C0CA;
+  --ok: #6CCB93; --ok-tint: #173323; --warn: #F2C14E; --warn-tint: #3A2D0E; --bad: #FF8A80; --bad-tint: #401A18;
+  --on-fill: #14161A; --c-work: #6F8AF7; --c-wait: #E45A2A; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55; padding-inline: 16px; padding-block: 0 56px; font-variant-numeric: tabular-nums; }
+.wrap { max-width: 1320px; margin-inline: auto; }
+h1, h2, h3, h4, p { margin: 0; }
+h1, h2, h3 { text-wrap: balance; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2.5px solid var(--cobalt); outline-offset: 2px; }
+.mono { font-variant-numeric: tabular-nums; }
+
+/* ---------- Control band: 20 working days of weeks 6–9, committee Thursdays ---------- */
+.band { background: var(--band); color: var(--band-ink); margin-inline: -16px; padding-inline: 16px; padding-block: 26px 0; }
+.band-top { display: flex; flex-wrap: wrap; gap: 14px 40px; align-items: end; justify-content: space-between; }
+.brand { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.brand h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(26px, 4vw, 40px); line-height: 1; letter-spacing: -0.01em; }
+.brand p { color: var(--band-ink-2); max-width: 62ch; font-size: 14.5px; }
+.casetag { font-size: 13px; color: var(--band-ink-2); border: 1px solid #454b55; border-radius: 999px; padding: 4px 12px; white-space: nowrap; }
+
+.ruler { margin-top: 26px; display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 3px; align-items: end; height: 54px; }
+.ruler span { height: 12px; border-radius: 3px; background: #343a44; position: relative; }
+.ruler span.wk::before { content: attr(data-wk); position: absolute; bottom: 30px; left: 0; font-size: 11.5px; color: var(--band-ink-2); white-space: nowrap; }
+.ruler span.thu { height: 26px; background: var(--signal); }
+.ruler span.thu::after { content: "комитет"; position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 600; color: var(--signal); white-space: nowrap; }
+.ruler span.now { outline: 2px solid var(--band-ink); outline-offset: 2px; }
+@media (max-width: 640px) { .ruler span.thu::after { content: "К"; } .ruler span.wk::before { content: attr(data-short); } }
+
+.steps { position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); padding-block: 22px 24px; border-top: 1px solid #3a4049; margin-top: 16px; }
+.steps::before { content: ""; position: absolute; left: 14px; right: 14px; top: 36px; height: 3px; background: #3e444e; border-radius: 3px; }
+.step { appearance: none; position: relative; text-align: left; cursor: pointer; border: 0; background: transparent; color: var(--band-ink); padding: 0 10px 0 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.step .dot { width: 31px; height: 31px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 14px; background: var(--band); border: 3px solid #5b626d; color: var(--band-ink-2); position: relative; z-index: 1; }
+.step .t { font-weight: 600; font-size: 14px; line-height: 1.25; }
+.step .s { font-size: 12.5px; color: var(--band-ink-2); line-height: 1.3; }
+.step:hover .dot { border-color: var(--band-ink); }
+.step.done .dot { background: var(--green); border-color: var(--green); color: var(--band); }
+.step[aria-current="step"] .dot { background: var(--signal); border-color: var(--signal); color: var(--band); box-shadow: 0 0 0 5px rgba(242, 85, 29, .25); }
+.step.locked { cursor: not-allowed; }
+.step.locked .dot { border-style: dashed; }
+.step.locked .t, .step.locked .s { color: #6d7480; }
+@media (max-width: 860px) { .step .s { display: none; } .step .t { font-size: 12px; } }
+@media (max-width: 520px) { .step .t { display: none; } }
+
+/* ---------- Flow specific ---------- */
+table.calc td { vertical-align: middle; }
+table.calc input { width: 4.6em; padding: 6px 4px; text-align: center; border-radius: 8px; font-weight: 600; font-size: 15px; }
+table.calc tr.wip td:nth-child(2) { font-style: italic; }
+.type { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+.type i { width: 10px; height: 10px; border-radius: 2px; flex: none; background: var(--ink-2); }
+.type.incident i { background: var(--bad); transform: rotate(45deg); }
+.type.client i { background: var(--cobalt); border-radius: 50%; }
+.type.site i { background: var(--cal); }
+.type.planned i { background: var(--green); }
+.type.improve i { background: var(--violet); border-radius: 50% 0; }
+.kind { font-size: 12px; color: var(--ink-2); }
+.inline-inputs { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.inline-inputs input { text-align: center; font-weight: 600; }
+
+/* Timeline of 16 tasks over 20 days */
+.tl-wrap { overflow-x: auto; border-radius: 12px; background: var(--sheet-2); }
+.tl { min-width: 680px; display: grid; grid-template-columns: 200px minmax(0, 1fr); font-size: 12.5px; }
+.tl-lab .type { white-space: normal; line-height: 1.25; }
+.tl-lab { padding: 4px 10px; border-bottom: 1px solid var(--rule); background: var(--sheet); display: flex; gap: 8px; align-items: center; min-width: 0; }
+.tl-lab b { font-variant-numeric: tabular-nums; width: 2.2em; flex: none; }
+.tl-track { position: relative; display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); align-items: center; border-bottom: 1px solid var(--rule); min-height: 30px;
+  background-image: repeating-linear-gradient(90deg, transparent 0, transparent calc(100% / 4 - 1px), var(--rule-2) calc(100% / 4 - 1px), var(--rule-2) calc(100% / 4)); }
+.tl-head { min-height: 26px; background-color: var(--sheet); border-bottom: 2px solid var(--ink); font-size: 11.5px; color: var(--ink-2); font-weight: 600; }
+.tl-head span { grid-row: 1; padding-left: 3px; }
+.tl-thu { grid-row: 1; height: 100%; width: 0; justify-self: center; border-left: 2px solid var(--signal); opacity: .55; z-index: 0; }
+.seg { grid-row: 1; height: 16px; z-index: 1; }
+.seg.work { background: var(--c-work); border-radius: 0 999px 999px 0; }
+.seg.work.solo { border-radius: 999px; }
+.seg.wait { border: 1.5px solid var(--c-wait); background: repeating-linear-gradient(135deg, var(--c-wait) 0 2.5px, transparent 2.5px 6px); border-radius: 999px 0 0 999px; }
+.seg.wait.solo { border-radius: 999px; }
+.seg.open { background: transparent; border: 1.5px dashed var(--c-work); border-left: 0; border-radius: 0 4px 4px 0; }
+.seg.open.solo { border-left: 1.5px dashed var(--c-work); border-radius: 4px; }
+.seg.sla { grid-row: 1; height: 100%; width: 0; border-left: 2px dashed var(--ink); justify-self: end; z-index: 2; }
+.lg { display: inline-block; width: 22px; height: 10px; margin-right: 6px; vertical-align: -1px; border-radius: 999px; }
+.lg.work { background: var(--c-work); }
+.lg.wait { border: 1.5px solid var(--c-wait); background: repeating-linear-gradient(135deg, var(--c-wait) 0 2.5px, transparent 2.5px 6px); }
+.lg.open { border: 1.5px dashed var(--c-work); }
+.lg.thu { width: 0; height: 14px; border-left: 2px solid var(--signal); border-radius: 0; }
+
+/* Cumulative flow diagram */
+.cfd-grid { display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 900px) { .cfd-grid { grid-template-columns: 260px minmax(0, 1fr); } }
+table.cum input { width: 4em; padding: 5px 4px; text-align: center; border-radius: 8px; font-weight: 600; }
+table.cum td, table.cum th { padding: 7px 8px; }
+.chart { width: 100%; height: auto; display: block; }
+.chart text { fill: var(--ink-2); font-size: 12px; font-family: var(--font-body); }
+.chart .lab { font-weight: 600; fill: var(--ink); }
+.chart .grid line { stroke: var(--rule); stroke-width: 1; }
+.chart .axis { stroke: var(--ink-2); stroke-width: 1; }
+.chart .hit { fill: transparent; }
+.chart .hit:hover { fill: color-mix(in srgb, var(--ink) 6%, transparent); }
+.chart-wrap { position: relative; min-width: 0; }
+.tooltip { position: absolute; pointer-events: none; background: var(--band); color: var(--band-ink); font-size: 12.5px; padding: 7px 10px; border-radius: 8px; white-space: nowrap; transform: translate(-50%, -110%); line-height: 1.4; }
+.compare { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.stat { padding: 12px 14px; background: var(--sheet-2); border-radius: 10px; display: flex; flex-direction: column; gap: 2px; }
+.stat b { font-family: var(--font-display); font-weight: 400; font-size: 24px; line-height: 1.15; }
+.stat.hot b { color: var(--signal); }
+.radio-list { display: flex; flex-direction: column; gap: 8px; }
+.radio-list label { display: flex; gap: 10px; align-items: baseline; padding: 9px 12px; border: 1.5px solid var(--rule); border-radius: 10px; cursor: pointer; background: var(--sheet); }
+.radio-list label:has(input:checked) { border-color: var(--ink); }
+.radio-list input { accent-color: var(--signal); }
+.note { font-size: 13px; color: var(--ink-2); border-left: 3px solid var(--rule-2); padding-left: 10px; }
+.optrow3 { display: grid; gap: 10px; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr); }
+@media (max-width: 700px) { .optrow3 { grid-template-columns: minmax(0, 1fr); } }
+table.read select { width: auto; min-width: 10em; padding: 6px 8px; }
+table.read td:first-child { white-space: nowrap; }
+/* ---------- Working area ---------- */
+.workspace { display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr); align-items: start; padding-top: 24px; }
+@media (min-width: 1100px) { .workspace { grid-template-columns: minmax(0, 1fr) 320px; } }
+.panel { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.card { background: var(--sheet); border-radius: 16px; padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.card > h3, .sec-h { font-family: var(--font-display); font-weight: 400; font-size: 19px; line-height: 1.2; letter-spacing: -0.005em; }
+.lead { color: var(--ink-2); max-width: 72ch; }
+.lbl { font-size: 13px; color: var(--ink-2); font-weight: 600; }
+.grid2 { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .grid2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+@media (max-width: 600px) { .card { padding: 18px 16px; border-radius: 12px; } }
+
+.btn { appearance: none; cursor: pointer; border: 1.5px solid var(--ink); background: transparent; border-radius: 999px; padding: 8px 18px; font-weight: 600; line-height: 1.2; }
+.btn:hover { background: var(--sheet-2); }
+.btn[disabled] { opacity: .4; cursor: not-allowed; }
+.btn-primary { background: var(--ink); color: var(--sheet); }
+.btn-primary:hover { background: var(--ink); filter: brightness(1.25); }
+.btn-small { padding: 5px 13px; font-size: 13px; border-width: 1px; border-color: var(--rule-2); font-weight: 500; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.status { min-height: 20px; font-size: 13.5px; color: var(--ink-2); }
+.status.err { color: var(--bad); }
+
+textarea, input[type="text"], input[type="number"], select { width: 100%; border: 1.5px solid var(--rule); background: var(--sheet); border-radius: 10px; padding: 9px 12px; }
+textarea:hover, input:hover, select:hover { border-color: var(--rule-2); }
+textarea { resize: vertical; line-height: 1.55; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field-top { display: flex; justify-content: space-between; gap: 8px 14px; align-items: baseline; flex-wrap: wrap; }
+.field .help, .help { font-size: 13px; color: var(--ink-2); }
+
+/* Tables */
+table.data { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.data th, table.data td { text-align: left; padding: 10px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+table.data th { font-size: 12.5px; color: var(--ink-2); font-weight: 600; border-bottom: 2px solid var(--ink); }
+table.data tbody tr:last-child td { border-bottom: 0; }
+.tscroll { overflow-x: auto; }
+table.mine td { vertical-align: middle; }
+table.mine input { width: 4.2em; padding: 6px 4px; text-align: center; border-radius: 8px; font-weight: 600; font-size: 15px; }
+table.mine select { width: auto; }
+table.mine tr.given td { color: var(--ink-2); }
+.rowhint { font-size: 12.5px; color: var(--ink-2); margin-top: 4px; max-width: 34ch; }
+
+/* Case */
+.news { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .news { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.newsitem { position: relative; padding: 16px 16px 14px; background: var(--signal-tint); border-radius: 4px 14px 14px 14px; display: flex; flex-direction: column; gap: 6px; }
+.newsitem b { font-family: var(--font-display); font-weight: 400; font-size: 16px; color: var(--signal); }
+.task-list { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; }
+.task-list li::marker { font-weight: 700; color: var(--ink-2); }
+
+/* Prompt builder: one form, five rows */
+.rctfo { display: flex; flex-direction: column; background: var(--sheet); border-radius: 16px; overflow: hidden; }
+.part { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 6px 22px; padding: 18px 24px 18px 20px; border-bottom: 1px solid var(--rule); border-left: 5px solid var(--rule); }
+.part:last-child { border-bottom: 0; }
+.part > .field-top { grid-column: 1; grid-row: 1 / span 3; flex-direction: column; align-items: start; justify-content: start; gap: 4px; }
+.part > textarea, .part > .actions, .part > .checks { grid-column: 2; }
+.part.ok { border-left-color: var(--ok); }
+.part.warn { border-left-color: var(--amber); }
+.part.bad { border-left-color: var(--bad); }
+.part-name { font-family: var(--font-display); font-weight: 400; font-size: 17px; }
+@media (max-width: 700px) { .part { grid-template-columns: minmax(0, 1fr); padding: 16px; } .part > .field-top, .part > textarea, .part > .actions, .part > .checks { grid-column: 1; grid-row: auto; } }
+.checks { display: flex; flex-wrap: wrap; gap: 6px; }
+.chk { font-size: 12.5px; padding: 2px 10px 2px 8px; border-radius: 999px; color: var(--ink-2); background: var(--sheet-2); display: inline-flex; align-items: center; gap: 6px; }
+.chk::before { content: ""; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid currentColor; flex: none; }
+.chk.on { color: var(--ok); background: var(--ok-tint); }
+.chk.on::before { background: currentColor; }
+.chk.alert { color: var(--bad); background: var(--bad-tint); }
+.chk.alert::before { border-radius: 1px; background: currentColor; transform: rotate(45deg); }
+.preview { margin: 0; padding: 14px; background: var(--sheet-2); border-radius: 10px; max-height: 340px; overflow: auto; font-family: ui-monospace, Menlo, monospace; font-size: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.svc { color: var(--ink-2); }
+details > summary { cursor: pointer; color: var(--ink-2); font-size: 13.5px; }
+
+/* ---------- Roadmap board ---------- */
+.gantt-wrap { overflow-x: auto; border-radius: 12px; background: var(--sheet-2); }
+.gantt { min-width: 820px; display: grid; grid-template-columns: 200px minmax(0, 1fr); font-size: 13px; }
+.g-lab { padding: 6px 12px; border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; justify-content: center; min-width: 0; background: var(--sheet); }
+.g-lab .ln { font-size: 11.5px; color: var(--ink-2); }
+.g-lab .nm { overflow-wrap: anywhere; line-height: 1.3; font-weight: 500; }
+.g-track { position: relative; border-bottom: 1px solid var(--rule); min-height: 44px; display: grid; grid-template-columns: repeat(35, minmax(0, 1fr)); align-items: center;
+  background-image: repeating-linear-gradient(90deg, transparent 0, transparent calc(100% / 7 - 1px), var(--rule) calc(100% / 7 - 1px), var(--rule) calc(100% / 7)),
+    repeating-linear-gradient(90deg, transparent 0, transparent calc(100% / 35 - 1px), color-mix(in srgb, var(--rule) 45%, transparent) calc(100% / 35 - 1px), color-mix(in srgb, var(--rule) 45%, transparent) calc(100% / 35)); }
+.g-head { font-size: 11.5px; color: var(--ink-2); min-height: 30px; background: var(--sheet); border-bottom: 2px solid var(--ink); }
+.g-lab.g-head { font-weight: 600; justify-content: end; }
+.g-head span { text-align: left; padding-left: 3px; font-weight: 600; }
+.bar { grid-row: 1; height: 22px; border-radius: 999px; position: relative; z-index: 2; display: flex; align-items: center; padding: 0 9px; color: var(--on-fill); font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; }
+.bar.ms { height: 15px; width: 15px; justify-self: center; transform: rotate(45deg); border-radius: 3px; padding: 0; }
+.bar.crit { background: var(--signal) !important; box-shadow: 0 0 0 3px var(--signal-tint); }
+.ghost { grid-row: 1; height: 32px; border: 2px dashed var(--ink-2); border-radius: 999px; z-index: 1; }
+.ghost.ms { width: 24px; justify-self: center; border-radius: 4px; }
+.mark { grid-row: 1; justify-self: end; width: 0; height: 100%; z-index: 0; border-left: 1.5px dashed var(--amber); }
+.mark.lane-gate { border-left: 2px solid var(--signal); }
+.mark.lane-win, .mark.lane-gate { background: none !important; }
+.lane-cal { background: var(--cal); } .lane-agile { background: var(--cobalt); } .lane-gate { background: var(--signal); }
+.lane-win { background: var(--amber); } .lane-legal { background: var(--violet); } .lane-mkt { background: var(--green); } .lane-teal { background: var(--ink-2); }
+.g-row { display: contents; }
+.g-row.bad .g-lab { box-shadow: inset 5px 0 0 var(--bad); }
+.g-row.warn .g-lab { box-shadow: inset 5px 0 0 var(--amber); }
+.g-row.ok .g-lab { box-shadow: inset 5px 0 0 var(--ok); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--ink-2); align-items: center; }
+.legend i { display: inline-block; width: 18px; height: 9px; border-radius: 999px; margin-right: 6px; vertical-align: 0; }
+.legend .gh { border: 1.5px dashed var(--ink-2); background: transparent; }
+
+/* Verification */
+.claims { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .claims { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.claim { padding: 12px 14px; background: var(--sheet-2); border-radius: 10px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.claim p { overflow-wrap: anywhere; }
+.vtable td:first-child { font-weight: 600; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; padding: 2px 10px 2px 8px; border-radius: 999px; white-space: nowrap; }
+.pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.pill.ok { color: var(--ok); background: var(--ok-tint); }
+.pill.warn { color: var(--warn); background: var(--warn-tint); }
+.pill.bad { color: var(--bad); background: var(--bad-tint); }
+.pill.bad::before { border-radius: 1px; transform: rotate(45deg); }
+.pill.info { color: var(--ink-2); background: var(--sheet-2); }
+.pick { display: flex; flex-wrap: wrap; gap: 8px; }
+.pick label { display: inline-flex; gap: 7px; align-items: center; border: 1.5px solid var(--rule); border-radius: 999px; padding: 5px 13px 5px 10px; font-size: 13.5px; cursor: pointer; background: var(--sheet); }
+.pick label:has(input:checked) { border-color: var(--ink); background: var(--ink); color: var(--sheet); }
+.pick input { margin: 0; accent-color: var(--signal); }
+.selfrow { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); align-items: end; }
+@media (min-width: 820px) { .selfrow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.scn { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; }
+.scn label { display: inline-flex; gap: 8px; align-items: center; cursor: pointer; }
+.scn input { accent-color: var(--signal); }
+.scn select { width: auto; }
+.bigline { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: baseline; }
+.bignum { font-family: var(--font-display); font-size: 30px; line-height: 1.1; }
+.bignum.bad { color: var(--signal); } .bignum.ok { color: var(--ok); }
+
+/* Decision */
+.opts { display: flex; flex-direction: column; gap: 10px; }
+.optrow { display: grid; gap: 10px; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+@media (max-width: 600px) { .optrow { grid-template-columns: minmax(0, 1fr); } }
+.reflect { white-space: pre-wrap; overflow-wrap: anywhere; padding: 14px 16px; background: var(--cobalt-tint); border-radius: 4px 14px 14px 14px; min-height: 40px; }
+.hintrow { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.hintrow b { font-weight: 600; }
+
+/* ---------- Logbook rail ---------- */
+.rail { background: var(--sheet); border-radius: 16px; display: flex; flex-direction: column; min-width: 0; border-top: 6px solid var(--band); }
+@media (min-width: 1100px) { .rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 14px); max-height: calc(100vh - 28px); overflow: auto; } }
+.rail-sec { padding: 16px 18px; border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; gap: 10px; }
+.rail-sec:last-child { border-bottom: 0; }
+.rail h3 { font-family: var(--font-display); font-weight: 400; font-size: 16px; }
+.rail h4 { font-size: 13px; color: var(--ink-2); font-weight: 600; }
+.goal { display: flex; gap: 10px; align-items: baseline; font-size: 14px; }
+.goal .dot { flex: none; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--rule-2); transform: translateY(1px); }
+.goal.on .dot { background: var(--green); border-color: var(--green); }
+.meter { display: flex; gap: 4px; }
+.meter i { flex: 1; height: 10px; border-radius: 999px; background: var(--rule); }
+.meter i.ok { background: var(--ok); } .meter i.warn { background: var(--amber); } .meter i.bad { background: var(--bad); }
+.attempts { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.attempt { display: flex; gap: 8px; justify-content: space-between; padding: 6px 10px; background: var(--sheet-2); border-radius: 8px; }
+.tip { font-size: 14px; background: var(--cobalt-tint); }
+.tip .q { color: var(--ink-2); font-style: italic; }
+.empty { padding: 26px 18px; text-align: center; color: var(--ink-2); border: 2px dashed var(--rule-2); border-radius: 14px; }
+@media (prefers-reduced-motion: no-preference) { .btn, .step .dot, .pick label { transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease; } }
+
+</style>
+
+<header class="band">
+  <div class="wrap">
+    <div class="band-top">
+      <div class="brand">
+        <h1>Метрики потока</h1>
+        <p>Практикумы 5 и 6: метрики потока отдела операций маркетплейса. Сначала вы считаете сами, затем проверяете, как с той же задачей справится ИИ, и сами решаете, что менять.</p>
+      </div>
+      <span class="casetag">Кейс «Витрина», вымышленные данные</span>
+    </div>
+    <div class="ruler" id="ruler" aria-hidden="true"></div>
+    <nav class="steps" aria-label="Шаги практикума" id="steps"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="workspace">
+    <main class="panel" id="main"></main>
+    <aside class="rail" id="rail" aria-label="Прогресс и коуч"></aside>
+  </div>
+</div>
+
+<script>
+/* ================= Data: case «Витрина», Appendix 4 and 5 ================= */
+const TYPES = {
+  client: 'Запрос продавца', incident: 'Сбой', site: 'Запуск «Доставки еды»', planned: 'Акция / каталог', improve: 'Улучшение'
+};
+/* n, type, start day, finish day (null = in progress), days waiting for the release committee */
+const TASKS = [
+  [1, 'client', 1, 4, 1], [2, 'incident', 1, 2, 0], [3, 'site', 2, 9, 4], [4, 'client', 2, 6, 2],
+  [5, 'planned', 3, 8, 3], [6, 'client', 4, 11, 5], [7, 'site', 5, 14, 6], [8, 'incident', 6, 7, 0],
+  [9, 'client', 7, 15, 6], [10, 'improve', 8, null, 6], [11, 'client', 9, 17, 6], [12, 'site', 10, null, 5],
+  [13, 'client', 12, 19, 5], [14, 'planned', 13, null, 3], [15, 'incident', 15, 16, 0], [16, 'client', 16, null, 0]
+].map(([n, type, s, e, w]) => ({ n, type, s, e, w }));
+const TODAY = 20;
+const THURSDAYS = [4, 9, 14, 19];
+const CUM = { days: [5, 10, 15, 20], started: [7, 12, 15, 16], finished: [2, 6, 9, 12] };
+const SLA = 5;
+/* Reading the cumulative flow diagram period by period (slide 96 of the deck) */
+const PERIODS = CUM.days.map((d, i) => {
+  const s0 = i ? CUM.started[i - 1] : 0, f0 = i ? CUM.finished[i - 1] : 0;
+  const ds = CUM.started[i] - s0, df = CUM.finished[i] - f0;
+  const prevDf = i ? CUM.finished[i - 1] - (i > 1 ? CUM.finished[i - 2] : 0) : 0;
+  return { from: i ? CUM.days[i - 1] : 0, to: d, ds, df, wip: CUM.started[i] - CUM.finished[i],
+    pat: ds > df ? 'wide' : ds === df ? 'par' : 'narrow', why: ds < df ? (df > prevDf ? 'clear' : 'stopped') : '' };
+});
+const PATTERNS = [
+  ['par', 'Линии параллельны: сколько начинаем, столько завершаем'],
+  ['wide', 'Полоса расширяется: начинаем больше, чем завершаем'],
+  ['narrow', 'Полоса сужается']
+];
+const WHYS = [
+  ['clear', 'Разгребаем очередь: завершаем быстрее, чем раньше'],
+  ['stopped', 'Перестали брать новое: начинаем меньше, чем раньше']
+];
+
+/* Reference answers, computed from the table */
+const DONE = TASKS.filter((t) => t.e);
+const OPEN = TASKS.filter((t) => !t.e);
+const cycleOf = (t) => t.e - t.s + 1;
+const ageOf = (t) => TODAY - t.s + 1;
+const REF = (() => {
+  const cycle = Object.fromEntries(DONE.map((t) => [t.n, cycleOf(t)]));
+  const sum = DONE.reduce((a, t) => a + cycleOf(t), 0);
+  const tp = [0, 0, 0, 0]; DONE.forEach((t) => tp[Math.ceil(t.e / 5) - 1]++);
+  const age = Object.fromEntries(OPEN.map((t) => [t.n, ageOf(t)]));
+  const wait = DONE.reduce((a, t) => a + t.w, 0);
+  const cl = DONE.filter((t) => t.type === 'client');
+  return {
+    cycle, sum, avg: sum / DONE.length, tp, age, wait, waitShare: 100 * wait / sum,
+    clientActive: cl.reduce((a, t) => a + cycleOf(t) - t.w, 0) / cl.length,
+    slaOk: cl.filter((t) => cycleOf(t) <= SLA).length, clientDone: cl.length, wip15: 6
+  };
+})();
+const fmt1 = (x) => (Math.round(x * 10) / 10).toString().replace('.', ',');
+
+const CASE_TEXT = `Кейс «Витрина» (вымышленные данные). Маркетплейс «Корзина», отдел операций: руководитель и 12 специалистов обслуживают 12 городов, где маркетплейс принимает и выдаёт заказы, и работают по Канбану. Руководитель отдела: «Доску мы перестроили, но запросы продавцов снова выполняются дольше, чем положено по договору. Люди работают на пределе, а очередь не уменьшается». С 18-й недели четыре специалиста переходят в команду запуска направления «Доставка еды».
+
+Приложение 4. Типы работ отдела в типичную неделю:
+- Сбои и инциденты на витрине: 4–6 в неделю; реагирование не позже 30 минут; за простой витрины продавцам начисляются компенсации по договору.
+- Акции и обновления каталога: 3; распродажи, сезонные коллекции, обновление витрины; дата согласуется с продавцами за 2 недели.
+- Запросы продавцов: 8–10; подключение нового продавца, заведение карточек товаров, настройка доставки; срок по договору — 5 рабочих дней.
+- Работы по запуску «Доставки еды»: 2–4, растёт.
+- Улучшения: 1–2; автоматизация проверки карточек товаров, устранение причин повторяющихся сбоев; постоянно откладываются.
+Все работы, кроме устранения сбоев, согласуются на релизном комитете. Комитет собирается раз в неделю, по четвергам.
+
+Приложение 5. Данные доски за недели 6–9. Рабочие дни пронумерованы с 1 по 20, текущий день — 20-й. «Дней в ожидании согласования» — сколько дней задача ждала решения комитета (для незавершённых — на текущий момент).
+№ | Тип работы | День начала | День завершения | Дней в ожидании согласования
+${TASKS.map((t) => `${t.n} | ${TYPES[t.type]} | ${t.s} | ${t.e || '—'} | ${t.w}`).join('\n')}
+
+Накопительные итоги (день: начато всего / завершено всего / в работе): 5: 7/2/5; 10: 12/6/6; 15: 15/9/6; 20: 16/12/4.
+Время цикла = день завершения − день начала + 1. Неделя — 5 рабочих дней.`;
+
+const TEMPLATE = {
+  role: 'Ты — [кто? какой опыт нужен для анализа потока работ?].',
+  ctx: '[Вставьте данные доски, правила расчёта и примечание о релизном комитете.]',
+  task: '1. Рассчитай время цикла каждой завершённой задачи и среднее.\n2. [Что ещё нужно рассчитать по заданию?]\n3. [Что нужно найти и предложить?]',
+  fmt: '[Таблица по задачам? Сколько предложений? Какой объём?]',
+  lim: 'Используй только данные из контекста. [Как проверить, что ИИ не ошибся в расчёте?]'
+};
+
+const SERVICE = `
+
+---
+Служебная часть тренажёра (добавляется автоматически, чтобы сверить расчёт):
+Ответь только JSON такого вида, без текста вокруг:
+{"cycle_times":[{"task":1,"days":0}],"avg_cycle_time":0,"throughput_by_week":[0,0,0,0],"ages":[{"task":10,"days":0}],"most_worrying":{"task":0,"why":"…"},"wip_day15":0,"cfd_reading":"…","bottleneck":"…","wait_share_percent":0,"proposals":[{"change":"…","effect":"…","cost":"…"}],"assumptions":["…"]}
+throughput_by_week — четыре числа для недель 6, 7, 8, 9 (дни 1–5, 6–10, 11–15, 16–20). wait_share_percent — доля дней ожидания согласования в сумме времени цикла завершённых задач. Если чего-то не просили или данных нет, оставь поле пустым и не выдумывай. Пиши на русском.`;
+
+/* A deliberately flawed answer for practice without Claude */
+const FLAWED = {
+  cycle_times: DONE.map((t) => ({ task: t.n, days: t.e - t.s })),
+  avg_cycle_time: 5.1,
+  throughput_by_week: [7, 3, 2, 0],
+  ages: OPEN.map((t) => ({ task: t.n, days: TODAY - t.s })),
+  most_worrying: { task: 16, why: 'Запрос продавца: срок по договору 5 дней, а задача в работе уже 4 дня.' },
+  wip_day15: 6,
+  cfd_reading: 'Первые две недели полоса расширяется, потом линии идут параллельно, а в последнюю неделю полоса сужается: отдел ускорился и разгребает очередь.',
+  bottleneck: 'Затор у специалистов: людей не хватает, поэтому задачи в работе копятся, а пропускная способность падает с 7 до 0 задач в неделю.',
+  wait_share_percent: 20,
+  proposals: [
+    { change: 'Нанять трёх специалистов', effect: 'Время цикла сократится вдвое', cost: '' },
+    { change: 'Ввести общий лимит незавершённой работы: 3 задачи на отдел', effect: 'Меньше переключений между задачами', cost: 'Часть задач будет ждать дольше' }
+  ],
+  assumptions: []
+};
+
+/* ================= Helpers ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const str = (v) => (v == null ? '' : String(v)).trim();
+const arr = (v) => (Array.isArray(v) ? v : []);
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') el.className = v; else if (k === 'text') el.textContent = v;
+    else if (k === 'style') el.setAttribute('style', v);
+    else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else if (v === true) el.setAttribute(k, ''); else el.setAttribute(k, v);
+  }
+  for (const kid of kids.flat()) { if (kid == null || kid === false) continue; el.append(kid.nodeType ? kid : document.createTextNode(String(kid))); }
+  return el;
+}
+const SVGNS = 'http://www.w3.org/2000/svg';
+function s(tag, attrs, ...kids) {
+  const el = document.createElementNS(SVGNS, tag);
+  for (const [k, v] of Object.entries(attrs || {})) { if (v == null || v === false) continue; if (k === 'text') el.textContent = v; else if (k.startsWith('on')) el.addEventListener(k.slice(2), v); else el.setAttribute(k, v); }
+  for (const kid of kids.flat()) { if (kid == null || kid === false) continue; el.append(kid); }
+  return el;
+}
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage may be blocked */ } }
+};
+const num = (v) => { if (v === '' || v == null) return null; const n = Number(String(v).replace(',', '.').replace('%', '').trim()); return Number.isFinite(n) ? n : null; };
+const daysWord = (n) => { const a = Math.abs(n) % 100, b = a % 10; if (a > 10 && a < 20) return 'дней'; if (b === 1) return 'день'; if (b >= 2 && b <= 4) return 'дня'; return 'дней'; };
+const typeTag = (t) => h('span', { class: 'type ' + t.type }, h('i', {}), TYPES[t.type]);
+
+/* ================= State ================= */
+const saved = store.get('fl.state', {});
+const state = {
+  step: Number.isInteger(saved.step) ? saved.step : 0,
+  guess: { avg: '', cause: '', ...(saved.guess || {}) },
+  calc: saved.calc || {}, avg: saved.avg || '', tp: saved.tp || ['', '', '', ''],
+  worry: { task: '', why: '', ...(saved.worry || {}) },
+  checks2: saved.checks2 || 0, shown2: !!saved.shown2,
+  cum: saved.cum || { started: ['', '', '', ''], finished: ['', '', '', ''] },
+  q3: { wip: '', cause: '', share: '', active: '', sla: '', ...(saved.q3 || {}) },
+  read: saved.read || CUM.days.map(() => ({ ds: '', df: '', wip: '', pat: '', why: '' })),
+  checks3: saved.checks3 || 0, shown3: !!saved.shown3, detail: !!saved.detail,
+  hints: saved.hints || {},
+  parts: saved.parts || { role: '', ctx: '', task: '', fmt: '', lim: '' },
+  answer: saved.answer || null, raw: saved.raw || '', source: saved.source || '', lastPrompt: saved.lastPrompt || '',
+  attempts: arr(saved.attempts), marks: saved.marks || {}, markRevealed: !!saved.markRevealed,
+  dec: { p1: '', p2: '', p3: '', opts: [{ name: '', effect: '', cost: '' }, { name: '', effect: '', cost: '' }], ...(saved.dec || {}) },
+  scn: 'now', followup: '', tutorQ: '', tutorA: '', reflect: saved.reflect || '', reflecting: false, showAi: false,
+  sample: null, downloads: null, ctl: null, running: false, pasteOpen: false
+};
+function persist() {
+  store.set('fl.state', { step: state.step, guess: state.guess, calc: state.calc, avg: state.avg, tp: state.tp, worry: state.worry, checks2: state.checks2, shown2: state.shown2,
+    cum: state.cum, q3: state.q3, read: state.read, checks3: state.checks3, shown3: state.shown3, detail: state.detail, hints: state.hints, parts: state.parts,
+    answer: state.answer, raw: state.raw.slice(0, 20000), source: state.source, lastPrompt: state.lastPrompt, attempts: state.attempts.slice(-12),
+    marks: state.marks, markRevealed: state.markRevealed, dec: state.dec, reflect: state.reflect });
+}
+
+/* ================= Step 2 status: the learner's own calculation ================= */
+/* Среднее: принимаем целое число (6) и значение с одним знаком (6,1) */
+function avgOk(a) { return Math.abs(a - REF.avg) <= 0.06 || (Number.isInteger(a) && a === Math.round(REF.avg)); }
+function avgHint() {
+  const a = num(state.avg); if (a == null || avgOk(a)) return null;
+  const vals = DONE.map((t) => num(state.calc[t.n]));
+  const base = `Среднее = сумма времени цикла завершённых задач ÷ их число. Завершено ${DONE.length} задач (№${DONE.map((t) => t.n).join(', ')}); незавершённые (возраст) в среднее не входят.`;
+  if (vals.every((v) => v != null)) {
+    const sum = vals.reduce((x, y) => x + y, 0), mine = sum / DONE.length;
+    if (Math.abs(a - mine) <= 0.06 || (Number.isInteger(a) && a === Math.round(mine)))
+      return `${base} Ваше среднее совпадает с вашей таблицей (${sum} : ${DONE.length}), значит, ошибка в одной из строк «время цикла» выше — сначала исправьте их.`;
+    return `${base} По вашему столбцу сумма ${sum} — разделите её на ${DONE.length}. Округлять можно до целого или до одного знака.`;
+  }
+  return `${base} Сначала заполните время цикла по всем завершённым задачам: сумма берётся из вашего столбца.`;
+}
+function calcStatus() {
+  const rows = {}; let ok = 0;
+  TASKS.forEach((t) => {
+    const v = num(state.calc[t.n]);
+    if (v == null) { rows[t.n] = 'empty'; return; }
+    const ref = t.e ? REF.cycle[t.n] : REF.age[t.n];
+    rows[t.n] = v === ref ? 'ok' : 'bad'; if (v === ref) ok++;
+  });
+  const a = num(state.avg);
+  const avg = a == null ? 'empty' : avgOk(a) ? 'ok' : 'bad';
+  const tp = state.tp.map((x, i) => (num(x) == null ? 'empty' : num(x) === REF.tp[i] ? 'ok' : 'bad'));
+  const total = TASKS.length + 1 + 4;
+  const okAll = ok + (avg === 'ok') + tp.filter((x) => x === 'ok').length;
+  const offByOne = TASKS.filter((t) => rows[t.n] === 'bad' && num(state.calc[t.n]) === (t.e ? REF.cycle[t.n] : REF.age[t.n]) - 1).length;
+  return { rows, avg, tp, ok: okAll, total, offByOne, checked: state.checks2 > 0 };
+}
+function readRow(i) {
+  const v = state.read[i], p = PERIODS[i];
+  if ([v.ds, v.df, v.wip].some((x) => num(x) == null) || !v.pat || (v.pat === 'narrow' && !v.why)) return 'empty';
+  return num(v.ds) === p.ds && num(v.df) === p.df && num(v.wip) === p.wip && v.pat === p.pat && (p.pat !== 'narrow' || v.why === p.why) ? 'ok' : 'bad';
+}
+function readHint(i) {
+  const v = state.read[i], p = PERIODS[i];
+  if (num(v.ds) !== p.ds || num(v.df) !== p.df) return 'Прирост за период = итог на конец периода минус итог на начало. На 0-й день начато и завершено по нулю.';
+  if (num(v.wip) !== p.wip) return 'В работе = начато всего − завершено всего на конец периода.';
+  if (v.pat !== p.pat) return 'Сравните два прироста: какая линия поднялась сильнее за эти пять дней?';
+  return 'Сравните прирост с предыдущим периодом: что изменилось — стали больше завершать или меньше начинать?';
+}
+function q3Status() {
+  const q = state.q3, r = {};
+  r.wip = num(q.wip) == null ? 'empty' : num(q.wip) === REF.wip15 ? 'ok' : 'bad';
+  r.cause = !q.cause ? 'empty' : q.cause === 'committee' ? 'ok' : 'bad';
+  r.share = num(q.share) == null ? 'empty' : Math.abs(num(q.share) - REF.waitShare) <= 2.5 ? 'ok' : 'bad';
+  r.active = num(q.active) == null ? 'empty' : Math.abs(num(q.active) - REF.clientActive) <= 0.05 ? 'ok' : 'bad';
+  r.sla = num(q.sla) == null ? 'empty' : num(q.sla) === REF.slaOk ? 'ok' : 'bad';
+  const cum = ['started', 'finished'].map((k) => state.cum[k].map((x, i) => (num(x) == null ? 'empty' : num(x) === CUM[k][i] ? 'ok' : 'bad'))).flat();
+  r.cum = cum.includes('empty') ? 'empty' : cum.every((x) => x === 'ok') ? 'ok' : 'bad';
+  r.rows = PERIODS.map((p, i) => readRow(i));
+  r.read = r.rows.includes('empty') ? 'empty' : r.rows.every((x) => x === 'ok') ? 'ok' : 'bad';
+  const keys = ['cum', 'read', 'wip', 'cause', 'share', 'active', 'sla'];
+  return { r, ok: keys.filter((k) => r[k] === 'ok').length, total: keys.length };
+}
+
+/* ================= Prompt quality ================= */
+const has = (t, re) => re.test(t);
+function promptChecks() {
+  const p = state.parts, all = Object.values(p).join('\n');
+  const nums = (p.ctx.match(/\d+/g) || []).length;
+  const role = [
+    { k: 'Роль названа', on: p.role.split(/\s+/).filter(Boolean).length >= 3 },
+    { k: 'Опыт в потоке работ', on: has(p.role, /канбан|kanban|поток|эксплуатац|операци|маркетплейс|аналитик|бережлив|lean|agile|аджайл|коуч|процесс/i) }
+  ];
+  const ctx = [
+    { k: 'Таблица задач', on: nums >= 60 },
+    { k: 'Формула времени цикла', on: has(p.ctx + p.task, /\+\s*1|завершения\s*[−-]\s*.*начала/i) },
+    { k: 'Неделя = 5 дней', on: has(p.ctx + p.task, /5 рабочих|неделя\s*[—-]\s*5|по 5 дней/i) },
+    { k: 'Текущий день', on: has(p.ctx + p.task, /текущ\S* день|день 20|20-й день|текущий — 20/i) },
+    { k: 'Примечание о комитете', on: has(p.ctx, /комитет|четверг/i) }
+  ];
+  const task = [
+    { k: 'Время цикла', on: has(p.task, /цикл/i) },
+    { k: 'Пропускная способность', on: has(p.task, /пропускн/i) },
+    { k: 'Возраст задач', on: has(p.task, /возраст/i) },
+    { k: 'Диаграмма потока', on: has(p.task, /кумулятив|CFD|накопит|диаграмм/i) },
+    { k: 'Чтение полосы', on: has(p.task, /полос|расширя|сужа|параллел|прочитай|интерпрет/i) },
+    { k: 'Затор и причина', on: has(p.task, /затор|узк\S* мест|скаплива|накаплива|копят/i) },
+    { k: 'Предложения с ценой', on: has(p.task, /предлож|рекоменд|изменить/i) && has(p.task + p.fmt, /цен|чем платим|риск|минус|недостат/i) }
+  ];
+  const fmt = [
+    { k: 'Форма результата', on: has(p.fmt, /таблиц|список|по задачам|json|столбц|колонк|пункт/i) },
+    { k: 'Объём ответа', on: has(p.fmt, /\d|кратк|не более|не длиннее|три|две/i) }
+  ];
+  const lim = [
+    { k: 'Только данные кейса', on: has(p.lim, /только|не (выдум|придум)|не добавля/i) },
+    { k: 'Показать расчёт', on: has(p.lim + p.task, /покаж\S* (расч|вычисл)|по шагам|пошагов|формул/i) },
+    { k: 'Допущения отдельно', on: has(p.lim, /допущ|предполож/i) },
+    { k: 'Самопроверка', on: has(p.lim + p.task, /провер\S*|сверь|пересчитай|контрольн/i) }
+  ];
+  const holes = (all.match(/\[[^\]]{2,}\]/g) || []).length;
+  const safety = [];
+  if (/[\w.+-]+@[\w-]+\.[\w.]+/.test(all)) safety.push('Адрес электронной почты');
+  if (/(\+7|8)[\s(-]*7\d{2}[\s)-]*\d{3}[\s-]*\d{2}[\s-]*\d{2}/.test(all)) safety.push('Номер телефона');
+  if (/\b\d{12}\b/.test(all)) safety.push('Похоже на ИИН');
+  if (/казахтелеком|kazakhtelecom|wildberries|вайлдберриз|ozon|озон|kaspi|каспи|яндекс|yandex/i.test(all)) safety.push('Название реальной компании');
+  if (/парол|логин|коммерческая тайна/i.test(all)) safety.push('Служебные данные');
+  const part = (list) => { const n = list.filter((c) => c.on).length; return n === list.length ? 'ok' : n ? 'warn' : 'bad'; };
+  const res = { role: { list: role, st: part(role) }, ctx: { list: ctx, st: part(ctx) }, task: { list: task, st: part(task) }, fmt: { list: fmt, st: part(fmt) }, lim: { list: lim, st: part(lim) } };
+  const total = [role, ctx, task, fmt, lim].flat();
+  res.score = Math.round(100 * total.filter((c) => c.on).length / total.length);
+  res.holes = holes; res.safety = safety;
+  return res;
+}
+function compiled() {
+  const p = state.parts;
+  return `Роль: ${p.role}\n\nКонтекст:\n${p.ctx}\n\nЗадача:\n${p.task}\n\nФормат результата:\n${p.fmt}\n\nОграничения:\n${p.lim}`;
+}
+
+/* ================= Verification of the AI answer ================= */
+const taskNo = (x) => num(x && (x.task ?? x.id ?? x.n ?? x['№']));
+function normAnswer(raw) {
+  const r = raw && typeof raw === 'object' ? raw : {};
+  const mw = r.most_worrying && typeof r.most_worrying === 'object' ? r.most_worrying : {};
+  return {
+    cycles: Object.fromEntries(arr(r.cycle_times).map((x) => [taskNo(x), num(x && x.days)]).filter(([k]) => k != null)),
+    avg: num(r.avg_cycle_time),
+    tp: arr(r.throughput_by_week).slice(0, 4).map(num),
+    ages: Object.fromEntries(arr(r.ages).map((x) => [taskNo(x), num(x && x.days)]).filter(([k]) => k != null)),
+    worry: { task: num(mw.task), why: str(mw.why) },
+    wip15: num(r.wip_day15), reading: str(r.cfd_reading), bottleneck: str(r.bottleneck), share: num(r.wait_share_percent),
+    proposals: arr(r.proposals).map((o) => ({ change: str(o && o.change), effect: str(o && o.effect), cost: str(o && o.cost) })).filter((o) => o.change),
+    assumptions: arr(r.assumptions).map(str).filter(Boolean)
+  };
+}
+const COMMITTEE_RE = /комитет|согласова|одобрен|стандартн\S* изменен|делегир/i;
+function verify(a) {
+  const rows = [];
+  if (!a) return rows;
+  const listed = (map, keys) => keys.map((k) => (map[k] == null ? '?' : String(map[k]).replace('.', ','))).join(', ');
+  const doneKeys = DONE.map((t) => t.n), openKeys = OPEN.map((t) => t.n);
+  const badC = doneKeys.filter((k) => a.cycles[k] !== REF.cycle[k]);
+  const minusOne = badC.length && badC.every((k) => a.cycles[k] === REF.cycle[k] - 1);
+  rows.push({ id: 'cycle', area: 'Время цикла по задачам №1–9, 11, 13, 15', ai: listed(a.cycles, doneKeys), fact: listed(REF.cycle, doneKeys), st: badC.length ? 'bad' : 'ok',
+    hint: badC.length ? (minusOne ? `Ошибка во всех ${badC.length} задачах ровно на 1 день: ИИ не прибавил +1 из формулы кейса.` : `Расхождения в задачах № ${badC.join(', ')}.`) : '' });
+  rows.push({ id: 'avg', area: 'Среднее время цикла', ai: a.avg == null ? 'нет' : `${fmt1(a.avg)} дн.`, fact: `${fmt1(REF.avg)} дн. (${REF.sum} : ${DONE.length})`, st: a.avg != null && avgOk(a.avg) ? 'ok' : 'bad',
+    hint: a.avg != null && Math.abs(a.avg - (REF.sum - DONE.length) / DONE.length) <= 0.06 ? 'Среднее посчитано по ошибочным значениям без +1.' : 'Сумма времени цикла 12 завершённых задач, делённая на 12.' });
+  const byStart = [0, 0, 0, 0]; DONE.forEach((t) => byStart[Math.ceil(t.s / 5) - 1]++);
+  const tpOk = a.tp.length === 4 && a.tp.every((x, i) => x === REF.tp[i]);
+  rows.push({ id: 'tp', area: 'Пропускная способность по неделям', ai: a.tp.length ? a.tp.map((x) => (x == null ? '?' : x)).join(' · ') : 'нет', fact: REF.tp.join(' · '), st: tpOk ? 'ok' : 'bad',
+    hint: tpOk ? '' : a.tp.every((x, i) => x === byStart[i]) ? 'ИИ разложил задачи по неделе начала. Пропускная способность считается по дню завершения.' : 'Посчитайте, сколько задач завершено в днях 1–5, 6–10, 11–15, 16–20.' });
+  const badA = openKeys.filter((k) => a.ages[k] !== REF.age[k]);
+  rows.push({ id: 'age', area: 'Возраст незавершённых задач', ai: openKeys.map((k) => `№${k}: ${a.ages[k] ?? '?'}`).join(', '), fact: openKeys.map((k) => `№${k}: ${REF.age[k]}`).join(', '), st: badA.length ? 'bad' : 'ok',
+    hint: badA.length ? (badA.every((k) => a.ages[k] === REF.age[k] - 1) ? 'Возраст занижен на 1 день: та же ошибка без +1. Из-за неё №16 выглядит так, будто срок ещё не наступил.' : `Расхождения: № ${badA.join(', ')}.`) : '' });
+  const rdOk = /меньше (начин|нов|задач)|перестал|не бер|мало нов|поступ\S* меньше|одна задача/i.test(a.reading) && !/разгреба|ускор|быстрее/i.test(a.reading);
+  rows.push({ id: 'read', area: 'Чтение диаграммы в конце периода', ai: a.reading || 'нет', fact: `Дни 16–20: начата ${PERIODS[3].ds}, завершено ${PERIODS[3].df}, как и неделей раньше. Полоса сужается, потому что перестали брать новое`, st: rdOk ? 'ok' : 'bad',
+    hint: rdOk ? '' : 'Отдел не ускорился: завершено столько же, сколько неделей раньше. Сузилась полоса из-за того, что новых задач почти не начинали.' });
+  rows.push({ id: 'wip', area: 'В работе на 15-й день', ai: a.wip15 == null ? 'нет' : String(a.wip15), fact: '15 начато − 9 завершено = 6', st: a.wip15 === REF.wip15 ? 'ok' : 'bad', hint: '' });
+  const bnOk = COMMITTEE_RE.test(a.bottleneck) && !/не хватает (людей|инженер|специалист)|нехватк/i.test(a.bottleneck);
+  rows.push({ id: 'bn', area: 'Где затор', ai: a.bottleneck || 'нет', fact: 'Ожидание решения комитета: больше половины времени цикла задачи ждут, а не выполняются', st: bnOk ? 'ok' : 'bad',
+    hint: bnOk ? '' : 'Вывод о нехватке людей данными не подтверждается: запрос продавца в работе 3 дня, остальное время он ждёт комитет.' });
+  rows.push({ id: 'share', area: 'Доля ожидания во времени цикла', ai: a.share == null ? 'нет' : `${fmt1(a.share)}%`, fact: `${Math.round(REF.waitShare)}%: ${REF.wait} из ${REF.sum} дней`, st: a.share != null && Math.abs(a.share - REF.waitShare) <= 2.5 ? 'ok' : 'bad',
+    hint: 'Сложите дни ожидания завершённых задач и разделите на сумму их времени цикла.' });
+  const costless = a.proposals.filter((o) => !o.cost);
+  const hits = a.proposals.some((o) => COMMITTEE_RE.test(o.change + ' ' + o.effect));
+  const wipAll = a.proposals.some((o) => /лимит/i.test(o.change) && /отдел|общ|все/i.test(o.change) && !/авари|сбо|срочн|кроме/i.test(o.change + o.cost));
+  rows.push({ id: 'prop', area: 'Предложения', ai: a.proposals.map((o) => `${o.change} (цена: ${o.cost || 'не названа'})`).join('; ') || 'нет',
+    fact: 'Убирают ожидание комитета; у каждого названа цена; сбои идут вне лимитов', st: hits && !costless.length && !wipAll ? 'ok' : 'bad',
+    hint: [!hits ? 'Ни одно предложение не трогает ожидание согласования, а это больше половины времени цикла.' : '', costless.length ? `Без цены: ${costless.map((o) => o.change).join('; ')}.` : '', wipAll ? 'Общий лимит на отдел поставит сбои в очередь, а реагирование на них — 30 минут.' : ''].filter(Boolean).join(' ') });
+  return rows;
+}
+
+/* ================= Rendering ================= */
+const STEPS = [
+  { t: 'Данные и задание', s: 'Приложение 5 и ваш прогноз' },
+  { t: 'Мой расчёт', s: 'Цикл, пропускная способность, возраст' },
+  { t: 'Поток и затор', s: 'Диаграмма и причина' },
+  { t: 'Запрос к ИИ', s: 'Пять частей запроса' },
+  { t: 'Найдите ошибки ИИ', s: 'Вы проверяете ответ' },
+  { t: 'Выводы и изменения', s: 'Ваше предложение' }
+];
+function goals() {
+  const c = promptChecks(), m = calcStatus(), q = q3Status();
+  return [
+    { k: 'Посчитали метрики сами', on: m.checked && m.ok === m.total },
+    { k: 'Нашли затор по данным', on: state.checks3 > 0 && q.ok === q.total },
+    { k: 'Собрали запрос по структуре', on: c.score >= 70 && !c.holes },
+    { k: 'Нашли ошибки в ответе ИИ', on: state.markRevealed },
+    { k: 'Сформулировали выводы сами', on: !!(state.dec.p1 && state.dec.p2 && state.dec.p3) },
+    { k: 'Получили разбор коуча', on: !!state.reflect }
+  ];
+}
+const unlocked = (i) => i <= 1 || ((i === 2 || i === 3) && state.checks2 > 0) || (i === 4 && !!state.answer) || (i === 5 && state.checks3 > 0);
+function renderSteps() {
+  const g = goals();
+  const done = [!!(state.guess.avg && state.guess.cause), g[0].on, g[1].on, g[2].on, g[3].on, g[4].on];
+  $('#steps').replaceChildren(...STEPS.map((st, i) => h('button', { class: 'step' + (done[i] ? ' done' : '') + (unlocked(i) ? '' : ' locked'), type: 'button', 'aria-current': i === state.step ? 'step' : null, onclick: () => go(i) },
+    h('span', { class: 'dot', text: done[i] && i !== state.step ? '✓' : String(i + 1) }), h('span', { class: 't', text: st.t }), h('span', { class: 's', text: unlocked(i) ? st.s : 'Откроется позже' }))));
+}
+function go(i) { state.step = i; persist(); render(); window.scrollTo({ top: 0 }); }
+function render() { renderSteps(); renderMain(); renderRail(); }
+function renderMain() {
+  const views = [viewData, viewCalc, viewFlow, viewPrompt, viewCheck, viewDecide];
+  $('#main').replaceChildren(...(unlocked(state.step) ? views[state.step]() : viewLocked()));
+  if (state.step === 3 && unlocked(3)) renderSafety(promptChecks());
+  if (state.step === 5 && unlocked(5)) refreshDecide();
+}
+function viewLocked() {
+  const why = state.step === 4 ? 'Здесь появится ответ ИИ, когда вы отправите запрос на шаге 4.'
+    : state.step === 5 ? 'Этот шаг откроется, когда вы найдёте затор на шаге 3 и хотя бы раз нажмёте «Проверить».'
+      : 'Этот шаг откроется, когда вы посчитаете метрики сами и хотя бы раз нажмёте «Проверить».';
+  const to = state.step === 4 ? 3 : state.step === 5 ? 2 : 1;
+  return [h('section', { class: 'card' }, h('h3', { text: 'Шаг пока закрыт' }), h('div', { class: 'empty', text: why }),
+    h('div', { class: 'actions' }, h('button', { class: 'btn btn-primary', type: 'button', text: 'Перейти', onclick: () => go(to) })))];
+}
+function pill(x, labels) {
+  const L = labels || { ok: 'верно', bad: 'неверно' };
+  return x && x !== 'empty' ? h('span', { class: 'pill ' + (x === 'ok' ? 'ok' : 'bad'), text: L[x] }) : h('span', { class: 'pill info', text: 'пусто' });
+}
+function numInput(id, value, onInput, label, attrs = {}) {
+  const i = h('input', { type: 'text', inputmode: 'decimal', id, 'aria-label': label, autocomplete: 'off', ...attrs });
+  i.value = value ?? '';
+  i.addEventListener('input', () => onInput(i.value));
+  return i;
+}
+
+/* ---- Step 1: data and prediction ---- */
+function dataTable() {
+  return h('div', { class: 'tscroll' }, h('table', { class: 'data' },
+    h('thead', {}, h('tr', {}, ['№', 'Тип работы', 'День начала', 'День завершения', 'Дней в ожидании согласования'].map((t) => h('th', { text: t })))),
+    h('tbody', {}, TASKS.map((t) => h('tr', {}, h('td', { class: 'mono', text: t.n }), h('td', {}, typeTag(t)), h('td', { class: 'mono', text: t.s }), h('td', { class: 'mono', text: t.e || '—' }), h('td', { class: 'mono', text: t.w }))))));
+}
+const CAUSES = [
+  ['people', 'Специалистов не хватает: они не успевают выполнять работу'],
+  ['committee', 'Задачи ждут решения релизного комитета'],
+  ['incidents', 'Сбои постоянно отвлекают специалистов от остальной работы'],
+  ['site', 'Работы по запуску «Доставки еды» вытесняют остальные задачи']
+];
+function viewData() {
+  const g = state.guess;
+  const causes = h('div', { class: 'radio-list' }, CAUSES.map(([v, t]) => {
+    const i = h('input', { type: 'radio', name: 'guess-cause', value: v, id: 'g-' + v }); i.checked = g.cause === v;
+    i.addEventListener('change', () => { g.cause = v; persist(); renderSteps(); renderRail(); });
+    return h('label', { for: 'g-' + v }, i, h('span', { text: t }));
+  }));
+  return [
+    h('section', { class: 'card' },
+      h('h3', { text: 'Ситуация' }),
+      h('p', { class: 'lead', text: 'Отдел операций маркетплейса «Корзина» — руководитель и 12 специалистов — обслуживает 12 городов, где маркетплейс принимает и выдаёт заказы, и работает по Канбан-доске. Руководитель отдела Марат Жумабаев принёс данные доски за недели 6–9: «Доску мы перестроили, но запросы продавцов снова выполняются дольше, чем положено по договору. Люди работают на пределе, а очередь не уменьшается». С 18-й недели четыре специалиста перейдут в команду запуска направления «Доставка еды».' })),
+    h('section', { class: 'card' },
+      h('h3', { text: 'Приложение 5. Данные доски отдела за недели 6–9' }),
+      h('p', { class: 'help', text: 'Рабочие дни пронумерованы с 1 по 20, текущий день — 20-й. «Дней в ожидании согласования» — сколько дней задача ждала решения релизного комитета (для незавершённых — на текущий момент).' }),
+      dataTable(),
+      h('div', { class: 'tscroll' }, h('table', { class: 'data' },
+        h('thead', {}, h('tr', {}, ['День', 'Начато всего', 'Завершено всего', 'В работе'].map((t) => h('th', { text: t })))),
+        h('tbody', {}, CUM.days.map((d, i) => h('tr', {}, h('td', { class: 'mono', text: d }), h('td', { class: 'mono', text: CUM.started[i] }), h('td', { class: 'mono', text: CUM.finished[i] }), h('td', { class: 'mono', text: CUM.started[i] - CUM.finished[i] }))))))),
+    h('section', { class: 'card' },
+      h('h3', { text: 'Из Приложения 4' }),
+      h('p', { class: 'lead', text: 'Запросы продавцов: 8–10 в неделю, срок по договору — 5 рабочих дней. Сбои на витрине: реагирование не позже 30 минут, за простой витрины продавцам начисляются компенсации по договору. Улучшения: 1–2 в неделю, постоянно откладываются.' }),
+      h('p', { class: 'note', text: 'Все работы, кроме устранения сбоев, согласуются на релизном комитете. Комитет собирается раз в неделю, по четвергам.' })),
+    h('section', { class: 'card' },
+      h('h3', { text: 'Задание практикумов 5 и 6' }),
+      h('ol', { class: 'task-list' },
+        h('li', { text: 'Рассчитайте время цикла каждой завершённой задачи и среднее время цикла. Время цикла = день завершения − день начала + 1.' }),
+        h('li', { text: 'Рассчитайте пропускную способность по неделям (неделя — 5 рабочих дней).' }),
+        h('li', { text: 'Рассчитайте возраст задач, которые ещё в работе. Какая из них беспокоит больше всего и почему?' }),
+        h('li', { text: 'По накопительным итогам постройте кумулятивную диаграмму потока: линии «начато» и «завершено».' }),
+        h('li', { text: 'Найдите затор. Где задачи накапливаются и почему? Учтите примечание к Приложению 4. Что вы предложите изменить?' }))),
+    h('section', { class: 'card' },
+      h('h3', { text: 'Прежде чем считать: ваш прогноз' }),
+      h('p', { class: 'lead', text: 'Ответьте по первому впечатлению. Прогноз не оценивается: на шаге 3 вы сравните его с тем, что покажут данные.' }),
+      h('div', { class: 'field', style: 'max-width:360px' }, h('label', { class: 'lbl', for: 'g-avg', text: 'Сколько рабочих дней в среднем проходит от начала до завершения задачи?' }),
+        numInput('g-avg', g.avg, (v) => { g.avg = v; persist(); renderSteps(); }, 'Прогноз среднего времени')),
+      h('span', { class: 'lbl', text: 'Что, по-вашему, главная причина задержек?' }), causes,
+      h('div', { class: 'actions' }, h('button', { class: 'btn btn-primary', type: 'button', text: 'Перейти к расчёту', onclick: () => go(1) })))
+  ];
+}
+
+/* ---- Step 2: the learner's own calculation ---- */
+const HINTS = {
+  cycle: ['Время цикла считают только для завершённых задач.', 'Формула дана в кейсе: день завершения − день начала + 1. Задача, начатая и законченная в один день, длится 1 день.', 'Среднее — это сумма времени цикла 12 задач, делённая на 12.'],
+  tp: ['Пропускная способность — сколько задач завершено за неделю, а не начато.', 'Неделя 6 — дни 1–5, неделя 7 — дни 6–10, неделя 8 — дни 11–15, неделя 9 — дни 16–20.', 'Проверка: сумма по четырём неделям равна числу завершённых задач в накопительных итогах на 20-й день.'],
+  age: ['Возраст считают для задач без дня завершения, на текущий день.', 'Текущий день — 20-й. Считайте так же, как время цикла: включая день начала.', 'Сравните возраст с обычным временем цикла и со сроком по договору для этого типа работы.']
+};
+function hintCard(keys) {
+  return h('section', { class: 'card' }, h('h3', { text: 'Подсказки' }),
+    h('p', { class: 'lead', text: 'Подсказки открываются по одной и не содержат ответа. Каждая следующая конкретнее.' }),
+    ...keys.map(([k, t]) => {
+      const lvl = state.hints[k] || 0;
+      return h('div', { class: 'hintrow' }, h('div', { class: 'field-top' }, h('b', { text: t }),
+        h('button', { class: 'btn btn-small', type: 'button', text: lvl >= HINTS[k].length ? 'Подсказок больше нет' : `Подсказка ${lvl + 1} из ${HINTS[k].length}`, disabled: lvl >= HINTS[k].length, onclick: () => { state.hints[k] = lvl + 1; persist(); render(); } })),
+        lvl ? h('ol', { class: 'task-list' }, HINTS[k].slice(0, lvl).map((t2) => h('li', { text: t2 }))) : null);
+    }));
+}
+function rowCell(t, st) {
+  if (!st) return [];
+  const x = st.rows[t.n], out = [pill(x)];
+  if (x === 'bad' && num(state.calc[t.n]) === (t.e ? REF.cycle[t.n] : REF.age[t.n]) - 1) out.push(h('div', { class: 'rowhint', text: 'На 1 меньше. Проверьте «+ 1» в формуле.' }));
+  if (state.shown2 && x !== 'ok') out.push(h('div', { class: 'rowhint mono', text: `ответ: ${t.e ? `${t.e} − ${t.s} + 1 = ${REF.cycle[t.n]}` : `${TODAY} − ${t.s} + 1 = ${REF.age[t.n]}`}` }));
+  return out;
+}
+function avgCell(st) {
+  if (!st) return [];
+  const out = [pill(st.avg)];
+  if (st.avg === 'bad') out.push(h('div', { class: 'rowhint', text: avgHint() }));
+  if (state.shown2 && st.avg !== 'ok') out.push(h('div', { class: 'rowhint mono', text: `ответ: ${REF.sum} : ${DONE.length} = ${fmt1(REF.avg)} (можно писать 6 или 6,1)` }));
+  return out;
+}
+function redrawCalc() {
+  if (state.checks2) {
+    const st = calcStatus();
+    TASKS.forEach((t) => { const c = $('#st-' + t.n); if (c) c.replaceChildren(...rowCell(t, st)); });
+    const a = $('#st-avg'); if (a) a.replaceChildren(...avgCell(st));
+    st.tp.forEach((x, i) => { const c = $('#st-tp' + i); if (c) c.replaceChildren(pill(x), state.shown2 && x !== 'ok' ? h('span', { class: 'help mono', text: ` ответ: ${REF.tp[i]}` }) : ''); });
+    const s2 = $('#calc-status'); if (s2) s2.textContent = calcLine(st);
+  }
+  renderRail(); renderSteps();
+}
+const calcLine = (st) => !state.checks2 ? 'Проверка показывает, где ошибка, но не называет правильное число.'
+  : state.checks2 < 2 && !state.shown2 ? `Проверок: ${state.checks2}. Верно ${st.ok} из ${st.total}. Ответ можно открыть после второй проверки.`
+    : `Проверок: ${state.checks2}. Верно ${st.ok} из ${st.total}.`;
+function viewCalc() {
+  const st = state.checks2 ? calcStatus() : null;
+  const table = h('div', { class: 'tscroll' }, h('table', { class: 'data calc' },
+    h('thead', {}, h('tr', {}, ['№', 'Тип работы', 'Начало', 'Завершение', 'Что считаем', 'Ваш расчёт, дн.', 'Проверка'].map((t) => h('th', { text: t })))),
+    h('tbody', {}, TASKS.map((t) => h('tr', { class: t.e ? '' : 'wip' }, h('td', { class: 'mono', text: t.n }), h('td', {}, typeTag(t)), h('td', { class: 'mono', text: t.s }), h('td', { class: 'mono', text: t.e || '—' }),
+      h('td', { class: 'kind', text: t.e ? 'время цикла' : `возраст на ${TODAY}-й день` }),
+      h('td', {}, numInput('c-' + t.n, state.calc[t.n], (v) => { state.calc[t.n] = v; persist(); redrawCalc(); }, `Задача ${t.n}: ${t.e ? 'время цикла' : 'возраст'}`)),
+      h('td', { id: 'st-' + t.n }, rowCell(t, st)))))));
+  const weeks = h('div', { class: 'inline-inputs' }, [6, 7, 8, 9].map((w, i) => h('div', { class: 'field' },
+    h('label', { class: 'lbl', for: 'tp-' + i, text: `Неделя ${w} · дни ${i * 5 + 1}–${i * 5 + 5}` }),
+    numInput('tp-' + i, state.tp[i], (v) => { state.tp[i] = v; persist(); redrawCalc(); }, `Пропускная способность, неделя ${w}`),
+    h('div', { id: 'st-tp' + i }, st ? [pill(st.tp[i]), state.shown2 && st.tp[i] !== 'ok' ? h('span', { class: 'help mono', text: ` ответ: ${REF.tp[i]}` }) : ''] : []))));
+  const worry = h('div', { class: 'radio-list' }, OPEN.map((t) => {
+    const i = h('input', { type: 'radio', name: 'worry', value: String(t.n), id: 'w-' + t.n }); i.checked = String(state.worry.task) === String(t.n);
+    i.addEventListener('change', () => { state.worry.task = String(t.n); persist(); render(); });
+    return h('label', { for: 'w-' + t.n }, i, h('span', {}, `№${t.n} · `, typeTag(t), ` · начата на ${t.s}-й день`));
+  }));
+  const why = h('textarea', { id: 'w-why', rows: 3, placeholder: 'Опирайтесь на числа: возраст, обычное время цикла, срок по договору, что будет дальше' });
+  why.value = state.worry.why; why.addEventListener('input', () => { state.worry.why = why.value; persist(); });
+  return [
+    h('section', { class: 'card' }, h('h3', { text: 'Посчитайте сами' }),
+      h('p', { class: 'lead', text: 'Для завершённых задач впишите время цикла, для незавершённых — возраст на текущий, 20-й день. ИИ подключится позже, когда у вас будет свой расчёт для сравнения: без него ошибку ИИ не заметить.' }),
+      table),
+    h('section', { class: 'card' }, h('h3', { text: 'Среднее время цикла и пропускная способность' }),
+      h('div', { class: 'field', style: 'max-width:300px' }, h('label', { class: 'lbl', for: 'c-avg', text: 'Среднее время цикла, дней (целое число или с одним знаком после запятой)' }),
+        numInput('c-avg', state.avg, (v) => { state.avg = v; persist(); redrawCalc(); }, 'Среднее время цикла'),
+        h('div', { id: 'st-avg' }, avgCell(st))),
+      h('span', { class: 'lbl', text: 'Пропускная способность: сколько задач завершено за неделю' }), weeks),
+    h('section', { class: 'card' },
+      h('div', { class: 'actions' },
+        h('button', { class: 'btn btn-primary', type: 'button', text: 'Проверить', onclick: () => { state.checks2++; persist(); render(); } }),
+        h('button', { class: 'btn', type: 'button', text: state.shown2 ? 'Ответ показан' : 'Показать ответ', disabled: state.shown2 || state.checks2 < 2, onclick: () => { state.shown2 = true; persist(); render(); } }),
+        state.checks2 > 0 ? h('button', { class: 'btn', type: 'button', text: 'Дальше: поток и затор', onclick: () => go(2) }) : null),
+      h('p', { class: 'status', id: 'calc-status', text: calcLine(st) })),
+    h('section', { class: 'card' }, h('h3', { text: 'Какая незавершённая задача беспокоит больше всего?' }),
+      h('p', { class: 'lead', text: 'Здесь нет одного правильного ответа. Сильный ответ сравнивает возраст задачи с обычным временем цикла или со сроком по договору и говорит, что случится, если ничего не делать.' }),
+      worry, why, worryFeedback()),
+    hintCard([['cycle', 'Время цикла'], ['tp', 'Пропускная способность'], ['age', 'Возраст задач']]),
+    tutorCard()
+  ];
+}
+const WORRY_NOTES = {
+  10: 'Улучшение: самая старая задача — 13 дней, дольше любой завершённой (максимум 10). Шесть дней ждала комитета. Это та самая автоматизация проверки карточек товаров, которая сократила бы ночные вызовы дежурных, а улучшения постоянно откладываются.',
+  12: 'Работы по запуску «Доставки еды»: 11 дней. Таких задач становится больше, а с 18-й недели в команду запуска уходят четыре специалиста: если эти задачи копятся уже сейчас, запуску грозит задержка приёмки интеграций с ресторанами.',
+  14: 'Акция / каталог: 8 дней, ближе всего к обычному времени цикла (6,1). Дата согласуется с продавцами за 2 недели, поэтому риск ниже, чем у остальных.',
+  16: 'Запрос продавца: возраст 5 дней при сроке по договору 5 рабочих дней — срок истекает сегодня. Задача ещё не прошла комитет, а следующий комитет в четверг, на 24-й день: просрочка почти неизбежна.'
+};
+function worryFeedback() {
+  if (!state.checks2 || !state.worry.task) return h('p', { class: 'help', text: state.worry.task ? 'Комментарий тренера появится после первой проверки расчёта.' : '' });
+  const w = state.worry.why, hasNum = /\d/.test(w);
+  return h('div', { class: 'tip', style: 'padding:12px 14px;border-radius:10px;display:flex;flex-direction:column;gap:6px' },
+    h('b', { text: 'Комментарий тренера по выбранной задаче' }), h('p', { text: WORRY_NOTES[state.worry.task] }),
+    !w.trim() ? h('p', { class: 'q', text: 'Допишите, почему вы выбрали эту задачу.' }) : !hasNum ? h('p', { class: 'q', text: 'В обосновании нет ни одного числа. Какое сравнение убедит руководителя отдела?' } ) : null,
+    h('p', { class: 'help', text: 'Чаще всего называют №10 или №16. Оба выбора защитимы, если обоснованы числами.' }));
+}
+const TUTOR_RULES = `Ты — наставник на тренинге по Канбану и метрикам потока. Участник сам считает метрики по учебному кейсу и задаёт тебе вопрос.
+Правила:
+- Не называй итоговые значения времени цикла, среднего, пропускной способности, возраста, доли ожидания и не исправляй числа участника на правильные.
+- Отвечай одним наводящим вопросом и одной подсказкой, где искать в данных кейса.
+- Не больше 50 слов, на русском, без списков.`;
+function tutorCard() {
+  const ta = h('textarea', { id: 'tutor-q', rows: 2, placeholder: 'Например: почему у меня пропускная способность в сумме не сходится с накопительными итогами?' }); ta.value = state.tutorQ;
+  ta.addEventListener('input', () => { state.tutorQ = ta.value; });
+  return h('section', { class: 'card' }, h('h3', { text: 'Спросить ИИ-наставника' }),
+    h('p', { class: 'lead', text: 'Наставник не решит задачу за вас: он настроен отвечать вопросом. Это тоже способ работы с ИИ, когда нужно научиться, а не получить ответ.' }),
+    ta,
+    h('div', { class: 'actions' }, h('button', { class: 'btn', type: 'button', id: 'tutor-btn', text: 'Спросить', disabled: !state.sample || state.running, onclick: askTutor }),
+      !state.sample ? h('span', { class: 'help', text: 'Наставник работает, когда страница открыта в Claude.' }) : null),
+    h('div', { class: 'reflect', id: 'tutor-out', hidden: !state.tutorA, text: state.tutorA }),
+    h('details', {}, h('summary', { text: 'Как настроен наставник' }), h('pre', { class: 'preview', text: TUTOR_RULES })));
+}
+async function askTutor() {
+  if (!state.sample || state.running || !state.tutorQ.trim()) return;
+  const mine = TASKS.map((t) => `№${t.n}: ${state.calc[t.n] || '?'}`).join('; ');
+  const input = `${TUTOR_RULES}\n\nДанные кейса:\n${CASE_TEXT}\n\nРасчёт участника (время цикла или возраст): ${mine}. Среднее: ${state.avg || '?'}. Пропускная способность по неделям: ${state.tp.map((x) => x || '?').join(', ')}.\n\nВопрос участника: ${state.tutorQ}`;
+  state.running = true; const b = $('#tutor-btn'); if (b) b.disabled = true;
+  const out = $('#tutor-out'); out.hidden = false; out.textContent = 'Наставник думает…';
+  try { const { text } = await state.sample(input, { cache: false, onText: ({ text }) => { out.textContent = text; } }); state.tutorA = text; }
+  catch (e) { out.textContent = e && e.text ? e.text : errorCopy(e); }
+  finally { state.running = false; if (b) b.disabled = false; }
+}
+
+/* ---- Step 3: cumulative flow and the bottleneck ---- */
+function dailyCum() {
+  const out = [];
+  for (let d = 0; d <= TODAY; d++) out.push({ d, started: TASKS.filter((t) => t.s <= d).length, finished: DONE.filter((t) => t.e <= d).length });
+  return out;
+}
+function cfdChart() {
+  const W = 640, H = 300, L = 40, R = 104, T = 14, B = 36, maxY = 18;
+  const x = (d) => L + (W - L - R) * d / TODAY, y = (v) => T + (H - T - B) * (1 - v / maxY);
+  const pts = (k) => { const out = [{ d: 0, v: 0 }]; for (let i = 0; i < 4; i++) { const v = num(state.cum[k][i]); if (v == null) break; out.push({ d: CUM.days[i], v }); } return out; };
+  const st = pts('started'), fi = pts('finished');
+  const svg = s('svg', { viewBox: `0 0 ${W} ${H}`, class: 'chart', role: 'img', 'aria-label': 'Кумулятивная диаграмма потока: линии «начато» и «завершено» по рабочим дням' });
+  const grid = s('g', { class: 'grid' });
+  [0, 4, 8, 12, 16].forEach((v) => { grid.append(s('line', { x1: L, x2: W - R, y1: y(v), y2: y(v) }), s('text', { x: L - 8, y: y(v) + 4, 'text-anchor': 'end', text: String(v) })); });
+  svg.append(grid);
+  THURSDAYS.forEach((d) => svg.append(s('line', { x1: x(d), x2: x(d), y1: T, y2: H - B, stroke: 'var(--signal)', 'stroke-width': 1, 'stroke-dasharray': '2 4', opacity: .6 })));
+  [0, 5, 10, 15, 20].forEach((d) => svg.append(s('text', { x: x(d), y: H - B + 18, 'text-anchor': 'middle', text: String(d) })));
+  svg.append(s('text', { x: W - R, y: H - 4, 'text-anchor': 'end', text: 'рабочий день' }));
+  svg.append(s('line', { class: 'axis', x1: L, x2: W - R, y1: y(0), y2: y(0) }));
+  const n = Math.min(st.length, fi.length);
+  if (n > 1) {
+    const top = st.slice(0, n).map((p) => `${x(p.d)},${y(p.v)}`).join(' '), bot = fi.slice(0, n).map((p) => `${x(p.d)},${y(p.v)}`).reverse().join(' ');
+    svg.append(s('polygon', { points: `${top} ${bot}`, fill: 'var(--c-wait)', opacity: .14 }));
+    svg.append(s('polygon', { points: `${fi.slice(0, n).map((p) => `${x(p.d)},${y(p.v)}`).join(' ')} ${x(fi[n - 1].d)},${y(0)} ${x(0)},${y(0)}`, fill: 'var(--c-work)', opacity: .12 }));
+  }
+  if (state.detail) {
+    const dc = dailyCum();
+    const step = (k) => dc.map((p, i) => (i ? `L${x(p.d)},${y(dc[i - 1][k])} L${x(p.d)},${y(p[k])}` : `M${x(0)},${y(0)}`)).join(' ');
+    svg.append(s('path', { d: step('started'), fill: 'none', stroke: 'var(--c-wait)', 'stroke-width': 1.25, 'stroke-dasharray': '4 3' }));
+    svg.append(s('path', { d: step('finished'), fill: 'none', stroke: 'var(--c-work)', 'stroke-width': 1.25, 'stroke-dasharray': '4 3' }));
+  }
+  const line = (p, color) => { if (p.length > 1) svg.append(s('polyline', { points: p.map((q) => `${x(q.d)},${y(q.v)}`).join(' '), fill: 'none', stroke: color, 'stroke-width': 2, 'stroke-linejoin': 'round' })); };
+  line(st, 'var(--c-wait)'); line(fi, 'var(--c-work)');
+  const dots = (p, color) => p.slice(1).forEach((q) => svg.append(s('circle', { cx: x(q.d), cy: y(q.v), r: 4.5, fill: color, stroke: 'var(--sheet)', 'stroke-width': 2 })));
+  dots(st, 'var(--c-wait)'); dots(fi, 'var(--c-work)');
+  const lastS = st[st.length - 1], lastF = fi[fi.length - 1];
+  if (st.length > 1) svg.append(s('text', { class: 'lab', x: x(lastS.d) + 10, y: y(lastS.v) + (lastF && Math.abs(y(lastS.v) - y(lastF.v)) < 16 ? -4 : 4), text: `Начато ${lastS.v}` }));
+  if (fi.length > 1) svg.append(s('text', { class: 'lab', x: x(lastF.d) + 10, y: y(lastF.v) + (Math.abs(y(lastS.v) - y(lastF.v)) < 16 ? 12 : 4), text: `Завершено ${lastF.v}` }));
+  const wrap = h('div', { class: 'chart-wrap' }, svg);
+  const tip = h('div', { class: 'tooltip', hidden: true }); wrap.append(tip);
+  CUM.days.forEach((d, i) => {
+    const sv = num(state.cum.started[i]), fv = num(state.cum.finished[i]);
+    const r = s('rect', { class: 'hit', x: x(d) - 20, y: T, width: 40, height: H - T - B, rx: 6 });
+    r.addEventListener('mouseenter', () => { tip.hidden = false; tip.textContent = `День ${d}: начато ${sv ?? '—'}, завершено ${fv ?? '—'}, в работе ${sv != null && fv != null ? sv - fv : '—'}`; tip.style.left = (100 * x(d) / W) + '%'; tip.style.top = (100 * y(sv ?? 0) / H) + '%'; });
+    r.addEventListener('mouseleave', () => { tip.hidden = true; });
+    svg.append(r);
+  });
+  return wrap;
+}
+function timeline(opts = {}) {
+  const tasks = opts.tasks || TASKS;
+  const g = h('div', { class: 'tl' });
+  const head = h('div', { class: 'tl-track tl-head' });
+  for (let d = 1; d <= TODAY; d++) head.append(h('span', { style: `grid-column:${d}`, text: d === 1 || d % 5 === 0 ? String(d) : '' }));
+  g.append(h('div', { class: 'tl-lab tl-head', text: 'День' }), head);
+  tasks.forEach((t) => {
+    const w = opts.wait ? opts.wait(t) : t.w;
+    const end = t.e ? (opts.cycle ? t.s + opts.cycle(t) - 1 : t.e) : TODAY;
+    const tr = h('div', { class: 'tl-track' });
+    THURSDAYS.forEach((d) => tr.append(h('i', { class: 'tl-thu', style: `grid-column:${d}` })));
+    const waitEnd = Math.min(end, t.s + w - 1);
+    if (w > 0) tr.append(h('div', { class: 'seg wait' + (waitEnd >= end ? ' solo' : ''), style: `grid-column:${t.s} / ${waitEnd + 1}`, title: `Ожидание согласования: ${w} ${daysWord(w)}` }));
+    if (end > waitEnd || w === 0) {
+      const ws = w > 0 ? waitEnd + 1 : t.s;
+      tr.append(h('div', { class: 'seg ' + (t.e ? 'work' : 'open') + (w === 0 ? ' solo' : ''), style: `grid-column:${ws} / ${end + 1}`, title: t.e ? `Работа: ${end - ws + 1} ${daysWord(end - ws + 1)}` : 'Ещё в работе' }));
+    }
+    if (opts.sla && t.type === 'client') tr.append(h('i', { class: 'seg sla', style: `grid-column:${t.s + SLA - 1}`, title: 'Срок по договору' }));
+    g.append(h('div', { class: 'tl-lab' }, h('b', { text: '№' + t.n }), typeTag(t)), tr);
+  });
+  return h('div', { class: 'tl-wrap' }, g);
+}
+const tlLegend = (sla) => h('div', { class: 'legend' },
+  h('span', {}, h('i', { class: 'lg wait' }), 'ждёт комитет'), h('span', {}, h('i', { class: 'lg work' }), 'в работе у специалистов'),
+  h('span', {}, h('i', { class: 'lg open' }), 'не завершена'), h('span', {}, h('i', { class: 'lg thu' }), 'четверг, комитет'),
+  sla ? h('span', {}, h('i', { class: 'lg thu', style: 'border-left:2px dashed var(--ink)' }), '5-й день: срок по договору') : null);
+function redrawFlow() {
+  const c = $('#cfd'); if (c) c.replaceChildren(cfdChart());
+  if (state.checks3) { const q = q3Status(); ['cum', 'read', 'wip', 'cause', 'share', 'active', 'sla'].forEach((k) => { const el = $('#q3-' + k); if (el) el.replaceChildren(...q3Cell(k, q)); }); PERIODS.forEach((p, i) => { const el = $('#rd-' + i); if (el) el.replaceChildren(...readCell(i, q)); }); PERIODS.forEach((p, i) => { const w = $('#rd-why-' + i); if (w) w.disabled = state.read[i].pat !== 'narrow'; }); const sl = $('#flow-status'); if (sl) sl.textContent = flowLine(q); }
+  renderRail(); renderSteps();
+}
+const Q3_ANS = { read: 'по строкам таблицы выше', cum: 'значения из накопительных итогов кейса', wip: '15 − 9 = 6', cause: 'ожидание решения комитета', share: `${REF.wait} : ${REF.sum} ≈ ${Math.round(REF.waitShare)}%`, active: 'каждый запрос — ровно 3 дня работы', sla: `${REF.slaOk} из ${REF.clientDone}: №1 и №4` };
+const Q3_HINT = {
+  read: 'Исправьте строки, отмеченные красным.',
+  cum: 'Перенесите значения из таблицы накопительных итогов.', wip: 'Вертикальное расстояние между линиями — это задачи в работе.',
+  cause: 'Сравните время цикла и дни ожидания у запросов продавцов. Что остаётся, если вычесть ожидание?', share: 'Сложите дни ожидания завершённых задач и разделите на сумму их времени цикла.',
+  active: 'Для каждого из 6 завершённых запросов: время цикла минус дни ожидания.', sla: 'Время цикла запроса сравните с 5 рабочими днями.'
+};
+function q3Cell(k, q) {
+  const x = q.r[k]; const out = [pill(x)];
+  if (x === 'bad') out.push(h('span', { class: 'help', text: ' ' + Q3_HINT[k] }));
+  if (state.shown3 && x !== 'ok') out.push(h('div', { class: 'help mono', text: 'ответ: ' + Q3_ANS[k] }));
+  return out;
+}
+const flowLine = (q) => !state.checks3 ? 'Проверка показывает, где ошибка, но не называет правильное число.'
+  : state.checks3 < 2 && !state.shown3 ? `Проверок: ${state.checks3}. Верно ${q.ok} из ${q.total}. Ответ можно открыть после второй проверки.` : `Проверок: ${state.checks3}. Верно ${q.ok} из ${q.total}.`;
+function readCell(i, q) {
+  if (!q) return [];
+  const x = q.r.rows[i], out = [pill(x)];
+  if (x === 'bad') out.push(h('div', { class: 'rowhint', text: readHint(i) }));
+  if (state.shown3 && x !== 'ok') { const p = PERIODS[i]; out.push(h('div', { class: 'rowhint mono', text: `ответ: +${p.ds}, +${p.df}, в работе ${p.wip}; ${PATTERNS.find((z) => z[0] === p.pat)[1].split(':')[0].toLowerCase()}${p.why ? ', ' + WHYS.find((z) => z[0] === p.why)[1].split(':')[0].toLowerCase() : ''}` })); }
+  return out;
+}
+function readCard(q) {
+  const sel = (i, key, opts, ph) => {
+    const el = h('select', { id: `rd-${key}-${i}`, 'aria-label': ph }, h('option', { value: '', text: ph }), opts.map(([v, t]) => h('option', { value: v, text: t })));
+    el.value = state.read[i][key];
+    if (key === 'why') el.disabled = state.read[i].pat !== 'narrow';
+    el.addEventListener('change', () => { state.read[i][key] = el.value; if (key === 'pat' && el.value !== 'narrow') state.read[i].why = ''; persist(); if (key === 'pat') { const w = $('#rd-why-' + i); if (w) { w.disabled = el.value !== 'narrow'; if (el.value !== 'narrow') w.value = ''; } } redrawFlow(); });
+    return el;
+  };
+  const inp = (i, key, label) => numInput(`rd-${key}-${i}`, state.read[i][key], (v) => { state.read[i][key] = v; persist(); redrawFlow(); }, label);
+  return h('section', { class: 'card' }, h('h3', { text: 'Прочитайте диаграмму по периодам' }),
+    h('p', { class: 'lead', text: 'Разбейте 20 дней на четыре отрезка по пять дней. Для каждого посчитайте, на сколько поднялась каждая линия, и определите, что происходит с полосой «в работе». Правила чтения — как на слайде разбора.' }),
+    h('div', { class: 'tscroll' }, h('table', { class: 'data' },
+      h('thead', {}, h('tr', {}, ['Читаем диаграмму', 'Что это значит'].map((t) => h('th', { text: t })))),
+      h('tbody', {}, [['Линии параллельны', 'Поток стабилен: сколько начинаем, столько заканчиваем'], ['Полоса расширяется', 'Начинаем больше, чем завершаем: где-то затор'], ['Верхняя линия круче', 'Набираем работу быстрее, чем отдаём'], ['Полоса сужается', 'Разгребаем очередь или перестали брать новое']].map(([a, b]) => h('tr', {}, h('td', { text: a }), h('td', { text: b })))))),
+    h('div', { class: 'tscroll' }, h('table', { class: 'data calc read' },
+      h('thead', {}, h('tr', {}, ['Дни', 'Начато за период', 'Завершено за период', 'В работе на конец', 'Что с полосой', 'Если сужается, то почему', 'Проверка'].map((t) => h('th', { text: t })))),
+      h('tbody', {}, PERIODS.map((p, i) => h('tr', {}, h('td', { class: 'mono', text: `${p.from + 1}–${p.to}` }),
+        h('td', {}, inp(i, 'ds', `Начато за дни ${p.from + 1}–${p.to}`)), h('td', {}, inp(i, 'df', `Завершено за дни ${p.from + 1}–${p.to}`)), h('td', {}, inp(i, 'wip', `В работе на ${p.to}-й день`)),
+        h('td', {}, sel(i, 'pat', PATTERNS.map(([v, t]) => [v, t.split(':')[0]]), 'выберите')), h('td', {}, sel(i, 'why', WHYS.map(([v, t]) => [v, t.split(':')[0]]), '—')),
+        h('td', { id: 'rd-' + i }, readCell(i, q))))))),
+    h('div', { id: 'q3-read' }, q ? q3Cell('read', q) : []),
+    state.checks3 && q && q.r.read === 'ok' ? h('p', { class: 'note', text: `Вывод: в последние пять дней полоса сужается не потому, что отдел стал работать быстрее, — завершили те же ${PERIODS[3].df} задачи, что и неделей раньше. Начата всего ${PERIODS[3].ds} задача, хотя по Приложению 4 только запросов продавцов приходит 8–10 в неделю. Сужение здесь не улучшение: новая работа либо не попадает на доску, либо ждёт где-то до неё.` }) : null);
+}
+function viewFlow() {
+  const q = state.checks3 ? q3Status() : null;
+  const cell = (k) => h('div', { id: 'q3-' + k }, q ? q3Cell(k, q) : []);
+  const cum = h('table', { class: 'data cum' },
+    h('thead', {}, h('tr', {}, h('th', { text: 'День' }), h('th', { text: 'Начато' }), h('th', { text: 'Завершено' }))),
+    h('tbody', {}, CUM.days.map((d, i) => h('tr', {}, h('td', { class: 'mono', text: d }),
+      ...['started', 'finished'].map((k) => h('td', {}, numInput(`cum-${k}-${i}`, state.cum[k][i], (v) => { state.cum[k][i] = v; persist(); redrawFlow(); }, `${k === 'started' ? 'Начато' : 'Завершено'} к дню ${d}`)))))));
+  const fld = (k, label, attrs) => h('div', { class: 'field' }, h('label', { class: 'lbl', for: 'q3i-' + k, text: label }), numInput('q3i-' + k, state.q3[k], (v) => { state.q3[k] = v; persist(); redrawFlow(); }, label, attrs), cell(k));
+  const causes = h('div', { class: 'radio-list' }, CAUSES.map(([v, t]) => {
+    const i = h('input', { type: 'radio', name: 'q3-cause', value: v, id: 'q3c-' + v }); i.checked = state.q3.cause === v;
+    i.addEventListener('change', () => { state.q3.cause = v; persist(); redrawFlow(); });
+    return h('label', { for: 'q3c-' + v }, i, h('span', { text: t }));
+  }));
+  const det = h('input', { type: 'checkbox', id: 'cfd-detail' }); det.checked = state.detail;
+  det.addEventListener('change', () => { state.detail = det.checked; persist(); redrawFlow(); });
+  const out = [
+    h('section', { class: 'card' }, h('h3', { text: 'Кумулятивная диаграмма потока' }),
+      h('p', { class: 'lead', text: 'Впишите накопительные итоги из Приложения 5: диаграмма строится по вашим значениям. Вертикальное расстояние между линиями — задачи в работе, горизонтальное — сколько примерно задача находится в системе.' }),
+      h('div', { class: 'cfd-grid' },
+        h('div', { class: 'tscroll' }, cum, cell('cum')),
+        h('div', { style: 'display:flex;flex-direction:column;gap:10px;min-width:0' },
+          h('div', { id: 'cfd' }, cfdChart()),
+          h('div', { class: 'legend' }, h('span', {}, h('i', { style: 'background:var(--c-wait)' }), 'начато'), h('span', {}, h('i', { style: 'background:var(--c-work)' }), 'завершено'),
+            h('span', {}, h('i', { class: 'gh', style: 'border-color:var(--signal);border-style:dashed;width:2px;border-radius:0' }), 'четверг, комитет')),
+          state.checks3 ? h('label', { class: 'help', for: 'cfd-detail', style: 'display:flex;gap:8px;align-items:center;cursor:pointer' }, det, 'Показать по дням (пунктир, посчитано по таблице задач)') : null))),
+    readCard(q),
+    h('section', { class: 'card' }, h('h3', { text: 'Найдите затор' }),
+      h('div', { class: 'grid2' },
+        fld('wip', 'Сколько задач в работе на 15-й день по диаграмме?'),
+        fld('share', 'Какая доля времени цикла завершённых задач — ожидание согласования, %?')),
+      h('div', { class: 'grid2' },
+        fld('active', 'Сколько дней в среднем специалисты работают над запросом продавца, если вычесть ожидание?'),
+        fld('sla', `Сколько из ${REF.clientDone} завершённых запросов продавцов уложились в 5 рабочих дней?`)),
+      h('span', { class: 'lbl', text: 'Где задачи накапливаются и почему?' }), causes, cell('cause')),
+    h('section', { class: 'card' },
+      h('div', { class: 'actions' },
+        h('button', { class: 'btn btn-primary', type: 'button', text: 'Проверить', onclick: () => { state.checks3++; persist(); render(); } }),
+        h('button', { class: 'btn', type: 'button', text: state.shown3 ? 'Ответ показан' : 'Показать ответ', disabled: state.shown3 || state.checks3 < 2, onclick: () => { state.shown3 = true; persist(); render(); } }),
+        state.checks3 > 0 ? h('button', { class: 'btn', type: 'button', text: 'Дальше: запрос к ИИ', onclick: () => go(3) }) : null),
+      h('p', { class: 'status', id: 'flow-status', text: flowLine(q) }))
+  ];
+  if (state.checks3) {
+    out.push(h('section', { class: 'card' }, h('h3', { text: 'Задачи на доске: работа и ожидание' }),
+      h('p', { class: 'lead', text: 'Каждая строка — задача от дня начала до дня завершения. Штриховка — дни ожидания решения комитета. В кейсе не сказано, когда именно задача ждала, поэтому ожидание условно показано в начале.' }),
+      timeline({ sla: true }), tlLegend(true)));
+    const g = state.guess, cause = CAUSES.find(([v]) => v === g.cause);
+    out.push(h('section', { class: 'card' }, h('h3', { text: 'Ваш прогноз и данные' }),
+      h('div', { class: 'compare' },
+        h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Прогноз среднего времени' }), h('b', { text: g.avg ? `${g.avg} дн.` : '—' })),
+        h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Среднее время цикла по данным' }), h('b', { text: `${fmt1(REF.avg)} дн.` })),
+        h('div', { class: 'stat hot' }, h('span', { class: 'lbl', text: 'Из них ожидание комитета' }), h('b', { text: `${Math.round(REF.waitShare)}%` }))),
+      h('p', { class: 'lead', text: cause ? `Ваша версия причины: «${cause[1]}». ${g.cause === 'committee' ? 'Данные её подтверждают.' : 'Подтверждают ли её данные? Посмотрите на штриховку в каждой строке.'}` : 'Прогноз причины не был выбран.' })));
+  }
+  out.push(hintCard([['read', 'Чтение диаграммы'], ['flow', 'Затор']]));
+  return out;
+}
+HINTS.read = ['Прирост за период — это разница накопительных итогов на конец и на начало пяти дней.', 'Если «начато» выросло сильнее, чем «завершено», полоса расширяется; если слабее — сужается.', 'Когда полоса сужается, сравните оба прироста с предыдущим периодом: выросло «завершено» или упало «начато»?'];
+HINTS.flow = ['Затор — место, где задачи стоят, а не выполняются. В таблице есть столбец, который показывает именно это.', 'У запроса продавца №9 время цикла 9 дней, из них 6 дней ожидания. Сколько дней он был в работе?', 'Комитет собирается раз в неделю. Задача, пришедшая после четверга, ждёт следующего четверга.'];
+
+/* ---- Step 4: prompt ---- */
+const PARTS = [
+  { k: 'role', n: 'Роль', help: 'Кем должен быть ИИ, чтобы ответить как специалист.', rows: 2 },
+  { k: 'ctx', n: 'Контекст', help: 'Данные доски и правила расчёта. Без данных ИИ выдумает свои.', rows: 7 },
+  { k: 'task', n: 'Задача', help: 'Что именно сделать. Перечислите все пункты задания.', rows: 5 },
+  { k: 'fmt', n: 'Формат результата', help: 'В каком виде нужен ответ и какого объёма.', rows: 2 },
+  { k: 'lim', n: 'Ограничения', help: 'Чего делать нельзя и как ИИ должен себя проверить.', rows: 3 }
+];
+function viewPrompt() {
+  const c = promptChecks();
+  const parts = PARTS.map((p) => {
+    const res = c[p.k];
+    const ta = h('textarea', { id: 'f-' + p.k, rows: p.rows }); ta.value = state.parts[p.k];
+    ta.addEventListener('input', () => { state.parts[p.k] = ta.value; persist(); refreshPrompt(); });
+    return h('div', { class: 'part ' + res.st, id: 'part-' + p.k },
+      h('div', { class: 'field-top' }, h('label', { class: 'part-name', for: 'f-' + p.k, text: p.n }), h('span', { class: 'help', text: p.help })),
+      ta,
+      p.k === 'ctx' ? h('div', { class: 'actions' }, h('button', { class: 'btn btn-small', type: 'button', text: 'Вставить данные кейса', onclick: () => { state.parts.ctx = CASE_TEXT; persist(); render(); } })) : null,
+      h('div', { class: 'checks' }, res.list.map((x) => h('span', { class: 'chk ' + (x.on ? 'on' : 'off'), text: x.k }))));
+  });
+  const prev = h('pre', { class: 'preview', id: 'preview' }); fillPreview(prev);
+  return [
+    h('section', { class: 'card' },
+      h('h3', { text: 'Соберите запрос по пяти частям' }),
+      h('p', { class: 'lead', text: 'ИИ уверенно считает и так же уверенно ошибается в арифметике и формулах. Хороший запрос даёт ему все правила расчёта и просит показать вычисления, чтобы их можно было проверить.' }),
+      h('div', { class: 'actions' },
+        h('button', { class: 'btn btn-small', type: 'button', text: 'Подставить шаблон из библиотеки', onclick: () => { state.parts = { ...TEMPLATE }; persist(); render(); } }),
+        h('button', { class: 'btn btn-small', type: 'button', text: 'Очистить', onclick: () => { state.parts = { role: '', ctx: '', task: '', fmt: '', lim: '' }; persist(); render(); } }))),
+    h('div', { class: 'rctfo' }, parts),
+    h('section', { class: 'card', id: 'safety-card' }),
+    h('section', { class: 'card' },
+      h('h3', { text: 'Отправка' }),
+      h('div', { class: 'actions' },
+        h('button', { class: 'btn btn-primary', id: 'send', type: 'button', text: 'Отправить в Claude', onclick: sendPrompt, disabled: !state.sample || state.running }),
+        h('button', { class: 'btn', id: 'stop', type: 'button', text: 'Остановить', hidden: !state.running, onclick: () => state.ctl && state.ctl.abort() }),
+        h('button', { class: 'btn', type: 'button', text: 'Скопировать запрос', onclick: (e) => copyText(compiled() + SERVICE, e.currentTarget) }),
+        h('button', { class: 'btn', type: 'button', text: 'Вставить ответ другого ИИ', onclick: () => { state.pasteOpen = !state.pasteOpen; render(); } }),
+        h('button', { class: 'btn', type: 'button', text: 'Учебный ответ с ошибками', onclick: useFlawed })),
+      h('div', { class: 'status', id: 'status', role: 'status', 'aria-live': 'polite' }),
+      state.pasteOpen ? pasteBox() : null,
+      h('details', {}, h('summary', { text: 'Что уйдёт в ИИ: ваш запрос и служебная часть тренажёра' }), prev))
+  ];
+}
+function pasteBox() {
+  const ta = h('textarea', { id: 'paste', rows: 6, placeholder: 'Скопируйте запрос кнопкой выше, отправьте его в корпоративный ИИ и вставьте сюда ответ в формате JSON' });
+  return h('div', { class: 'field' },
+    h('label', { class: 'lbl', for: 'paste', text: 'Ответ другого ИИ' }), ta,
+    h('div', { class: 'actions' }, h('button', { class: 'btn btn-small', type: 'button', text: 'Разобрать ответ', onclick: () => {
+      const parsed = parseJSON(ta.value);
+      if (!parsed) { setStatus('Не удалось найти JSON в ответе. Проверьте, что вставлен весь ответ целиком.', 'err'); return; }
+      accept(parsed, ta.value, 'вставлен');
+    } })));
+}
+function fillPreview(el) { el.replaceChildren(compiled(), h('span', { class: 'svc', text: SERVICE })); }
+function refreshPrompt() {
+  const c = promptChecks();
+  PARTS.forEach((p) => {
+    const box = $('#part-' + p.k); if (!box) return;
+    box.className = 'part ' + c[p.k].st;
+    box.querySelector('.checks').replaceChildren(...c[p.k].list.map((x) => h('span', { class: 'chk ' + (x.on ? 'on' : 'off'), text: x.k })));
+  });
+  const prev = $('#preview'); if (prev) fillPreview(prev);
+  renderSafety(c); renderRail(); renderSteps();
+}
+function renderSafety(c) {
+  const box = $('#safety-card'); if (!box) return;
+  const list = [];
+  if (c.holes) list.push(h('span', { class: 'chk alert', text: `Незаполненных полей в скобках: ${c.holes}` }));
+  c.safety.forEach((x) => list.push(h('span', { class: 'chk alert', text: x })));
+  if (!list.length) list.push(h('span', { class: 'chk on', text: 'Персональных и служебных данных не найдено' }));
+  box.replaceChildren(h('h3', { text: 'Перед отправкой' }), h('div', { class: 'checks' }, list),
+    h('p', { class: 'lead', text: 'Кейс вымышленный, поэтому его можно отправлять в ИИ. Выгрузку с рабочей доски сначала обезличьте: имена специалистов, названия магазинов продавцов, номера договоров и адреса пунктов выдачи.' }));
+}
+function setStatus(t, cls) { const el = $('#status'); if (el) { el.textContent = t; el.className = 'status' + (cls ? ' ' + cls : ''); } }
+function errorCopy(e) {
+  const c = e && e.code;
+  if (c === 'cancelled') return 'Остановлено.';
+  if (c === 'not_granted' || c === 'sampling_disabled' || c === 'not_declared' || c === 'capability_disabled') return 'Claude недоступен на этой странице. Скопируйте запрос в свой ИИ или возьмите учебный ответ.';
+  if (c === 'rate_limited') return 'Слишком много запросов. Подождите минуту и отправьте снова.';
+  if (c === 'prompt_too_large') return 'Запрос слишком длинный. Сократите контекст.';
+  return 'Ответ не удалось получить или разобрать. Отправьте ещё раз.';
+}
+function parseJSON(text) {
+  const t = String(text || ''); const a = t.indexOf('{'), b = t.lastIndexOf('}');
+  if (a < 0 || b <= a) return null;
+  try { return JSON.parse(t.slice(a, b + 1)); } catch (e) { return null; }
+}
+async function sendPrompt() {
+  if (!state.sample || state.running) return;
+  if (Object.values(state.parts).join('').trim().length < 40) { setStatus('Запрос почти пустой. Заполните хотя бы роль, контекст и задачу.', 'err'); return; }
+  await callClaude(compiled() + SERVICE, 'Claude', promptChecks().score);
+}
+async function callClaude(input, source, score) {
+  state.ctl = new AbortController(); state.running = true;
+  const sendB = $('#send'), stopB = $('#stop'); if (sendB) sendB.disabled = true; if (stopB) stopB.hidden = false;
+  setStatus('ИИ думает. Обычно это 20–60 секунд.');
+  try {
+    const { text } = await state.sample(input, { signal: state.ctl.signal, onText: ({ text }) => setStatus(`ИИ пишет ответ… ${text.length} зн.`) });
+    const parsed = parseJSON(text); if (!parsed) throw { code: 'invalid_json' };
+    accept(parsed, text, source, score);
+  } catch (e) { setStatus(errorCopy(e), 'err'); }
+  finally { state.running = false; state.ctl = null; const s2 = $('#send'), st2 = $('#stop'); if (s2) s2.disabled = !state.sample; if (st2) st2.hidden = true; }
+}
+function accept(parsed, raw, source, score) {
+  state.answer = normAnswer(parsed); state.raw = typeof raw === 'string' ? raw : JSON.stringify(parsed); state.source = source;
+  state.lastPrompt = compiled(); state.marks = {}; state.markRevealed = false; state.followup = '';
+  const errors = verify(state.answer).filter((r) => r.st === 'bad').length;
+  state.attempts.push({ n: state.attempts.length + 1, source, score: score == null ? promptChecks().score : score, errors });
+  persist(); go(4);
+}
+function useFlawed() { accept(JSON.parse(JSON.stringify(FLAWED)), JSON.stringify(FLAWED), 'учебный', promptChecks().score); }
+async function copyText(t, btn) {
+  try { await navigator.clipboard.writeText(t); if (btn) { const o = btn.textContent; btn.textContent = 'Скопировано'; setTimeout(() => (btn.textContent = o), 1600); } }
+  catch (e) { setStatus('Браузер не дал скопировать. Откройте блок с текстом и выделите его вручную.', 'err'); }
+}
+
+/* ---- Step 5: find the AI's errors ---- */
+function viewCheck() {
+  const a = state.answer, rows = verify(a), rev = state.markRevealed;
+  const isErr = (r) => r.st === 'bad' || r.st === 'warn';
+  const allMarked = rows.every((r) => state.marks[r.id]);
+  const found = rows.filter((r) => isErr(r) && state.marks[r.id] === 'err').length, totalErr = rows.filter(isErr).length;
+  const falseAlarm = rows.filter((r) => !isErr(r) && state.marks[r.id] === 'err').length;
+  const mark = (r) => {
+    const mk = (v, t) => { const i = h('input', { type: 'radio', name: 'mk-' + r.id, value: v, disabled: rev }); i.checked = state.marks[r.id] === v;
+      i.addEventListener('change', () => { state.marks[r.id] = v; persist(); const b = $('#mark-btn'); if (b) b.disabled = !rows.every((x) => state.marks[x.id]); }); return h('label', {}, i, t); };
+    return h('div', { class: 'pick' }, mk('ok', 'верно'), mk('err', 'ошибка'));
+  };
+  const verdict = (r) => { const m = state.marks[r.id]; if (isErr(r)) return m === 'err' ? h('span', { class: 'pill ok', text: 'нашли' }) : h('span', { class: 'pill bad', text: 'пропустили' }); return m === 'err' ? h('span', { class: 'pill warn', text: 'ложная тревога' }) : h('span', { class: 'pill ok', text: 'верно' }); };
+  const out = [];
+  out.push(h('section', { class: 'card' },
+    h('div', { class: 'field-top' }, h('h3', { text: 'Ответ ИИ' }), h('span', { class: 'pill info', text: 'Источник: ' + state.source })),
+    state.source === 'учебный' ? h('p', { class: 'lead', text: 'Это учебный ответ: в нём спрятаны ошибки, которые часто делает ИИ при расчёте метрик потока.' }) : null,
+    h('div', { class: 'claims' },
+      claim('Самая тревожная задача по мнению ИИ', a.worry.task ? `№${a.worry.task}. ${a.worry.why}` : 'не названа'),
+      claim('Допущения ИИ', a.assumptions.length ? a.assumptions.join('\n') : 'не названы. Попросите ИИ перечислить допущения: так проще найти выдуманное.'))));
+  out.push(h('section', { class: 'card' },
+    h('h3', { text: 'Найдите ошибки ИИ' }),
+    h('p', { class: 'lead', text: 'Сравните каждое утверждение со своим расчётом с шагов 2 и 3. Отметьте «верно» или «ошибка» в каждой строке, затем сверьте свою проверку.' }),
+    h('div', { class: 'tscroll' }, h('table', { class: 'data vtable' },
+      h('thead', {}, h('tr', {}, h('th', { text: 'Что' }), h('th', { text: 'ИИ утверждает' }), h('th', { text: 'Ваша оценка' }), rev ? h('th', { text: 'По данным' }) : null, rev ? h('th', { text: 'Итог' }) : null)),
+      h('tbody', {}, rows.map((r) => h('tr', {}, h('td', { text: r.area }), h('td', { class: 'mono', text: r.ai }), h('td', {}, mark(r)),
+        rev ? h('td', {}, h('span', { class: 'mono', text: r.fact }), r.hint && isErr(r) ? h('div', { class: 'rowhint', text: r.hint }) : null) : null, rev ? h('td', {}, verdict(r)) : null))))),
+    rev ? h('div', { class: 'bigline' }, h('span', { class: 'bignum ' + (found === totalErr && !falseAlarm ? 'ok' : 'bad'), text: `Найдено ${found} из ${totalErr}` }),
+      h('span', { class: 'lead', text: falseAlarm ? `Ложных тревог: ${falseAlarm}. Верное утверждение тоже надо уметь подтвердить.` : 'Ложных тревог нет.' })) : null,
+    h('div', { class: 'actions' },
+      rev ? h('button', { class: 'btn', type: 'button', text: 'Проверить заново', onclick: () => { state.marks = {}; state.markRevealed = false; persist(); render(); } })
+        : h('button', { class: 'btn btn-primary', id: 'mark-btn', type: 'button', text: 'Сверить мою проверку', disabled: !allMarked, onclick: () => { state.markRevealed = true; persist(); render(); } }))));
+  if (rev) out.push(followupCard(rows));
+  out.push(h('div', { class: 'actions' }, h('button', { class: 'btn btn-primary', type: 'button', text: 'К выводам и изменениям', onclick: () => go(5) })));
+  return out;
+}
+const claim = (k, v) => h('div', { class: 'claim' }, h('span', { class: 'lbl', text: k }), h('p', { style: 'white-space:pre-wrap', text: v }));
+function followupCard(rows) {
+  const issues = rows.filter((r) => r.st === 'bad');
+  if (!state.followup) state.followup = issues.length ? 'Проверь свой ответ. Я сверил его с данными и нашёл расхождения:\n' + issues.map((r) => `- ${r.area}: у тебя «${r.ai}», а по моему расчёту ${r.fact}.`).join('\n') + '\nПересчитай по формулам из кейса, покажи вычисления по каждой задаче и исправь ответ. Ничего не добавляй сверх данных кейса.' : '';
+  const ta = h('textarea', { id: 'followup', rows: 7 }); ta.value = state.followup;
+  ta.addEventListener('input', () => { state.followup = ta.value; });
+  const canSend = state.sample && !state.running && state.source !== 'учебный' && state.source !== 'вставлен' && state.raw;
+  return h('section', { class: 'card' },
+    h('h3', { text: 'Уточняющий запрос' }),
+    h('p', { class: 'lead', text: 'С ИИ работают в несколько шагов. Оставьте только то, в чём вы уверены после своей проверки, и отправьте в тот же диалог.' }),
+    ta,
+    h('div', { class: 'actions' },
+      h('button', { class: 'btn btn-primary', type: 'button', text: 'Отправить уточнение', disabled: !canSend, onclick: sendFollowup }),
+      h('button', { class: 'btn', type: 'button', text: 'Скопировать уточнение', onclick: (e) => copyText(state.followup, e.currentTarget) }),
+      state.source === 'учебный' ? h('span', { class: 'help', text: 'Для учебного ответа уточнение не отправляется: соберите свой запрос на шаге 4.' }) : null),
+    h('div', { class: 'status', id: 'status', role: 'status', 'aria-live': 'polite' }));
+}
+async function sendFollowup() {
+  if (!state.sample || state.running || !state.followup.trim()) return;
+  state.ctl = new AbortController(); state.running = true; setStatus('ИИ пересчитывает…');
+  try {
+    const turns = [{ role: 'user', content: (state.lastPrompt || compiled()) + SERVICE }, { role: 'assistant', content: state.raw }, { role: 'user', content: state.followup + SERVICE }];
+    const { text } = await state.sample(turns, { signal: state.ctl.signal, cache: false, onText: ({ text }) => setStatus(`ИИ пишет ответ… ${text.length} зн.`) });
+    const parsed = parseJSON(text); if (!parsed) throw { code: 'invalid_json' };
+    state.followup = ''; state.running = false;
+    accept(parsed, text, 'Claude, уточнение');
+  } catch (e) { setStatus(errorCopy(e), 'err'); }
+  finally { state.running = false; state.ctl = null; }
+}
+
+/* ---- Step 6: conclusions and changes ---- */
+const SCN = [
+  ['now', 'Как сейчас: комитет раз в неделю', (t) => t.w],
+  ['twice', 'Комитет дважды в неделю', (t) => Math.ceil(t.w / 2)],
+  ['standard', 'Типовые запросы продавцов одобрены заранее', (t) => (t.type === 'client' ? 0 : t.w)],
+  ['hire', 'Добавить двух специалистов, комитет как сейчас', (t) => t.w]
+];
+function scnResult(key) {
+  const f = SCN.find((x) => x[0] === key)[2];
+  const cyc = (t) => cycleOf(t) - t.w + f(t);
+  const cl = DONE.filter((t) => t.type === 'client');
+  return { avg: DONE.reduce((a, t) => a + cyc(t), 0) / DONE.length, clAvg: cl.reduce((a, t) => a + cyc(t), 0) / cl.length, sla: cl.filter((t) => cyc(t) <= SLA).length, cyc, wait: f };
+}
+function sandbox() {
+  const r = scnResult(state.scn), base = scnResult('now');
+  const radios = h('div', { class: 'scn' }, SCN.map(([k, t]) => { const i = h('input', { type: 'radio', name: 'scn', id: 'scn-' + k }); i.checked = state.scn === k; i.addEventListener('change', () => { state.scn = k; const box = $('#sandbox'); if (box) box.replaceWith(sandbox()); }); return h('label', { for: 'scn-' + k }, i, t); }));
+  const clients = DONE.filter((t) => t.type === 'client');
+  return h('section', { class: 'card', id: 'sandbox' },
+    h('h3', { text: 'Песочница: что будет, если…' }),
+    h('p', { class: 'lead', text: 'Модель простая: время работы специалистов над задачей остаётся прежним, меняется только ожидание согласования. При комитете дважды в неделю ожидание условно сокращается вдвое.' }),
+    radios,
+    h('div', { class: 'compare' },
+      h('div', { class: 'stat' + (r.avg < base.avg ? '' : ' hot') }, h('span', { class: 'lbl', text: 'Среднее время цикла' }), h('b', { text: `${fmt1(r.avg)} дн.` })),
+      h('div', { class: 'stat' + (r.clAvg <= SLA ? '' : ' hot') }, h('span', { class: 'lbl', text: 'Запрос продавца в среднем' }), h('b', { text: `${fmt1(r.clAvg)} дн.` })),
+      h('div', { class: 'stat' + (r.sla === clients.length ? '' : ' hot') }, h('span', { class: 'lbl', text: 'Уложились в 5 дней' }), h('b', { text: `${r.sla} из ${clients.length}` }))),
+    state.scn === 'hire' ? h('p', { class: 'note', text: 'Время цикла не изменилось: специалисты и так работают над запросом 3 дня, остальное время задача ждёт комитет. Новые люди ждали бы того же четверга. При этом расход на найм вырос бы.' }) : null,
+    timeline({ tasks: clients, wait: r.wait, cycle: r.cyc, sla: true }), tlLegend(true));
+}
+function decRules() {
+  const d = state.dec, out = [];
+  const opts = d.opts.filter((o) => o.name.trim());
+  if (!d.p1 && !d.p2 && !d.p3) return [{ st: 'info', t: 'Начните с первой фразы', b: 'Какой факт о потоке вы покажете первым? Опирайтесь на свой расчёт, а не на черновик ИИ.' }];
+  if (d.p1 && !/\d/.test(d.p1)) out.push({ st: 'warn', t: 'Нет числа', b: 'В первой фразе нет ни одного числа. Правлению нужен измеримый факт.', q: 'Какое число из вашего расчёта лучше всего показывает проблему?' });
+  if (d.p2 && !/комитет|согласова|ожидан|ждут|ждёт/i.test(d.p2)) out.push({ st: 'bad', t: 'Причина не связана с данными', b: 'По данным больше половины времени цикла — ожидание согласования. Вторая фраза его не упоминает.', q: 'Сколько дней запрос продавца в работе и сколько ждёт?' });
+  if (d.p3 && !/решени|просим|утверд|соглас|одобр|поручить|разрешить/i.test(d.p3)) out.push({ st: 'warn', t: 'Нет запроса решения', b: 'Третья фраза должна просить конкретное решение: кто и что меняет.' });
+  if (opts.length < 2) out.push({ st: 'warn', t: 'Меньше двух изменений', b: 'Предложите хотя бы два изменения и сравните их.' });
+  const noCost = opts.filter((o) => !o.cost.trim());
+  if (noCost.length) out.push({ st: 'bad', t: 'Изменение без цены', b: `Цена не названа: ${noCost.map((o) => o.name).join('; ')}.`, q: 'Чем платим: риском, временем руководителей, контролем, деньгами?' });
+  const noEffect = opts.filter((o) => !o.effect.trim());
+  if (noEffect.length) out.push({ st: 'warn', t: 'Эффект не измерим', b: `Не указан ожидаемый эффект: ${noEffect.map((o) => o.name).join('; ')}. Проверьте его в песочнице.` });
+  if (opts.some((o) => /найм|нанять|набрать|ещё (инженер|специалист)|дополнительн\S* (инженер|специалист)|расшир\S* штат/i.test(o.name))) out.push({ st: 'warn', t: 'Найм не сокращает ожидание', b: 'Запрос продавца в работе 3 дня. Новые специалисты будут ждать того же комитета.', q: 'Что покажет песочница для варианта с наймом?' });
+  if (opts.some((o) => /лимит|WIP/i.test(o.name) && !/авари|сбо|срочн|кроме/i.test(o.name + o.cost))) out.push({ st: 'warn', t: 'Лимит и сбои', b: 'Сбои нельзя ставить в очередь: реагирование не позже 30 минут. Уточните, что срочный класс идёт вне лимита.' });
+  if (!out.length) out.push({ st: 'ok', t: 'Выводы готовы к защите', b: 'Есть число, причина из данных, изменения с эффектом и ценой и запрос решения.', q: 'С 18-й недели в отделе останется 8 специалистов из 12. Что станет с пропускной способностью, если ожидание не убрать?' });
+  return out;
+}
+function viewDecide() {
+  const d = state.dec;
+  const fld = (k, label, ph, rows = 2) => { const ta = h('textarea', { id: 'd-' + k, rows, placeholder: ph }); ta.value = d[k]; ta.addEventListener('input', () => { d[k] = ta.value; persist(); refreshDecide(); }); return h('div', { class: 'field' }, h('label', { class: 'lbl', for: 'd-' + k, text: label }), ta); };
+  const opts = h('div', { class: 'opts' }, d.opts.map((o, i) => {
+    const mk = (key, ph) => { const el = h('input', { type: 'text', id: `o-${key}-${i}`, placeholder: ph }); el.value = o[key] || ''; el.addEventListener('input', () => { o[key] = el.value; persist(); refreshDecide(); }); return el; };
+    return h('div', { class: 'optrow3' }, mk('name', 'Что меняем'), mk('effect', 'Ожидаемый эффект в числах'), mk('cost', 'Цена изменения'));
+  }));
+  return [
+    h('section', { class: 'card' },
+      h('h3', { text: 'Выводы по метрикам потока' }),
+      h('p', { class: 'lead', text: 'Это часть итоговой защиты: выводы для Айгерим и правления. Напишите сами три фразы. Черновик ИИ откроется для сравнения, когда все три будут написаны.' }),
+      fld('p1', '1. Что показывают данные', 'Например: запрос продавца в среднем проходит за … дней при сроке 5'),
+      fld('p2', '2. Почему так происходит', ''),
+      fld('p3', '3. Что меняем и какое решение нужно', '')),
+    h('section', { class: 'card' },
+      h('h3', { text: 'Что изменить в системе работы отдела' }), opts,
+      h('div', { class: 'actions' }, h('button', { class: 'btn btn-small', type: 'button', text: 'Добавить изменение', disabled: d.opts.length >= 4, onclick: () => { d.opts.push({ name: '', effect: '', cost: '' }); persist(); render(); } }))),
+    sandbox(),
+    aiCompare(),
+    h('section', { class: 'card', id: 'dec-rules' }),
+    h('section', { class: 'card' },
+      h('h3', { text: 'Разбор коуча' }),
+      h('p', { class: 'lead', text: 'Коуч не даёт готового ответа. Он задаёт вопросы, которые зададут на защите.' }),
+      h('div', { class: 'actions' },
+        h('button', { class: 'btn btn-primary', type: 'button', id: 'reflect-btn', text: state.reflecting ? 'Коуч думает…' : 'Получить разбор', disabled: !state.sample || state.reflecting, onclick: reflect }),
+        h('button', { class: 'btn', type: 'button', text: 'Скопировать отчёт', onclick: (e) => copyText(report(), e.currentTarget) }),
+        state.downloads ? h('button', { class: 'btn', type: 'button', text: 'Скачать отчёт', onclick: saveReport }) : null),
+      h('div', { class: 'reflect', id: 'reflect-out', hidden: !state.reflect && !state.reflecting, text: state.reflect }),
+      !state.sample ? h('p', { class: 'lead', text: 'Разбор коуча доступен, когда страница открыта в Claude. Проверки выше работают всегда.' }) : null,
+      h('div', { class: 'status', id: 'status', role: 'status', 'aria-live': 'polite' }))
+  ];
+}
+function aiCompare() {
+  const d = state.dec, a = state.answer, ready = d.p1.trim() && d.p2.trim() && d.p3.trim();
+  if (!a) return null;
+  const kids = [h('div', { class: 'field-top' }, h('h3', { text: 'Сравнить с черновиком ИИ' }),
+    h('button', { class: 'btn btn-small', type: 'button', id: 'cmp-btn', text: state.showAi ? 'Скрыть' : 'Показать', disabled: !ready, onclick: () => { state.showAi = !state.showAi; render(); } }))];
+  if (!ready) kids.push(h('p', { class: 'lead', text: 'Откроется, когда вы напишете все три фразы.' }));
+  if (ready && state.showAi) kids.push(h('div', { class: 'claims' },
+    claim('ИИ: затор', a.bottleneck || 'нет'), claim('ИИ: предложения', a.proposals.map((o) => `${o.change}. Эффект: ${o.effect || 'не указан'}. Цена: ${o.cost || 'не названа'}`).join('\n') || 'нет')),
+    h('p', { class: 'lead', text: 'Что ИИ увидел, а вы нет? Где ИИ ошибся, а вы нет? Переносите в свой ответ только то, что выдерживает проверку расчётом.' }));
+  return h('section', { class: 'card', id: 'ai-cmp' }, kids);
+}
+function refreshDecide() {
+  const cb = $('#cmp-btn'); if (cb) { const d = state.dec; const ready = d.p1.trim() && d.p2.trim() && d.p3.trim(); if (!!ready === cb.disabled) { const box = $('#ai-cmp'); if (box) box.replaceWith(aiCompare()); } }
+  const box = $('#dec-rules'); if (!box) return;
+  box.replaceChildren(h('h3', { text: 'Проверка выводов' }), ...decRules().map((o) => h('div', { class: 'tip', style: 'padding:12px 14px;border-radius:10px;display:flex;flex-direction:column;gap:6px' },
+    h('div', { style: 'display:flex;gap:8px;align-items:baseline' }, h('span', { class: 'pill ' + o.st, text: { ok: 'готово', warn: 'проверить', bad: 'важно', info: 'совет' }[o.st] }), h('b', { text: o.t })),
+    h('p', { text: o.b }), o.q ? h('p', { class: 'q', text: o.q }) : null)));
+  renderRail(); renderSteps();
+}
+async function reflect() {
+  if (!state.sample || state.reflecting) return;
+  const d = state.dec;
+  const prompt = `Ты — Agile-коуч и наставник по Канбану. Ты работаешь вопросами и не даёшь готовых решений.
+Кейс (вымышленный): отдел операций маркетплейса, 12 специалистов, Канбан. За 4 недели (20 рабочих дней) завершено 12 задач, среднее время цикла ${fmt1(REF.avg)} дня, пропускная способность ${REF.tp.join(', ')} задачи в неделю. ${Math.round(REF.waitShare)}% времени цикла завершённых задач — ожидание релизного комитета, который собирается раз в неделю по четвергам. Запрос продавца в работе ровно 3 дня, в срок 5 рабочих дней уложились ${REF.slaOk} из ${REF.clientDone}. Незавершённые: улучшение 13 дней, работы по запуску «Доставки еды» 11, акция / каталог 8, запрос продавца 5 (срок истекает). С 18-й недели 4 специалиста уходят в команду запуска «Доставки еды».
+Выводы участника:
+1) ${d.p1 || '—'}
+2) ${d.p2 || '—'}
+3) ${d.p3 || '—'}
+Предложенные изменения: ${d.opts.filter((o) => o.name).map((o) => `${o.name} (эффект: ${o.effect || 'не указан'}; цена: ${o.cost || 'не названа'})`).join('; ') || '—'}
+
+Задача: до 150 слов, связным текстом без таблиц и списков: 1) чем выводы сильны; 2) главный риск; 3) два вопроса, которые зададут на защите; 4) один шаг, чтобы усилить выводы за 5 минут. Критерии сильного ответа: опора на числа, причина из данных (ожидание согласования), у каждого изменения названы эффект и цена, сбои не попадают под общий лимит, явный запрос решения. Не пиши готовый ответ за участника. Пиши на русском.`;
+  state.reflecting = true; state.reflect = ''; const btn = $('#reflect-btn'); if (btn) { btn.disabled = true; btn.textContent = 'Коуч думает…'; }
+  const out = $('#reflect-out'); if (out) { out.hidden = false; out.textContent = 'Коуч думает…'; }
+  let err = '';
+  try { await state.sample(prompt, { cache: false, onText: ({ text }) => { state.reflect = text; const o = $('#reflect-out'); if (o) o.textContent = text; } }); }
+  catch (e) { if (e && e.text) state.reflect = e.text; err = errorCopy(e); }
+  finally { state.reflecting = false; persist(); render(); if (err) setStatus(err, 'err'); }
+}
+function report() {
+  const d = state.dec, a = state.answer, L = [];
+  L.push('# Практикумы 5 и 6: анализ потока работ отдела операций маркетплейса (кейс «Витрина»)', '');
+  L.push('## Мой расчёт', '', '| № | Тип | Что считаем | Мой ответ |', '|---|---|---|---|');
+  TASKS.forEach((t) => L.push(`| ${t.n} | ${TYPES[t.type]} | ${t.e ? 'время цикла' : 'возраст'} | ${state.calc[t.n] || '—'} |`));
+  L.push('', `Среднее время цикла: ${state.avg || '—'}. Пропускная способность по неделям 6–9: ${state.tp.map((x) => x || '—').join(', ')}.`);
+  L.push(`Самая тревожная задача: ${state.worry.task ? '№' + state.worry.task : '—'}. ${state.worry.why || ''}`, '');
+  L.push('## Чтение диаграммы', '', '| Дни | Начато | Завершено | В работе | Полоса |', '|---|---|---|---|---|', ...PERIODS.map((p, i) => { const v = state.read[i]; return `| ${p.from + 1}–${p.to} | ${v.ds || '—'} | ${v.df || '—'} | ${v.wip || '—'} | ${(PATTERNS.find((z) => z[0] === v.pat) || ['', '—'])[1].split(':')[0]}${v.why ? ', ' + WHYS.find((z) => z[0] === v.why)[1].split(':')[0].toLowerCase() : ''} |`; }), '');
+  L.push('## Затор', '', `В работе на 15-й день: ${state.q3.wip || '—'}. Доля ожидания: ${state.q3.share || '—'}%. Работа над запросом продавца без ожидания: ${state.q3.active || '—'} дн. В срок уложились: ${state.q3.sla || '—'} из ${REF.clientDone}.`, '');
+  L.push('## Запрос к ИИ', '', '```', state.lastPrompt || compiled(), '```', '', `Полнота запроса по структуре: ${promptChecks().score}%. Попыток: ${state.attempts.length}.`, '');
+  if (a) { L.push('## Сверка ответа ИИ', '', '| Что | ИИ | По данным | Итог |', '|---|---|---|---|'); verify(a).forEach((r) => L.push(`| ${r.area} | ${r.ai.replace(/\|/g, '/')} | ${r.fact.replace(/\|/g, '/')} | ${r.st === 'ok' ? 'верно' : 'ошибка'} |`)); L.push(''); }
+  L.push('## Выводы', '', `1. ${d.p1 || '—'}`, `2. ${d.p2 || '—'}`, `3. ${d.p3 || '—'}`, '', 'Изменения:', ...d.opts.filter((o) => o.name).map((o) => `- ${o.name}. Эффект: ${o.effect || 'не указан'}. Цена: ${o.cost || 'не названа'}`), '');
+  if (state.reflect) L.push('## Разбор коуча', '', state.reflect, '');
+  return L.join('\n');
+}
+async function saveReport() {
+  try { await state.downloads.save({ filename: 'praktikum-5-6-metriki-potoka.md', data: report() }); }
+  catch (e) { if (e && e.code !== 'declined') setStatus('Файл не сохранён. Скопируйте отчёт кнопкой рядом.', 'err'); }
+}
+
+/* ---- Rail ---- */
+function renderRail() {
+  const c = promptChecks(), g = goals(), kids = [];
+  kids.push(h('div', { class: 'rail-sec' }, h('h3', { text: 'Чему учит практикум' }), ...g.map((x) => h('div', { class: 'goal' + (x.on ? ' on' : '') }, h('span', { class: 'dot' }), h('span', { text: x.k })))));
+  kids.push(h('div', { class: 'rail-sec' }, h('h4', { text: `Запрос по структуре · ${c.score}%` }),
+    h('div', { class: 'meter' }, ['role', 'ctx', 'task', 'fmt', 'lim'].map((k) => h('i', { class: c[k].st, title: PARTS.find((p) => p.k === k).n }))),
+    h('div', { class: 'legend' }, 'Роль · Контекст · Задача · Формат · Ограничения')));
+  const tip = railTip(c);
+  if (tip) kids.push(h('div', { class: 'rail-sec tip' }, h('h4', { text: 'Коуч' }), h('p', { text: tip.b }), tip.q ? h('p', { class: 'q', text: tip.q }) : null));
+  if (state.attempts.length) kids.push(h('div', { class: 'rail-sec' }, h('h4', { text: 'Попытки' }),
+    h('div', { class: 'attempts' }, state.attempts.slice(-6).map((t) => h('div', { class: 'attempt' }, h('span', { text: `#${t.n} · ${t.source}` }), h('span', { class: 'mono', text: `запрос ${t.score}% · ошибок ${t.errors}` })))),
+    h('p', { class: 'legend', text: 'Сравните: чем точнее правила расчёта в запросе, тем меньше ошибок в ответе.' })));
+  $('#rail').replaceChildren(...kids);
+}
+function railTip(c) {
+  const m = calcStatus();
+  if (state.step === 0) return { b: 'Прочитайте данные доски и примечание к Приложению 4. Затем запишите прогноз: потом будет с чем сравнить.', q: 'Какой столбец таблицы вы бы посмотрели первым?' };
+  if (state.step === 1) {
+    if (!state.checks2) return { b: 'Решите сами, затем нажмите «Проверить». ИИ подключится на шаге 4.' };
+    if (m.offByOne) return { b: `В ${m.offByOne} строках ответ меньше на 1. Это самая частая ошибка и у людей, и у ИИ.`, q: 'Сколько дней длится задача, начатая и законченная в один день?' };
+    if (m.ok < m.total) return { b: 'Проверка показала, где ошибка. Откройте подсказку по нужному блоку.' };
+    return { b: 'Расчёт верен. Посмотрите на столбец ожидания ещё раз, прежде чем идти дальше.', q: 'Что общего у запросов продавцов, которые не уложились в срок?' };
+  }
+  if (state.step === 2) return state.checks3 ? { b: 'Штриховка на диаграмме задач — это и есть затор. Обратите внимание, где проходят четверги.', q: 'Что изменится, если комитет будет собираться чаще?' } : { b: 'Диаграмма показывает, сколько задач в системе, но не показывает, почему. Причину ищите в столбце ожидания.' };
+  if (state.step === 3) {
+    if (c.holes) return { b: 'В запросе остались поля шаблона в квадратных скобках. ИИ заполнит их сам, и обычно неудачно.' };
+    if (c.ctx.st !== 'ok') return { b: 'Контекст неполный. Формулу, длину недели и текущий день ИИ иначе додумает сам.', q: 'Какое правило расчёта ИИ пока не видит?' };
+    if (c.task.st !== 'ok') return { b: 'В задаче не все пункты задания. ИИ отвечает только на то, что спросили.' };
+    if (c.lim.st !== 'ok') return { b: 'Попросите ИИ показать вычисления и проверить себя: так ошибку видно сразу.' };
+    return { b: 'Запрос собран. Отправьте его и сравните ответ ИИ со своим расчётом.' };
+  }
+  if (state.step === 4) return state.markRevealed ? { b: 'Каждую найденную ошибку превратите в уточнение: это и есть работа с ИИ в несколько шагов.' } : { b: 'Держите рядом свой расчёт. Каждое число ИИ сверяйте с ним.', q: 'Какой вывод ИИ звучит уверенно, но не следует из данных?' };
+  return { b: 'ИИ даёт черновик, выводы делает человек. Проверьте каждое изменение в песочнице, прежде чем писать эффект.' };
+}
+
+/* ================= Boot ================= */
+function buildRuler() {
+  const r = $('#ruler'); if (!r) return;
+  for (let d = 1; d <= TODAY; d++) {
+    const wk = (d - 1) % 5 === 0 ? 6 + (d - 1) / 5 : null;
+    r.append(h('span', { class: [THURSDAYS.includes(d) ? 'thu' : '', wk ? 'wk' : '', d === TODAY ? 'now' : ''].join(' ').trim(), 'data-wk': wk ? `неделя ${wk}` : null, 'data-short': wk ? `н.${wk}` : null, title: `День ${d}${THURSDAYS.includes(d) ? ', четверг: комитет по изменениям' : ''}${d === TODAY ? ', текущий день' : ''}` }));
+  }
+}
+function boot() {
+  if (!unlocked(state.step)) state.step = 0;
+  buildRuler(); render();
+  const get = async (name) => { try { return window.claude && window.claude.use ? await window.claude.use(name) : null; } catch (e) { return null; } };
+  Promise.all([get('sample'), get('downloads')]).then(([smp, dl]) => { state.sample = typeof smp === 'function' ? smp : null; state.downloads = dl || null; render(); });
+}
+boot();
+
+</script>
+
+</body>
+</html>

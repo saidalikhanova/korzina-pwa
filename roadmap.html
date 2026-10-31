@@ -1,0 +1,1249 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#20242B">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<script src="pwa-shim.js"></script>
+</head>
+<body>
+<nav class="pwa-nav"><a href="./">← Все практикумы</a></nav>
+<title>Дорожная карта — Корзина</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a programme control desk. A dark band on top carries the 35-week ruler with the fixed launch flag
+   and the route of five stations; below, a white working sheet beside a narrow logbook rail.
+   Signal orange is reserved for what holds the date: the critical path and the launch. */
+:root {
+  --paper: #E6E8E3;      /* concrete */
+  --sheet: #FBFBF9;
+  --sheet-2: #F0F1ED;
+  --ink: #1D2026;
+  --ink-2: #5A6068;
+  --rule: #D3D6CF;
+  --rule-2: #B4B9B0;
+  --band: #20242B;       /* graphite control band, same in both themes */
+  --band-ink: #E9EBE6;
+  --band-ink-2: #9AA1AB;
+  --signal: #F2551D;     /* critical path, launch */
+  --signal-tint: #FDE3D8;
+  --cobalt: #2D4FE3;     /* teams, adaptive work */
+  --cobalt-tint: #E2E7FC;
+  --amber: #D9960B;      /* payout release windows */
+  --violet: #7650C4;
+  --green: #2D8A57;
+  --cal: #3A414C;        /* calendar works */
+  --ok: #23804A; --ok-tint: #DDF0E3;
+  --warn: #9A6400; --warn-tint: #F8ECCB;
+  --bad: #C42B2B; --bad-tint: #F8DEDC;
+  --on-fill: #FFFFFF;
+  --font-display: "Dela Gothic One", "Golos Text", system-ui, sans-serif;
+  --font-body: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #14161A; --sheet: #1D2026; --sheet-2: #252930; --ink: #ECEDE9; --ink-2: #A2A8B0; --rule: #333840; --rule-2: #4A5059;
+    --band: #0C0E11; --band-ink: #ECEDE9; --band-ink-2: #8E959F;
+    --signal: #FF7341; --signal-tint: #44231A; --cobalt: #8EA4FF; --cobalt-tint: #232C52; --amber: #F2B84B; --violet: #B79BF0; --green: #6CCB93; --cal: #B9C0CA;
+    --ok: #6CCB93; --ok-tint: #173323; --warn: #F2C14E; --warn-tint: #3A2D0E; --bad: #FF8A80; --bad-tint: #401A18;
+    --on-fill: #14161A; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #14161A; --sheet: #1D2026; --sheet-2: #252930; --ink: #ECEDE9; --ink-2: #A2A8B0; --rule: #333840; --rule-2: #4A5059;
+  --band: #0C0E11; --band-ink: #ECEDE9; --band-ink-2: #8E959F;
+  --signal: #FF7341; --signal-tint: #44231A; --cobalt: #8EA4FF; --cobalt-tint: #232C52; --amber: #F2B84B; --violet: #B79BF0; --green: #6CCB93; --cal: #B9C0CA;
+  --ok: #6CCB93; --ok-tint: #173323; --warn: #F2C14E; --warn-tint: #3A2D0E; --bad: #FF8A80; --bad-tint: #401A18;
+  --on-fill: #14161A; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55; padding-inline: 16px; padding-block: 0 56px; font-variant-numeric: tabular-nums; }
+.wrap { max-width: 1320px; margin-inline: auto; }
+h1, h2, h3, h4, p { margin: 0; }
+h1, h2, h3 { text-wrap: balance; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2.5px solid var(--cobalt); outline-offset: 2px; }
+.mono { font-variant-numeric: tabular-nums; }
+
+/* ---------- Control band ---------- */
+.band { background: var(--band); color: var(--band-ink); margin-inline: -16px; padding-inline: 16px; padding-block: 26px 0; }
+.band-top { display: flex; flex-wrap: wrap; gap: 14px 40px; align-items: end; justify-content: space-between; }
+.brand { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.brand h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(26px, 4vw, 40px); line-height: 1; letter-spacing: -0.01em; }
+.brand p { color: var(--band-ink-2); max-width: 62ch; font-size: 14.5px; }
+.casetag { font-size: 13px; color: var(--band-ink-2); border: 1px solid #454b55; border-radius: 999px; padding: 4px 12px; white-space: nowrap; }
+
+.ruler { margin-top: 26px; display: grid; grid-template-columns: repeat(35, minmax(0, 1fr)); align-items: end; height: 46px; position: relative; }
+.ruler span { height: 8px; border-left: 1px solid #4a515c; position: relative; }
+.ruler span.five { height: 16px; border-left-color: #7c8490; }
+.ruler span.five::after { content: attr(data-w); position: absolute; bottom: 19px; left: -4px; font-size: 11px; color: var(--band-ink-2); }
+.ruler span.flag { height: 40px; border-left: 2px solid var(--signal); }
+.ruler span.flag::after { content: "1 июня · запуск"; position: absolute; top: 0; right: 4px; white-space: nowrap; font-size: 12px; font-weight: 600; color: var(--band); background: var(--signal); padding: 1px 8px; border-radius: 3px 0 0 3px; }
+.ruler span.bill { border-left: 1px dashed var(--amber); height: 22px; }
+@media (max-width: 600px) { .ruler span.flag::after { content: "1 июня"; } .ruler span.five[data-w="25"]::after, .ruler span.five[data-w="30"]::after { content: none; } }
+
+/* Route of five stations */
+.steps { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); padding-block: 22px 24px; border-top: 1px solid #3a4049; }
+.steps::before { content: ""; position: absolute; left: 14px; right: 14px; top: 36px; height: 3px; background: #3e444e; border-radius: 3px; }
+.step { appearance: none; position: relative; text-align: left; cursor: pointer; border: 0; background: transparent; color: var(--band-ink); padding: 0 10px 0 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.step .dot { width: 31px; height: 31px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 14px; background: var(--band); border: 3px solid #5b626d; color: var(--band-ink-2); position: relative; z-index: 1; }
+.step .t { font-weight: 600; font-size: 14.5px; line-height: 1.25; }
+.step .s { font-size: 12.5px; color: var(--band-ink-2); line-height: 1.3; }
+.step:hover .dot { border-color: var(--band-ink); }
+.step.done .dot { background: var(--green); border-color: var(--green); color: var(--band); }
+.step[aria-current="step"] .dot { background: var(--signal); border-color: var(--signal); color: var(--band); box-shadow: 0 0 0 5px rgba(242, 85, 29, .25); }
+.step.locked { cursor: not-allowed; }
+.step.locked .dot { border-style: dashed; }
+.step.locked .t, .step.locked .s { color: #6d7480; }
+@media (max-width: 760px) { .step .s { display: none; } .step .t { font-size: 12.5px; } .steps::before { top: 36px; } }
+
+/* ---------- Working area ---------- */
+.workspace { display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr); align-items: start; padding-top: 24px; }
+@media (min-width: 1100px) { .workspace { grid-template-columns: minmax(0, 1fr) 320px; } }
+.panel { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.card { background: var(--sheet); border-radius: 16px; padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.card > h3, .sec-h { font-family: var(--font-display); font-weight: 400; font-size: 19px; line-height: 1.2; letter-spacing: -0.005em; }
+.lead { color: var(--ink-2); max-width: 72ch; }
+.lbl { font-size: 13px; color: var(--ink-2); font-weight: 600; }
+.grid2 { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .grid2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+@media (max-width: 600px) { .card { padding: 18px 16px; border-radius: 12px; } }
+
+.btn { appearance: none; cursor: pointer; border: 1.5px solid var(--ink); background: transparent; border-radius: 999px; padding: 8px 18px; font-weight: 600; line-height: 1.2; }
+.btn:hover { background: var(--sheet-2); }
+.btn[disabled] { opacity: .4; cursor: not-allowed; }
+.btn-primary { background: var(--ink); color: var(--sheet); }
+.btn-primary:hover { background: var(--ink); filter: brightness(1.25); }
+.btn-small { padding: 5px 13px; font-size: 13px; border-width: 1px; border-color: var(--rule-2); font-weight: 500; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.status { min-height: 20px; font-size: 13.5px; color: var(--ink-2); }
+.status.err { color: var(--bad); }
+
+textarea, input[type="text"], input[type="number"], select { width: 100%; border: 1.5px solid var(--rule); background: var(--sheet); border-radius: 10px; padding: 9px 12px; }
+textarea:hover, input:hover, select:hover { border-color: var(--rule-2); }
+textarea { resize: vertical; line-height: 1.55; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field-top { display: flex; justify-content: space-between; gap: 8px 14px; align-items: baseline; flex-wrap: wrap; }
+.field .help, .help { font-size: 13px; color: var(--ink-2); }
+
+/* Tables */
+table.data { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.data th, table.data td { text-align: left; padding: 10px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+table.data th { font-size: 12.5px; color: var(--ink-2); font-weight: 600; border-bottom: 2px solid var(--ink); }
+table.data tbody tr:last-child td { border-bottom: 0; }
+.tscroll { overflow-x: auto; }
+table.mine td { vertical-align: middle; }
+table.mine input { width: 4.2em; padding: 6px 4px; text-align: center; border-radius: 8px; font-weight: 600; font-size: 15px; }
+table.mine select { width: auto; }
+table.mine tr.given td { color: var(--ink-2); }
+.rowhint { font-size: 12.5px; color: var(--ink-2); margin-top: 4px; max-width: 34ch; }
+
+/* Case */
+.news { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .news { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.newsitem { position: relative; padding: 16px 16px 14px; background: var(--signal-tint); border-radius: 4px 14px 14px 14px; display: flex; flex-direction: column; gap: 6px; }
+.newsitem b { font-family: var(--font-display); font-weight: 400; font-size: 16px; color: var(--signal); }
+.task-list { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; }
+.task-list li::marker { font-weight: 700; color: var(--ink-2); }
+
+/* Prompt builder: one form, five rows */
+.rctfo { display: flex; flex-direction: column; background: var(--sheet); border-radius: 16px; overflow: hidden; }
+.part { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 6px 22px; padding: 18px 24px 18px 20px; border-bottom: 1px solid var(--rule); border-left: 5px solid var(--rule); }
+.part:last-child { border-bottom: 0; }
+.part > .field-top { grid-column: 1; grid-row: 1 / span 3; flex-direction: column; align-items: start; justify-content: start; gap: 4px; }
+.part > textarea, .part > .actions, .part > .checks { grid-column: 2; }
+.part.ok { border-left-color: var(--ok); }
+.part.warn { border-left-color: var(--amber); }
+.part.bad { border-left-color: var(--bad); }
+.part-name { font-family: var(--font-display); font-weight: 400; font-size: 17px; }
+@media (max-width: 700px) { .part { grid-template-columns: minmax(0, 1fr); padding: 16px; } .part > .field-top, .part > textarea, .part > .actions, .part > .checks { grid-column: 1; grid-row: auto; } }
+.checks { display: flex; flex-wrap: wrap; gap: 6px; }
+.chk { font-size: 12.5px; padding: 2px 10px 2px 8px; border-radius: 999px; color: var(--ink-2); background: var(--sheet-2); display: inline-flex; align-items: center; gap: 6px; }
+.chk::before { content: ""; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid currentColor; flex: none; }
+.chk.on { color: var(--ok); background: var(--ok-tint); }
+.chk.on::before { background: currentColor; }
+.chk.alert { color: var(--bad); background: var(--bad-tint); }
+.chk.alert::before { border-radius: 1px; background: currentColor; transform: rotate(45deg); }
+.preview { margin: 0; padding: 14px; background: var(--sheet-2); border-radius: 10px; max-height: 340px; overflow: auto; font-family: ui-monospace, Menlo, monospace; font-size: 12px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.svc { color: var(--ink-2); }
+details > summary { cursor: pointer; color: var(--ink-2); font-size: 13.5px; }
+
+/* ---------- Roadmap board ---------- */
+.gantt-wrap { overflow-x: auto; border-radius: 12px; background: var(--sheet-2); }
+.gantt { min-width: 820px; display: grid; grid-template-columns: 200px minmax(0, 1fr); font-size: 13px; }
+.g-lab { padding: 6px 12px; border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; justify-content: center; min-width: 0; background: var(--sheet); }
+.g-lab .ln { font-size: 11.5px; color: var(--ink-2); }
+.g-lab .nm { overflow-wrap: anywhere; line-height: 1.3; font-weight: 500; }
+.g-track { position: relative; border-bottom: 1px solid var(--rule); min-height: 44px; display: grid; grid-template-columns: repeat(35, minmax(0, 1fr)); align-items: center;
+  background-image: repeating-linear-gradient(90deg, transparent 0, transparent calc(100% / 7 - 1px), var(--rule) calc(100% / 7 - 1px), var(--rule) calc(100% / 7)),
+    repeating-linear-gradient(90deg, transparent 0, transparent calc(100% / 35 - 1px), color-mix(in srgb, var(--rule) 45%, transparent) calc(100% / 35 - 1px), color-mix(in srgb, var(--rule) 45%, transparent) calc(100% / 35)); }
+.g-head { font-size: 11.5px; color: var(--ink-2); min-height: 30px; background: var(--sheet); border-bottom: 2px solid var(--ink); }
+.g-lab.g-head { font-weight: 600; justify-content: end; }
+.g-head span { text-align: left; padding-left: 3px; font-weight: 600; }
+.bar { grid-row: 1; height: 22px; border-radius: 999px; position: relative; z-index: 2; display: flex; align-items: center; padding: 0 9px; color: var(--on-fill); font-size: 11px; font-weight: 600; white-space: nowrap; overflow: hidden; }
+.bar.ms { height: 15px; width: 15px; justify-self: center; transform: rotate(45deg); border-radius: 3px; padding: 0; }
+.bar.crit { background: var(--signal) !important; box-shadow: 0 0 0 3px var(--signal-tint); }
+.ghost { grid-row: 1; height: 32px; border: 2px dashed var(--ink-2); border-radius: 999px; z-index: 1; }
+.ghost.ms { width: 24px; justify-self: center; border-radius: 4px; }
+.mark { grid-row: 1; justify-self: end; width: 0; height: 100%; z-index: 0; border-left: 1.5px dashed var(--amber); }
+.mark.lane-gate { border-left: 2px solid var(--signal); }
+.mark.lane-win, .mark.lane-gate { background: none !important; }
+.lane-cal { background: var(--cal); } .lane-agile { background: var(--cobalt); } .lane-gate { background: var(--signal); }
+.lane-win { background: var(--amber); } .lane-legal { background: var(--violet); } .lane-mkt { background: var(--green); } .lane-teal { background: var(--ink-2); }
+.g-row { display: contents; }
+.g-row.bad .g-lab { box-shadow: inset 5px 0 0 var(--bad); }
+.g-row.warn .g-lab { box-shadow: inset 5px 0 0 var(--amber); }
+.g-row.ok .g-lab { box-shadow: inset 5px 0 0 var(--ok); }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--ink-2); align-items: center; }
+.legend i { display: inline-block; width: 18px; height: 9px; border-radius: 999px; margin-right: 6px; vertical-align: 0; }
+.legend .gh { border: 1.5px dashed var(--ink-2); background: transparent; }
+
+/* Verification */
+.claims { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .claims { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.claim { padding: 12px 14px; background: var(--sheet-2); border-radius: 10px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.claim p { overflow-wrap: anywhere; }
+.vtable td:first-child { font-weight: 600; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; padding: 2px 10px 2px 8px; border-radius: 999px; white-space: nowrap; }
+.pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.pill.ok { color: var(--ok); background: var(--ok-tint); }
+.pill.warn { color: var(--warn); background: var(--warn-tint); }
+.pill.bad { color: var(--bad); background: var(--bad-tint); }
+.pill.bad::before { border-radius: 1px; transform: rotate(45deg); }
+.pill.info { color: var(--ink-2); background: var(--sheet-2); }
+.pick { display: flex; flex-wrap: wrap; gap: 8px; }
+.pick label { display: inline-flex; gap: 7px; align-items: center; border: 1.5px solid var(--rule); border-radius: 999px; padding: 5px 13px 5px 10px; font-size: 13.5px; cursor: pointer; background: var(--sheet); }
+.pick label:has(input:checked) { border-color: var(--ink); background: var(--ink); color: var(--sheet); }
+.pick input { margin: 0; accent-color: var(--signal); }
+.selfrow { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); align-items: end; }
+@media (min-width: 820px) { .selfrow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.scn { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; }
+.scn label { display: inline-flex; gap: 8px; align-items: center; cursor: pointer; }
+.scn input { accent-color: var(--signal); }
+.scn select { width: auto; }
+.bigline { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: baseline; }
+.bignum { font-family: var(--font-display); font-size: 30px; line-height: 1.1; }
+.bignum.bad { color: var(--signal); } .bignum.ok { color: var(--ok); }
+
+/* Decision */
+.opts { display: flex; flex-direction: column; gap: 10px; }
+.optrow { display: grid; gap: 10px; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+@media (max-width: 600px) { .optrow { grid-template-columns: minmax(0, 1fr); } }
+.reflect { white-space: pre-wrap; overflow-wrap: anywhere; padding: 14px 16px; background: var(--cobalt-tint); border-radius: 4px 14px 14px 14px; min-height: 40px; }
+.hintrow { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.hintrow b { font-weight: 600; }
+
+/* ---------- Logbook rail ---------- */
+.rail { background: var(--sheet); border-radius: 16px; display: flex; flex-direction: column; min-width: 0; border-top: 6px solid var(--band); }
+@media (min-width: 1100px) { .rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 14px); max-height: calc(100vh - 28px); overflow: auto; } }
+.rail-sec { padding: 16px 18px; border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; gap: 10px; }
+.rail-sec:last-child { border-bottom: 0; }
+.rail h3 { font-family: var(--font-display); font-weight: 400; font-size: 16px; }
+.rail h4 { font-size: 13px; color: var(--ink-2); font-weight: 600; }
+.goal { display: flex; gap: 10px; align-items: baseline; font-size: 14px; }
+.goal .dot { flex: none; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--rule-2); transform: translateY(1px); }
+.goal.on .dot { background: var(--green); border-color: var(--green); }
+.meter { display: flex; gap: 4px; }
+.meter i { flex: 1; height: 10px; border-radius: 999px; background: var(--rule); }
+.meter i.ok { background: var(--ok); } .meter i.warn { background: var(--amber); } .meter i.bad { background: var(--bad); }
+.attempts { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.attempt { display: flex; gap: 8px; justify-content: space-between; padding: 6px 10px; background: var(--sheet-2); border-radius: 8px; }
+.tip { font-size: 14px; background: var(--cobalt-tint); }
+.tip .q { color: var(--ink-2); font-style: italic; }
+.empty { padding: 26px 18px; text-align: center; color: var(--ink-2); border: 2px dashed var(--rule-2); border-radius: 14px; }
+@media (prefers-reduced-motion: no-preference) { .btn, .step .dot, .pick label { transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease; } }
+</style>
+
+<header class="band">
+  <div class="wrap">
+    <div class="band-top">
+      <div class="brand">
+        <h1>Дорожная карта</h1>
+        <p>Практикум 3: гибридная дорожная карта. Сначала вы строите карту сами, затем проверяете, как с той же задачей справится ИИ, и сами принимаете решение для правления.</p>
+      </div>
+      <span class="casetag">Кейс «Витрина», вымышленные данные</span>
+    </div>
+    <div class="ruler" id="ruler" aria-hidden="true"></div>
+    <nav class="steps" aria-label="Шаги практикума" id="steps"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="workspace">
+    <main class="panel" id="main"></main>
+    <aside class="rail" id="rail" aria-label="Прогресс и коуч"></aside>
+  </div>
+</div>
+
+<script>
+/* ================= Data: case «Витрина», Appendix 2 and part B ================= */
+const DEADLINE = 35;
+const LANES = {
+  dec: { name: 'Решения', cls: 'lane-cal' }, buy: { name: 'Оборудование и курьерская сеть', cls: 'lane-cal' }, bld: { name: 'Дарк-кухни и склады', cls: 'lane-cal' },
+  sec: { name: 'Санитарные разрешения и пилот', cls: 'lane-gate' }, team: { name: 'Команды', cls: 'lane-agile' }, bill: { name: 'Платежи и выплаты ресторанам', cls: 'lane-win' },
+  law: { name: 'Юристы', cls: 'lane-legal' }, mkt: { name: 'Маркетинг', cls: 'lane-mkt' }, ops: { name: 'Операции', cls: 'lane-teal' }
+};
+/* CPM items. es0 = earliest start (weeks elapsed). dur 0 = milestone. */
+const BASE = [
+  { id: 'budget', lane: 'dec', name: 'Решение правления о бюджете направления', dur: 3, es0: 0, pred: [] },
+  { id: 'pay', lane: 'buy', name: 'Оплата оборудования поставщику', dur: 2, es0: 0, pred: ['budget'] },
+  { id: 'supply', lane: 'buy', name: 'Поставка термоконтейнеров и самокатов', dur: 16, es0: 0, pred: ['pay'] },
+  { id: 'building', lane: 'bld', name: 'Дарк-кухни и склады в 4 городах: готовность помещений', dur: 20, es0: 0, pred: [] },
+  { id: 'mount', lane: 'buy', name: 'Монтаж оборудования, запуск курьерской сети и пунктов выдачи', dur: 4, es0: 0, pred: ['supply', 'building'] },
+  { id: 'attest', lane: 'sec', name: 'Получение санитарных разрешений', dur: 6, es0: 0, pred: ['mount'] },
+  { id: 'datadesc', lane: 'team', name: 'Описание обрабатываемых данных покупателей и ресторанов', dur: 0, es0: 9, pred: [] },
+  { id: 'legal', lane: 'law', name: 'Оферта и договоры с ресторанами (юристы)', dur: 6, es0: 0, pred: ['datadesc'] },
+  { id: 'billing', lane: 'bill', name: 'Данные команды «Партнёры» в выпуск системы выплат', dur: 0, es0: 24, pred: [] },
+  { id: 'pilot', lane: 'sec', name: 'Пилот в одном городе (8 ресторанов)', dur: 4, es0: 0, pred: ['attest'] },
+  { id: 'marketing', lane: 'mkt', name: 'Рекламная кампания', dur: 4, es0: 30, pred: [] }
+];
+const INFO = [
+  { id: 'sprints', lane: 'team', name: 'Спринты команд «Приложение» и «Партнёры»', s: 1, e: 34 },
+  { id: 'ops', lane: 'ops', name: '4 из 12 специалистов переходят на запуск «Доставки еды»', s: 18, e: 18, ms: true },
+  { id: 'launch', lane: 'sec', name: 'Запуск «Доставки еды», 1 июня', s: 35, e: 35, ms: true }
+];
+const NAMES = Object.fromEntries(BASE.map((x) => [x.id, x.name]).concat(INFO.map((x) => [x.id, x.name])));
+const WORKS_FOR_PICK = ['budget', 'pay', 'supply', 'building', 'mount', 'attest', 'legal', 'billing', 'pilot', 'marketing'];
+
+const CASE_TEXT = `Кейс «Витрина» (вымышленные данные). Маркетплейс «Корзина» (одежда, посуда и товары для дома) запускает новое направление «Доставка еды»: дарк-кухни и склады в четырёх городах, собственная курьерская сеть, партнёрские рестораны. Коммерческий запуск — 35-я неделя (1 июня), дату публично объявил председатель правления и переносить не намерен. Бюджет направления утверждён и увеличению не подлежит. Команды «Приложение» (7 чел.) и «Партнёры» (6 чел.) работают по Скраму, спринты по 2 недели. Отдел операций: руководитель и 12 специалистов, Канбан.
+
+Приложение 2. Ключевые сроки и ограничения. Неделя 1 начинается 5 октября.
+- Решение правления о бюджете направления — неделя 3.
+- Оплата оборудования поставщику — 2 недели, после решения о бюджете.
+- Поставка термоконтейнеров и электросамокатов для четырёх городов — 16 недель, после оплаты.
+- Готовность помещений дарк-кухонь и складов в 4 городах (аренда и ремонт) — неделя 20, по графику ремонтной компании.
+- Монтаж оборудования, запуск курьерской сети и пунктов выдачи — 4 недели; условие начала: помещения готовы и оборудование поставлено.
+- Получение санитарных разрешений на пищевую доставку — 6 недель, после монтажа и запуска сети.
+- Пилот в одном городе (8 ресторанов) — 4 недели, после получения разрешений: доставлять еду покупателям до разрешений нельзя.
+- Коммерческий запуск — неделя 35, дата не переносится.
+- Выпуски изменений в системе платежей и выплат ресторанам — недели 8, 16, 24, 32; данные от команды «Партнёры» — за 2 недели до выпуска.
+- Оферта для покупателей, договоры с ресторанами и документы по персональным данным — 6 недель, после получения описания того, какие данные покупателей и ресторанов обрабатываются.
+- Рекламная кампания — 4 недели до запуска; условие: условия доставки и комиссия для ресторанов утверждены.
+- Переход 4 специалистов отдела операций в команду запуска — с недели 18.
+
+Часть Б (10-я неделя), три новости:
+1) Ремонтная компания: поставка вентиляции для кухонь задерживается, готовность помещений переносится с 20-й на 23-ю неделю. Можно сдать одну дарк-кухню из четырёх к 20-й неделе, если перебросить туда все бригады, но тогда склады и кухни в остальных трёх городах уйдут на лето.
+2) Коммерческий директор: крупная ресторанная сеть «Сеть А» готова подписать контракт, но только если начнёт принимать заказы через нас на 28-й неделе, иначе уйдёт к конкурирующему сервису доставки; директор уже пообещал. Руководитель по качеству и санитарии: сеть будет отправлять еду реальным покупателям, до получения разрешений это невозможно; часть проверок можно провести заранее, если дадут тестовую кухню с заказами для сотрудников.
+3) Председатель правления: у конкурента уже есть каталог готовых рационов (наборы блюд на неделю) — добавьте его в первую версию; дата и бюджет остаются прежними.
+Через неделю — ежемесячный отчёт правлению.`;
+
+const TEMPLATE = {
+  role: 'Ты — опытный руководитель программ [в какой отрасли?], который совмещает календарное планирование и Скрам.',
+  ctx: '[Вставьте данные кейса: цель, дата запуска, бюджет, работы с длительностями и зависимостями, новости части Б.]',
+  task: '1. Построй гибридную дорожную карту на [какой срок?].\n2. Найди цепочку работ, которая определяет дату запуска, и посчитай её запас.\n3. [Что ещё нужно решить по новостям?]',
+  fmt: '[Таблица по неделям? Список рисков? Три фразы для правления?]',
+  lim: 'Используй только данные из контекста. [Что фиксировано и не обсуждается?] Если данных не хватает — назови допущение явно.'
+};
+
+const SERVICE = `
+
+---
+Служебная часть тренажёра (добавляется автоматически, чтобы нарисовать карту и сверить расчёт):
+Ответь только JSON такого вида, без текста вокруг:
+{"roadmap":[{"lane":"…","name":"…","start":1,"end":3}],"critical_path":["название работы", "…"],"slack_weeks":0,"building_delay":{"impact_weeks":0,"explanation":"…","options":[{"name":"…","cost":"…"}]},"bank_a":"…","catalog":"…","board":["…","…","…"],"assumptions":["…"]}
+Поле building_delay — про задержку готовности помещений дарк-кухонь, bank_a — ответ по ресторанной сети «Сеть А», catalog — решение по каталогу готовых рационов. Недели нумеруй с 1 по 35 включительно; start и end — номера недель, у вехи start = end. Названия работ в critical_path бери из roadmap. Если в запросе чего-то не просили или данных нет, оставь поле пустым и не выдумывай. Пиши на русском.`;
+
+/* A deliberately flawed answer for practice without Claude */
+const FLAWED = {
+  roadmap: [
+    { lane: 'Решения', name: 'Утверждение бюджета', start: 1, end: 3 },
+    { lane: 'Оборудование', name: 'Оплата оборудования', start: 4, end: 5 },
+    { lane: 'Оборудование', name: 'Поставка термоконтейнеров и самокатов', start: 6, end: 21 },
+    { lane: 'Помещения', name: 'Ремонт дарк-кухонь и складов', start: 1, end: 20 },
+    { lane: 'Монтаж', name: 'Монтаж оборудования и запуск курьерской сети', start: 21, end: 24 },
+    { lane: 'Санитария', name: 'Санитарные разрешения', start: 25, end: 30 },
+    { lane: 'Запуск', name: 'Пилот', start: 31, end: 35 },
+    { lane: 'Команды', name: 'Спринты «Приложение» и «Партнёры»', start: 1, end: 34 },
+    { lane: 'Выплаты', name: 'Выпуск системы выплат с интеграцией', start: 32, end: 32 },
+    { lane: 'Юристы', name: 'Согласование договоров с ресторанами', start: 10, end: 15 },
+    { lane: 'Риски', name: 'Резерв на риски', start: 33, end: 34 },
+    { lane: 'Команды', name: 'Каталог готовых рационов', start: 26, end: 32 }
+  ],
+  critical_path: ['Ремонт дарк-кухонь и складов', 'Монтаж оборудования и запуск курьерской сети', 'Санитарные разрешения', 'Пилот'],
+  slack_weeks: 2,
+  building_delay: { impact_weeks: 3, explanation: 'Помещения задерживаются на 3 недели, поэтому запуск сдвигается на 3 недели.',
+    options: [{ name: 'Ускорить монтаж за счёт второй бригады', cost: '' }, { name: 'Сократить пилот до 2 недель', cost: 'Меньше времени на обратную связь ресторанов и покупателей' }] },
+  bank_a: 'Запускаем «Сеть А» на 28-й неделе на реальных заказах покупателей, санитарные разрешения получим параллельно.',
+  catalog: 'Добавляем каталог рационов в первую версию силами команды «Приложение» в спринтах 13–16.',
+  board: ['Успеваем к 1 июня.', 'Ускоряем монтаж и добавляем каталог рационов.', 'Решений правления не требуется.'],
+  assumptions: []
+};
+
+/* ================= Helpers ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const str = (v) => (v == null ? '' : String(v)).trim();
+const arr = (v) => (Array.isArray(v) ? v : []);
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') el.className = v; else if (k === 'text') el.textContent = v;
+    else if (k === 'style') el.setAttribute('style', v);
+    else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else if (v === true) el.setAttribute(k, ''); else el.setAttribute(k, v);
+  }
+  for (const kid of kids.flat()) { if (kid == null || kid === false) continue; el.append(kid.nodeType ? kid : document.createTextNode(String(kid))); }
+  return el;
+}
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage may be blocked */ } }
+};
+const num = (v) => { const n = Number(String(v).replace(',', '.')); return Number.isFinite(n) ? n : null; };
+const weeksWord = (n) => { const a = Math.abs(n) % 100, b = a % 10; if (a > 10 && a < 20) return 'недель'; if (b === 1) return 'неделя'; if (b >= 2 && b <= 4) return 'недели'; return 'недель'; };
+
+/* ================= Critical path calculation ================= */
+function cpm(scn = {}) {
+  const items = BASE.map((x) => ({ ...x }));
+  const by = Object.fromEntries(items.map((x) => [x.id, x]));
+  if (scn.delay) by.building.dur = 23;
+  if (scn.partial) by.building.dur = 20;
+  if (scn.billing) by.billing.es0 = scn.billing;
+  items.forEach((x) => { x.es = Math.max(x.es0, ...x.pred.map((p) => by[p].ef)); x.ef = x.es + x.dur; });
+  const launch = by.pilot.ef;
+  const finish = Math.max(DEADLINE, launch);
+  const succ = {}; items.forEach((x) => x.pred.forEach((p) => (succ[p] = succ[p] || []).push(x.id)));
+  for (let i = items.length - 1; i >= 0; i--) {
+    const x = items[i];
+    const s = succ[x.id] || [];
+    x.lf = s.length ? Math.min(...s.map((id) => by[id].ls)) : (x.id === 'pilot' ? launch : finish);
+    x.ls = x.lf - x.dur; x.tf = x.ls - x.es;
+  }
+  const critical = items.filter((x) => x.tf === 0 && x.dur > 0).map((x) => x.id);
+  return { items, by, launch, slip: launch - DEADLINE, critical, slack: by.supply.tf };
+}
+const REF = cpm({});
+const DELAY = cpm({ delay: true });
+const refRange = (id) => {
+  const x = REF.by[id]; if (x) return x.dur ? { s: x.es + 1, e: x.ef } : { s: x.es, e: x.es, ms: true };
+  const i = INFO.find((y) => y.id === id); return i ? { s: i.s, e: i.e, ms: !!i.ms } : null;
+};
+
+/* Match a free-form work name from the AI to a case item */
+const MATCH = [
+  ['catalog', /каталог/i], ['reserve', /резерв|буфер/i], ['datadesc', /описани\S*\s.*данн|данн\S*\s.*описани/i],
+  ['budget', /бюджет/i], ['pay', /оплат/i], ['legal', /юрист|юрид|договор|оферт/i], ['billing', /биллинг|выплат|платеж|платёж/i],
+  ['mount', /монтаж/i], ['supply', /поставк|сервер|оборудован|термоконтейнер|самокат/i], ['building', /здани|строит|стройк|кухн|склад|помещен|ремонт/i],
+  ['attest', /аттестац|\bИБ\b|безопасност|санитар|разрешен/i], ['pilot', /пилот/i], ['marketing', /реклам|маркетинг/i],
+  ['sprints', /спринт|портал|платформ|приложени|партн[её]р/i], ['ops', /инженер|эксплуатац|специалист|операци/i], ['launch', /запуск/i]
+];
+const matchId = (name) => { for (const [id, re] of MATCH) if (re.test(name)) return id; return null; };
+
+/* ================= State ================= */
+const saved = store.get('kz.roadmap.state', {});
+const state = {
+  step: 0,
+  parts: saved.parts || { role: '', ctx: '', task: '', fmt: '', lim: '' },
+  answer: null, raw: '', source: '', lastPrompt: '',
+  attempts: arr(saved.attempts),
+  self: { crit: [], slack: '', impact: '', sprint: '', ...(saved.self || {}) },
+  revealed: false, scn: { delay: false, partial: false, billing: 24 },
+  followup: '',
+  mine: saved.mine || {}, mineBill: saved.mineBill || '', mineChecks: saved.mineChecks || 0, mineShown: !!saved.mineShown,
+  hints: saved.hints || {}, mineDesc: saved.mineDesc || '', marks: saved.marks || {}, markRevealed: !!saved.markRevealed, tutorQ: '', tutorA: '', showAi: false,
+  dec: saved.dec || { p1: '', p2: '', p3: '', opts: [{ name: '', cost: '' }, { name: '', cost: '' }], bank: '', catalog: '' },
+  reflect: '', reflecting: false,
+  sample: null, downloads: null, ctl: null, running: false, pasteOpen: false
+};
+function persist() { store.set('kz.roadmap.state', { parts: state.parts, attempts: state.attempts.slice(-12), self: state.self, dec: state.dec, mine: state.mine, mineBill: state.mineBill, mineChecks: state.mineChecks, mineShown: state.mineShown, mineDesc: state.mineDesc, hints: state.hints, marks: state.marks, markRevealed: state.markRevealed }); }
+
+/* ================= Prompt quality ================= */
+const has = (t, re) => re.test(t);
+function promptChecks() {
+  const p = state.parts, all = Object.values(p).join('\n');
+  const nums = (p.ctx.match(/\d+/g) || []).length;
+  const role = [
+    { k: 'Роль названа', on: p.role.split(/\s+/).filter(Boolean).length >= 3 },
+    { k: 'Опыт в управлении', on: has(p.role, /руковод|менедж|проектн|программ|коуч|офис/i) }
+  ];
+  const ctx = [
+    { k: 'Дата запуска', on: has(p.ctx, /35|1 июня/i) },
+    { k: 'Бюджет фиксирован', on: has(p.ctx, /бюджет/i) },
+    { k: 'Длительности работ', on: nums >= 8 },
+    { k: 'Зависимости', on: has(p.ctx, /после|зависит|начина/i) },
+    { k: 'Новости части Б', on: has(p.ctx, /23|Банк А|Сеть А|каталог/i) }
+  ];
+  const task = [
+    { k: 'Дорожная карта', on: has(p.task, /карт|план|график/i) },
+    { k: 'Цепочка и запас', on: has(p.task, /цепоч|критическ/i) && has(p.task, /запас|резерв|буфер/i) },
+    { k: 'Задержка помещений и варианты', on: has(p.task, /здани|помещен|кухн|склад/i) && has(p.task, /вариант|предлож|сценари/i) },
+    { k: 'Цена каждого варианта', on: has(p.task, /цен|стоимост|чем платим|жертв/i) },
+    { k: 'Ответ по «Сети А»', on: has(p.task, /банк|сет[ьи] а|ресторанн\S* сет/i) },
+    { k: 'Решение по каталогу', on: has(p.task, /каталог/i) }
+  ];
+  const fmt = [
+    { k: 'Форма результата', on: has(p.fmt, /таблиц|список|по неделям|фраз|пункт|json|столбц|колонк/i) },
+    { k: 'Объём ответа', on: has(p.fmt, /\d|кратк|не более|не длиннее|три|две/i) }
+  ];
+  const lim = [
+    { k: 'Только данные кейса', on: has(p.lim, /только|не (выдум|придум)|не добавля/i) },
+    { k: 'Допущения отдельно', on: has(p.lim, /допущ|предполож/i) },
+    { k: 'Дата и бюджет неизменны', on: has(p.lim + p.ctx, /(дат|срок)\S*.*(бюджет)|(бюджет)\S*.*(дат|срок)/i) && has(p.lim, /не (меня|увелич|сдвига|обсужд)|фиксир|неизмен|прежн/i) },
+    { k: 'Показать расчёт', on: has(p.lim + p.task, /покаж\S* расч|расчёт|посчитай|обоснуй|объясни/i) }
+  ];
+  const holes = (all.match(/\[[^\]]{2,}\]/g) || []).length;
+  const safety = [];
+  if (/[\w.+-]+@[\w-]+\.[\w.]+/.test(all)) safety.push('Адрес электронной почты');
+  if (/(\+7|8)[\s(-]*7\d{2}[\s)-]*\d{3}[\s-]*\d{2}[\s-]*\d{2}/.test(all)) safety.push('Номер телефона');
+  if (/\b\d{12}\b/.test(all)) safety.push('Похоже на ИИН');
+  if (/казахтелеком|kazakhtelecom|wildberries|вайлдберриз|ozon|озон|kaspi|каспи|яндекс|yandex/i.test(all)) safety.push('Название реальной компании');
+  if (/парол|логин|коммерческая тайна/i.test(all)) safety.push('Служебные данные');
+  const part = (list) => { const n = list.filter((c) => c.on).length; return n === list.length ? 'ok' : n ? 'warn' : 'bad'; };
+  const res = { role: { list: role, st: part(role) }, ctx: { list: ctx, st: part(ctx) }, task: { list: task, st: part(task) }, fmt: { list: fmt, st: part(fmt) }, lim: { list: lim, st: part(lim) } };
+  const total = [role, ctx, task, fmt, lim].flat();
+  res.score = Math.round(100 * total.filter((c) => c.on).length / total.length);
+  res.holes = holes; res.safety = safety;
+  return res;
+}
+function compiled() {
+  const p = state.parts;
+  return `Роль: ${p.role}\n\nКонтекст:\n${p.ctx}\n\nЗадача:\n${p.task}\n\nФормат результата:\n${p.fmt}\n\nОграничения:\n${p.lim}`;
+}
+
+/* ================= Verification of the AI answer ================= */
+function normAnswer(raw) {
+  const r = raw && typeof raw === 'object' ? raw : {};
+  const bd = r.building_delay && typeof r.building_delay === 'object' ? r.building_delay : {};
+  return {
+    roadmap: arr(r.roadmap).map((x) => ({ lane: str(x.lane), name: str(x.name), start: Math.max(1, Math.min(35, num(x.start) || 1)), end: Math.max(1, Math.min(35, num(x.end) || num(x.start) || 1)) }))
+      .map((x) => ({ ...x, end: Math.max(x.start, x.end), id: matchId(x.name) || (matchId(x.lane) === 'billing' ? 'billing' : null) })),
+    critical: arr(r.critical_path).map(str).filter(Boolean),
+    slack: num(r.slack_weeks), impact: num(bd.impact_weeks), explanation: str(bd.explanation),
+    options: arr(bd.options).map((o) => ({ name: str(o && o.name), cost: str(o && o.cost) })).filter((o) => o.name),
+    bank: str(r.bank_a), catalog: str(r.catalog), board: arr(r.board).map(str).filter(Boolean), assumptions: arr(r.assumptions).map(str).filter(Boolean)
+  };
+}
+function verify(a) {
+  const rows = [];
+  if (!a) return rows;
+  const crit = new Set(REF.critical);
+  const seen = new Set();
+  a.roadmap.forEach((x) => {
+    const id = x.id;
+    if (!id || id === 'reserve') { rows.push({ area: x.name, ai: `${x.start}–${x.end}`, fact: 'В данных кейса такой работы нет', st: 'bad', hint: 'Откуда ИИ это взял? Выдуманные элементы удаляют или явно помечают как допущение.' }); return; }
+    if (id === 'catalog') { rows.push({ area: x.name, ai: `${x.start}–${x.end}`, fact: 'Расширение объёма из новости председателя', st: 'warn', hint: 'Каталог не входит в план. Включать его без жертвы при фиксированных дате и бюджете нельзя.' }); return; }
+    if (id === 'legal') {
+      seen.add(id);
+      const dur = x.end - x.start + 1, ok = dur === 6 && x.end <= 31;
+      rows.push({ area: x.name, ai: `${x.start}–${x.end}`, fact: '6 недель после описания данных; срок описания в кейсе не указан, договоры с ресторанами нужны к пилоту (32-я)', st: ok ? 'ok' : 'warn', hint: ok ? 'Даты ИИ — допущение: в Приложении 2 их нет. Спросите, откуда они.' : 'Проверьте длительность и то, что договоры готовы к началу пилота.' });
+      return;
+    }
+    if (id === 'billing') {
+      seen.add(id);
+      const ok = x.end <= 24 && x.end >= 8;
+      rows.push({ area: x.name, ai: `${x.end}-я нед.`, fact: 'Последний выпуск до пилота — 24-я неделя (данные к 22-й)', st: ok ? 'ok' : 'bad', hint: ok ? '' : 'Выпуск 32-й недели позже начала пилота: рестораны в пилоте не получат выплаты.' });
+      return;
+    }
+    const r = refRange(id); if (!r) return;
+    if (seen.has(id) && id !== 'sprints') return;
+    seen.add(id);
+    const tol = crit.has(id) ? 0 : 1;
+    const ok = Math.abs(x.start - r.s) <= tol && Math.abs(x.end - r.e) <= tol;
+    rows.push({ area: x.name, ai: x.start === x.end ? `${x.end}-я нед.` : `${x.start}–${x.end}`, fact: r.s === r.e ? `${r.e}-я нед.` : `${r.s}–${r.e}`, st: ok ? 'ok' : (crit.has(id) ? 'bad' : 'warn'),
+      hint: ok ? '' : (crit.has(id) ? 'Работа на критической цепочке: ошибка в одну неделю меняет дату запуска.' : 'Проверьте по Приложению 2.') });
+  });
+  ['supply', 'mount', 'attest', 'pilot', 'legal'].forEach((id) => { if (!seen.has(id)) rows.push({ area: NAMES[id], ai: 'нет на карте', fact: id === 'legal' ? '6 недель после описания данных' : (() => { const r = refRange(id); return `${r.s}–${r.e}`; })(), st: crit.has(id) ? 'bad' : 'warn', hint: 'ИИ пропустил работу: возможно, её не было в контексте запроса.' }); });
+
+  const aiCrit = new Set(a.critical.map(matchId).filter(Boolean));
+  const missing = REF.critical.filter((id) => !aiCrit.has(id));
+  const extra = [...aiCrit].filter((id) => !crit.has(id));
+  rows.push({ area: 'Критическая цепочка', ai: a.critical.join(' → ') || 'не указана', fact: REF.critical.map((id) => NAMES[id]).join(' → '),
+    st: !a.critical.length ? 'bad' : (!missing.length && !extra.length ? 'ok' : 'bad'),
+    hint: missing.length || extra.length ? `Пропущено: ${missing.map((id) => NAMES[id]).join(', ') || 'нет'}. Лишнее: ${extra.map((id) => NAMES[id]).join(', ') || 'нет'}.` : '' });
+  rows.push({ area: 'Запас цепочки', ai: a.slack == null ? 'не указан' : `${a.slack} нед.`, fact: `${REF.slack} нед.: 3 + 2 + 16 + 4 + 6 + 4 = 35`, st: a.slack === REF.slack ? 'ok' : 'bad', hint: a.slack === REF.slack ? '' : 'Сложите длительности звеньев и сравните с 35 неделями.' });
+  rows.push({ area: 'Влияние задержки помещений', ai: a.impact == null ? 'не указано' : `+${a.impact} нед.`, fact: `+${DELAY.slip} нед.: у помещений была 1 неделя запаса`, st: a.impact === DELAY.slip ? 'ok' : 'bad',
+    hint: a.impact === DELAY.slip ? '' : 'Задержка в 3 недели не равна сдвигу на 3 недели: сначала расходуется запас некритической работы.' });
+  const costless = a.options.filter((o) => !o.cost);
+  rows.push({ area: 'Варианты сохранить дату', ai: a.options.map((o) => o.name).join('; ') || 'нет', fact: 'Не меньше двух, у каждого названа цена', st: a.options.length >= 2 && !costless.length ? 'ok' : (a.options.length ? 'warn' : 'bad'),
+    hint: costless.length ? `Без цены: ${costless.map((o) => o.name).join('; ')}.` : (a.options.length < 2 ? 'Нужно не меньше двух вариантов.' : '') });
+  const bankOk = /аттестац|ИБ|безопасн|санитар|разрешен/i.test(a.bank) && /тестов|непроизвод|стенд|обезлич|партн|аренд|после аттестац|после (получения )?разрешен|сотрудник|честн/i.test(a.bank) && !/(рабоч|продуктив|промышлен)\S*\s+сред|реальн\S* (заказ|покупател)|параллельно/i.test(a.bank);
+  rows.push({ area: 'Ответ по «Сети А»', ai: a.bank || 'нет', fact: 'До санитарных разрешений — только согласованная с санитарной службой тестовая кухня с заказами для сотрудников или другой вариант без доставки реальным покупателям', st: !a.bank ? 'bad' : bankOk ? 'ok' : 'bad',
+    hint: bankOk ? '' : 'Доставка еды реальным покупателям до санитарных разрешений нарушает требования к пищевой безопасности.' });
+  const catOk = /после запуска|втор\S* (очеред|верси|релиз)|отлож|вместо|за счёт|жертв|исключ|решени\S* правлени/i.test(a.catalog);
+  rows.push({ area: 'Каталог рационов', ai: a.catalog || 'нет', fact: 'Дата и бюджет фиксированы: добавить объём можно только убрав другой, и это решение правления', st: !a.catalog ? 'bad' : catOk ? 'ok' : 'bad',
+    hint: catOk ? '' : 'Буфера времени нет. Каталог в первой версии без жертвы означает срыв даты.' });
+  const askOk = a.board.some((b) => /решени|просим|утверд|соглас|одобр/i.test(b) && !/не требуется|не нужн/i.test(b));
+  rows.push({ area: 'Три фразы для правления', ai: a.board.join(' / ') || 'нет', fact: 'Успеваем ли и почему · что предлагаем · какое решение нужно', st: a.board.length >= 3 && askOk ? 'ok' : 'warn', hint: askOk ? '' : 'Нет явного запроса решения к правлению.' });
+  rows.push({ area: 'Допущения', ai: a.assumptions.length ? a.assumptions.join('; ') : 'не названы', fact: 'Хороший ответ ИИ отделяет допущения от данных', st: a.assumptions.length ? 'ok' : 'info', hint: a.assumptions.length ? '' : 'Попросите ИИ перечислить допущения: так проще найти выдуманное.' });
+  return rows;
+}
+
+/* ================= Rendering ================= */
+const STEPS = [
+  { t: 'Кейс и задание', s: 'Приложение 2 и новости' },
+  { t: 'Моя карта', s: 'Сначала решаете сами' },
+  { t: 'Запрос к ИИ', s: 'Роль, контекст, задача, формат, ограничения' },
+  { t: 'Найдите ошибки ИИ', s: 'Вы проверяете ответ' },
+  { t: 'Решение для правления', s: 'Ваши три фразы и разбор' }
+];
+function goals() {
+  const c = promptChecks();
+  const m = mineStatus();
+  return [
+    { k: 'Построили карту сами', on: m.checked && m.ok === m.total },
+    { k: 'Ответили на четыре вопроса', on: m.qOk === 4 },
+    { k: 'Собрали запрос по структуре', on: c.score >= 70 && !c.holes },
+    { k: 'Нашли ошибки в ответе ИИ', on: state.markRevealed },
+    { k: 'Сформулировали решение сами', on: !!(state.dec.p1 && state.dec.p2 && state.dec.p3) },
+    { k: 'Получили разбор коуча', on: !!state.reflect }
+  ];
+}
+const unlocked = (i) => i <= 1 || (i === 2 && state.mineChecks > 0) || (i === 3 && !!state.answer) || (i === 4 && state.mineChecks > 0);
+function renderSteps() {
+  const g = goals();
+  const done = [false, g[0].on && g[1].on, g[2].on, g[3].on, g[4].on];
+  $('#steps').replaceChildren(...STEPS.map((s, i) => h('button', { class: 'step' + (done[i] ? ' done' : '') + (unlocked(i) ? '' : ' locked'), type: 'button', 'aria-current': i === state.step ? 'step' : null, onclick: () => go(i) },
+    h('span', { class: 'dot', text: done[i] && i !== state.step ? '✓' : String(i + 1) }), h('span', { class: 't', text: s.t }), h('span', { class: 's', text: unlocked(i) ? s.s : 'Откроется позже' }))));
+}
+function go(i) { state.step = i; render(); window.scrollTo({ top: 0 }); }
+function render() { renderSteps(); renderMain(); renderRail(); }
+function renderMain() {
+  const m = $('#main');
+  const views = [viewCase, viewMine, viewPrompt, viewCheck, viewDecide];
+  m.replaceChildren(...(unlocked(state.step) ? views[state.step]() : viewLocked()));
+}
+function viewLocked() {
+  const why = state.step === 3 ? 'Здесь появится ответ ИИ, когда вы отправите запрос на шаге 3.' : 'Этот шаг откроется, когда вы построите свою карту и хотя бы раз нажмёте «Проверить».';
+  return [h('section', { class: 'card' }, h('h3', { text: 'Шаг пока закрыт' }), h('div', { class: 'empty', text: why }),
+    h('div', { class: 'actions' }, h('button', { class: 'btn btn-primary', type: 'button', text: state.step === 3 ? 'К запросу' : 'К своей карте', onclick: () => go(state.step === 3 ? 2 : 1) })))];
+}
+
+/* ---- Step 1 ---- */
+function viewCase() {
+  const rows = [
+    ['Решение правления о бюджете направления', 'неделя 3', '—'],
+    ['Оплата оборудования поставщику', '2 недели', 'после решения о бюджете'],
+    ['Поставка термоконтейнеров и электросамокатов для четырёх городов', '16 недель', 'после оплаты'],
+    ['Готовность помещений дарк-кухонь и складов в 4 городах (аренда и ремонт)', 'неделя 20', 'по графику ремонтной компании'],
+    ['Монтаж оборудования, запуск курьерской сети и пунктов выдачи', '4 недели', 'помещения готовы и оборудование поставлено'],
+    ['Получение санитарных разрешений на пищевую доставку', '6 недель', 'после монтажа и запуска сети'],
+    ['Пилот в одном городе (8 ресторанов)', '4 недели', 'после получения разрешений: доставлять еду покупателям до разрешений нельзя'],
+    ['Коммерческий запуск', 'неделя 35', 'дата не переносится'],
+    ['Выпуски изменений в системе платежей и выплат ресторанам', 'недели 8, 16, 24, 32', 'данные от команды «Партнёры» — за 2 недели до выпуска'],
+    ['Оферта для покупателей, договоры с ресторанами и документы по персональным данным', '6 недель', 'после получения описания того, какие данные покупателей и ресторанов обрабатываются'],
+    ['Рекламная кампания', '4 недели до запуска', 'условия доставки и комиссия для ресторанов утверждены'],
+    ['Переход 4 специалистов отдела операций в команду запуска', 'с недели 18', '—']
+  ];
+  return [
+    h('section', { class: 'card' },
+      h('h3', { text: 'Ситуация' }),
+      h('p', { class: 'lead', text: 'Айгерим Касымова руководит программой запуска направления «Доставка еды» на маркетплейсе «Корзина»: дарк-кухни и склады в четырёх городах, собственная курьерская сеть и партнёрские рестораны. Коммерческий запуск — 1 июня, 35-я неделя, дата объявлена публично. Бюджет утверждён и увеличению не подлежит. Неделя 1 начинается 5 октября.' })),
+    h('section', { class: 'card' },
+      h('h3', { text: 'Приложение 2. Ключевые сроки и ограничения' }),
+      h('div', { class: 'tscroll' }, h('table', { class: 'data' },
+        h('thead', {}, h('tr', {}, h('th', { text: 'Работа' }), h('th', { text: 'Срок или длительность' }), h('th', { text: 'Условие начала' }))),
+        h('tbody', {}, rows.map((r) => h('tr', {}, h('td', { text: r[0] }), h('td', { class: 'mono', text: r[1] }), h('td', { text: r[2] }))))))),
+    h('section', { class: 'card' },
+      h('h3', { text: 'Часть Б: три новости 10-й недели' }),
+      h('div', { class: 'news' },
+        h('div', { class: 'newsitem' }, h('b', { text: 'Помещения' }), h('p', { text: 'Поставка вентиляции для кухонь задерживается: готовность помещений переносится с 20-й на 23-ю неделю. Ремонтная компания может сдать одну дарк-кухню из четырёх к 20-й, если перебросит туда все бригады, но склады и кухни в остальных трёх городах уйдут на лето.' })),
+        h('div', { class: 'newsitem' }, h('b', { text: '«Сеть А»' }), h('p', { text: 'Крупная ресторанная сеть готова подписать контракт, только если начнёт принимать заказы через нас на 28-й неделе, иначе уйдёт к конкурирующему сервису доставки. Коммерческий директор уже пообещал. Служба качества и санитарии: до получения разрешений доставлять еду покупателям нельзя, но часть проверок можно провести заранее на тестовой кухне с заказами для сотрудников.' })),
+        h('div', { class: 'newsitem' }, h('b', { text: 'Председатель' }), h('p', { text: '«У конкурента уже есть каталог готовых рационов — наборы блюд на неделю. Добавьте это в первую версию. Дата и бюджет, разумеется, остаются прежними».' })))),
+    h('section', { class: 'card' },
+      h('h3', { text: 'Задание практикума 3 · 45 минут' }),
+      h('ol', { class: 'task-list' },
+        h('li', { text: 'По данным Приложения 2 построить дорожную карту на 35 недель: календарные работы, спринты команд, выпуски системы выплат, работа юристов, пилот и запуск.' }),
+        h('li', { text: 'Найти цепочку, которая определяет дату запуска, и посчитать её запас.' }),
+        h('li', { text: 'Оценить влияние задержки помещений и предложить не меньше двух вариантов сохранить дату, с ценой каждого.' }),
+        h('li', { text: 'Сформулировать ответ коммерческому директору по «Сети А».' }),
+        h('li', { text: 'Решить, что делать с каталогом рационов.' })),
+      h('p', { class: 'lead', text: 'Порядок работы: сначала вы строите карту сами, затем просите ИИ сделать то же и ищете ошибки в его ответе, а решение для правления пишете сами. ИИ ошибается в сложении недель и легко соглашается с невозможным, поэтому без собственного расчёта его не проверить.' }),
+      h('div', { class: 'actions' }, h('button', { class: 'btn btn-primary', type: 'button', text: 'Перейти к своей карте', onclick: () => go(1) })))
+  ];
+}
+
+/* ---- Step 2: the learner's own roadmap ---- */
+const MINE_ROWS = ['budget', 'pay', 'supply', 'building', 'mount', 'attest', 'legal', 'pilot', 'marketing', 'sprints'];
+const RULE = {
+  budget: 'неделя 3', pay: '2 недели после решения о бюджете', supply: '16 недель после оплаты', building: 'неделя 20',
+  mount: '4 недели после поставки и готовности помещений', attest: '6 недель после монтажа', legal: '6 недель после получения описания данных покупателей и ресторанов',
+  pilot: '4 недели после получения разрешений', marketing: '4 недели до запуска', sprints: 'спринты по 2 недели, с первой недели до запуска'
+};
+const DEP_HINT = {
+  budget: 'Срок дан в Приложении 2 прямо.', pay: 'Работа начинается на следующей неделе после того, как закончилась предыдущая.',
+  supply: 'Проверьте, после какой работы начинается поставка и сколько она длится.', building: 'Срок готовности дан прямо.',
+  mount: 'Монтаж ждёт двух событий. Какое из них наступает позже?', attest: 'Проверьте, после какой работы начинается получение разрешений.',
+  sprints: 'Сколько двухнедельных спринтов помещается до недели запуска? Последний спринт должен закончиться до неё.',
+  legal: 'Шесть недель считаются от недели, следующей за описанием данных. Успевают ли договоры к началу пилота?', pilot: 'Проверьте, после какой работы начинается пилот.', marketing: 'Реклама идёт 4 недели и заканчивается перед запуском.'
+};
+const HINTS = {
+  map: ['Начните с работ, у которых срок дан прямо, затем идите по зависимостям.', 'Каждая следующая работа начинается на неделе, следующей за концом предыдущей: конец на 3-й, начало на 4-й.', 'Если работа ждёт нескольких событий, её начало определяет самое позднее из них.'],
+  chain: ['Какая последовательность работ тянется от старта до самого запуска без перерывов?', 'Сложите длительности звеньев этой последовательности.', 'Запас — это разница между 35 неделями и суммой длительностей самой длинной цепочки.'],
+  delay: ['Были ли помещения на критической цепочке до новости?', 'Сколько свободных недель было между готовностью помещений и началом монтажа?', 'Сдвиг запуска — это задержка минус запас, который был у помещений.']
+};
+function mineStatus() {
+  const rows = {}; let ok = 0, filled = 0;
+  MINE_ROWS.forEach((id) => {
+    const v = state.mine[id] || {}, r = refRange(id), s = num(v.s), e = num(v.e);
+    if (s == null || e == null || v.s === '' || v.e === '') { rows[id] = 'empty'; return; }
+    filled++;
+    const d = num(state.mineDesc);
+    const good = id === 'legal' ? (d != null && state.mineDesc !== '' && s === d + 1 && e === d + 6 && e <= 31) : (s === r.s && e === r.e);
+    rows[id] = good ? 'ok' : 'bad'; if (good) ok++;
+  });
+  const b = num(state.mineBill); rows.billing = state.mineBill === '' ? 'empty' : (b >= 8 && b <= 24 ? 'ok' : 'bad');
+  rows.desc = state.mineDesc === '' ? 'empty' : (num(state.mineDesc) >= 1 && num(state.mineDesc) <= 25 ? 'ok' : 'bad');
+  if (rows.billing === 'ok') ok++; if (rows.billing !== 'empty') filled++;
+  const mine = new Set(state.self.crit), ref = new Set(REF.critical);
+  const missing = [...ref].filter((x) => !mine.has(x)).length, extra = [...mine].filter((x) => !ref.has(x)).length;
+  const q = { crit: !mine.size ? 'empty' : (!missing && !extra ? 'ok' : 'bad'), slack: state.self.slack === '' ? 'empty' : (num(state.self.slack) === REF.slack ? 'ok' : 'bad'), impact: state.self.impact === '' ? 'empty' : (num(state.self.impact) === DELAY.slip ? 'ok' : 'bad'),
+    sprint: state.self.sprint === '' ? 'empty' : (num(state.mineBill) && num(state.self.sprint) === Math.ceil((num(state.mineBill) - 2) / 2) ? 'ok' : 'bad') };
+  return { rows, ok, filled, total: MINE_ROWS.length + 1, q, qOk: Object.values(q).filter((x) => x === 'ok').length, missing, extra, checked: state.mineChecks > 0 };
+}
+function mineGanttRows() {
+  return MINE_ROWS.map((id) => {
+    const v = state.mine[id] || {}, s = num(v.s), e = num(v.e);
+    const ok = s && e && e >= s && s >= 1 && e <= 35;
+    return { lane: LANES[(BASE.find((b) => b.id === id) || INFO.find((b) => b.id === id)).lane].name, name: NAMES[id], cls: laneCls(id), bar: ok ? { s, e } : null,
+      ghost: state.mineShown && id !== 'legal' ? refRange(id) : null, st: state.mineChecks ? ({ ok: 'ok', bad: 'bad' }[mineStatus().rows[id]] || '') : '' };
+  }).concat([{ lane: LANES.bill.name, name: NAMES.billing, cls: 'lane-win', short: true, bar: num(state.mineBill) ? { s: num(state.mineBill), e: num(state.mineBill), ms: true } : null }]);
+}
+function viewMine() {
+  const st = state.mineChecks ? mineStatus() : null;
+  const pill = (x) => x && x !== 'empty' ? h('span', { class: 'pill ' + (x === 'ok' ? 'ok' : 'bad'), text: x === 'ok' ? 'верно' : 'неверно' }) : (st ? h('span', { class: 'pill info', text: 'пусто' }) : '');
+  const inp = (id, k) => {
+    const i = h('input', { type: 'number', min: '1', max: '35', id: `m-${id}-${k}`, 'aria-label': `${NAMES[id]}: ${k === 's' ? 'начало' : 'конец'}` });
+    i.value = (state.mine[id] || {})[k] ?? '';
+    i.addEventListener('input', () => { state.mine[id] = { ...(state.mine[id] || {}), [k]: i.value }; persist(); redrawMine(); });
+    return i;
+  };
+  const descIn = () => { const i = h('input', { type: 'number', min: '1', max: '35', id: 'm-desc', 'aria-label': 'Неделя описания данных' }); i.value = state.mineDesc; i.addEventListener('input', () => { state.mineDesc = i.value; persist(); redrawMine(); }); return i; };
+  const bill = h('select', { id: 'm-billing' }, h('option', { value: '', text: 'выберите' }), [8, 16, 24, 32].map((w) => h('option', { value: String(w), text: `${w}-я неделя` })));
+  bill.value = state.mineBill; bill.addEventListener('change', () => { state.mineBill = bill.value; persist(); redrawMine(); });
+  const table = h('div', { class: 'tscroll' }, h('table', { class: 'data mine' },
+    h('thead', {}, h('tr', {}, h('th', { text: 'Работа' }), h('th', { text: 'По Приложению 2' }), h('th', { text: 'Начало, нед.' }), h('th', { text: 'Конец, нед.' }), h('th', { text: 'Проверка' }))),
+    h('tbody', {},
+      h('tr', {}, h('td', { text: 'Описание данных покупателей и ресторанов для юристов' }), h('td', { text: 'в Приложении 2 срока нет: примите допущение и учтите его в карте' }), h('td', { colspan: '2' }, descIn()),
+        h('td', {}, h('span', { class: 'pill info', text: 'допущение' }))),
+      MINE_ROWS.map((id) => h('tr', {}, h('td', { text: NAMES[id] }), h('td', { text: RULE[id] }), h('td', {}, inp(id, 's')), h('td', {}, inp(id, 'e')),
+        h('td', { id: 'st-' + id }, mineCell(id, st)))),
+      h('tr', {}, h('td', { text: 'Выпуск системы выплат, в который «Партнёры» передают данные' }), h('td', { text: 'выпуски 8, 16, 24, 32; данные за 2 недели до выпуска' }), h('td', { colspan: '2' }, bill),
+        h('td', { id: 'st-billing' }, mineCell('billing', st))))));
+  const pick = h('div', { class: 'pick' }, WORKS_FOR_PICK.map((id) => {
+    const cb = h('input', { type: 'checkbox', id: 'c-' + id }); cb.checked = state.self.crit.includes(id);
+    cb.addEventListener('change', () => { state.self.crit = cb.checked ? [...new Set([...state.self.crit, id])] : state.self.crit.filter((x) => x !== id); persist(); redrawMine(); });
+    return h('label', { for: 'c-' + id }, cb, NAMES[id]);
+  }));
+  const numIn = (k, id) => { const i = h('input', { type: 'number', id, min: '-10', max: '35' }); i.value = state.self[k]; i.addEventListener('input', () => { state.self[k] = i.value; persist(); redrawMine(); }); return i; };
+  const hintCard = h('section', { class: 'card' }, h('h3', { text: 'Подсказки' }),
+    h('p', { class: 'lead', text: 'Подсказки открываются по одной и не содержат ответа. Каждая следующая конкретнее.' }),
+    ...[['map', 'Как строить карту'], ['chain', 'Цепочка и запас'], ['delay', 'Задержка помещений']].map(([k, t]) => {
+      const lvl = state.hints[k] || 0;
+      return h('div', { class: 'hintrow' }, h('div', { class: 'field-top' }, h('b', { text: t }),
+        h('button', { class: 'btn btn-small', type: 'button', text: lvl >= 3 ? 'Подсказок больше нет' : `Подсказка ${lvl + 1} из 3`, disabled: lvl >= 3, onclick: () => { state.hints[k] = lvl + 1; persist(); render(); } })),
+        lvl ? h('ol', { class: 'task-list' }, HINTS[k].slice(0, lvl).map((t2) => h('li', { text: t2 }))) : null);
+    }));
+  return [
+    h('section', { class: 'card' }, h('h3', { text: 'Постройте карту сами' }),
+      h('p', { class: 'lead', text: 'Впишите недели начала и конца каждой работы. ИИ подключится на следующем шаге, когда у вас будет собственный расчёт для сравнения: без него ошибку ИИ не заметить.' }),
+      table),
+    h('section', { class: 'card' }, h('h3', { text: 'Ваша дорожная карта' }), h('div', { id: 'mine-gantt' }, gantt(mineGanttRows())),
+      state.mineShown ? h('div', { class: 'legend' }, h('span', {}, h('i', { class: 'gh' }), 'правильный ответ')) : null),
+    h('section', { class: 'card' }, h('h3', { text: 'Четыре вопроса' }),
+      h('span', { class: 'lbl', text: 'Какие работы определяют дату запуска?' }), pick,
+      h('div', { class: 'selfrow' },
+        h('div', { class: 'field' }, h('label', { class: 'lbl', for: 'self-slack', text: 'Запас этой цепочки, недель' }), numIn('slack', 'self-slack')),
+        h('div', { class: 'field' }, h('label', { class: 'lbl', for: 'self-impact', text: 'На сколько недель сдвинется запуск, если помещения будут готовы к 23-й?' }), numIn('impact', 'self-impact')),
+        h('div', { class: 'field' }, h('label', { class: 'lbl', for: 'self-sprint', text: 'В каком по счёту спринте «Партнёры» должны передать данные для выбранного выпуска системы выплат?' }), numIn('sprint', 'self-sprint'))),
+      h('div', { class: 'checks', id: 'qfb' }, qfbChips(st))),
+    h('section', { class: 'card' },
+      h('div', { class: 'actions' },
+        h('button', { class: 'btn btn-primary', type: 'button', text: 'Проверить', onclick: () => { state.mineChecks++; persist(); render(); } }),
+        h('button', { class: 'btn', type: 'button', text: state.mineShown ? 'Ответ показан' : 'Показать ответ', disabled: state.mineShown || state.mineChecks < 2, onclick: () => { state.mineShown = true; persist(); render(); } }),
+        state.mineChecks > 0 ? h('button', { class: 'btn', type: 'button', text: 'Дальше: запрос к ИИ', onclick: () => go(2) }) : null),
+      h('p', { class: 'status', text: !state.mineChecks ? 'Проверка показывает, где ошибка, но не называет правильное число.' : state.mineChecks < 2 && !state.mineShown ? `Проверок: ${state.mineChecks}. Ответ можно открыть после второй проверки.` : `Проверок: ${state.mineChecks}. Верно ${st.ok} из ${st.total} работ, ${st.qOk} из 4 вопросов.` })),
+    hintCard,
+    tutorCard()
+  ];
+}
+function minePill(x) { return x && x !== 'empty' ? h('span', { class: 'pill ' + (x === 'ok' ? 'ok' : 'bad'), text: x === 'ok' ? 'верно' : 'неверно' }) : h('span', { class: 'pill info', text: 'пусто' }); }
+function mineCell(id, st) {
+  if (!st) return [];
+  const x = st.rows[id], out = [minePill(x)];
+  if (x === 'bad') out.push(h('div', { class: 'rowhint', text: id === 'billing' ? 'Пилот идёт с 32-й недели. Смогут ли рестораны в пилоте получать выплаты, если изменения в системе выплат выйдут только на 32-й?' : DEP_HINT[id] }));
+  if (state.mineShown && id !== 'billing') out.push(h('div', { class: 'rowhint mono', text: id === 'legal' ? 'ответ: с недели после описания, 6 недель, закончить не позже 31-й' : `ответ: ${refRange(id).s}–${refRange(id).e}` }));
+  return out;
+}
+function qfbChips(st) {
+  if (!st) return [];
+  const out = [];
+  out.push(h('span', { class: 'chk ' + (st.q.crit === 'ok' ? 'on' : 'alert'), text: st.q.crit === 'ok' ? 'Цепочка верна' : st.q.crit === 'empty' ? 'Цепочка не отмечена' : `Цепочка: ${st.missing ? 'не хватает работ' : ''}${st.missing && st.extra ? ', ' : ''}${st.extra ? 'есть лишние' : ''}` }));
+  out.push(h('span', { class: 'chk ' + (st.q.slack === 'ok' ? 'on' : 'alert'), text: st.q.slack === 'ok' ? 'Запас верен' : 'Запас неверен' + (state.mineShown ? `: ${REF.slack}` : '') }));
+  out.push(h('span', { class: 'chk ' + (st.q.impact === 'ok' ? 'on' : 'alert'), text: st.q.impact === 'ok' ? 'Сдвиг верен' : 'Сдвиг неверен' + (state.mineShown ? `: +${DELAY.slip}` : '') }));
+  out.push(h('span', { class: 'chk ' + (st.q.sprint === 'ok' ? 'on' : 'alert'), text: st.q.sprint === 'ok' ? 'Спринт верен' : !state.mineBill ? 'Спринт: сначала выберите выпуск системы выплат' : 'Спринт неверен' + (state.mineShown ? `: ${Math.ceil((num(state.mineBill) - 2) / 2)}-й` : '') }));
+  if (state.mineShown && st.q.crit !== 'ok') out.push(h('span', { class: 'chk', text: 'Цепочка: ' + REF.critical.map((id) => NAMES[id]).join(' → ') }));
+  return out;
+}
+function redrawMine() {
+  const g = $('#mine-gantt'); if (g) g.replaceChildren(gantt(mineGanttRows()));
+  if (state.mineChecks) {
+    const st = mineStatus();
+    MINE_ROWS.concat(['billing']).forEach((id) => { const c = $('#st-' + id); if (c) c.replaceChildren(...mineCell(id, st)); });
+    const q = $('#qfb'); if (q) q.replaceChildren(...qfbChips(st));
+  }
+  renderRail();
+}
+const TUTOR_RULES = `Ты — наставник на тренинге по управлению проектами. Участник сам строит дорожную карту по учебному кейсу и задаёт тебе вопрос.
+Правила:
+- Не называй номера недель, длительности, состав критической цепочки, величину запаса или сдвига и не исправляй значения участника на правильные.
+- Отвечай одним наводящим вопросом и одной подсказкой, где искать в данных кейса.
+- Не больше 50 слов, на русском, без списков.`;
+function tutorCard() {
+  const ta = h('textarea', { id: 'tutor-q', rows: 2, placeholder: 'Например: почему у меня монтаж начинается раньше, чем привезли термоконтейнеры?' }); ta.value = state.tutorQ;
+  ta.addEventListener('input', () => { state.tutorQ = ta.value; });
+  return h('section', { class: 'card' }, h('h3', { text: 'Спросить ИИ-наставника' }),
+    h('p', { class: 'lead', text: 'Наставник не решит задачу за вас: он настроен отвечать вопросом. Это тоже способ работы с ИИ, когда нужно научиться, а не получить ответ.' }),
+    ta,
+    h('div', { class: 'actions' }, h('button', { class: 'btn', type: 'button', id: 'tutor-btn', text: 'Спросить', disabled: !state.sample || state.running, onclick: askTutor }),
+      !state.sample ? h('span', { class: 'help', style: 'color:var(--ink-2);font-size:12.5px', text: 'Наставник работает, когда страница открыта в Claude.' }) : null),
+    h('div', { class: 'reflect', id: 'tutor-out', hidden: !state.tutorA, text: state.tutorA }),
+    h('details', {}, h('summary', { text: 'Как настроен наставник' }), h('pre', { class: 'preview', text: TUTOR_RULES })));
+}
+async function askTutor() {
+  if (!state.sample || state.running || !state.tutorQ.trim()) return;
+  const mine = MINE_ROWS.map((id) => `${NAMES[id]}: ${(state.mine[id] || {}).s || '?'}–${(state.mine[id] || {}).e || '?'}`).join('; ');
+  const input = `${TUTOR_RULES}\n\nДанные кейса:\n${CASE_TEXT}\n\nТекущая карта участника: ${mine}. Выпуск системы выплат: ${state.mineBill || '?'}.\nОтмеченная цепочка: ${state.self.crit.map((id) => NAMES[id]).join(', ') || 'нет'}. Запас: ${state.self.slack || '?'}. Сдвиг: ${state.self.impact || '?'}.\n\nВопрос участника: ${state.tutorQ}`;
+  state.running = true; const b = $('#tutor-btn'); if (b) b.disabled = true;
+  const out = $('#tutor-out'); out.hidden = false; out.textContent = 'Наставник думает…';
+  try { const { text } = await state.sample(input, { cache: false, onText: ({ text }) => { out.textContent = text; } }); state.tutorA = text; }
+  catch (e) { out.textContent = e && e.text ? e.text : errorCopy(e); }
+  finally { state.running = false; if (b) b.disabled = false; }
+}
+/* ---- Step 2 ---- */
+const PARTS = [
+  { k: 'role', n: 'Роль', help: 'Кем должен быть ИИ, чтобы ответить как специалист.', rows: 2 },
+  { k: 'ctx', n: 'Контекст', help: 'Факты, на которые опирается ответ. Без данных ИИ выдумает свои.', rows: 7 },
+  { k: 'task', n: 'Задача', help: 'Что именно сделать. Перечислите все пункты задания.', rows: 5 },
+  { k: 'fmt', n: 'Формат результата', help: 'В каком виде нужен ответ и какого объёма.', rows: 2 },
+  { k: 'lim', n: 'Ограничения', help: 'Чего делать нельзя и что зафиксировано.', rows: 3 }
+];
+function viewPrompt() {
+  const c = promptChecks();
+  const parts = PARTS.map((p) => {
+    const res = c[p.k];
+    const ta = h('textarea', { id: 'f-' + p.k, rows: p.rows });
+    ta.value = state.parts[p.k];
+    ta.addEventListener('input', () => { state.parts[p.k] = ta.value; persist(); refreshPrompt(); });
+    return h('div', { class: 'part ' + res.st, id: 'part-' + p.k },
+      h('div', { class: 'field-top' }, h('label', { class: 'part-name', for: 'f-' + p.k, text: p.n }), h('span', { class: 'help', text: p.help })),
+      ta,
+      p.k === 'ctx' ? h('div', { class: 'actions' }, h('button', { class: 'btn btn-small', type: 'button', text: 'Вставить данные кейса', onclick: () => { state.parts.ctx = CASE_TEXT; persist(); render(); } })) : null,
+      h('div', { class: 'checks' }, res.list.map((x) => h('span', { class: 'chk ' + (x.on ? 'on' : 'off'), text: x.k }))));
+  });
+  const prev = h('pre', { class: 'preview', id: 'preview' });
+  fillPreview(prev);
+  return [
+    h('section', { class: 'card' },
+      h('h3', { text: 'Соберите запрос по пяти частям' }),
+      h('p', { class: 'lead', text: 'Это та же структура, что в библиотеке запросов курса. Отметки под полями показывают, что уже есть в запросе; они подсказывают, а не оценивают. Шаблон из библиотеки подставляет заготовку с полями в квадратных скобках: их нужно заполнить под кейс.' }),
+      h('div', { class: 'actions' },
+        h('button', { class: 'btn btn-small', type: 'button', text: 'Подставить шаблон из библиотеки', onclick: () => { state.parts = { ...TEMPLATE }; persist(); render(); } }),
+        h('button', { class: 'btn btn-small', type: 'button', text: 'Очистить', onclick: () => { state.parts = { role: '', ctx: '', task: '', fmt: '', lim: '' }; persist(); render(); } }))),
+    h('div', { class: 'rctfo' }, parts),
+    h('section', { class: 'card', id: 'safety-card' }),
+    h('section', { class: 'card' },
+      h('h3', { text: 'Отправка' }),
+      h('div', { class: 'actions' },
+        h('button', { class: 'btn btn-primary', id: 'send', type: 'button', text: 'Отправить в Claude', onclick: sendPrompt, disabled: !state.sample || state.running }),
+        h('button', { class: 'btn', id: 'stop', type: 'button', text: 'Остановить', hidden: !state.running, onclick: () => state.ctl && state.ctl.abort() }),
+        h('button', { class: 'btn', type: 'button', text: 'Скопировать запрос', onclick: (e) => copyText(compiled() + SERVICE, e.currentTarget) }),
+        h('button', { class: 'btn', type: 'button', text: 'Вставить ответ другого ИИ', onclick: () => { state.pasteOpen = !state.pasteOpen; render(); } }),
+        h('button', { class: 'btn', type: 'button', text: 'Учебный ответ с ошибками', onclick: useFlawed })),
+      h('div', { class: 'status', id: 'status', role: 'status', 'aria-live': 'polite' }),
+      state.pasteOpen ? pasteBox() : null,
+      h('details', {}, h('summary', { text: 'Что уйдёт в ИИ: ваш запрос и служебная часть тренажёра' }), prev))
+  ];
+}
+function pasteBox() {
+  const ta = h('textarea', { id: 'paste', rows: 6, placeholder: 'Скопируйте запрос кнопкой выше, отправьте его в корпоративный ИИ и вставьте сюда ответ в формате JSON' });
+  return h('div', { class: 'field' },
+    h('label', { class: 'lbl', for: 'paste', text: 'Ответ другого ИИ' }), ta,
+    h('div', { class: 'actions' }, h('button', { class: 'btn btn-small', type: 'button', text: 'Разобрать ответ', onclick: () => {
+      const parsed = parseJSON(ta.value);
+      if (!parsed) { setStatus('Не удалось найти JSON в ответе. Проверьте, что вставлен весь ответ целиком.', 'err'); return; }
+      accept(parsed, ta.value, 'вставлен');
+    } })));
+}
+function fillPreview(el) { el.replaceChildren(compiled(), h('span', { class: 'svc', text: SERVICE })); }
+function refreshPrompt() {
+  const c = promptChecks();
+  PARTS.forEach((p) => {
+    const box = $('#part-' + p.k); if (!box) return;
+    box.className = 'part ' + c[p.k].st;
+    box.querySelector('.checks').replaceChildren(...c[p.k].list.map((x) => h('span', { class: 'chk ' + (x.on ? 'on' : 'off'), text: x.k })));
+  });
+  const prev = $('#preview'); if (prev) fillPreview(prev);
+  renderSafety(c); renderRail(); renderSteps();
+}
+function renderSafety(c) {
+  const box = $('#safety-card'); if (!box) return;
+  const kids = [h('h3', { text: 'Перед отправкой' })];
+  const list = [];
+  if (c.holes) list.push(h('span', { class: 'chk alert', text: `Незаполненных полей в скобках: ${c.holes}` }));
+  c.safety.forEach((s) => list.push(h('span', { class: 'chk alert', text: s })));
+  if (!list.length) list.push(h('span', { class: 'chk on', text: 'Персональных и служебных данных не найдено' }));
+  kids.push(h('div', { class: 'checks' }, list));
+  kids.push(h('p', { class: 'lead', text: 'Кейс вымышленный, поэтому его можно отправлять в ИИ. С рабочими данными сначала обезличьте имена, контакты, суммы договоров и названия клиентов.' }));
+  box.replaceChildren(...kids);
+}
+function setStatus(t, cls) { const s = $('#status'); if (s) { s.textContent = t; s.className = 'status' + (cls ? ' ' + cls : ''); } }
+function errorCopy(e) {
+  const c = e && e.code;
+  if (c === 'cancelled') return 'Остановлено.';
+  if (c === 'not_granted' || c === 'sampling_disabled' || c === 'not_declared' || c === 'capability_disabled') return 'Claude недоступен на этой странице. Скопируйте запрос в свой ИИ или возьмите учебный ответ.';
+  if (c === 'rate_limited') return 'Слишком много запросов. Подождите минуту и отправьте снова.';
+  if (c === 'prompt_too_large') return 'Запрос слишком длинный. Сократите контекст.';
+  return 'Ответ не удалось получить или разобрать. Отправьте ещё раз.';
+}
+function parseJSON(text) {
+  const t = String(text || '');
+  const a = t.indexOf('{'), b = t.lastIndexOf('}');
+  if (a < 0 || b <= a) return null;
+  try { return JSON.parse(t.slice(a, b + 1)); } catch (e) { return null; }
+}
+async function sendPrompt() {
+  if (!state.sample || state.running) return;
+  const c = promptChecks();
+  if (Object.values(state.parts).join('').trim().length < 40) { setStatus('Запрос почти пустой. Заполните хотя бы роль, контекст и задачу.', 'err'); return; }
+  const input = compiled() + SERVICE;
+  await callClaude(input, 'Claude', c.score);
+}
+async function callClaude(input, source, score) {
+  state.ctl = new AbortController(); state.running = true;
+  const sendB = $('#send'), stopB = $('#stop'); if (sendB) sendB.disabled = true; if (stopB) stopB.hidden = false;
+  setStatus('ИИ думает. Обычно это 20–60 секунд.');
+  try {
+    const { text } = await state.sample(input, { signal: state.ctl.signal, onText: ({ text }) => setStatus(`ИИ пишет ответ… ${text.length} зн.`) });
+    const parsed = parseJSON(text);
+    if (!parsed) throw { code: 'invalid_json' };
+    accept(parsed, text, source, score);
+  } catch (e) { setStatus(errorCopy(e), 'err'); }
+  finally {
+    state.running = false; state.ctl = null;
+    const s2 = $('#send'), st2 = $('#stop'); if (s2) s2.disabled = !state.sample; if (st2) st2.hidden = true;
+  }
+}
+function accept(parsed, raw, source, score) {
+  state.answer = normAnswer(parsed); state.raw = typeof raw === 'string' ? raw : JSON.stringify(parsed); state.source = source;
+  state.lastPrompt = compiled(); state.revealed = false; state.marks = {}; state.markRevealed = false; state.followup = '';
+  const errors = verify(state.answer).filter((r) => r.st === 'bad').length;
+  state.attempts.push({ n: state.attempts.length + 1, source, score: score == null ? promptChecks().score : score, errors });
+  persist(); go(3);
+}
+function useFlawed() { accept(JSON.parse(JSON.stringify(FLAWED)), JSON.stringify(FLAWED), 'учебный', promptChecks().score); }
+async function copyText(t, btn) {
+  try { await navigator.clipboard.writeText(t); if (btn) { const o = btn.textContent; btn.textContent = 'Скопировано'; setTimeout(() => (btn.textContent = o), 1600); } }
+  catch (e) { setStatus('Браузер не дал скопировать. Откройте блок «Что уйдёт в ИИ» и выделите текст вручную.', 'err'); }
+}
+
+/* ---- Step 3 ---- */
+function gantt(rowsData, opts = {}) {
+  const W = Math.max(35, opts.weeks || 35);
+  const cols = W === 35 ? null : `grid-template-columns:repeat(${W}, minmax(0, 1fr));background-image:none`;
+  const g = h('div', { class: 'gantt' });
+  const head = h('div', { class: 'g-track g-head', style: cols });
+  for (let w = 1; w <= W; w++) head.append(h('span', { style: `grid-column:${w};grid-row:1`, text: w === 1 || w % 5 === 0 ? String(w) : '' }));
+  g.append(h('div', { class: 'g-lab g-head', text: 'Неделя' }), head);
+  rowsData.forEach((r) => {
+    const track = h('div', { class: 'g-track', style: cols });
+    [8, 16, 24, 32].forEach((w) => track.append(h('i', { class: 'mark lane-win', style: `grid-column:${w}` })));
+    track.append(h('i', { class: 'mark lane-gate', style: 'grid-column:35' }));
+    if (r.ghost) track.append(h('div', { class: 'ghost' + (r.ghost.ms ? ' ms' : ''), style: `grid-column:${r.ghost.s} / ${r.ghost.e + 1}`, title: `Расчёт по данным: ${r.ghost.s}–${r.ghost.e}` }));
+    if (r.bar) {
+      const ms = r.bar.s === r.bar.e && r.bar.ms !== false && (r.bar.ms || r.short);
+      track.append(h('div', { class: 'bar ' + r.cls + (ms ? ' ms' : ''), style: `grid-column:${r.bar.s} / ${r.bar.e + 1}`, title: `${r.name}: ${r.bar.s}–${r.bar.e}` }, ms ? '' : (r.bar.e - r.bar.s >= 2 ? `${r.bar.s}–${r.bar.e}` : '')));
+    }
+    g.append(h('div', { class: 'g-row ' + (r.st || '') },
+      h('div', { class: 'g-lab' }, h('span', { class: 'ln', text: r.lane }), h('span', { class: 'nm', text: r.name })), track));
+  });
+  return h('div', { class: 'gantt-wrap' }, g);
+}
+const laneCls = (id) => { const x = BASE.find((b) => b.id === id) || INFO.find((b) => b.id === id); return x ? LANES[x.lane].cls : 'lane-cal'; };
+function viewCheck() {
+  const a = state.answer;
+  const rows = verify(a).filter((r) => r.st !== 'info');
+  const rev = state.markRevealed;
+  const stBy = {}; rows.forEach((r) => (stBy[r.area] = r.st));
+  const laneOf = (x) => { const b = x.id && (BASE.find((y) => y.id === x.id) || INFO.find((y) => y.id === x.id)); return x.lane || (b ? LANES[b.lane].name : ''); };
+  const items = a.roadmap.map((x) => ({ lane: laneOf(x), name: x.name, cls: x.id ? laneCls(x.id) : 'lane-cal', bar: { s: x.start, e: x.end, ms: x.start === x.end }, short: true,
+    ghost: rev && x.id && refRange(x.id) && x.id !== 'billing' && x.id !== 'legal' ? refRange(x.id) : null, st: rev ? stBy[x.name] : '' }));
+  if (rev) {
+    const have = new Set(a.roadmap.map((x) => x.id));
+    ['supply', 'mount', 'attest', 'pilot', 'legal', 'billing'].filter((id) => !have.has(id)).forEach((id) => items.push({ lane: LANES[BASE.find((b) => b.id === id).lane].name, name: NAMES[id] + ' · нет в ответе ИИ', cls: laneCls(id), ghost: ['legal', 'billing'].includes(id) ? null : refRange(id), st: 'bad' }));
+  }
+  const allMarked = rows.every((r) => state.marks[r.area]);
+  const isErr = (r) => r.st === 'bad' || r.st === 'warn';
+  const found = rows.filter((r) => isErr(r) && state.marks[r.area] === 'err').length;
+  const totalErr = rows.filter(isErr).length;
+  const falseAlarm = rows.filter((r) => !isErr(r) && state.marks[r.area] === 'err').length;
+  const mark = (r) => {
+    const mk = (v, t) => { const i = h('input', { type: 'radio', name: 'mk-' + r.area, value: v, disabled: rev }); i.checked = state.marks[r.area] === v;
+      i.addEventListener('change', () => { state.marks[r.area] = v; persist(); const b = $('#mark-btn'); if (b) b.disabled = !rows.every((x) => state.marks[x.area]); }); return h('label', {}, i, t); };
+    return h('div', { class: 'pick' }, mk('ok', 'верно'), mk('err', 'ошибка'));
+  };
+  const verdict = (r) => {
+    const m = state.marks[r.area];
+    if (isErr(r)) return m === 'err' ? h('span', { class: 'pill ok', text: 'нашли' }) : h('span', { class: 'pill bad', text: 'пропустили' });
+    return m === 'err' ? h('span', { class: 'pill warn', text: 'ложная тревога' }) : h('span', { class: 'pill ok', text: 'верно' });
+  };
+  const out = [];
+  out.push(h('section', { class: 'card' },
+    h('div', { class: 'field-top' }, h('h3', { text: 'Дорожная карта от ИИ' }), h('span', { class: 'pill info', text: 'Источник: ' + state.source })),
+    state.source === 'учебный' ? h('p', { class: 'lead', text: 'Это учебный ответ: в нём спрятаны ошибки, которые часто делает ИИ.' }) : null,
+    gantt(items),
+    h('div', { class: 'legend' },
+      h('span', {}, h('i', { class: 'lane-cal' }), 'календарные работы'), h('span', {}, h('i', { class: 'lane-agile' }), 'команды'),
+      h('span', {}, h('i', { class: 'lane-gate' }), 'разрешения, пилот, запуск'), h('span', {}, h('i', { class: 'lane-win' }), 'выпуски системы выплат 8 · 16 · 24 · 32'),
+      h('span', {}, h('i', { class: 'lane-legal' }), 'юристы'), h('span', {}, h('i', { class: 'lane-mkt' }), 'маркетинг'),
+      rev ? h('span', {}, h('i', { class: 'gh' }), 'расчёт по данным кейса') : null)));
+  out.push(h('section', { class: 'card' },
+    h('h3', { text: 'Найдите ошибки ИИ' }),
+    h('p', { class: 'lead', text: 'Сравните каждое утверждение ИИ со своей картой и данными кейса. Отметьте «верно» или «ошибка» по каждой строке, затем сверьте свою проверку.' }),
+    h('div', { class: 'tscroll' }, h('table', { class: 'data vtable' },
+      h('thead', {}, h('tr', {}, h('th', { text: 'Что' }), h('th', { text: 'ИИ утверждает' }), h('th', { text: 'Ваша оценка' }), rev ? h('th', { text: 'По данным' }) : null, rev ? h('th', { text: 'Итог' }) : null)),
+      h('tbody', {}, rows.map((r) => h('tr', {}, h('td', { text: r.area }), h('td', { text: r.ai }), h('td', {}, mark(r)),
+        rev ? h('td', {}, r.fact, r.hint ? h('div', { class: 'rowhint', text: r.hint }) : null) : null, rev ? h('td', {}, verdict(r)) : null))))),
+    rev ? h('div', { class: 'bigline' }, h('span', { class: 'bignum ' + (found === totalErr && !falseAlarm ? 'ok' : 'bad'), text: `Найдено ${found} из ${totalErr}` }),
+      h('span', { class: 'lead', text: falseAlarm ? `Ложных тревог: ${falseAlarm}. Верное утверждение тоже надо уметь подтвердить.` : 'Ложных тревог нет.' })) : null,
+    h('div', { class: 'actions' },
+      rev ? h('button', { class: 'btn', type: 'button', text: 'Проверить заново', onclick: () => { state.marks = {}; state.markRevealed = false; persist(); render(); } })
+        : h('button', { class: 'btn btn-primary', id: 'mark-btn', type: 'button', text: 'Сверить мою проверку', disabled: !allMarked, onclick: () => { state.markRevealed = true; persist(); render(); } }))));
+  if (rev) { out.push(sandbox()); out.push(followupCard(rows)); }
+  out.push(h('div', { class: 'actions' }, h('button', { class: 'btn btn-primary', type: 'button', text: 'К решению для правления', onclick: () => go(4) })));
+  return out;
+}
+const claim = (k, v) => h('div', { class: 'claim' }, h('span', { class: 'lbl', text: k }), h('p', { style: 'white-space:pre-wrap', text: v }));
+function sandbox() {
+  const r = cpm(state.scn);
+  const cb = (k, label) => { const i = h('input', { type: 'checkbox', id: 's-' + k }); i.checked = !!state.scn[k]; i.addEventListener('change', () => { state.scn[k] = i.checked; if (k === 'partial' && i.checked) state.scn.delay = false; if (k === 'delay' && i.checked) state.scn.partial = false; render(); }); return h('label', { for: 's-' + k }, i, label); };
+  const rows = r.items.filter((x) => x.dur > 0 && x.id !== 'legal').map((x) => ({ lane: LANES[x.lane].name, name: x.name + (x.tf === 0 && x.dur > 0 ? ' · критическая' : x.dur > 0 ? ` · запас ${x.tf}` : ''),
+    cls: LANES[x.lane].cls + (x.tf === 0 && x.dur > 0 ? ' crit' : ''), bar: x.dur ? { s: x.es + 1, e: x.ef } : { s: x.es, e: x.es, ms: true }, short: true }));
+  return h('section', { class: 'card' },
+    h('h3', { text: 'Песочница: что будет, если…' }),
+    h('p', { class: 'lead', text: 'Здесь тренажёр сам пересчитывает карту. Проверьте варианты, которые предлагает ИИ, и свои собственные.' }),
+    h('div', { class: 'scn' }, cb('delay', 'Помещения к 23-й неделе'), cb('partial', 'Одна дарк-кухня к 20-й, остальные позже')),
+    h('div', { class: 'bigline' },
+      h('span', { class: 'bignum ' + (r.slip > 0 ? 'bad' : 'ok'), text: `Запуск: ${r.launch}-я неделя` }),
+      h('span', { class: 'lead', text: r.slip > 0 ? `Опоздание на ${r.slip} ${weeksWord(r.slip)}.` : 'Дата 1 июня сохраняется.' }),
+      state.scn.partial ? h('span', { class: 'lead', text: 'Цена: на старте доставка работает в одном городе из четырёх.' }) : null),
+    gantt(rows, { weeks: r.launch }),
+    h('div', { class: 'legend' }, h('span', {}, h('i', { class: 'lane-gate' }), 'критическая цепочка: работы без запаса'), h('span', {}, h('i', { class: 'gh', style: 'border-color:var(--signal);border-style:solid;width:2px;border-radius:0' }), 'граница 35-й недели')));
+}
+function followupCard(rows) {
+  const issues = rows.filter((r) => r.st === 'bad' || r.st === 'warn');
+  if (!state.followup) state.followup = issues.length ? 'Проверь свой ответ. Я сверил его с данными кейса и нашёл расхождения:\n' + issues.map((r) => `- ${r.area}: у тебя «${r.ai}», а по данным ${r.fact}.`).join('\n') + '\nПересчитай по шагам, покажи расчёт в explanation и исправь ответ. Ничего не добавляй сверх данных кейса.' : '';
+  const ta = h('textarea', { id: 'followup', rows: 7 }); ta.value = state.followup;
+  ta.addEventListener('input', () => { state.followup = ta.value; });
+  return h('section', { class: 'card' },
+    h('h3', { text: 'Уточняющий запрос' }),
+    h('p', { class: 'lead', text: 'С ИИ работают в несколько шагов. Отредактируйте текст: оставьте только то, в чём вы уверены после своей проверки, и отправьте в тот же диалог.' }),
+    ta,
+    h('div', { class: 'actions' },
+      h('button', { class: 'btn btn-primary', type: 'button', text: 'Отправить уточнение', disabled: !state.sample || state.running || state.source === 'учебный' || state.source === 'вставлен', onclick: sendFollowup }),
+      h('button', { class: 'btn', type: 'button', text: 'Скопировать уточнение', onclick: (e) => copyText(state.followup, e.currentTarget) }),
+      state.source === 'учебный' ? h('span', { class: 'help', style: 'color:var(--ink-2);font-size:12.5px', text: 'Для учебного ответа уточнение не отправляется: соберите свой запрос на шаге 3.' }) : null),
+    h('div', { class: 'status', id: 'status', role: 'status', 'aria-live': 'polite' }));
+}
+async function sendFollowup() {
+  if (!state.sample || state.running || !state.followup.trim()) return;
+  state.ctl = new AbortController(); state.running = true; setStatus('ИИ пересчитывает…');
+  try {
+    const turns = [{ role: 'user', content: (state.lastPrompt || compiled()) + SERVICE }, { role: 'assistant', content: state.raw }, { role: 'user', content: state.followup + SERVICE }];
+    const { text } = await state.sample(turns, { signal: state.ctl.signal, cache: false, onText: ({ text }) => setStatus(`ИИ пишет ответ… ${text.length} зн.`) });
+    const parsed = parseJSON(text); if (!parsed) throw { code: 'invalid_json' };
+    state.followup = '';
+    state.running = false;
+    accept(parsed, text, 'Claude, уточнение');
+  } catch (e) { setStatus(errorCopy(e), 'err'); }
+  finally { state.running = false; state.ctl = null; }
+}
+
+/* ---- Step 4 ---- */
+function decRules() {
+  const d = state.dec, out = [];
+  const optsFilled = d.opts.filter((o) => o.name.trim());
+  if (!d.p1 && !d.p2 && !d.p3) return [{ st: 'info', t: 'Начните с первой фразы', b: 'Успеваем или нет, и почему. Опирайтесь на свой расчёт, а не на черновик ИИ.' }];
+  if (d.p1 && !/\d|недел|1 июня|запас/i.test(d.p1)) out.push({ st: 'warn', t: 'Нет опоры на расчёт', b: 'В первой фразе нет ни недель, ни запаса. Правлению нужен факт, а не оценка настроения.', q: 'Какое число из вашего расчёта убедит правление?' });
+  if (/^\s*успеваем\.?\s*$/i.test(d.p1)) out.push({ st: 'bad', t: 'Обещание без условий', b: 'С задержкой помещений запуск без решений сдвигается. «Успеваем» допустимо только с условием.', q: 'При каких решениях вы действительно успеваете?' });
+  if (optsFilled.length < 2) out.push({ st: 'warn', t: 'Меньше двух вариантов', b: 'Задание требует не меньше двух способов сохранить дату.' });
+  const noCost = optsFilled.filter((o) => !o.cost.trim());
+  if (noCost.length) out.push({ st: 'bad', t: 'Вариант без цены', b: `Цена не названа: ${noCost.map((o) => o.name).join('; ')}. Сильное решение отличает названная цена.`, q: 'Чем платим за этот вариант: объёмом, деньгами, риском, людьми?' });
+  if (d.p3 && !/решени|просим|утверд|соглас|одобр/i.test(d.p3)) out.push({ st: 'warn', t: 'Нет запроса к правлению', b: 'Третья фраза должна просить конкретное решение.' });
+  if (d.bank && !/аттестац|ИБ|безопасн|тестов|санитар|разрешен/i.test(d.bank)) out.push({ st: 'bad', t: '«Сеть А» и санитарные разрешения', b: 'В ответе по «Сети А» нет ограничения санитарных разрешений.', q: 'Какие заказы «Сеть А» сможет готовить до 31-й недели?' });
+  if (d.catalog && !/объ[её]м|после запуска|вместо|за счёт|втор|правлени|отлож/i.test(d.catalog)) out.push({ st: 'warn', t: 'Каталог без жертвы', b: 'Дата и бюджет фиксированы: управлять можно только объёмом.', q: 'Что придётся убрать, если каталог всё же войдёт в первую версию?' });
+  const ai = state.answer ? state.answer.board.join(' ') : '';
+  if (ai && [d.p1, d.p2, d.p3].join(' ').trim() === ai.trim()) out.push({ st: 'info', t: 'Черновик ИИ без правок', b: 'Ответственность за решение остаётся за человеком. Проверьте каждую фразу по своему расчёту.' });
+  if (!out.length) out.push({ st: 'ok', t: 'Ответ готов к защите', b: 'Есть опора на расчёт, варианты с ценой и явный запрос к правлению.', q: 'Какой вопрос правления к вашему ответу будет самым неудобным?' });
+  return out;
+}
+function viewDecide() {
+  const d = state.dec;
+  const fld = (k, label, ph, rows = 2) => { const ta = h('textarea', { id: 'd-' + k, rows, placeholder: ph }); ta.value = d[k]; ta.addEventListener('input', () => { d[k] = ta.value; persist(); refreshDecide(); }); return h('div', { class: 'field' }, h('label', { class: 'lbl', for: 'd-' + k, text: label }), ta); };
+  const opts = h('div', { class: 'opts' }, d.opts.map((o, i) => {
+    const n = h('input', { type: 'text', id: `o-n-${i}`, placeholder: 'Вариант' }); n.value = o.name; n.addEventListener('input', () => { o.name = n.value; persist(); refreshDecide(); });
+    const c = h('input', { type: 'text', id: `o-c-${i}`, placeholder: 'Цена варианта' }); c.value = o.cost; c.addEventListener('input', () => { o.cost = c.value; persist(); refreshDecide(); });
+    return h('div', { class: 'optrow' }, n, c);
+  }));
+  return [
+    h('section', { class: 'card' },
+      h('h3', { text: 'Ваш ответ правлению' }),
+      h('p', { class: 'lead', text: 'Напишите сами: три фразы для правления, варианты с ценой и два отдельных решения. Черновик ИИ откроется для сравнения, когда все три фразы будут написаны.' }),
+      fld('p1', '1. Успеваем или нет и почему', 'Например: без решений запуск сдвигается на … недели, потому что …'),
+      fld('p2', '2. Что предлагаем', ''),
+      fld('p3', '3. Какое решение нужно от правления', '')),
+    h('section', { class: 'card' },
+      h('h3', { text: 'Варианты сохранить дату' }), opts,
+      h('div', { class: 'actions' }, h('button', { class: 'btn btn-small', type: 'button', text: 'Добавить вариант', disabled: d.opts.length >= 4, onclick: () => { d.opts.push({ name: '', cost: '' }); persist(); render(); } }))),
+    h('section', { class: 'card' },
+      h('div', { class: 'grid2' }, fld('bank', 'Ответ коммерческому директору по «Сети А»', '', 3), fld('catalog', 'Решение по каталогу рационов', '', 3))),
+    aiCompare(),
+    h('section', { class: 'card', id: 'dec-rules' }),
+    h('section', { class: 'card' },
+      h('h3', { text: 'Разбор коуча' }),
+      h('p', { class: 'lead', text: 'Коуч не даёт готового ответа. Он задаёт вопросы, которые зададут на защите.' }),
+      h('div', { class: 'actions' },
+        h('button', { class: 'btn btn-primary', type: 'button', id: 'reflect-btn', text: state.reflecting ? 'Коуч думает…' : 'Получить разбор', disabled: !state.sample || state.reflecting, onclick: reflect }),
+        h('button', { class: 'btn', type: 'button', text: 'Скопировать отчёт', onclick: (e) => copyText(report(), e.currentTarget) }),
+        state.downloads ? h('button', { class: 'btn', type: 'button', text: 'Скачать отчёт', onclick: saveReport }) : null),
+      h('div', { class: 'reflect', id: 'reflect-out', hidden: !state.reflect && !state.reflecting, text: state.reflect }),
+      !state.sample ? h('p', { class: 'lead', text: 'Разбор коуча доступен, когда страница открыта в Claude. Проверки выше работают всегда.' }) : null,
+      h('div', { class: 'status', id: 'status', role: 'status', 'aria-live': 'polite' }))
+  ];
+}
+function aiCompare() {
+  const d = state.dec, a = state.answer, ready = d.p1.trim() && d.p2.trim() && d.p3.trim();
+  if (!a) return null;
+  const kids = [h('div', { class: 'field-top' }, h('h3', { text: 'Сравнить с черновиком ИИ' }),
+    h('button', { class: 'btn btn-small', type: 'button', id: 'cmp-btn', text: state.showAi ? 'Скрыть' : 'Показать', disabled: !ready, onclick: () => { state.showAi = !state.showAi; render(); } }))];
+  if (!ready) kids.push(h('p', { class: 'lead', text: 'Откроется, когда вы напишете все три фразы.' }));
+  if (ready && state.showAi) kids.push(h('div', { class: 'claims' },
+    claim('ИИ: правлению', a.board.join('\n') || 'нет'), claim('ИИ: варианты', a.options.map((o) => `${o.name} — цена: ${o.cost || 'не названа'}`).join('\n') || 'нет'),
+    claim('ИИ: «Сеть А»', a.bank || 'нет'), claim('ИИ: каталог', a.catalog || 'нет')),
+    h('p', { class: 'lead', text: 'Что ИИ увидел, а вы нет? Где ИИ ошибся, а вы нет? Перенесите в свой ответ только то, что выдерживает проверку расчётом.' }));
+  return h('section', { class: 'card', id: 'ai-cmp' }, kids);
+}
+function refreshDecide() {
+  const cb = $('#cmp-btn'); if (cb) { const d = state.dec; const ready = d.p1.trim() && d.p2.trim() && d.p3.trim(); if (!!ready === cb.disabled) { const box = $('#ai-cmp'); if (box) box.replaceWith(aiCompare()); } }
+  const box = $('#dec-rules'); if (!box) return;
+  box.replaceChildren(h('h3', { text: 'Проверка ответа' }), ...decRules().map((o) => h('div', { class: 'tip' },
+    h('div', { style: 'display:flex;gap:8px;align-items:baseline' }, h('span', { class: 'pill ' + o.st, text: { ok: 'готово', warn: 'проверить', bad: 'важно', info: 'совет' }[o.st] }), h('b', { text: o.t })),
+    h('p', { text: o.b }), o.q ? h('p', { class: 'q', text: o.q }) : null)));
+  renderRail(); renderSteps();
+}
+async function reflect() {
+  if (!state.sample || state.reflecting) return;
+  const d = state.dec;
+  const rows = verify(state.answer).filter((r) => r.st === 'bad').map((r) => `- ${r.area}: ИИ «${r.ai}», по данным ${r.fact}`).join('\n') || 'нет данных';
+  const prompt = `Ты — Agile-коуч и наставник руководителей проектов. Ты работаешь вопросами и не даёшь готовых решений.
+Кейс (вымышленный): маркетплейс «Корзина» запускает направление «Доставка еды», запуск 35-я неделя (1 июня), бюджет фиксирован. Критическая цепочка: решение о бюджете 3 → оплата 2 → поставка термоконтейнеров и самокатов 16 → монтаж и запуск курьерской сети 4 → санитарные разрешения 6 → пилот в одном городе 4 = 35 недель, запас 0. Помещения дарк-кухонь и складов готовы к 20-й неделе (запас 1 неделя); новость: перенос на 23-ю, сдвиг запуска +2 недели; ремонтная компания может сдать одну дарк-кухню из четырёх к 20-й. Ресторанная «Сеть А» хочет принимать заказы с 28-й недели, до получения санитарных разрешений (31-я). Председатель хочет каталог готовых рационов в первой версии без изменения даты и бюджета.
+Ошибки, которые участник нашёл в ответе ИИ:
+${rows}
+Ответ участника правлению:
+1) ${d.p1 || '—'}
+2) ${d.p2 || '—'}
+3) ${d.p3 || '—'}
+Варианты: ${d.opts.filter((o) => o.name).map((o) => `${o.name} (цена: ${o.cost || 'не названа'})`).join('; ') || '—'}
+«Сеть А»: ${d.bank || '—'}
+Каталог: ${d.catalog || '—'}
+
+Задача: до 150 слов, связным текстом без таблиц и списков: 1) чем ответ силён; 2) главный риск ответа; 3) два вопроса, которые зададут на правлении; 4) один шаг, чтобы усилить ответ за 5 минут. Критерии сильного ответа: опора на расчёт, у каждого варианта названа цена, явный запрос решения к правлению, еда не доставляется реальным покупателям до санитарных разрешений, объём меняется только с явной жертвой. Не пиши готовый ответ за участника. Пиши на русском.`;
+  state.reflecting = true; state.reflect = ''; const btn = $('#reflect-btn'); if (btn) { btn.disabled = true; btn.textContent = 'Коуч думает…'; }
+  const out = $('#reflect-out'); if (out) { out.hidden = false; out.textContent = 'Коуч думает…'; }
+  let err = '';
+  try {
+    await state.sample(prompt, { cache: false, onText: ({ text }) => { state.reflect = text; const o = $('#reflect-out'); if (o) o.textContent = text; } });
+  } catch (e) { if (e && e.text) state.reflect = e.text; err = errorCopy(e); }
+  finally { state.reflecting = false; render(); if (err) setStatus(err, 'err'); }
+}
+function report() {
+  const d = state.dec, a = state.answer;
+  const rows = verify(a);
+  const L = [];
+  L.push('# Практикум 3: гибридная дорожная карта (кейс «Витрина», маркетплейс «Корзина»)', '');
+  L.push('## Запрос к ИИ', '', '```', state.lastPrompt || compiled(), '```', '');
+  L.push(`Полнота запроса по структуре: ${promptChecks().score}%. Попыток: ${state.attempts.length}.`, '');
+  if (a) {
+    L.push('## Сверка ответа ИИ с данными', '', '| Что | ИИ | Расчёт | Итог |', '|---|---|---|---|');
+    rows.forEach((r) => L.push(`| ${r.area} | ${r.ai.replace(/\|/g, '/')} | ${r.fact.replace(/\|/g, '/')} | ${{ ok: 'верно', warn: 'проверить', bad: 'ошибка', info: 'совет' }[r.st]} |`));
+    L.push('');
+  }
+  L.push('## Собственный расчёт', '', `Цепочка: ${state.self.crit.map((id) => NAMES[id]).join(' → ') || '—'}`, `Запас: ${state.self.slack || '—'} нед.; сдвиг из-за помещений: ${state.self.impact || '—'} нед.`, '');
+  L.push('## Ответ правлению', '', `1. ${d.p1 || '—'}`, `2. ${d.p2 || '—'}`, `3. ${d.p3 || '—'}`, '');
+  L.push('Варианты сохранить дату:', ...d.opts.filter((o) => o.name).map((o) => `- ${o.name}. Цена: ${o.cost || 'не названа'}`), '');
+  L.push(`«Сеть А»: ${d.bank || '—'}`, '', `Каталог рационов: ${d.catalog || '—'}`, '');
+  if (state.reflect) L.push('## Разбор коуча', '', state.reflect, '');
+  return L.join('\n');
+}
+async function saveReport() {
+  try { await state.downloads.save({ filename: 'praktikum-3-dorozhnaya-karta.md', data: report() }); }
+  catch (e) { if (e && e.code !== 'declined') setStatus('Файл не сохранён. Скопируйте отчёт кнопкой рядом.', 'err'); }
+}
+
+/* ---- Rail ---- */
+function renderRail() {
+  const c = promptChecks();
+  const g = goals();
+  const kids = [];
+  kids.push(h('div', { class: 'rail-sec' }, h('h3', { text: 'Чему учит практикум' }),
+    ...g.map((x) => h('div', { class: 'goal' + (x.on ? ' on' : '') }, h('span', { class: 'dot' }), h('span', { text: x.k })))));
+  kids.push(h('div', { class: 'rail-sec' }, h('h4', { text: `Запрос по структуре · ${c.score}%` }),
+    h('div', { class: 'meter' }, ['role', 'ctx', 'task', 'fmt', 'lim'].map((k) => h('i', { class: c[k].st, title: PARTS.find((p) => p.k === k).n }))),
+    h('div', { class: 'legend' }, 'Роль · Контекст · Задача · Формат · Ограничения')));
+  const tip = railTip(c);
+  if (tip) kids.push(h('div', { class: 'rail-sec tip' }, h('h4', { text: 'Коуч' }), h('p', { text: tip.b }), tip.q ? h('p', { class: 'q', text: tip.q }) : null));
+  if (state.attempts.length) kids.push(h('div', { class: 'rail-sec' }, h('h4', { text: 'Попытки' }),
+    h('div', { class: 'attempts' }, state.attempts.slice(-6).map((t) => h('div', { class: 'attempt' }, h('span', { text: `#${t.n} · ${t.source}` }), h('span', { class: 'mono', text: `запрос ${t.score}% · ошибок ${t.errors}` })))),
+    h('p', { class: 'legend', text: 'Сравните: чем полнее контекст и ограничения, тем меньше ошибок в ответе.' })));
+  $('#rail').replaceChildren(...kids);
+}
+function railTip(c) {
+  const m = mineStatus();
+  if (state.step === 0) return { b: 'Прочитайте Приложение 2 и новости. Запомните, что фиксировано: дата и бюджет.', q: 'Чем в этой ситуации может управлять руководитель программы?' };
+  if (state.step === 1) {
+    if (!m.filled) return { b: 'Начните с работ, у которых срок дан прямо: бюджет, помещения, реклама.' };
+    if (m.checked && m.ok < m.total) return { b: 'Проверка показала, где ошибка. Пройдите зависимости ещё раз или откройте подсказку.', q: 'После чего начинается работа, отмеченная красным?' };
+    return { b: 'Решите сами, затем нажмите «Проверить». ИИ подключится на следующем шаге.' };
+  }
+  if (state.step === 2) {
+    if (c.holes) return { b: 'В запросе остались поля шаблона в квадратных скобках. ИИ заполнит их сам, и обычно неудачно.' };
+    if (c.ctx.st !== 'ok') return { b: 'Контекст неполный. Чего ИИ не знает, то он додумает: длительности, зависимости, окна выпусков системы выплат.', q: 'Какие данные кейса ИИ пока не видит?' };
+    if (c.task.st !== 'ok') return { b: 'В задаче не все пункты задания. ИИ отвечает на то, что спросили.', q: 'Вы попросили назвать цену каждого варианта?' };
+    if (c.lim.st !== 'ok') return { b: 'Ограничения защищают от выдумки. Попросите отделить допущения от данных и показать расчёт.' };
+    return { b: 'Запрос собран. Отправьте его и сравните ответ ИИ со своей картой.' };
+  }
+  if (state.step === 3) {
+    if (!state.markRevealed) return { b: 'Держите рядом свою карту с шага 2. Каждое число ИИ сверяйте с ней.', q: 'Какое утверждение ИИ звучит уверенно, но не следует из данных?' };
+    return { b: 'Каждую найденную ошибку превратите в уточнение: это и есть работа с ИИ в несколько шагов.' };
+  }
+  return { b: 'ИИ даёт черновик, решение принимает человек. Сначала напишите своё, потом сравните с черновиком ИИ.' };
+}
+
+/* ================= Boot ================= */
+function buildRuler() {
+  const r = $('#ruler'); if (!r) return;
+  for (let w = 1; w <= 35; w++) r.append(h('span', { class: w === 35 ? 'flag' : [8, 16, 24, 32].includes(w) ? 'bill' : (w === 1 || w % 5 === 0) ? 'five' : '', 'data-w': String(w) }));
+}
+function boot() {
+  buildRuler();
+  render();
+  const get = async (name) => { try { return window.claude && window.claude.use ? await window.claude.use(name) : null; } catch (e) { return null; } };
+  Promise.all([get('sample'), get('downloads')]).then(([smp, dl]) => {
+    state.sample = typeof smp === 'function' ? smp : null; state.downloads = dl || null;
+    render();
+    if (state.step === 4) refreshDecide();
+  });
+}
+const _renderMain = renderMain;
+renderMain = function () { _renderMain(); if (state.step === 2 && unlocked(2)) renderSafety(promptChecks()); if (state.step === 4 && unlocked(4)) refreshDecide(); };
+boot();
+</script>
+</body>
+</html>

@@ -1,0 +1,953 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#20242B">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<script src="pwa-shim.js"></script>
+</head>
+<body>
+<nav class="pwa-nav"><a href="./">← Все практикумы</a></nav>
+
+<title>Освоенный объём — Корзина</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+/* Освоенный объём: earned value for the Food Delivery launch programme at the Korzina marketplace.
+   The dark band carries 42 weeks: 35 planned, 7 forecast; week 20 (today) is signal orange, week 35 is the launch. */
+:root {
+  --paper: #E6E8E3;
+  --sheet: #FBFBF9;
+  --sheet-2: #F0F1ED;
+  --ink: #1D2026;
+  --ink-2: #5A6068;
+  --rule: #D3D6CF;
+  --rule-2: #B4B9B0;
+  --band: #20242B;
+  --band-ink: #E9EBE6;
+  --band-ink-2: #9AA1AB;
+  --signal: #F2551D;
+  --signal-tint: #FDE3D8;
+  --cobalt: #2D4FE3;
+  --cobalt-tint: #E2E7FC;
+  --amber: #D9960B;
+  --violet: #7650C4;
+  --green: #2D8A57;
+  --ok: #23804A; --ok-tint: #DDF0E3;
+  --warn: #9A6400; --warn-tint: #F8ECCB;
+  --bad: #C42B2B; --bad-tint: #F8DEDC;
+  --on-fill: #FFFFFF;
+  --c-pv: #2D8A57;      /* chart: planned value */
+  --c-ev: #2D4FE3;      /* chart: earned value */
+  --c-ac: #F2551D;      /* chart: actual cost */
+  --c-grid: #D3D6CF;
+  --font-display: "Dela Gothic One", "Golos Text", system-ui, sans-serif;
+  --font-body: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #14161A; --sheet: #1D2026; --sheet-2: #252930; --ink: #ECEDE9; --ink-2: #A2A8B0; --rule: #333840; --rule-2: #4A5059;
+    --band: #0C0E11; --band-ink: #ECEDE9; --band-ink-2: #8E959F;
+    --signal: #FF7341; --signal-tint: #44231A; --cobalt: #8EA4FF; --cobalt-tint: #232C52; --amber: #F2B84B; --violet: #B79BF0; --green: #6CCB93;
+    --ok: #6CCB93; --ok-tint: #173323; --warn: #F2C14E; --warn-tint: #3A2D0E; --bad: #FF8A80; --bad-tint: #401A18;
+    --on-fill: #14161A; --c-pv: #3FA66E; --c-ev: #6F8AF7; --c-ac: #E45A2A; --c-grid: #333840; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #14161A; --sheet: #1D2026; --sheet-2: #252930; --ink: #ECEDE9; --ink-2: #A2A8B0; --rule: #333840; --rule-2: #4A5059;
+  --band: #0C0E11; --band-ink: #ECEDE9; --band-ink-2: #8E959F;
+  --signal: #FF7341; --signal-tint: #44231A; --cobalt: #8EA4FF; --cobalt-tint: #232C52; --amber: #F2B84B; --violet: #B79BF0; --green: #6CCB93;
+  --ok: #6CCB93; --ok-tint: #173323; --warn: #F2C14E; --warn-tint: #3A2D0E; --bad: #FF8A80; --bad-tint: #401A18;
+  --on-fill: #14161A; --c-pv: #3FA66E; --c-ev: #6F8AF7; --c-ac: #E45A2A; --c-grid: #333840; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55; padding-inline: 16px; padding-block: 0 56px; font-variant-numeric: tabular-nums; }
+.wrap { max-width: 1320px; margin-inline: auto; }
+h1, h2, h3, h4, p { margin: 0; }
+h1, h2, h3 { text-wrap: balance; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2.5px solid var(--cobalt); outline-offset: 2px; }
+.mono { font-variant-numeric: tabular-nums; }
+
+/* ---------- Control band: 42 weeks ---------- */
+.band { background: var(--band); color: var(--band-ink); margin-inline: -16px; padding-inline: 16px; padding-block: 26px 0; }
+.band-top { display: flex; flex-wrap: wrap; gap: 14px 40px; align-items: end; justify-content: space-between; }
+.brand { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.brand h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(26px, 4vw, 40px); line-height: 1; letter-spacing: -0.01em; }
+.brand p { color: var(--band-ink-2); max-width: 62ch; font-size: 14.5px; }
+.casetag { font-size: 13px; color: var(--band-ink-2); border: 1px solid #454b55; border-radius: 999px; padding: 4px 12px; white-space: nowrap; }
+
+.ruler { margin-top: 30px; display: grid; grid-template-columns: repeat(42, minmax(0, 1fr)); gap: 3px; align-items: end; height: 58px; }
+.ruler span { height: 12px; border-radius: 3px; background: #343a44; position: relative; }
+.ruler span.wk::before { content: attr(data-wk); position: absolute; bottom: 30px; left: 0; font-size: 11.5px; color: var(--band-ink-2); white-space: nowrap; }
+.ruler span.mk { height: 28px; }
+.ruler span.mk::after { content: attr(data-lab); position: absolute; bottom: 34px; font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+.ruler span.past { background: #4b525d; }
+.ruler span.now { background: var(--signal); }
+.ruler span.now::after { left: 50%; transform: translateX(-50%); color: var(--signal); }
+.ruler span.launch { background: var(--green); }
+.ruler span.launch::after { left: 50%; transform: translateX(-50%); color: var(--green); }
+.ruler span.fc { background: #4a3a35; }
+.ruler span.fcend { background: var(--amber); }
+.ruler span.fcend::after { right: 0; color: var(--amber); }
+@media (max-width: 640px) { .ruler span.mk::after { content: attr(data-short); } .ruler span.wk::before { content: none; } }
+
+.steps { position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); padding-block: 22px 24px; border-top: 1px solid #3a4049; margin-top: 16px; }
+.steps::before { content: ""; position: absolute; left: 14px; right: 14px; top: 36px; height: 3px; background: #3e444e; border-radius: 3px; }
+.step { appearance: none; position: relative; text-align: left; cursor: pointer; border: 0; background: transparent; color: var(--band-ink); padding: 0 10px 0 0; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.step .dot { width: 31px; height: 31px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 14px; background: var(--band); border: 3px solid #5b626d; color: var(--band-ink-2); position: relative; z-index: 1; }
+.step .t { font-weight: 600; font-size: 14px; line-height: 1.25; }
+.step .s { font-size: 12.5px; color: var(--band-ink-2); line-height: 1.3; }
+.step:hover .dot { border-color: var(--band-ink); }
+.step.done .dot { background: var(--green); border-color: var(--green); color: var(--band); }
+.step[aria-current="step"] .dot { background: var(--signal); border-color: var(--signal); color: var(--band); box-shadow: 0 0 0 5px rgba(242, 85, 29, .25); }
+.step.locked { cursor: not-allowed; }
+.step.locked .dot { border-style: dashed; }
+.step.locked .t, .step.locked .s { color: #6d7480; }
+@media (max-width: 860px) { .step .s { display: none; } .step .t { font-size: 12px; } }
+@media (max-width: 520px) { .step .t { display: none; } }
+
+/* ---------- Working area ---------- */
+.workspace { display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr); align-items: start; padding-top: 24px; }
+@media (min-width: 1100px) { .workspace { grid-template-columns: minmax(0, 1fr) 320px; } }
+.panel { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.card { background: var(--sheet); border-radius: 16px; padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.card > h3, .sec-h { font-family: var(--font-display); font-weight: 400; font-size: 19px; line-height: 1.2; letter-spacing: -0.005em; }
+.lead { color: var(--ink-2); max-width: 72ch; }
+.lbl { font-size: 13px; color: var(--ink-2); font-weight: 600; }
+.note { font-size: 13px; color: var(--ink-2); border-left: 3px solid var(--rule-2); padding-left: 10px; }
+.help { font-size: 13px; color: var(--ink-2); }
+.grid2 { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .grid2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+@media (max-width: 600px) { .card { padding: 18px 16px; border-radius: 12px; } }
+
+.btn { appearance: none; cursor: pointer; border: 1.5px solid var(--ink); background: transparent; border-radius: 999px; padding: 8px 18px; font-weight: 600; line-height: 1.2; }
+.btn:hover { background: var(--sheet-2); }
+.btn[disabled] { opacity: .4; cursor: not-allowed; }
+.btn-primary { background: var(--ink); color: var(--sheet); }
+.btn-primary:hover { background: var(--ink); filter: brightness(1.25); }
+.btn-small { padding: 5px 13px; font-size: 13px; border-width: 1px; border-color: var(--rule-2); font-weight: 500; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.status { min-height: 20px; font-size: 13.5px; color: var(--ink-2); }
+.status.err { color: var(--bad); }
+
+textarea, input[type="text"], input[type="number"], select { width: 100%; border: 1.5px solid var(--rule); background: var(--sheet); border-radius: 10px; padding: 9px 12px; }
+textarea:hover, input:hover, select:hover { border-color: var(--rule-2); }
+textarea { resize: vertical; line-height: 1.55; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field-top { display: flex; justify-content: space-between; gap: 8px 14px; align-items: baseline; flex-wrap: wrap; }
+
+/* Tables */
+table.data { width: 100%; border-collapse: collapse; font-size: 14px; }
+table.data th, table.data td { text-align: left; padding: 10px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+table.data th { font-size: 12.5px; color: var(--ink-2); font-weight: 600; border-bottom: 2px solid var(--ink); }
+table.data tbody tr:last-child td { border-bottom: 0; }
+table.data tfoot td { border-top: 2px solid var(--ink); font-weight: 600; }
+table.data td.num, table.data th.num { text-align: right; }
+.tscroll { overflow-x: auto; }
+table.mine td { vertical-align: middle; }
+table.mine input { width: 5.2em; padding: 6px 4px; text-align: center; border-radius: 8px; font-weight: 600; font-size: 15px; }
+.rowhint { font-size: 12.5px; color: var(--ink-2); margin-top: 4px; max-width: 36ch; }
+
+/* Numeric question with an always-visible formula */
+.nq { display: grid; gap: 6px; padding: 12px 14px; border: 1px solid var(--rule); border-radius: 12px; background: var(--sheet); }
+.nq .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.nq input { width: 7em; text-align: center; font-weight: 600; }
+.nq .unit { font-size: 13px; color: var(--ink-2); }
+.formula { font-size: 13px; color: var(--ink-2); background: var(--sheet-2); border-radius: 8px; padding: 6px 10px; }
+.formula b { color: var(--ink); font-weight: 600; }
+.nq-list { display: grid; gap: 10px; }
+.nq-grid { display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .nq-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+
+.radio-list { display: flex; flex-direction: column; gap: 8px; }
+.radio-list label { display: flex; gap: 10px; align-items: baseline; padding: 9px 12px; border: 1.5px solid var(--rule); border-radius: 10px; cursor: pointer; background: var(--sheet); }
+.radio-list label:has(input:checked) { border-color: var(--ink); }
+.radio-list input { accent-color: var(--signal); }
+.compare { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.stat { padding: 12px 14px; background: var(--sheet-2); border-radius: 10px; display: flex; flex-direction: column; gap: 2px; }
+.stat b { font-family: var(--font-display); font-weight: 400; font-size: 24px; line-height: 1.15; }
+.stat.hot b { color: var(--signal); }
+.stat.good b { color: var(--ok); }
+.stat .from { font-size: 13px; color: var(--ink-2); }
+
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; padding: 2px 10px 2px 8px; border-radius: 999px; white-space: nowrap; }
+.pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.pill.ok { color: var(--ok); background: var(--ok-tint); }
+.pill.warn { color: var(--warn); background: var(--warn-tint); }
+.pill.bad { color: var(--bad); background: var(--bad-tint); }
+.pill.bad::before { border-radius: 1px; transform: rotate(45deg); }
+.pill.info { color: var(--ink-2); background: var(--sheet-2); }
+.pick { display: flex; flex-wrap: wrap; gap: 8px; }
+.pick label { display: inline-flex; gap: 7px; align-items: center; border: 1.5px solid var(--rule); border-radius: 999px; padding: 5px 13px 5px 10px; font-size: 13.5px; cursor: pointer; background: var(--sheet); }
+.pick label:has(input:checked) { border-color: var(--ink); background: var(--ink); color: var(--sheet); }
+.pick input { margin: 0; accent-color: var(--signal); }
+.bigline { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: baseline; }
+.bignum { font-family: var(--font-display); font-size: 30px; line-height: 1.1; }
+.bignum.bad { color: var(--signal); } .bignum.ok { color: var(--ok); }
+.task-list { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; }
+.task-list li::marker { font-weight: 700; color: var(--ink-2); }
+.hintrow { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.hintrow b { font-weight: 600; }
+.src { font-size: 12.5px; color: var(--ink-2); font-style: italic; }
+.reflect { white-space: pre-wrap; overflow-wrap: anywhere; padding: 14px 16px; background: var(--cobalt-tint); border-radius: 4px 14px 14px 14px; min-height: 40px; }
+.news { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 820px) { .news { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.newsitem { position: relative; padding: 16px 16px 14px; background: var(--signal-tint); border-radius: 4px 14px 14px 14px; display: flex; flex-direction: column; gap: 6px; }
+.newsitem b { font-family: var(--font-display); font-weight: 400; font-size: 16px; color: var(--signal); }
+.ai-answer { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; }
+.ai-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 16px; padding: 12px 14px; border-bottom: 1px solid var(--rule); align-items: start; }
+.ai-row:last-child { border-bottom: 0; }
+.ai-row .txt { line-height: 1.5; }
+.ai-row .txt .ix { color: var(--ink-2); font-weight: 600; margin-right: 6px; }
+.ai-row .ctl { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; min-width: 0; }
+.ai-row .why { grid-column: 1 / -1; }
+.ai-row .why select { width: 100%; font-size: 13px; padding: 6px 10px; }
+.ai-row .verdict { grid-column: 1 / -1; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; font-size: 13px; color: var(--ink-2); }
+.ai-row.flag { background: var(--sheet-2); }
+@media (max-width: 600px) { .ai-row { grid-template-columns: minmax(0, 1fr); } .ai-row .ctl { align-items: flex-start; } }
+.checkitems { display: flex; flex-direction: column; gap: 6px; }
+.checkitem { display: flex; gap: 10px; align-items: baseline; font-size: 14px; }
+.checkitem .dot { flex: none; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--rule-2); transform: translateY(1px); }
+.checkitem.on .dot { background: var(--green); border-color: var(--green); }
+details > summary { cursor: pointer; color: var(--ink-2); font-size: 13.5px; }
+
+/* ---------- Chart ---------- */
+.chart-wrap { position: relative; width: 100%; }
+.chart-wrap svg { width: 100%; height: auto; display: block; font-family: var(--font-body); }
+.chart-wrap .grid line { stroke: var(--c-grid); stroke-width: 1; }
+.chart-wrap .axis text { fill: var(--ink-2); font-size: 11px; }
+.chart-wrap .axis line, .chart-wrap .axis path { stroke: var(--rule-2); stroke-width: 1; }
+.chart-wrap .ln { fill: none; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.chart-wrap .ln.pv { stroke: var(--c-pv); }
+.chart-wrap .ln.ev { stroke: var(--c-ev); }
+.chart-wrap .ln.ac { stroke: var(--c-ac); }
+.chart-wrap .ln.fc { stroke-dasharray: 6 5; stroke-width: 2; }
+.chart-wrap .pt { stroke: var(--sheet); stroke-width: 2; }
+.chart-wrap .pt.pv { fill: var(--c-pv); } .chart-wrap .pt.ev { fill: var(--c-ev); } .chart-wrap .pt.ac { fill: var(--c-ac); }
+.chart-wrap .lab { font-size: 11.5px; font-weight: 600; fill: var(--ink); }
+.chart-wrap .lab.muted { fill: var(--ink-2); font-weight: 500; }
+.chart-wrap .vline { stroke: var(--ink-2); stroke-width: 1; stroke-dasharray: 3 4; }
+.chart-wrap .vline.now { stroke: var(--signal); stroke-dasharray: none; stroke-width: 1.5; }
+.chart-wrap .hline { stroke: var(--ink-2); stroke-width: 1; stroke-dasharray: 2 4; }
+.chart-wrap .cross { stroke: var(--ink); stroke-width: 1; opacity: .5; }
+.chart-wrap .hit { fill: transparent; cursor: crosshair; }
+.tooltip { position: absolute; pointer-events: none; background: var(--ink); color: var(--sheet); font-size: 12.5px; line-height: 1.4; padding: 8px 10px; border-radius: 8px; white-space: nowrap; transform: translate(-50%, calc(-100% - 10px)); z-index: 3; box-shadow: 0 4px 14px rgba(0,0,0,.18); }
+.tooltip b { font-weight: 600; }
+.tooltip i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12.5px; color: var(--ink-2); align-items: center; }
+.legend i { display: inline-block; width: 22px; height: 0; border-top: 2.5px solid currentColor; margin-right: 7px; vertical-align: 3px; }
+.legend i.dash { border-top-style: dashed; }
+.legend .pv { color: var(--c-pv); } .legend .ev { color: var(--c-ev); } .legend .ac { color: var(--c-ac); }
+.legend span span { color: var(--ink-2); }
+
+/* ---------- Rail ---------- */
+.rail { background: var(--sheet); border-radius: 16px; display: flex; flex-direction: column; min-width: 0; border-top: 6px solid var(--band); }
+@media (min-width: 1100px) { .rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 14px); max-height: calc(100vh - 28px); overflow: auto; } }
+.rail-sec { padding: 16px 18px; border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; gap: 10px; }
+.rail-sec:last-child { border-bottom: 0; }
+.rail h3 { font-family: var(--font-display); font-weight: 400; font-size: 16px; }
+.rail h4 { font-size: 13px; color: var(--ink-2); font-weight: 600; }
+.goal { display: flex; gap: 10px; align-items: baseline; font-size: 14px; }
+.goal .dot { flex: none; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--rule-2); transform: translateY(1px); }
+.goal.on .dot { background: var(--green); border-color: var(--green); }
+.tip { font-size: 14px; background: var(--cobalt-tint); }
+.tip .q { color: var(--ink-2); font-style: italic; }
+.score { display: flex; align-items: baseline; gap: 8px; }
+.score b { font-family: var(--font-display); font-weight: 400; font-size: 26px; }
+.empty { padding: 26px 18px; text-align: center; color: var(--ink-2); border: 2px dashed var(--rule-2); border-radius: 14px; }
+@media (prefers-reduced-motion: no-preference) { .btn, .step .dot, .pick label { transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease; } }
+</style>
+
+<header class="band">
+  <div class="wrap">
+    <div class="band-top">
+      <div class="brand">
+        <h1>Освоенный объём</h1>
+        <p>Практикум 7: освоенный объём — скажите правлению правду цифрами. Вы считаете показатели сами, читаете график, находите ошибки в готовом расчёте ИИ и формулируете решение.</p>
+      </div>
+      <span class="casetag">Кейс «Витрина», вымышленные данные</span>
+    </div>
+    <div class="ruler" id="ruler" aria-hidden="true"></div>
+    <nav class="steps" aria-label="Шаги практикума" id="steps"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="workspace">
+    <main class="panel" id="main"></main>
+    <aside class="rail" id="rail" aria-label="Прогресс и коуч"></aside>
+  </div>
+</div>
+
+<script>
+/* ================= Data: programme «Доставка еды», week 20 of 35 ================= */
+const BAC = 120, WEEKS = 35, NOW = 20;
+const PLAN = [[0, 0], [5, 12], [10, 30], [15, 52], [20, 72], [25, 92], [30, 110], [35, 120]];   // PV cumulative, mln ₸
+const FACT_EV = [[0, 0], [5, 10], [10, 24], [15, 42], [20, 60]];
+const FACT_AC = [[0, 0], [5, 13], [10, 32], [15, 54], [20, 78]];
+const PK = [
+  { k: 'kitchen', n: 'Дарк-кухни: аренда и оборудование', bac: 36, pct: 50, ac: 26 },
+  { k: 'rest', n: 'Интеграция ресторанов: меню, заказы, статусы', bac: 20, pct: 60, ac: 14 },
+  { k: 'app', n: 'Раздел «Доставка еды» в приложении', bac: 24, pct: 75, ac: 20 },
+  { k: 'courier', n: 'Курьерская сеть: найм и обучение', bac: 16, pct: 25, ac: 6 },
+  { k: 'permit', n: 'Разрешения и санитарные заключения', bac: 8, pct: 50, ac: 5 },
+  { k: 'mkt', n: 'Маркетинг запуска', bac: 16, pct: 25, ac: 7 }
+];
+const pkEV = (p) => p.bac * p.pct / 100;
+const PV = 72, EV = PK.reduce((a, p) => a + pkEV(p), 0), AC = PK.reduce((a, p) => a + p.ac, 0);   // 72, 60, 78
+const SV = EV - PV, CV = EV - AC, SPI = EV / PV, CPI = EV / AC;
+const EAC = BAC / CPI, ETC = EAC - AC, VAC = BAC - EAC, TCPI = (BAC - EV) / (BAC - AC), DUR = WEEKS / SPI;
+const ES = 15 + (EV - 52) / ((72 - 52) / 5);   // earned schedule: week when PV reached 60 → 17
+
+/* ================= Helpers ================= */
+const $ = (s, r = document) => r.querySelector(s);
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') el.className = v; else if (k === 'text') el.textContent = v; else if (k === 'html') el.innerHTML = v;
+    else if (k === 'style') el.setAttribute('style', v);
+    else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else if (v === true) el.setAttribute(k, ''); else el.setAttribute(k, v);
+  }
+  for (const kid of kids.flat()) { if (kid == null || kid === false) continue; el.append(kid.nodeType ? kid : document.createTextNode(String(kid))); }
+  return el;
+}
+const SVGNS = 'http://www.w3.org/2000/svg';
+function s(tag, attrs, ...kids) {
+  const el = document.createElementNS(SVGNS, tag);
+  for (const [k, v] of Object.entries(attrs || {})) { if (v == null || v === false) continue; if (k === 'text') el.textContent = v; else el.setAttribute(k, v); }
+  for (const kid of kids.flat()) { if (kid) el.append(kid); }
+  return el;
+}
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage may be blocked */ } },
+  del(k) { try { localStorage.removeItem(k); } catch (e) { /* ignore */ } }
+};
+const KEY = 'kz.evm.state';
+const num = (v) => { if (v === '' || v == null) return null; const n = Number(String(v).replace(',', '.').replace('%', '').replace(/\s/g, '').trim()); return Number.isFinite(n) ? n : null; };
+const near = (v, r, t = 0.051) => v != null && Math.abs(v - r) <= t;
+const fmt = (x, d = 1) => (Math.round(x * 10 ** d) / 10 ** d).toString().replace('.', ',');
+const words = (t) => String(t || '').trim().split(/\s+/).filter(Boolean).length;
+const mln = (x) => `${fmt(x, 0)} млн ₸`;
+
+/* ================= State ================= */
+const saved = store.get(KEY, {});
+const state = {
+  step: Number.isInteger(saved.step) ? saved.step : 0,
+  unlocked: Number.isInteger(saved.unlocked) ? saved.unlocked : 0,
+  guess: { budget: '', eac: '', time: '', ...(saved.guess || {}) },
+  n: saved.n || {}, chk: saved.chk || {}, shown: saved.shown || {}, hints: saved.hints || {},
+  mc: saved.mc || {}, mcChecked: !!saved.mcChecked,
+  marks: saved.marks || {}, mtype: saved.mtype || {}, markRevealed: !!saved.markRevealed,
+  final: { p1: '', p2: '', p3: '', ...(saved.final || {}) }, etalon: !!saved.etalon,
+  downloads: null
+};
+function persist() { const { downloads, ...rest } = state; store.set(KEY, rest); }
+function unlock(i) { if (i > state.unlocked) { state.unlocked = i; persist(); } }
+
+/* ================= Numeric questions ================= */
+const NQ = {};
+PK.forEach((p) => {
+  NQ['ev_' + p.k] = { s: 1, label: `EV пакета «${p.n}»`, unit: 'млн ₸',
+    f: `<b>EV пакета = бюджет пакета × % выполнения ÷ 100</b> = ${p.bac} × ${p.pct} ÷ 100.`,
+    ok: (v) => near(v, pkEV(p)), ans: `${p.bac} × ${p.pct} ÷ 100 = ${fmt(pkEV(p))}`,
+    diag: (v) => (v === p.ac ? 'Это фактические затраты пакета (AC), а не освоенный объём. EV — это бюджет пакета, умноженный на долю выполненной работы.' : v === p.bac ? 'Это весь бюджет пакета. Пакет выполнен не полностью: умножьте бюджет на % выполнения.' : `Умножьте ${p.bac} на ${p.pct} и разделите на 100.`) };
+});
+Object.assign(NQ, {
+  ev: { s: 1, label: 'Освоенный объём программы (EV) на неделю 20', unit: 'млн ₸', f: '<b>EV = сумма EV всех шести пакетов.</b> Проверьте: сумма бюджетов пакетов равна BAC = 120.',
+    ok: (v) => near(v, EV), ans: '18 + 12 + 18 + 4 + 4 + 4 = 60',
+    diag: (v) => (v === AC ? 'Это сумма фактических затрат (AC = 78). Освоенный объём складывается из EV пакетов.' : v === PV ? 'Это плановый объём на неделю 20 (PV = 72) из графика. EV берут из таблицы пакетов.' : 'Сложите шесть значений EV пакетов из таблицы выше.') },
+  sv: { s: 1, label: 'Отклонение по срокам (SV)', unit: 'млн ₸', f: '<b>SV = EV − PV.</b> Выполнено минус запланировано на эту дату. Отрицательное значение — отставание.',
+    ok: (v) => near(v, SV), ans: '60 − 72 = −12',
+    diag: (v) => (v === -SV ? 'Знак перепутан: из выполненного (EV = 60) вычитают запланированное (PV = 72). Отставание — отрицательное.' : v === CV ? 'Это CV: вы вычли AC (факт затрат). Для SV вычитают PV (план).' : near(v, PV - AC) ? 'Вы сравнили план с затратами. SV сравнивает выполненное (EV) с запланированным (PV).' : 'EV = 60, PV = 72. Вычтите план из выполненного.') },
+  cv: { s: 1, label: 'Отклонение по стоимости (CV)', unit: 'млн ₸', f: '<b>CV = EV − AC.</b> Выполнено минус потрачено. Отрицательное значение — перерасход.',
+    ok: (v) => near(v, CV), ans: '60 − 78 = −18',
+    diag: (v) => (v === -CV ? 'Знак перепутан: CV = EV − AC = 60 − 78. Перерасход — отрицательный.' : v === SV ? 'Это SV: вы вычли PV. Для CV вычитают AC = 78.' : 'EV = 60, AC = 78. Вычтите затраты из выполненного.') },
+  spi: { s: 1, label: 'Индекс выполнения сроков (SPI)', unit: 'два знака', f: '<b>SPI = EV ÷ PV.</b> Меньше 1 — отстаём от графика.',
+    ok: (v) => near(v, SPI, 0.011), ans: '60 ÷ 72 ≈ 0,83',
+    diag: (v) => (near(v, CPI, 0.011) ? 'Это CPI (EV ÷ AC). Для сроков делят на план: 60 ÷ 72.' : near(v, 1 / SPI, 0.011) ? 'Перевернули дробь: EV ÷ PV, а не PV ÷ EV. Отставание даёт индекс меньше 1.' : 'Разделите 60 на 72, округлите до двух знаков.') },
+  cpi: { s: 1, label: 'Индекс выполнения стоимости (CPI)', unit: 'два знака', f: '<b>CPI = EV ÷ AC.</b> Меньше 1 — на каждый потраченный тенге получено меньше тенге работы.',
+    ok: (v) => near(v, CPI, 0.011), ans: '60 ÷ 78 ≈ 0,77',
+    diag: (v) => (near(v, SPI, 0.011) ? 'Это SPI (EV ÷ PV). Для стоимости делят на факт затрат: 60 ÷ 78.' : near(v, 1 / CPI, 0.011) ? 'Перевернули дробь: EV ÷ AC, а не AC ÷ EV. Перерасход даёт индекс меньше 1.' : 'Разделите 60 на 78, округлите до двух знаков.') },
+  eac: { s: 1, label: 'Прогноз стоимости по завершении (EAC)', unit: 'млн ₸', f: '<b>EAC = BAC ÷ CPI</b> — если текущая эффективность затрат сохранится до конца. Один знак после запятой или целое.',
+    ok: (v) => v != null && v >= 154 && v <= 158, ans: '120 ÷ 0,77 ≈ 156',
+    diag: (v) => (near(v, 138, 0.6) ? 'Вы взяли EAC = AC + (BAC − EV) = 78 + 60 = 138. Эта формула допустима, когда перерасход был разовым (например, одна авария на стройке) и остаток пойдёт по плану. В кейсе перерасход во всех шести пакетах — он системный, поэтому остаток считают с учётом CPI: BAC ÷ CPI.' : near(v, BAC + CV, 0.6) ? 'Вы прибавили CV к бюджету. Отклонение на сегодня не предсказывает конец: делите BAC на CPI.' : near(v, BAC / SPI, 1) ? 'Разделили на SPI. Для прогноза стоимости делят на CPI (0,77).' : 'Разделите 120 на 0,77 (точнее: 120 × 78 ÷ 60).') },
+  etc: { s: 1, label: 'Прогноз оставшихся затрат (ETC)', unit: 'млн ₸', f: '<b>ETC = EAC − AC.</b> Сколько ещё предстоит потратить.',
+    ok: (v) => v != null && v >= 76 && v <= 80, ans: '156 − 78 = 78',
+    diag: (v) => (near(v, EAC, 2) ? 'Это EAC — вся стоимость по завершении. ETC — только остаток: EAC − AC.' : near(v, BAC - AC, 0.6) ? 'Это остаток бюджета (BAC − AC = 42), а не прогноз остатка затрат. ETC = EAC − AC. Сравните эти два числа: в этом вся проблема программы.' : 'Из EAC (≈156) вычтите уже потраченное (78).') },
+  vac: { s: 1, label: 'Отклонение по завершении (VAC)', unit: 'млн ₸', f: '<b>VAC = BAC − EAC.</b> Отрицательное значение — на столько не хватит бюджета.',
+    ok: (v) => v != null && v >= -38 && v <= -34, ans: '120 − 156 = −36',
+    diag: (v) => (v != null && v >= 34 && v <= 38 ? 'Знак перепутан: BAC − EAC = 120 − 156. Нехватка — отрицательная.' : near(v, CV, 0.6) ? 'Это CV — перерасход на сегодня. VAC смотрит на завершение: BAC − EAC.' : 'Из бюджета 120 вычтите EAC (≈156).') },
+  tcpi: { s: 1, label: 'Индекс необходимой эффективности (TCPI) для сохранения бюджета 120', unit: 'два знака', f: '<b>TCPI = (BAC − EV) ÷ (BAC − AC)</b> — оставшаяся работа делённая на оставшиеся деньги.',
+    ok: (v) => near(v, TCPI, 0.015), ans: '(120 − 60) ÷ (120 − 78) = 60 ÷ 42 ≈ 1,43',
+    diag: (v) => (near(v, 1 / TCPI, 0.015) ? 'Перевернули дробь: в числителе оставшаяся работа (60), в знаменателе оставшиеся деньги (42).' : near(v, CPI, 0.015) ? 'Это CPI — эффективность до сих пор. TCPI — какая эффективность нужна дальше: (BAC − EV) ÷ (BAC − AC).' : 'Оставшаяся работа 120 − 60 = 60; оставшиеся деньги 120 − 78 = 42. Разделите.') },
+  dur: { s: 1, label: 'Прогноз срока программы, недель (если темп сохранится)', unit: 'недель', f: '<b>Срок ≈ плановый срок ÷ SPI</b> = 35 ÷ 0,83. Оценка грубая, но для разговора с правлением достаточная.',
+    ok: (v) => v != null && v >= 41 && v <= 43, ans: '35 ÷ 0,83 ≈ 42',
+    diag: (v) => (near(v, WEEKS * SPI, 1) ? 'Умножили на SPI и получили срок меньше планового. Отставание удлиняет срок: делите 35 на 0,83.' : near(v, NOW / SPI, 1) ? 'Разделили текущую неделю, а не весь срок. Прогноз всего срока = 35 ÷ SPI.' : 'Разделите 35 на 0,83.') },
+  es: { s: 2, label: 'На какой неделе план (PV) предусматривал 60 млн ₸ — столько, сколько выполнено сейчас?', unit: 'неделя', f: 'Найдите на зелёной кривой точку, где PV = 60. Между неделей 15 (52) и неделей 20 (72) план растёт на <b>4 млн ₸ в неделю</b>: 52 + 4 × ? = 60.',
+    ok: (v) => near(v, ES, 0.51), ans: '15 + (60 − 52) ÷ 4 = 17',
+    diag: (v) => (v === 20 ? 'Неделя 20 — это сегодня, план на неё 72. Ищите неделю, когда план был равен 60.' : 'От недели 15 план растёт на 4 в неделю: 52 → 56 → 60.') },
+  lag: { s: 2, label: 'На сколько недель программа отстаёт от графика?', unit: 'недель', f: '<b>Отставание = текущая неделя − неделя, когда план предусматривал нынешний EV.</b> Это «освоенное расписание» (earned schedule).',
+    ok: (v) => near(v, NOW - ES, 0.51), ans: '20 − 17 = 3',
+    diag: (v) => (near(v, 12, 0.5) ? 'Это SV в деньгах (12 млн ₸). В неделях отставание — расстояние по оси недель между кривыми EV и PV.' : 'Из 20 вычтите неделю из вопроса выше.') }
+});
+const nqRes = (k) => { const v = num(state.n[k]); return v == null ? { st: 'empty' } : NQ[k].ok(v) ? { st: 'ok' } : { st: 'bad', hint: NQ[k].diag(v) }; };
+const STEP_NQ = { 1: [...PK.map((p) => 'ev_' + p.k), 'ev', 'sv', 'cv', 'spi', 'cpi', 'eac', 'etc', 'vac', 'tcpi', 'dur'], 2: ['es', 'lag'] };
+function calcStatus(st) { const r = {}; STEP_NQ[st].forEach((k) => { r[k] = nqRes(k); }); return r; }
+function stepScore(st) { const r = calcStatus(st); const v = Object.values(r); return { ok: v.filter((x) => x.st === 'ok').length, total: v.length, r }; }
+
+/* ================= Step 4: multiple choice ================= */
+const MC = [
+  { k: 'cpi', q: 'CPI = 0,77 означает, что…', opts: [
+    ['a', 'на каждый потраченный тенге программа получила работы на 77 тиын', true],
+    ['b', 'выполнено 77% объёма программы', false],
+    ['c', 'потрачено 77% бюджета', false],
+    ['d', 'программа отстаёт от графика на 23%', false]],
+    why: 'CPI сравнивает выполненное с потраченным. Процент выполнения — это EV ÷ BAC = 50%, потраченная доля бюджета — AC ÷ BAC = 65%, а сроки описывает SPI.' },
+  { k: 'spi', q: 'SPI = 0,83 означает, что…', opts: [
+    ['a', 'из запланированной к неделе 20 работы выполнено 83%', true],
+    ['b', 'программа будет закончена за 83% планового срока', false],
+    ['c', 'потрачено 83% плановой стоимости работ', false],
+    ['d', 'команда работает с эффективностью 83% и её надо загрузить сильнее', false]],
+    why: 'SPI = EV ÷ PV: сделано 60 из запланированных 72. Про загрузку людей индекс ничего не говорит — отставание может быть из-за поздних разрешений или партнёров.' },
+  { k: 'tcpi', q: 'TCPI = 1,43 при CPI = 0,77. Что это значит для руководителя программы?', opts: [
+    ['a', 'чтобы уложиться в 120 млн ₸, оставшуюся работу нужно делать в 1,43 раза эффективнее, чем всё до сих пор; при текущих 0,77 это нереалистично, поэтому нужно решение о бюджете или объёме', true],
+    ['b', 'нужно ускорить работы на 43%, и бюджет сохранится', false],
+    ['c', 'бюджет сохранится сам, если дальше не допускать перерасхода', false],
+    ['d', 'показатель информационный, решений по нему не принимают', false]],
+    why: 'Разрыв между CPI 0,77 и TCPI 1,43 — почти вдвое. Такой скачок эффективности в середине программы практически не случается. Даже «дальше без перерасхода» (CPI = 1,00) даст EAC = 138, а не 120.' },
+  { k: 'etc', q: 'ETC ≈ 78 млн ₸, а оставшийся бюджет (BAC − AC) = 42 млн ₸. Какой вывод верен?', opts: [
+    ['a', 'на оставшуюся работу денег не хватает примерно на 36 млн ₸ — это и есть VAC; вопрос нужно вынести на правление сейчас, а не на неделе 35', true],
+    ['b', 'перерасход составит 18 млн ₸ — столько, сколько показывает CV', false],
+    ['c', 'разрыв закроется, если команда экономнее потратит оставшиеся 42 млн ₸', false],
+    ['d', 'нужно подождать до недели 25 и пересчитать: пока рано делать выводы', false]],
+    why: 'CV = −18 — это перерасход на сегодня. К завершению при том же CPI он вырастет до −36 (VAC). «Потратить экономнее» означает TCPI 1,43, а ждать — терять варианты решения: на неделе 25 сократить объём будет уже дороже.' }
+];
+function mcStatus() { const r = {}; MC.forEach((m) => { const v = state.mc[m.k]; r[m.k] = !v ? { st: 'empty' } : m.opts.find((o) => o[0] === v)[2] ? { st: 'ok' } : { st: 'bad', hint: m.why }; }); return r; }
+
+/* ================= Step 5: AI answer with four planted errors ================= */
+const ERR_TYPES = [
+  ['sign', 'Перепутан порядок вычитания: SV = EV − PV, отставание даёт минус'],
+  ['swap', 'Перепутаны SPI и CPI: SPI = EV ÷ PV, CPI = EV ÷ AC'],
+  ['eac', 'EAC считает остаток по плану, без CPI: при системном перерасходе нужно BAC ÷ CPI'],
+  ['pvac', 'Перепутаны PV и AC'],
+  ['nonum', 'Вывод не следует из чисел: при SPI 0,83 и CPI 0,77 «ускориться» без цены и без решения — не план']
+];
+const AI_ROWS = [
+  { k: 'r1', t: 'На неделю 20: плановый объём PV = 72 млн ₸, фактические затраты AC = 78 млн ₸, освоенный объём EV = 60 млн ₸ (сумма по шести пакетам).', err: null },
+  { k: 'r2', t: 'Отклонение по срокам SV = PV − EV = 72 − 60 = +12 млн ₸. Положительное отклонение: программа идёт с опережением графика.', err: 'sign' },
+  { k: 'r3', t: 'Отклонение по стоимости CV = EV − AC = 60 − 78 = −18 млн ₸: перерасход.', err: null },
+  { k: 'r4', t: 'Индексы: SPI = EV ÷ AC = 60 ÷ 78 = 0,77; CPI = EV ÷ PV = 60 ÷ 72 = 0,83.', err: 'swap' },
+  { k: 'r5', t: 'Прогноз по завершении EAC = BAC − CV = 120 − (−18) = 138 млн ₸. Ожидаемый перерасход — 18 млн ₸.', err: 'eac' },
+  { k: 'r6', t: 'TCPI = (BAC − EV) ÷ (BAC − AC) = 60 ÷ 42 = 1,43.', err: null },
+  { k: 'r7', t: 'Вывод: программа в целом управляема. Если команда ускорится во второй половине, запуск состоится на неделе 35, а бюджет 120 млн ₸ удастся сохранить.', err: 'nonum' }
+];
+const TOTAL_ERR = AI_ROWS.filter((r) => r.err).length;
+function markStatus() {
+  let found = 0, typed = 0, falseAlarm = 0;
+  AI_ROWS.forEach((r) => { const m = state.marks[r.k]; if (r.err) { if (m === 'bad') { found++; if (state.mtype[r.k] === r.err) typed++; } } else if (m === 'bad') falseAlarm++; });
+  return { found, typed, falseAlarm };
+}
+const allMarked = () => AI_ROWS.every((r) => state.marks[r.k] && (state.marks[r.k] === 'ok' || state.mtype[r.k]));
+
+/* ================= Step 6: conclusions ================= */
+function finalChecks() {
+  const f = state.final, all = [f.p1, f.p2, f.p3].join(' ');
+  return [
+    { k: 'status', t: 'Статус с индексами: SPI 0,83 и CPI 0,77 (или SV −12 и CV −18)', on: /0[,.]8[2-4]|0[,.]7[6-8]|−\s?12|-\s?12|−\s?18|-\s?18/.test(all) },
+    { k: 'eac', t: 'Прогноз стоимости: EAC ≈ 156 млн ₸ или нехватка ≈ 36 млн ₸', on: /15[4-8]|3[4-8]\s?млн|−\s?36|-\s?36/.test(all) },
+    { k: 'dur', t: 'Прогноз срока: ≈ 42 недели или отставание на 3 недели / 7 недель к запуску', on: /4[1-3]\s?недел|3\s?недел|7\s?недел|на\s?3\b|на\s?7\b/.test(all) },
+    { k: 'decision', t: 'Запрос решения: сократить объём, добавить бюджет или пересмотреть срок', on: /сократ|объ[её]м|добав|увелич|бюджет|пересмотр|перенес|срок/i.test(f.p3) && /реш|утверд|прош|выбр|предлага|согласов/i.test(f.p3) },
+    { k: 'honest', t: 'Без обещания «успеем и уложимся» без цены', on: !/успеем|уложимся|наверста|ускоримся/i.test(all) || /если|при условии|ценой|за счёт/i.test(all) },
+    { k: 'three', t: 'Три предложения, в каждом хотя бы шесть слов', on: [f.p1, f.p2, f.p3].every((p) => words(p) >= 6) }
+  ];
+}
+const ETALON = [
+  'Статус. На неделе 20 выполнено работ на 60 млн ₸ из запланированных 72 (SPI 0,83), потрачено 78 млн ₸ (CPI 0,77): отстаём на 3 недели и перерасходуем 18 млн ₸, причём перерасход — во всех шести пакетах.',
+  'Прогноз. Если темп сохранится, программа будет стоить около 156 млн ₸ (на 36 млн ₸ больше бюджета) и завершится к 42-й неделе, а не к 35-й; чтобы уложиться в 120 млн ₸, оставшуюся работу пришлось бы делать с эффективностью 1,43 против нынешних 0,77 — это нереалистично.',
+  'Решение. Просим правление выбрать до недели 22: сократить объём первой версии (запуск в 6 городах вместо 12 и перенос части маркетинга — экономия около 30 млн ₸) либо утвердить бюджет 156 млн ₸ и срок 42 недели; продолжать без решения означает узнать те же цифры на неделе 35, когда вариантов уже не останется.'
+];
+
+/* ================= Points ================= */
+function points() {
+  const p = {};
+  p.calc = stepScore(1).ok;                         // 16
+  p.chart = stepScore(2).ok;                        // 2
+  p.read = Object.values(mcStatus()).filter((x) => x.st === 'ok').length;   // 4
+  const m = markStatus(); p.ai = state.markRevealed ? m.found + m.typed - m.falseAlarm : 0;   // 8
+  p.final = state.etalon ? finalChecks().filter((c) => c.on).length : 0;    // 6
+  const total = Math.max(0, p.calc + p.chart + p.read + p.ai + p.final);
+  return { ...p, total, max: 16 + 2 + 4 + 8 + 6 };
+}
+
+/* ================= Rendering: steps ================= */
+const STEPS = [
+  { t: 'Данные и задание', s: 'Пакеты работ и ваш прогноз' },
+  { t: 'Мой расчёт', s: 'EV, отклонения, индексы, прогнозы' },
+  { t: 'Диаграмма', s: 'PV, EV, AC и прогноз' },
+  { t: 'Чтение показателей', s: 'Что значат числа' },
+  { t: 'Ответ ИИ с ошибками', s: 'Найдите четыре ошибки' },
+  { t: 'Выводы и итог', s: 'Три предложения правлению' }
+];
+function stepDone(i) {
+  if (i === 0) return !!(state.guess.budget && state.guess.eac);
+  if (i === 1 || i === 2) { const c = stepScore(i); return !!state.chk[i] && c.ok === c.total; }
+  if (i === 3) return state.mcChecked && Object.values(mcStatus()).every((x) => x.st === 'ok');
+  if (i === 4) { const m = markStatus(); return state.markRevealed && m.found === TOTAL_ERR && !m.falseAlarm; }
+  if (i === 5) return state.etalon && finalChecks().every((c) => c.on);
+  return false;
+}
+function renderSteps() {
+  $('#steps').replaceChildren(...STEPS.map((st, i) => {
+    const locked = i > state.unlocked;
+    return h('button', { class: 'step' + (stepDone(i) ? ' done' : '') + (locked ? ' locked' : ''), type: 'button', 'aria-current': i === state.step ? 'step' : null, 'aria-disabled': locked ? 'true' : null, title: locked ? 'Откроется после текущего шага' : null, onclick: () => { if (!locked) go(i); } },
+      h('span', { class: 'dot', text: stepDone(i) && i !== state.step ? '✓' : String(i + 1) }), h('span', { class: 't', text: st.t }), h('span', { class: 's', text: st.s }));
+  }));
+}
+function go(i) { if (i > state.unlocked) return; state.step = i; persist(); render(); window.scrollTo({ top: 0 }); }
+function render() { renderSteps(); renderMain(); renderRail(); }
+function renderMain() { $('#main').replaceChildren(...[viewData, viewCalc, viewChart, viewRead, viewAI, viewFinal][state.step]()); }
+
+/* ---- shared widgets ---- */
+function pill(x) { return x && x !== 'empty' ? h('span', { class: 'pill ' + (x === 'ok' ? 'ok' : 'bad'), text: x === 'ok' ? 'верно' : 'неверно' }) : h('span', { class: 'pill info', text: 'пусто' }); }
+function cell(st, key) {
+  if (!state.chk[st]) return [];
+  const res = nqRes(key), out = [pill(res.st)];
+  if (res.st === 'bad' && res.hint) out.push(h('div', { class: 'rowhint', text: res.hint }));
+  if (state.shown[st] && res.st !== 'ok') out.push(h('div', { class: 'rowhint mono', text: 'ответ: ' + NQ[key].ans }));
+  return out;
+}
+const slot = (st, key) => h('div', { id: `st-${key}`, class: 'verdict-slot' }, cell(st, key));
+function refresh() {
+  const st = state.step;
+  if (STEP_NQ[st] && state.chk[st]) STEP_NQ[st].forEach((k) => { const el = $('#st-' + k); if (el) el.replaceChildren(...cell(st, k)); });
+  const line = $('#check-line'); if (line) line.textContent = checkLine(st);
+  renderSteps(); renderRail();
+}
+function input(id, value, onInput, label, attrs = {}) {
+  const i = h('input', { type: 'text', inputmode: 'decimal', id, 'aria-label': label, autocomplete: 'off', ...attrs });
+  i.value = value ?? ''; i.addEventListener('input', () => onInput(i.value)); return i;
+}
+function radios(name, list, value, onChange) {
+  return h('div', { class: 'radio-list' }, list.map(([v, t]) => {
+    const i = h('input', { type: 'radio', name, value: v, id: `${name}-${v}` }); i.checked = value === v;
+    i.addEventListener('change', () => onChange(v));
+    return h('label', { for: `${name}-${v}` }, i, h('span', { text: t }));
+  }));
+}
+function nq(k) {
+  const q = NQ[k];
+  return h('div', { class: 'nq' }, h('label', { class: 'lbl', for: 'n-' + k, text: q.label }),
+    h('div', { class: 'formula', html: 'Как считать: ' + q.f }),
+    h('div', { class: 'row' }, input('n-' + k, state.n[k], (v) => { state.n[k] = v; persist(); refresh(); }, q.label), q.unit ? h('span', { class: 'unit', text: q.unit }) : null, slot(q.s, k)));
+}
+const checkLine = (st) => { const c = stepScore(st); return !state.chk[st] ? 'Проверка показывает, где ошибка, и подсказывает, как исправить. Ответ можно открыть после второй проверки.'
+  : `Проверок: ${state.chk[st]}. Верно ${c.ok} из ${c.total}.${state.chk[st] < 2 && !state.shown[st] ? ' Ответ можно открыть после второй проверки.' : ''}`; };
+function checkBar(st, next) {
+  return h('section', { class: 'card' },
+    h('div', { class: 'actions' },
+      h('button', { class: 'btn btn-primary', type: 'button', text: 'Проверить', onclick: () => { state.chk[st] = (state.chk[st] || 0) + 1; unlock(st + 1); persist(); render(); } }),
+      h('button', { class: 'btn', type: 'button', text: state.shown[st] ? 'Ответ показан' : 'Показать ответ', disabled: state.shown[st] || (state.chk[st] || 0) < 2, onclick: () => { state.shown[st] = true; persist(); render(); } }),
+      next && state.chk[st] ? h('button', { class: 'btn', type: 'button', text: next[1], onclick: () => go(next[0]) }) : null),
+    h('p', { class: 'status', id: 'check-line', text: checkLine(st) }));
+}
+const HINTS = {
+  calc: [
+    'Уровень 1 — формулы. EV пакета = бюджет × % выполнения. SV = EV − PV, CV = EV − AC. SPI = EV ÷ PV, CPI = EV ÷ AC. EAC = BAC ÷ CPI, ETC = EAC − AC, VAC = BAC − EAC, TCPI = (BAC − EV) ÷ (BAC − AC). Источник: PMBOK 8, домен «Измерение» (Measurement), раздел об освоенном объёме; Practice Standard for Earned Value Management.',
+    'Уровень 2 — куда подставить. PV на неделю 20 берите из таблицы плана (72). EV считайте только из пакетов: 36 × 0,5; 20 × 0,6; 24 × 0,75; 16 × 0,25; 8 × 0,5; 16 × 0,25. AC — сумма столбца «Потрачено» (78). Всё остальное — из этих трёх чисел и BAC = 120.',
+    'Уровень 3 — ответ. EV = 60; SV = −12; CV = −18; SPI = 0,83; CPI = 0,77; EAC ≈ 156; ETC ≈ 78; VAC ≈ −36; TCPI ≈ 1,43; срок ≈ 42 недели. EAC = AC + (BAC − EV) = 138 допустим только при разовом перерасходе — здесь он во всех пакетах.'
+  ],
+  chart: [
+    'Уровень 1. Вертикальное расстояние между EV и PV на неделе 20 — это SV в деньгах. Горизонтальное расстояние между ними — отставание в неделях (освоенное расписание, Practice Standard for EVM, глава о прогнозах расписания).',
+    'Уровень 2. Найдите на зелёной кривой PV значение 60: оно между неделей 15 (52) и неделей 20 (72). План в этом отрезке растёт на 4 млн ₸ в неделю.',
+    'Уровень 3. PV = 60 на неделе 17: отставание 20 − 17 = 3 недели. Пунктир AC доходит до 156 на неделе 42: вот что увидит правление, если ничего не менять.'
+  ],
+  read: [
+    'Уровень 1. Индексы — это отношения «получили ÷ ожидали». Всё, что меньше 1, — хуже плана. Проценты выполнения и доли бюджета — другие величины (EV ÷ BAC, AC ÷ BAC).',
+    'Уровень 2. TCPI сравнивайте с CPI: если нужная эффективность сильно выше достигнутой, бюджет не удержать усилием воли — это сигнал к решению (PMBOK 8, домен «Измерение»: показатели нужны для действий, а не для отчёта).',
+    'Уровень 3. ETC против остатка бюджета: 78 против 42. Разница 36 — это VAC. Чем раньше правление её увидит, тем больше у него вариантов.'
+  ],
+  ai: [
+    'Уровень 1. Проверяйте каждую формулу по порядку: кто из чего вычитается, что на что делится. ИИ часто меняет порядок операндов, и знак получается «удобным».',
+    'Уровень 2. Ошибок четыре: одна в знаке отклонения, одна в индексах, одна в формуле прогноза, одна в выводе. Строки с PV/AC/EV, CV и TCPI верны.',
+    'Уровень 3. SV = PV − EV (нужно EV − PV); SPI и CPI переставлены; EAC = BAC − CV равен AC + (BAC − EV) и не учитывает CPI; «ускориться» — обещание без чисел и без цены.'
+  ],
+  final: [
+    'Уровень 1. Правлению нужны три вещи: где мы (статус с индексами), куда идём (прогноз стоимости и срока), что решить (варианты с ценой).',
+    'Уровень 2. Статус: SPI 0,83, CPI 0,77, отставание 3 недели, перерасход 18. Прогноз: EAC ≈ 156, срок ≈ 42 недели. Решение: сократить объём / добавить 36 млн ₸ / перенести запуск — и до какой недели нужно решить.',
+    'Уровень 3. Откройте эталон после того, как напишете свои три предложения: сравните, чего в вашем тексте нет.'
+  ]
+};
+function hintCard(key, title) {
+  const lvl = state.hints[key] || 0, list = HINTS[key];
+  return h('section', { class: 'card' }, h('h3', { text: 'Подсказки' }),
+    h('div', { class: 'hintrow' }, h('div', { class: 'field-top' }, h('b', { text: title }),
+      h('button', { class: 'btn btn-small', type: 'button', text: lvl >= list.length ? 'Подсказок больше нет' : `Подсказка ${lvl + 1} из ${list.length}`, disabled: lvl >= list.length, onclick: () => { state.hints[key] = lvl + 1; persist(); render(); } })),
+      lvl ? h('ol', { class: 'task-list' }, list.slice(0, lvl).map((t) => h('li', { text: t }))) : null,
+      h('p', { class: 'src', text: 'Источники: PMBOK Guide, 8-е издание, домен «Измерение» (Measurement), освоенный объём; PMI, Practice Standard for Earned Value Management.' })));
+}
+
+/* ---- Step 1: data ---- */
+function planTable() {
+  return h('div', { class: 'tscroll' }, h('table', { class: 'data' },
+    h('thead', {}, h('tr', {}, h('th', { text: 'Неделя' }), ...PLAN.slice(1).map((p) => h('th', { class: 'num', text: String(p[0]) })))),
+    h('tbody', {}, h('tr', {}, h('td', { text: 'PV нарастающим итогом, млн ₸' }), ...PLAN.slice(1).map((p) => h('td', { class: 'num mono' + (p[0] === NOW ? ' ' : ''), text: String(p[1]) }))))));
+}
+function pkTable(withInputs) {
+  return h('div', { class: 'tscroll' }, h('table', { class: 'data' + (withInputs ? ' mine' : '') },
+    h('thead', {}, h('tr', {}, ['Пакет работ', 'Бюджет, млн ₸', 'Выполнено, %', 'Потрачено, млн ₸'].map((t, i) => h('th', { class: i ? 'num' : '', text: t })), withInputs ? h('th', { text: 'EV пакета, млн ₸' }) : null, withInputs ? h('th', { text: 'Проверка' }) : null)),
+    h('tbody', {}, PK.map((p) => h('tr', {}, h('td', { text: p.n }), h('td', { class: 'num mono', text: String(p.bac) }), h('td', { class: 'num mono', text: String(p.pct) }), h('td', { class: 'num mono', text: String(p.ac) }),
+      withInputs ? h('td', {}, input('n-ev_' + p.k, state.n['ev_' + p.k], (v) => { state.n['ev_' + p.k] = v; persist(); refresh(); }, `EV пакета: ${p.n}`)) : null,
+      withInputs ? h('td', { id: 'st-ev_' + p.k }, cell(1, 'ev_' + p.k)) : null))),
+    h('tfoot', {}, h('tr', {}, h('td', { text: 'Итого' }), h('td', { class: 'num mono', text: String(BAC) }), h('td', { class: 'num mono', text: '—' }), h('td', { class: 'num mono', text: String(AC) }), withInputs ? h('td', { class: 'mono', text: '→ вопрос ниже' }) : null, withInputs ? h('td', {}) : null))));
+}
+const GBUDGET = [
+  ['yes', 'Да: потрачено 78 из 120, впереди ещё 15 недель и 42 млн ₸'],
+  ['tight', 'Впритык: перерасход есть, но его можно наверстать'],
+  ['no', 'Нет: если так пойдёт дальше, денег не хватит'],
+  ['dunno', 'По этим данным сказать нельзя']
+];
+function viewData() {
+  const g = state.guess;
+  return [
+    h('section', { class: 'card' }, h('h3', { text: 'Ситуация' }),
+      h('p', { class: 'lead', text: 'Маркетплейс «Корзина» запускает направление «Доставка еды»: дарк-кухни, интеграция ресторанов, курьерская сеть, раздел в приложении. Правление утвердило бюджет 120 млн ₸ и срок 35 недель. Сегодня неделя 20. Руководитель программы Айгерим Касымова готовит доклад правлению.' }),
+      h('div', { class: 'news' },
+        h('div', { class: 'newsitem' }, h('b', { text: 'Финансовый директор' }), h('p', { text: '«Потрачено 78 из 120 — это 65% бюджета за 57% срока. Объясните, укладываемся мы или нет. Мне нужна цифра, а не „в целом идём по плану“».' })),
+        h('div', { class: 'newsitem' }, h('b', { text: 'Руководитель разработки' }), h('p', { text: '«Приложение почти готово, рестораны подключаются. Если курьеры и кухни подтянутся, успеем к 35-й. Команда готова ускориться».' })))),
+    h('section', { class: 'card' }, h('h3', { text: 'Приложение 1. План: плановый объём по неделям' }), planTable(),
+      h('p', { class: 'note', text: 'BAC (бюджет по завершении) = 120 млн ₸. План — нарастающим итогом: к неделе 20 должно быть выполнено работ на 72 млн ₸.' })),
+    h('section', { class: 'card' }, h('h3', { text: 'Приложение 2. Факт на неделю 20 по пакетам работ' }), pkTable(false),
+      h('p', { class: 'note', text: '«Выполнено, %» — физический процент готовности пакета по акту приёмки, а не доля потраченных денег. «Потрачено» — фактические затраты (AC) по данным бухгалтерии.' })),
+    h('section', { class: 'card' }, h('h3', { text: 'Практикум 7. Освоенный объём' }),
+      h('ol', { class: 'task-list' },
+        h('li', { text: 'Посчитайте освоенный объём (EV) из пакетов работ, отклонения SV и CV, индексы SPI и CPI.' }),
+        h('li', { text: 'Постройте прогноз: EAC, ETC, VAC, TCPI и срок завершения.' }),
+        h('li', { text: 'Прочитайте диаграмму PV / EV / AC и объясните показатели словами.' }),
+        h('li', { text: 'Проверьте готовый расчёт ИИ: в нём четыре ошибки.' }),
+        h('li', { text: 'Напишите три предложения для правления: статус, прогноз, решение.' })),
+      h('p', { class: 'help', text: 'Шаги 2–6 тренажёра соответствуют пунктам 1–5. Следующий шаг открывается после проверки текущего.' })),
+    h('section', { class: 'card' }, h('h3', { text: 'Прежде чем считать: ваш прогноз' }),
+      h('p', { class: 'lead', text: 'Ответьте по первому впечатлению. Прогноз не оценивается: на шаге 2 вы сравните его с расчётом.' }),
+      h('span', { class: 'lbl', text: 'Уложимся ли в бюджет 120 млн ₸?' }),
+      radios('g-budget', GBUDGET, g.budget, (v) => { g.budget = v; persist(); guessRefresh(); }),
+      h('div', { class: 'grid2' },
+        h('div', { class: 'field' }, h('label', { class: 'lbl', for: 'g-eac', text: 'Сколько, по-вашему, будет стоить программа по завершении, млн ₸?' }),
+          input('g-eac', g.eac, (v) => { g.eac = v; persist(); guessRefresh(); }, 'Прогноз стоимости', { style: 'max-width:200px' })),
+        h('div', { class: 'field' }, h('label', { class: 'lbl', for: 'g-time', text: 'На какой неделе, по-вашему, состоится запуск?' }),
+          input('g-time', g.time, (v) => { g.time = v; persist(); renderRail(); }, 'Прогноз срока', { style: 'max-width:200px' }))),
+      h('div', { class: 'actions' }, h('button', { class: 'btn btn-primary', id: 'go-calc', type: 'button', text: 'К расчёту', disabled: !stepDone(0), onclick: () => { unlock(1); go(1); } }),
+        h('span', { class: 'help', id: 'go-calc-help', hidden: stepDone(0), text: 'Выберите ответ про бюджет и впишите прогноз стоимости.' })))
+  ];
+}
+function guessRefresh() {
+  const ok = stepDone(0); if (ok) unlock(1);
+  const b = $('#go-calc'); if (b) b.disabled = !ok;
+  const hp = $('#go-calc-help'); if (hp) hp.hidden = ok;
+  renderSteps(); renderRail();
+}
+
+/* ---- Step 2: my calculation ---- */
+function viewCalc() {
+  const g = state.guess, geac = num(g.eac);
+  const done = state.chk[1] && stepScore(1).ok === stepScore(1).total;
+  return [
+    h('section', { class: 'card' }, h('h3', { text: '1. Освоенный объём из пакетов работ' }),
+      h('p', { class: 'lead', text: 'EV каждого пакета — его бюджет, умноженный на долю выполненной работы. Затраты пакета (AC) в расчёт EV не входят: они нужны позже, для CV и CPI.' }),
+      pkTable(true), h('div', { class: 'nq-list' }, nq('ev'))),
+    h('section', { class: 'card' }, h('h3', { text: '2. Отклонения и индексы на неделю 20' }),
+      h('p', { class: 'lead', text: 'Три опорных числа: PV = 72 (план на неделю 20), EV — из таблицы выше, AC = 78 (итого потрачено). Деньги — в млн ₸, индексы — с двумя знаками после запятой.' }),
+      h('div', { class: 'nq-grid' }, nq('sv'), nq('cv'), nq('spi'), nq('cpi'))),
+    h('section', { class: 'card' }, h('h3', { text: '3. Прогноз по завершении' }),
+      h('p', { class: 'lead', text: 'Прогнозы отвечают на вопрос финансового директора. Считайте, исходя из того, что текущая эффективность сохранится: перерасход есть во всех шести пакетах, то есть он системный.' }),
+      h('div', { class: 'nq-grid' }, nq('eac'), nq('etc'), nq('vac'), nq('tcpi')),
+      h('div', { class: 'nq-list' }, nq('dur'))),
+    done ? h('section', { class: 'card' }, h('h3', { text: 'Ваш прогноз против расчёта' }),
+      h('div', { class: 'compare' },
+        h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Вы предполагали, стоимость' }), h('b', { text: geac != null ? mln(geac) : '—' })),
+        h('div', { class: 'stat hot' }, h('span', { class: 'lbl', text: 'Расчёт: EAC' }), h('b', { text: '≈ 156 млн ₸' })),
+        h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Вы предполагали, запуск' }), h('b', { text: g.time ? `неделя ${g.time}` : '—' })),
+        h('div', { class: 'stat hot' }, h('span', { class: 'lbl', text: 'Расчёт: срок' }), h('b', { text: '≈ 42 недели' }))),
+      h('p', { class: 'note', text: `Ваш ответ про бюджет: «${(GBUDGET.find((x) => x[0] === g.budget) || ['', '—'])[1]}». По расчёту при сохранении CPI 0,77 программа не укладывается на 36 млн ₸.` })) : null,
+    checkBar(1, [2, 'Дальше: диаграмма']),
+    hintCard('calc', 'Освоенный объём и прогнозы')
+  ];
+}
+
+/* ---- Step 3: chart ---- */
+function chart() {
+  const W = 760, H = 400, L = 54, R = 70, T = 28, B = 46;
+  const X = (w) => L + (W - L - R) * w / 42, Y = (v) => T + (H - T - B) * (1 - v / 160);
+  const fcAC = [[NOW, AC], [42, EAC]], fcEV = [[NOW, EV], [42, BAC]];
+  const path = (pts) => pts.map((p, i) => `${i ? 'L' : 'M'}${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join(' ');
+  const svg = s('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': 'График освоенного объёма: плановый объём, освоенный объём и фактические затраты по неделям, с прогнозом до недели 42' });
+  const grid = s('g', { class: 'grid' });
+  [0, 40, 80, 120, 160].forEach((v) => grid.append(s('line', { x1: L, x2: W - R, y1: Y(v), y2: Y(v) })));
+  svg.append(grid);
+  const ax = s('g', { class: 'axis' });
+  [0, 40, 80, 120, 160].forEach((v) => ax.append(s('text', { x: L - 8, y: Y(v) + 4, 'text-anchor': 'end', text: String(v) })));
+  for (let w = 0; w <= 42; w += 5) ax.append(s('text', { x: X(w), y: H - B + 18, 'text-anchor': 'middle', text: String(w) }));
+  ax.append(s('text', { x: X(42) + 8, y: H - B + 18, 'text-anchor': 'start', text: '42' }));
+  ax.append(s('text', { x: (L + W - R) / 2, y: H - 8, 'text-anchor': 'middle', text: 'неделя программы' }));
+  ax.append(s('text', { x: 14, y: T - 10, 'text-anchor': 'start', text: 'млн ₸, нарастающим итогом' }));
+  svg.append(ax);
+  // BAC line and markers
+  svg.append(s('line', { class: 'hline', x1: L, x2: W - R, y1: Y(BAC), y2: Y(BAC) }));
+  svg.append(s('text', { class: 'lab muted', x: L + 4, y: Y(BAC) - 5, text: 'BAC 120' }));
+  svg.append(s('line', { class: 'vline now', x1: X(NOW), x2: X(NOW), y1: T, y2: H - B }));
+  svg.append(s('text', { class: 'lab', x: X(NOW) - 5, y: T + 10, 'text-anchor': 'end', text: 'сегодня: неделя 20', style: 'fill: var(--signal)' }));
+  svg.append(s('line', { class: 'vline', x1: X(WEEKS), x2: X(WEEKS), y1: T, y2: H - B }));
+  svg.append(s('text', { class: 'lab muted', x: X(WEEKS) + 4, y: T + 10, text: 'запуск: 35' }));
+  // lines
+  svg.append(s('path', { class: 'ln pv', d: path(PLAN) }));
+  svg.append(s('path', { class: 'ln ev fc', d: path(fcEV) }));
+  svg.append(s('path', { class: 'ln ac fc', d: path(fcAC) }));
+  svg.append(s('path', { class: 'ln ev', d: path(FACT_EV) }));
+  svg.append(s('path', { class: 'ln ac', d: path(FACT_AC) }));
+  // points
+  [['pv', PLAN], ['ev', FACT_EV], ['ac', FACT_AC]].forEach(([c, pts]) => pts.forEach((p) => svg.append(s('circle', { class: 'pt ' + c, cx: X(p[0]), cy: Y(p[1]), r: 4 }))));
+  // direct labels
+  svg.append(s('text', { class: 'lab', x: X(WEEKS) + 6, y: Y(BAC) + 14, text: 'PV (план)', style: 'fill: var(--c-pv)' }));
+  svg.append(s('text', { class: 'lab', x: X(NOW) + 7, y: Y(AC) - 6, text: `AC ${AC}`, style: 'fill: var(--c-ac)' }));
+  svg.append(s('text', { class: 'lab', x: X(NOW) + 7, y: Y(EV) + 16, text: `EV ${EV}`, style: 'fill: var(--c-ev)' }));
+  svg.append(s('text', { class: 'lab', x: X(42) + 6, y: Y(EAC) + 4, text: `EAC ≈ ${fmt(EAC, 0)}`, style: 'fill: var(--c-ac)' }));
+  svg.append(s('text', { class: 'lab muted', x: X(42) + 6, y: Y(BAC) + 22, text: '≈ 42 нед.' }));
+  // SV bracket at week 20
+  svg.append(s('line', { class: 'cross', x1: X(NOW) + 2, x2: X(NOW) + 2, y1: Y(EV), y2: Y(PV) }));
+  svg.append(s('text', { class: 'lab muted', x: X(NOW) - 5, y: (Y(EV) + Y(PV)) / 2 + 4, 'text-anchor': 'end', text: 'SV −12' }));
+  // hover layer
+  const cross = s('line', { class: 'cross', x1: 0, x2: 0, y1: T, y2: H - B, visibility: 'hidden' });
+  svg.append(cross);
+  const hit = s('rect', { class: 'hit', x: L, y: T, width: W - L - R, height: H - T - B });
+  svg.append(hit);
+  const wrap = h('div', { class: 'chart-wrap' }, svg);
+  const tip = h('div', { class: 'tooltip', hidden: true }); wrap.append(tip);
+  const interp = (pts, w) => { for (let i = 1; i < pts.length; i++) { if (w <= pts[i][0]) { const [a, b] = [pts[i - 1], pts[i]]; return a[1] + (b[1] - a[1]) * (w - a[0]) / (b[0] - a[0]); } } return null; };
+  const show = (ev) => {
+    const r = svg.getBoundingClientRect(), sx = W / r.width, w = Math.round(Math.min(42, Math.max(0, ((ev.clientX - r.left) * sx - L) / (W - L - R) * 42)));
+    cross.setAttribute('x1', X(w)); cross.setAttribute('x2', X(w)); cross.setAttribute('visibility', 'visible');
+    const pv = w <= WEEKS ? interp(PLAN, w) : null, evv = w <= NOW ? interp(FACT_EV, w) : interp(fcEV, w), acv = w <= NOW ? interp(FACT_AC, w) : interp(fcAC, w);
+    tip.replaceChildren(h('b', { text: `Неделя ${w}${w > NOW ? ' · прогноз' : ''}` }), h('br'),
+      pv != null ? h('span', {}, h('i', { style: 'background:var(--c-pv)' }), `PV ${fmt(pv, 0)}`, h('br')) : null,
+      h('span', {}, h('i', { style: 'background:var(--c-ev)' }), `EV ${fmt(evv, 0)}`, h('br')),
+      h('span', {}, h('i', { style: 'background:var(--c-ac)' }), `AC ${fmt(acv, 0)}`));
+    tip.hidden = false; tip.style.left = `${X(w) / sx}px`; tip.style.top = `${Y(Math.max(acv, pv || 0)) / sx}px`;
+  };
+  hit.addEventListener('mousemove', show); hit.addEventListener('touchstart', (e) => { if (e.touches[0]) show(e.touches[0]); }, { passive: true });
+  hit.addEventListener('mouseleave', () => { tip.hidden = true; cross.setAttribute('visibility', 'hidden'); });
+  return wrap;
+}
+function viewChart() {
+  return [
+    h('section', { class: 'card' }, h('h3', { text: 'Диаграмма освоенного объёма' }),
+      h('p', { class: 'lead', text: 'Сплошные линии — план и факт до недели 20. Пунктир — что будет, если индексы не изменятся: затраты дойдут до EAC ≈ 156, а работа на 120 млн ₸ будет выполнена к 42-й неделе. Наведите курсор на график, чтобы увидеть значения по неделям.' }),
+      chart(),
+      h('div', { class: 'legend' },
+        h('span', { class: 'pv' }, h('i'), h('span', { text: 'PV — плановый объём' })),
+        h('span', { class: 'ev' }, h('i'), h('span', { text: 'EV — освоенный объём' })),
+        h('span', { class: 'ac' }, h('i'), h('span', { text: 'AC — фактические затраты' })),
+        h('span', { class: 'ev' }, h('i', { class: 'dash' }), h('span', { text: 'прогноз при текущих SPI и CPI' }))),
+      h('details', {}, h('summary', { text: 'Данные графика таблицей' }),
+        h('div', { class: 'tscroll' }, h('table', { class: 'data' },
+          h('thead', {}, h('tr', {}, ['Неделя', 'PV', 'EV', 'AC'].map((t, i) => h('th', { class: i ? 'num' : '', text: t })))),
+          h('tbody', {}, PLAN.map((p, i) => h('tr', {}, h('td', { text: String(p[0]) }), h('td', { class: 'num mono', text: String(p[1]) }), h('td', { class: 'num mono', text: FACT_EV[i] ? String(FACT_EV[i][1]) : '—' }), h('td', { class: 'num mono', text: FACT_AC[i] ? String(FACT_AC[i][1]) : '—' })))))))),
+    h('section', { class: 'card' }, h('h3', { text: 'Прочитайте отставание по графику' }),
+      h('p', { class: 'lead', text: 'SV = −12 млн ₸ — отставание в деньгах; правлению понятнее недели. Посмотрите, когда план предусматривал ту работу, которая выполнена сегодня.' }),
+      h('div', { class: 'nq-list' }, nq('es'), nq('lag'))),
+    checkBar(2, [3, 'Дальше: чтение показателей']),
+    hintCard('chart', 'Как читать график')
+  ];
+}
+
+/* ---- Step 4: reading the indicators ---- */
+function viewRead() {
+  const st = mcStatus();
+  return [
+    h('section', { class: 'card' }, h('h3', { text: 'Что означают числа' }),
+      h('p', { class: 'lead', text: 'Правление не обязано знать формулы. Ваша задача — перевести индексы в смысл и действие. Выберите один ответ на каждый вопрос.' }),
+      ...MC.map((m) => h('div', { class: 'nq' }, h('span', { class: 'lbl', text: m.q }),
+        radios('mc-' + m.k, m.opts.map((o) => [o[0], o[1]]), state.mc[m.k], (v) => { state.mc[m.k] = v; persist(); renderMain(); renderRail(); renderSteps(); }),
+        state.mcChecked ? h('div', {}, pill(st[m.k].st), st[m.k].st === 'bad' ? h('div', { class: 'rowhint', style: 'max-width:70ch', text: st[m.k].hint }) : st[m.k].st === 'ok' ? h('div', { class: 'rowhint', style: 'max-width:70ch', text: m.why }) : null) : null))),
+    h('section', { class: 'card' },
+      h('div', { class: 'actions' },
+        h('button', { class: 'btn btn-primary', type: 'button', text: 'Проверить', disabled: MC.some((m) => !state.mc[m.k]), onclick: () => { state.mcChecked = true; unlock(4); persist(); render(); } }),
+        state.mcChecked ? h('button', { class: 'btn', type: 'button', text: 'Дальше: ответ ИИ', onclick: () => go(4) }) : null),
+      h('p', { class: 'status', text: state.mcChecked ? `Верно ${Object.values(st).filter((x) => x.st === 'ok').length} из ${MC.length}. Можно изменить ответ и проверить снова.` : 'Ответьте на все четыре вопроса и нажмите «Проверить».' })),
+    hintCard('read', 'Чтение индексов')
+  ];
+}
+
+/* ---- Step 5: AI answer ---- */
+function viewAI() {
+  const rev = state.markRevealed, m = markStatus();
+  const rows = AI_ROWS.map((r, i) => {
+    const mark = state.marks[r.k];
+    const pick = h('div', { class: 'pick' }, [['ok', 'верно'], ['bad', 'ошибка']].map(([v, t]) => {
+      const inp = h('input', { type: 'radio', name: 'mk-' + r.k, value: v, id: `mk-${r.k}-${v}`, disabled: rev }); inp.checked = mark === v;
+      inp.addEventListener('change', () => { state.marks[r.k] = v; if (v === 'ok') delete state.mtype[r.k]; persist(); renderMain(); renderRail(); });
+      return h('label', { for: `mk-${r.k}-${v}` }, inp, t);
+    }));
+    const sel = mark === 'bad' ? (() => { const el = h('select', { 'aria-label': 'В чём ошибка', disabled: rev }, h('option', { value: '', text: 'в чём ошибка?' }), ERR_TYPES.map(([v, t]) => h('option', { value: v, text: t }))); el.value = state.mtype[r.k] || ''; el.addEventListener('change', () => { state.mtype[r.k] = el.value; persist(); renderMain(); renderRail(); }); return el; })() : null;
+    let verdict = null;
+    if (rev) {
+      const isErr = !!r.err, hit = mark === 'bad';
+      const typeOk = isErr && hit && state.mtype[r.k] === r.err;
+      const errName = isErr ? ERR_TYPES.find((e) => e[0] === r.err)[1] : '';
+      verdict = h('div', { class: 'verdict' },
+        isErr ? (hit ? h('span', { class: 'pill ' + (typeOk ? 'ok' : 'warn'), text: typeOk ? 'ошибка найдена и названа' : 'ошибка найдена, но причина другая' }) : h('span', { class: 'pill bad', text: 'ошибка пропущена' }))
+          : (hit ? h('span', { class: 'pill bad', text: 'ложная тревога' }) : h('span', { class: 'pill ok', text: 'верно подтверждено' })),
+        h('span', { text: isErr ? errName + '.' : 'Эта строка верна: ИИ ошибается не везде, и верное тоже нужно уметь подтвердить.' }));
+    }
+    return h('div', { class: 'ai-row' + (mark === 'bad' ? ' flag' : '') }, h('div', { class: 'txt' }, h('span', { class: 'ix', text: String(i + 1) + '.' }), r.t), h('div', { class: 'ctl' }, pick), sel ? h('div', { class: 'why' }, sel) : null, verdict);
+  });
+  return [
+    h('section', { class: 'card' }, h('h3', { text: 'Расчёт, который принёс ИИ' }),
+      h('p', { class: 'lead', text: 'Руководитель разработки попросил корпоративный ИИ «посчитать EVM по данным недели 20» и прислал результат Айгерим. Текст звучит уверенно. Проверьте каждую строку по своему расчёту: отметьте «верно» или «ошибка» и для каждой ошибки выберите, в чём она состоит. Ошибок четыре.' }),
+      h('div', { class: 'ai-answer' }, rows),
+      rev ? h('div', { class: 'bigline' }, h('span', { class: 'bignum ' + (m.found === TOTAL_ERR && !m.falseAlarm ? 'ok' : 'bad'), text: `Найдено ${m.found} из ${TOTAL_ERR}` }),
+        h('span', { class: 'lead', text: `Причина названа верно: ${m.typed} из ${TOTAL_ERR}. ${m.falseAlarm ? `Ложных тревог: ${m.falseAlarm}.` : 'Ложных тревог нет.'}` })) : null,
+      h('div', { class: 'actions' },
+        rev ? h('button', { class: 'btn', type: 'button', text: 'Проверить заново', onclick: () => { state.marks = {}; state.mtype = {}; state.markRevealed = false; persist(); render(); } })
+          : h('button', { class: 'btn btn-primary', type: 'button', text: 'Сверить мою проверку', disabled: !allMarked(), onclick: () => { state.markRevealed = true; unlock(5); persist(); render(); } }),
+        rev ? h('button', { class: 'btn', type: 'button', text: 'Дальше: выводы', onclick: () => go(5) }) : null),
+      !rev && !allMarked() ? h('p', { class: 'status', text: 'Отметьте все семь строк; для каждой ошибки выберите причину.' }) : null),
+    rev ? h('section', { class: 'card' }, h('h3', { text: 'Почему ИИ так ошибается' }),
+      h('p', { class: 'lead', text: 'Формулы EVM симметричны по форме: везде «одно минус другое» и «одно делить на другое». Языковая модель легко меняет операнды местами, а затем подбирает вывод под получившийся знак. Поэтому проверять нужно не вывод, а каждую формулу: кто из чего вычитается и что на что делится. Отдельно обратите внимание на EAC = 138: формула AC + (BAC − EV) сама по себе корректна и описана в стандарте, но для случая разового перерасхода. Применять её к системному перерасходу — ошибка не арифметики, а допущения.' })) : null,
+    hintCard('ai', 'Поиск ошибок в расчёте ИИ')
+  ];
+}
+
+/* ---- Step 6: conclusions and summary ---- */
+function viewFinal() {
+  const f = state.final, ready = ['p1', 'p2', 'p3'].every((k) => words(f[k]) >= 6);
+  const fld = (k, label, ph) => { const ta = h('textarea', { id: 'f-' + k, rows: 3, placeholder: ph }); ta.value = f[k]; ta.addEventListener('input', () => { f[k] = ta.value; persist(); refreshFinal(); }); return h('div', { class: 'field' }, h('label', { class: 'lbl', for: 'f-' + k, text: label }), ta); };
+  const p = points();
+  return [
+    h('section', { class: 'card' }, h('h3', { text: 'Три предложения для правления' }),
+      h('p', { class: 'lead', text: 'Напишите сами, опираясь на свой расчёт. Эталон откроется для сравнения, когда во всех трёх предложениях будет хотя бы по шесть слов.' }),
+      fld('p1', '1. Статус: где программа сейчас', 'Например: на неделе 20 выполнено … из …, потрачено …, SPI …, CPI …'),
+      fld('p2', '2. Прогноз: куда идём при текущем темпе', 'Например: при сохранении CPI программа будет стоить …, завершится к … неделе'),
+      fld('p3', '3. Решение: что просим у правления и к какому сроку', 'Например: просим до недели … выбрать: сократить объём (…), добавить бюджет (…) или перенести запуск (…)'),
+      h('div', { class: 'actions' }, h('button', { class: 'btn btn-primary', id: 'etalon-btn', type: 'button', text: state.etalon ? 'Эталон открыт' : 'Сравнить с эталоном', disabled: !ready || state.etalon, onclick: () => { state.etalon = true; persist(); render(); } }),
+        !ready ? h('span', { class: 'help', id: 'final-help', text: 'Допишите три предложения.' }) : null)),
+    h('section', { class: 'card', id: 'final-checks' }, ...finalCard()),
+    state.etalon ? h('section', { class: 'card' }, h('h3', { text: 'Эталон для сравнения' }),
+      h('div', { class: 'reflect', text: ETALON.join('\n\n') }),
+      h('p', { class: 'help', text: 'Эталон — один из возможных ответов. Важно не совпадение слов, а наличие статуса с числами, прогноза и запроса решения с ценой каждого варианта.' })) : null,
+    hintCard('final', 'Доклад правлению'),
+    h('section', { class: 'card' }, h('h3', { text: 'Итог' }),
+      h('div', { class: 'compare' },
+        h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Расчёт' }), h('b', { text: `${p.calc} / 16` })),
+        h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Диаграмма' }), h('b', { text: `${p.chart} / 2` })),
+        h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Чтение' }), h('b', { text: `${p.read} / 4` })),
+        h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Ошибки ИИ' }), h('b', { text: `${p.ai} / 8` })),
+        h('div', { class: 'stat' }, h('span', { class: 'lbl', text: 'Выводы' }), h('b', { text: `${p.final} / 6` })),
+        h('div', { class: 'stat ' + (p.total >= p.max * 0.8 ? 'good' : 'hot') }, h('span', { class: 'lbl', text: 'Всего баллов' }), h('b', { text: `${p.total} / ${p.max}` }))),
+      h('p', { class: 'lead', text: 'Что сделано: освоенный объём собран из пакетов, отклонения и индексы посчитаны, прогноз построен и прочитан по графику, четыре ошибки ИИ найдены, доклад правлению написан.' }),
+      h('div', { class: 'actions' },
+        h('button', { class: 'btn btn-primary', type: 'button', text: 'Скопировать отчёт', onclick: (e) => copyText(report(), e.currentTarget) }),
+        state.downloads ? h('button', { class: 'btn', type: 'button', text: 'Скачать отчёт', onclick: saveReport }) : null,
+        h('button', { class: 'btn btn-small', type: 'button', text: 'Начать заново', onclick: resetAll })),
+      h('p', { class: 'help', id: 'rep-status', text: 'Отчёт собирает всё, что вы ввели на шагах 1–6, в формате markdown для документа или чата группы.' }))
+  ];
+}
+function finalCard() {
+  const checks = finalChecks();
+  return [h('h3', { text: 'Что должно быть в докладе' }),
+    h('div', { class: 'checkitems' }, checks.map((c) => h('div', { class: 'checkitem' + (c.on ? ' on' : '') }, h('span', { class: 'dot' }), h('span', { text: c.t })))),
+    h('p', { class: 'help', text: 'Отметки обновляются по мере написания. Это подсказка о структуре, а не оценка стиля.' })];
+}
+function refreshFinal() {
+  const el = $('#final-checks'); if (el) el.replaceChildren(...finalCard());
+  const f = state.final, ready = ['p1', 'p2', 'p3'].every((k) => words(f[k]) >= 6);
+  const b = $('#etalon-btn'); if (b && !state.etalon) b.disabled = !ready;
+  const hp = $('#final-help'); if (hp) hp.hidden = ready;
+  renderSteps(); renderRail();
+}
+function resetAll() {
+  if (!window.confirm('Удалить все ответы и начать практикум заново?')) return;
+  store.del(KEY);
+  Object.assign(state, { step: 0, unlocked: 0, guess: { budget: '', eac: '', time: '' }, n: {}, chk: {}, shown: {}, hints: {}, mc: {}, mcChecked: false, marks: {}, mtype: {}, markRevealed: false, final: { p1: '', p2: '', p3: '' }, etalon: false });
+  render(); window.scrollTo({ top: 0 });
+}
+
+/* ---- Report ---- */
+function report() {
+  const L = [], v = (k) => state.n[k] || '—', p = points(), m = markStatus();
+  const st = (i) => { const c = stepScore(i); return state.chk[i] ? `(проверка: верно ${c.ok} из ${c.total})` : '(не проверено)'; };
+  L.push('# Практикум 7. Освоенный объём — программа «Доставка еды» (кейс «Витрина»)', '');
+  L.push('## 1. Прогноз до расчёта', '', `Уложимся в бюджет: ${(GBUDGET.find((x) => x[0] === state.guess.budget) || ['', '—'])[1]}. Ожидаемая стоимость: ${state.guess.eac || '—'} млн ₸. Ожидаемый запуск: неделя ${state.guess.time || '—'}.`, '');
+  L.push(`## 2. Мой расчёт ${st(1)}`, '', '| Пакет | Бюджет | Выполнено, % | Потрачено | EV (мой) |', '|---|---|---|---|---|', ...PK.map((pk) => `| ${pk.n} | ${pk.bac} | ${pk.pct} | ${pk.ac} | ${v('ev_' + pk.k)} |`), '');
+  L.push(`EV = ${v('ev')}; PV = 72; AC = 78.`, `SV = ${v('sv')}; CV = ${v('cv')}; SPI = ${v('spi')}; CPI = ${v('cpi')}.`, `EAC = ${v('eac')}; ETC = ${v('etc')}; VAC = ${v('vac')}; TCPI = ${v('tcpi')}; прогноз срока = ${v('dur')} недель.`, '');
+  L.push(`## 3. Диаграмма ${st(2)}`, '', `План предусматривал нынешний EV на неделе ${v('es')}; отставание ${v('lag')} недели.`, '');
+  L.push('## 4. Чтение показателей', '', ...MC.map((mc) => `- ${mc.q} — ${(mc.opts.find((o) => o[0] === state.mc[mc.k]) || ['', '—'])[1]}${state.mcChecked ? (mcStatus()[mc.k].st === 'ok' ? ' (верно)' : ' (неверно)') : ''}`), '');
+  L.push('## 5. Ошибки в расчёте ИИ', '', state.markRevealed ? `Найдено ${m.found} из ${TOTAL_ERR}, причина названа верно: ${m.typed}, ложных тревог: ${m.falseAlarm}.` : 'Не сверено.', '',
+    ...AI_ROWS.map((r, i) => `${i + 1}. ${state.marks[r.k] === 'bad' ? 'ОШИБКА' : state.marks[r.k] === 'ok' ? 'верно' : '—'}${state.mtype[r.k] ? ` — ${(ERR_TYPES.find((e) => e[0] === state.mtype[r.k]) || ['', ''])[1]}` : ''}: ${r.t}`), '');
+  L.push('## 6. Доклад правлению', '', `1. ${state.final.p1 || '—'}`, `2. ${state.final.p2 || '—'}`, `3. ${state.final.p3 || '—'}`, '', 'Чек-лист: ' + finalChecks().map((c) => `${c.on ? '[x]' : '[ ]'} ${c.t}`).join('; '), '');
+  L.push('## Итог', '', `Баллы: ${p.total} из ${p.max} (расчёт ${p.calc}/16, диаграмма ${p.chart}/2, чтение ${p.read}/4, ошибки ИИ ${p.ai}/8, выводы ${p.final}/6).`);
+  return L.join('\n');
+}
+async function copyText(t, btn) {
+  try { await navigator.clipboard.writeText(t); if (btn) { const o = btn.textContent; btn.textContent = 'Скопировано'; setTimeout(() => (btn.textContent = o), 1600); } }
+  catch (e) { const el = $('#rep-status'); if (el) el.textContent = 'Браузер не дал скопировать. Попробуйте кнопку «Скачать отчёт».'; }
+}
+async function saveReport() {
+  try { await state.downloads.save({ filename: 'praktikum-7-osvoennyj-obem.md', data: report() }); }
+  catch (e) { const el = $('#rep-status'); if (el && e && e.code !== 'declined') el.textContent = 'Файл не сохранён. Скопируйте отчёт кнопкой рядом.'; }
+}
+
+/* ---- Rail ---- */
+const GOALS = ['Посчитали EV, отклонения и индексы', 'Прочитали отставание по графику', 'Объяснили показатели словами', 'Нашли четыре ошибки ИИ', 'Написали доклад правлению'];
+function renderRail() {
+  const p = points();
+  const kids = [h('div', { class: 'rail-sec' }, h('h3', { text: 'Пункты задания' }), ...GOALS.map((t, i) => h('div', { class: 'goal' + (stepDone(i + 1) ? ' on' : '') }, h('span', { class: 'dot' }), h('span', { text: t }))),
+    h('div', { class: 'score' }, h('b', { text: `${p.total}` }), h('span', { class: 'help', text: `из ${p.max} баллов` })))];
+  const tip = railTip();
+  if (tip) kids.push(h('div', { class: 'rail-sec tip' }, h('h4', { text: 'Коуч' }), h('p', { text: tip.b }), tip.q ? h('p', { class: 'q', text: tip.q }) : null));
+  kids.push(h('div', { class: 'rail-sec' }, h('h4', { text: 'Опорные числа кейса' }),
+    h('p', { class: 'legend', text: 'BAC 120 млн ₸ · срок 35 недель · сегодня неделя 20 · PV 72 · AC 78 · шесть пакетов работ' })));
+  $('#rail').replaceChildren(...kids);
+}
+function railTip() {
+  const st = state.step;
+  if (st === 0) return { b: 'Прочитайте оба приложения и запишите прогноз. «65% бюджета за 57% срока» — не ответ: без освоенного объёма неизвестно, сколько работы сделано.', q: 'Что из таблицы пакетов отличает EV от AC?' };
+  if (st === 1 || st === 2) {
+    const c = stepScore(st);
+    if (!state.chk[st]) return { b: 'Решите сами, затем нажмите «Проверить». Формулы — прямо под вопросами, подсказки — внизу.' };
+    if (c.ok < c.total) return { b: 'Проверка показала, где ошибка. Под каждой красной отметкой — подсказка, в чём путаница.', q: state.chk[st] >= 2 ? 'Ответ можно открыть кнопкой «Показать ответ», но сначала попробуйте ещё раз.' : null };
+    return st === 1 ? { b: 'Расчёт сходится. Обратите внимание на пару ETC 78 против остатка бюджета 42.', q: 'Какое из десяти чисел вы бы назвали правлению первым?' } : { b: 'Отставание 3 недели сегодня превращается в 7 недель к запуску: SPI растягивает весь остаток.', q: 'Почему пунктир EV доходит до 120 только на неделе 42?' };
+  }
+  if (st === 3) return state.mcChecked ? { b: 'Индексы переведены в смысл. Теперь посмотрите, как с теми же числами обошёлся ИИ.' } : { b: 'Каждый индекс — отношение «получили ÷ ожидали». Проверяйте каждый вариант ответа этой фразой.', q: 'Чем TCPI отличается от CPI по смыслу?' };
+  if (st === 4) return state.markRevealed ? { b: 'Каждую найденную ошибку можно превратить в уточняющий вопрос к ИИ: «покажи формулу и порядок операндов».' } : { b: 'Держите рядом свой расчёт с шага 2. Сверяйте не выводы, а формулы: порядок вычитания и деления.', q: 'Какая строка звучит уверенно, но не следует из чисел?' };
+  return state.etalon ? { b: 'Сравните с эталоном: есть ли у вас цена каждого варианта и срок, до которого нужно решение?' } : { b: 'Правлению нужны три вещи: где мы, куда идём, что решить. По одному предложению на каждую.', q: 'Какой вопрос финансового директора будет самым неудобным?' };
+}
+
+/* ================= Boot ================= */
+function buildRuler() {
+  const r = $('#ruler'); if (!r) return;
+  for (let w = 1; w <= 42; w++) {
+    const cls = [w < NOW ? 'past' : '', w === NOW ? 'mk now' : '', w === WEEKS ? 'mk launch' : '', w > WEEKS && w < 42 ? 'fc' : '', w === 42 ? 'mk fcend' : '', w % 5 === 0 && w !== NOW && w !== WEEKS && w !== 40 ? 'wk' : ''].join(' ').trim();
+    const lab = w === NOW ? 'сегодня: неделя 20' : w === WEEKS ? 'запуск по плану: 35' : w === 42 ? 'прогноз: 42' : null;
+    const short = w === NOW ? 'н.20' : w === WEEKS ? 'н.35' : w === 42 ? 'н.42' : null;
+    r.append(h('span', { class: cls, 'data-lab': lab, 'data-short': short, 'data-wk': w % 5 === 0 ? `н.${w}` : null, title: `Неделя ${w}${lab ? ': ' + lab : ''}` }));
+  }
+}
+function boot() {
+  if (state.step > state.unlocked) state.step = state.unlocked;
+  buildRuler(); render();
+  (async () => { try { if (window.claude && window.claude.use) { state.downloads = await window.claude.use('downloads'); render(); } } catch (e) { /* downloads not available */ } })();
+}
+boot();
+</script>
+
+</body>
+</html>
